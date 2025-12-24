@@ -1,0 +1,109 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "5.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.Account": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "10.0.1",
+      "isInstalled": true,
+      "creationTime": "12/24/2025 12:04:40 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "WorkShopManagement.Application": {
+      "path": "src/WorkShopManagement.Application/WorkShopManagement.Application.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.Application.Tests": {
+      "path": "test/WorkShopManagement.Application.Tests/WorkShopManagement.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "WorkShopManagement.Domain.Shared": {
+      "path": "src/WorkShopManagement.Domain.Shared/WorkShopManagement.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.Application.Contracts": {
+      "path": "src/WorkShopManagement.Application.Contracts/WorkShopManagement.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.HttpApi": {
+      "path": "src/WorkShopManagement.HttpApi/WorkShopManagement.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.HttpApi.Client": {
+      "path": "src/WorkShopManagement.HttpApi.Client/WorkShopManagement.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.EntityFrameworkCore.Tests": {
+      "path": "test/WorkShopManagement.EntityFrameworkCore.Tests/WorkShopManagement.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "WorkShopManagement.EntityFrameworkCore": {
+      "path": "src/WorkShopManagement.EntityFrameworkCore/WorkShopManagement.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.TestBase": {
+      "path": "test/WorkShopManagement.TestBase/WorkShopManagement.TestBase.abppkg",
+      "folder": "test"
+    },
+    "WorkShopManagement.Domain.Tests": {
+      "path": "test/WorkShopManagement.Domain.Tests/WorkShopManagement.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "WorkShopManagement.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/WorkShopManagement.HttpApi.Client.ConsoleTestApp/WorkShopManagement.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "WorkShopManagement.DbMigrator": {
+      "path": "src/WorkShopManagement.DbMigrator/WorkShopManagement.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.HttpApi.Host": {
+      "path": "src/WorkShopManagement.HttpApi.Host/WorkShopManagement.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "WorkShopManagement.Domain": {
+      "path": "src/WorkShopManagement.Domain/WorkShopManagement.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

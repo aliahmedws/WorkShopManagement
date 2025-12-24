@@ -1,0 +1,23 @@
+<Solution>
+    <Configurations>
+        <Platform Name="Any CPU" />
+    </Configurations>
+    <Folder Name="/src/">
+        <Project Path="src/WorkShopManagement.Domain/WorkShopManagement.Domain.csproj" />
+        <Project Path="src/WorkShopManagement.Application/WorkShopManagement.Application.csproj" />
+        <Project Path="src/WorkShopManagement.EntityFrameworkCore/WorkShopManagement.EntityFrameworkCore.csproj" />
+        <Project Path="src/WorkShopManagement.Domain.Shared/WorkShopManagement.Domain.Shared.csproj" />
+        <Project Path="src/WorkShopManagement.Application.Contracts/WorkShopManagement.Application.Contracts.csproj" />
+        <Project Path="src/WorkShopManagement.HttpApi/WorkShopManagement.HttpApi.csproj" />
+        <Project Path="src/WorkShopManagement.HttpApi.Client/WorkShopManagement.HttpApi.Client.csproj" />
+        <Project Path="src/WorkShopManagement.DbMigrator/WorkShopManagement.DbMigrator.csproj" />
+        <Project Path="src/WorkShopManagement.HttpApi.Host/WorkShopManagement.HttpApi.Host.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/WorkShopManagement.Application.Tests/WorkShopManagement.Application.Tests.csproj" />
+        <Project Path="test/WorkShopManagement.EntityFrameworkCore.Tests/WorkShopManagement.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/WorkShopManagement.TestBase/WorkShopManagement.TestBase.csproj" />
+        <Project Path="test/WorkShopManagement.Domain.Tests/WorkShopManagement.Domain.Tests.csproj" />
+        <Project Path="test/WorkShopManagement.HttpApi.Client.ConsoleTestApp/WorkShopManagement.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>
