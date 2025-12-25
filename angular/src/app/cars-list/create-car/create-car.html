@@ -1,0 +1,108 @@
+<div class="card car-form-card">
+  <!-- Header -->
+  <div class="card-header car-form-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <!-- LEFT: Back + Title -->
+      <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn btn-link car-back-btn" (click)="back()">
+          <i class="fa fa-arrow-left me-1"></i>
+        </button>
+
+        <div>
+          <div class="car-form-title">
+            {{ isEdit ? 'Edit Car' : 'New Car' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Actions -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="clear()">
+          <i class="fa fa-eraser me-1"></i>
+          Clear
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+          <i class="fa fa-check me-1"></i>
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Body -->
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="row g-4">
+        <!-- LEFT -->
+        <div class="col-md-6">
+
+          <div class="field">
+            <label class="field__label">VIN# <span class="req">*</span></label>
+            <input type="text" class="form-control field__control" formControlName="vinNumber" />
+
+            <div class="text-danger mt-1" *ngIf="form.get('vinNumber')?.touched && form.get('vinNumber')?.invalid">
+              <div *ngIf="form.get('vinNumber')?.errors?.['required']">VIN is required.</div>
+              <div *ngIf="form.get('vinNumber')?.errors?.['pattern']">
+                VIN must be 17 characters (letters and digits only; I, O, Q not allowed).
+              </div>
+            </div>
+
+          </div>
+
+          <div class="field mt-3">
+            <label class="field__label">Car Colour <span class="req">*</span></label>
+            <input type="text" class="form-control field__control" formControlName="color" />
+          </div>
+
+          
+
+
+          <div class="field mt-3">
+            <label class="field__label">Contact id</label>
+            <input type="text" class="form-control field__control" formControlName="ownerContact" />
+          </div>
+
+          <div class="field mt-3">
+            <label class="field__label">Car Description</label>
+            <input type="text" class="form-control field__control" formControlName="description" />
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-md-6">
+          <div class="field">
+            <label class="field__label">Name</label>
+            <input type="text" class="form-control field__control" formControlName="ownerName" />
+          </div>
+
+          <div class="field mt-3">
+            <label class="field__label">Email address <span class="req">*</span></label>
+            <input type="email" class="form-control field__control" formControlName="ownerEmail" />
+
+            <div class="text-danger mt-1" *ngIf="form.get('ownerEmail')?.touched && form.get('ownerEmail')?.invalid">
+              <div *ngIf="form.get('ownerEmail')?.errors?.['email']">Email format is invalid.</div>
+            </div>
+          </div>
+
+
+          <div class="field mt-3">
+            <label class="field__label">Build Year <span class="req">*</span></label>
+            <input type="text" class="form-control field__control" formControlName="buildYear"
+              placeholder="e.g. 2023" />
+          </div>
+
+          <div class="field mt-3">
+            <label class="field__label">CarModel <span class="req">*</span></label>
+            <select class="form-select field__control" formControlName="carModelId">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let m of makes" [value]="m.id">{{ m.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

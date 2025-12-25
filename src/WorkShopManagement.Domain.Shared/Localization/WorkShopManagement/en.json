@@ -4,6 +4,24 @@
     "AppName": "WorkShopManagement",
     "Menu:Home": "Home",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
-    "Welcome": "Welcome"
+    "Welcome": "Welcome",
+
+    "Menu:CarModel": "Car Model",
+    "NewCarModel": "New Car Model",
+    "ClearLocalData": "Clear Local Data",
+    "NoRecordsFound": "No Records Found",
+    "EditCarModel": "Edit Car Model",
+    "NameIsRequired": "Name Is Required",
+    "Menu:Cars": "Cars",
+    "NewCar": "New Car",
+    "CarModel": "Car Model",
+    "VinNumber": "VIN#",
+    "CarColour": "Car Colour",
+    "BuildYear": "Build Year",
+    "Search": "Search",
+    "Actions": "Actions",
+    "Edit": "Edit",
+    "Delete": "Delete"
+
   }
 }

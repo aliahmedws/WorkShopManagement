@@ -1,0 +1,137 @@
+.car-form-card {
+  border-radius: 10px;
+  border: 1px solid #eef0f2;
+}
+
+.car-form-header {
+  background: #fff;
+  border-bottom: 1px solid #eef0f2;
+  padding: 1rem 1.25rem;
+}
+
+.car-form-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.2;
+}
+
+.car-form-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 0.15rem;
+}
+
+.field__label {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 0.35rem;
+}
+
+.req {
+  color: #dc3545;
+}
+
+/* Better looking inputs */
+.field__control {
+  border-radius: 10px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #f8f9fa !important;
+
+  padding: 0.7rem 0.85rem;
+  height: 44px;
+
+  box-shadow: none !important;
+
+  &:focus {
+    background: #fff !important;
+    border-color: #b9c2ff !important; /* subtle focus, not loud */
+    outline: 0;
+  }
+}
+
+/* Make textarea-ready if you later switch description to textarea */
+textarea.field__control {
+  height: auto;
+  min-height: 110px;
+}
+
+/* Button tweaks */
+.btn.btn-primary {
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+}
+
+.btn.btn-outline-secondary {
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+}
+
+.car-back-btn {
+  text-decoration: none;
+  padding: 0;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.search-pill {
+  max-width: 520px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+
+  // not too rounded
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  // subtle depth like your sample
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.search-pill__input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+
+  padding: 0.55rem 0.85rem;
+  font-size: 0.9rem;
+
+  &:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+.search-pill__btn {
+  border: 0;
+  background: transparent;
+
+  padding: 0.55rem 0.9rem;
+  border-left: 1px solid #e5e7eb;
+
+  // mildly rounded, not full circle
+  border-radius: 10px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+

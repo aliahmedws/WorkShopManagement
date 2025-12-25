@@ -17,5 +17,19 @@ function configureRoutes() {
         order: 1,
         layout: eLayoutType.application,
       },
+       {
+      path: '/car-model',
+      name: '::Menu:CarModel',
+      iconClass: 'fas fa-car',
+      order: 50,
+      layout: eLayoutType.application,
+    },
+    {
+      path: '/cars',
+      name: '::Menu:Cars',
+      iconClass: 'fas fa-car',
+      order: 10,
+      layout: eLayoutType.application,
+    },
   ]);
 }
