@@ -21,7 +21,8 @@
     "Search": "Search",
     "Actions": "Actions",
     "Edit": "Edit",
-    "Delete": "Delete"
+    "Delete": "Delete",
+    "Menu:AssignCarToBay": "Assign Car to Bay"
 
   }
 }

@@ -39,6 +39,11 @@ export const APP_ROUTES: Routes = [
   path: 'cars/:id/edit',
   loadComponent: () => import('./cars-list/create-car/create-car').then(m => m.CreateCar),
 },
+{
+    path: 'cars/assign-bay',
+    loadComponent: () =>
+      import('./assign-car-to-bay/assign-car-to-bay').then(m => m.AssignCarToBay),
+  },
 
 
 

@@ -135,3 +135,20 @@ textarea.field__control {
   margin-bottom: 0.5rem;
 }
 
+.field .text-danger {
+  display: block;
+  width: 100%;
+}
+
+.vin-group {
+  flex-wrap: wrap; // ✅ allow next line
+}
+
+.vin-group .invalid-feedback {
+  display: block;
+  width: 100%;     // ✅ force full width under input+button
+  margin-top: 0.25rem;
+}
+
+
+

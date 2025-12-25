@@ -31,5 +31,12 @@ function configureRoutes() {
       order: 10,
       layout: eLayoutType.application,
     },
+    {
+      path: '/cars/assign-bay',
+      name: '::Menu:AssignCarToBay',
+      iconClass: 'fas fa-parking',
+      order: 20,
+      layout: eLayoutType.application,
+    },
   ]);
 }

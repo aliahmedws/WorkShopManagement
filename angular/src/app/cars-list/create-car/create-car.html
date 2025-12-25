@@ -40,23 +40,35 @@
 
           <div class="field">
             <label class="field__label">VIN# <span class="req">*</span></label>
-            <input type="text" class="form-control field__control" formControlName="vinNumber" />
 
-            <div class="text-danger mt-1" *ngIf="form.get('vinNumber')?.touched && form.get('vinNumber')?.invalid">
-              <div *ngIf="form.get('vinNumber')?.errors?.['required']">VIN is required.</div>
-              <div *ngIf="form.get('vinNumber')?.errors?.['pattern']">
-                VIN must be 17 characters (letters and digits only; I, O, Q not allowed).
+            <div class="d-flex gap-2 align-items-start">
+              <!-- Left side: input + error -->
+              <div class="flex-grow-1">
+                <input type="text" class="form-control" formControlName="vinNumber" [class.is-invalid]="vinInvalid" />
+
+                <!-- always below input -->
+                <div class="invalid-feedback" *ngIf="vinInvalid">
+                  <div *ngIf="vinCtrl?.errors?.['pattern']">
+                    VIN must be 17 characters (letters and digits only; I, O, Q not allowed).
+                  </div>
+                </div>
               </div>
-            </div>
 
+              <!-- Right side: button -->
+              <button type="button" class="btn btn-outline-primary flex-shrink-0" (click)="getDataByVin()"
+                [disabled]="isEdit">
+                Get Data
+              </button>
+            </div>
           </div>
+
 
           <div class="field mt-3">
             <label class="field__label">Car Colour <span class="req">*</span></label>
             <input type="text" class="form-control field__control" formControlName="color" />
           </div>
 
-          
+
 
 
           <div class="field mt-3">

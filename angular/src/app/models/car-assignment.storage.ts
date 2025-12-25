@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Car } from './cars';
+import { CarAssignment } from './car-assignment';
 
 @Injectable({ providedIn: 'root' })
-export class CarsStorage {
-  private readonly storageKey = 'app.cars.v1';
+export class CarAssignmentsStorage {
+  private readonly storageKey = 'app.carAssignments.v1';
 
-  getAll(): Car[] {
-    return this.read().sort((a, b) => (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt));
+  getAll(): CarAssignment[] {
+    return this.read().sort((a, b) =>
+      (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt)
+    );
   }
 
-  getById(id: string): Car | undefined {
-    return this.read().find(x => x.id === id);
-  }
-
-  create(input: Omit<Car, 'id' | 'createdAt' | 'updatedAt'>): Car {
+  create(input: Omit<CarAssignment, 'id' | 'createdAt' | 'updatedAt'>): CarAssignment {
     const now = new Date().toISOString();
-    const entity: Car = {
+    const entity: CarAssignment = {
       id: this.newId(),
       ...input,
       createdAt: now,
@@ -28,12 +26,12 @@ export class CarsStorage {
     return entity;
   }
 
-  update(id: string, input: Omit<Car, 'id' | 'createdAt' | 'updatedAt'>): Car {
+  update(id: string, input: Omit<CarAssignment, 'id' | 'createdAt' | 'updatedAt'>): CarAssignment {
     const items = this.read();
     const idx = items.findIndex(x => x.id === id);
-    if (idx < 0) throw new Error('Car not found.');
+    if (idx < 0) throw new Error('Assignment not found.');
 
-    const updated: Car = {
+    const updated: CarAssignment = {
       ...items[idx],
       ...input,
       updatedAt: new Date().toISOString(),
@@ -52,18 +50,20 @@ export class CarsStorage {
     localStorage.removeItem(this.storageKey);
   }
 
-  private read(): Car[] {
+  // -----------------
+
+  private read(): CarAssignment[] {
     const raw = localStorage.getItem(this.storageKey);
     if (!raw) return [];
     try {
-      const parsed = JSON.parse(raw) as Car[];
+      const parsed = JSON.parse(raw) as CarAssignment[];
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   }
 
-  private write(items: Car[]): void {
+  private write(items: CarAssignment[]): void {
     localStorage.setItem(this.storageKey, JSON.stringify(items));
   }
 
@@ -74,22 +74,4 @@ export class CarsStorage {
       return v.toString(16);
     });
   }
-
-  seedIfEmpty(defaults: Omit<Car, 'id' | 'createdAt' | 'updatedAt'>[]): void {
-  const existing = this.read();
-  if (existing.length > 0) return;
-
-  for (const d of defaults) {
-    this.create(d);
-  }
-}
-
-findByVin(vinNumber: string): Car | undefined {
-  const vin = (vinNumber ?? '').trim().toUpperCase();
-  if (!vin) return undefined;
-
-  return this.read().find(x => (x.vinNumber ?? '').trim().toUpperCase() === vin);
-}
-
-
 }

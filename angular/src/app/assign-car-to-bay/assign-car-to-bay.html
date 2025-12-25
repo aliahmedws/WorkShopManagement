@@ -1,0 +1,43 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="fw-semibold">Assign Car to Bay</div>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="form">
+      <div class="mb-3">
+        <label class="form-label">Vin#</label>
+        <input class="form-control" formControlName="vinNumber" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Priority# <span class="text-danger">*</span></label>
+        <select class="form-select" formControlName="priority">
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Bay# <span class="text-danger">*</span></label>
+        <select class="form-select" formControlName="bay">
+          <option *ngFor="let b of bays" [value]="b">{{ b }}</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Due Date</label>
+        <input type="date" class="form-control" formControlName="dueDate" />
+      </div>
+    </form>
+  </div>
+
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <button class="btn btn-link" type="button" (click)="back()">Back</button>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary" type="button" (click)="clear()">Clear</button>
+      <button class="btn btn-warning" type="button" (click)="assign()">Assign</button>
+    </div>
+  </div>
+</div>
+

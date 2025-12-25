@@ -1,91 +1,144 @@
-<div class="card">
-  <div class="card-header">
-    <div class="row">
-      <div class="col col-md-6">
-        <h5 class="card-title">
-          {{ '::Menu:CarModel' | abpLocalization }}
-        </h5>
+<div class="cm-shell">
+  <!-- Header -->
+  <div class="cm-header">
+    <div>
+      <div class="cm-title">{{ '::Menu:CarModel' | abpLocalization }}</div>
+ 
+    </div>
+
+    <button class="btn btn-primary cm-add" type="button" (click)="openCreate()">
+      <i class="fa fa-plus me-1"></i>
+      {{ '::NewCarModel' | abpLocalization }}
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="card cm-toolbar">
+    <div class="card-body cm-toolbar__body">
+      <div class="input-group cm-search">
+        <span class="input-group-text bg-white">
+          <i class="fa fa-search text-muted"></i>
+        </span>
+
+        <input
+          type="text"
+          class="form-control"
+          [placeholder]="'::Search' | abpLocalization"
+          [(ngModel)]="filter"
+          (input)="applyFilter()"
+        />
+
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          *ngIf="filter"
+          (click)="filter=''; applyFilter()"
+        >
+          <i class="fa fa-times"></i>
+        </button>
       </div>
 
-      <div class="text-end col col-md-6">
-        <div class="text-lg-end pt-2">
-          <button id="create" class="btn btn-primary" type="button" (click)="openCreate()">
-            <i class="fa fa-plus me-1"></i>
-            <span>{{ '::NewCarModel' | abpLocalization }}</span>
-          </button>
-        </div>
+      <div class="cm-stats">
+        <!-- <span class="cm-stat">
+               <div class="cm-sub">
+                    Total : {{ view.length }} {{ view.length === 1 ? 'model' : 'models' }}
+                </div>
+        </span> -->
+
       </div>
     </div>
   </div>
 
-  <div class="card-body">
-    <div class="row mb-3">
-      <div class="col col-md-6">
-        <div class="search-pill">
-          <input
-            type="text"
-            class="search-pill__input"
-            [placeholder]="'::Search' | abpLocalization"
-            [(ngModel)]="filter"
-            (input)="applyFilter()"
-          />
-
-          <button type="button" class="search-pill__btn" (click)="applyFilter()">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
-      </div>
+  <!-- List -->
+  <div class="card cm-list" *ngIf="view.length > 0; else emptyState">
+    <div class="cm-row cm-row--head">
+      <div class="cm-col cm-col--model">{{ '::Name' | abpLocalization }}</div>
+      <div class="cm-col cm-col--count">{{ '::Images' | abpLocalization }}</div>
+      <div class="cm-col cm-col--date">Updated</div>
+      <div class="cm-col cm-col--actions">{{ '::Actions' | abpLocalization }}</div>
     </div>
 
-    <ngx-datatable [rows]="view" [count]="view.length" default>
-      <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <div ngbDropdown container="body" class="d-inline-block">
-            <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
-              <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
-            </button>
-            <div ngbDropdownMenu>
-              <button ngbDropdownItem (click)="openEdit(row)">
-                {{ '::Edit' | abpLocalization }}
-              </button>
-              <button ngbDropdownItem (click)="delete(row)">
-                {{ '::Delete' | abpLocalization }}
-              </button>
-            </div>
+    <div class="cm-row" *ngFor="let row of view">
+      <!-- Model column (thumb + name) -->
+      <div class="cm-col cm-col--model">
+        <div class="cm-model">
+          <div class="cm-thumb">
+            <ng-container *ngIf="row.images?.length; else noThumb">
+              <img [src]="row.images[0].dataUrl" alt="thumb" />
+            </ng-container>
+            <ng-template #noThumb>
+              <div class="cm-thumb__placeholder">
+                <i class="fa fa-camera"></i>
+              </div>
+            </ng-template>
           </div>
-        </ng-template>
-      </ngx-datatable-column>
 
-      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
+          <div class="cm-model__text">
+            <div class="cm-model__name" title="{{ row.name }}">{{ row.name }}</div>
+          </div>
+        </div>
+      </div>
 
-      <ngx-datatable-column [name]="'::Images' | abpLocalization" [maxWidth]="140" [sortable]="false">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <ng-container *ngIf="row.images?.length; else noImg">
-            <img [src]="row.images[0].dataUrl" class="table-thumb" alt="thumb" />
-            <span class="ms-1 text-muted" *ngIf="row.images.length > 1">
-              +{{ row.images.length - 1 }}
-            </span>
-          </ng-container>
-          <ng-template #noImg><span class="text-muted">-</span></ng-template>
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
+      <!-- Images count -->
+      <div class="cm-col cm-col--count">
+        <span class="badge bg-light text-dark cm-badge">
+          <i class="fa fa-images me-1"></i>
+          {{ row.images?.length ?? 0 }}
+        </span>
+      </div>
 
-    <div class="text-muted mt-2" *ngIf="view.length === 0">
-      {{ '::NoRecordsFound' | abpLocalization }}
+      <!-- Date -->
+      <div class="cm-col cm-col--date">
+        {{ (row.updatedAt || row.createdAt) | date:'mediumDate' }}
+      </div>
+
+      <!-- Actions -->
+      <div class="cm-col cm-col--actions">
+        <div ngbDropdown container="body">
+          <button class="btn btn-light btn-sm cm-actions-btn" ngbDropdownToggle type="button">
+            <i class="fa fa-ellipsis-h"></i>
+          </button>
+
+          <div ngbDropdownMenu class="cm-menu">
+            <button ngbDropdownItem (click)="openEdit(row)">
+              <i class="fa fa-pen me-2"></i>{{ '::Edit' | abpLocalization }}
+            </button>
+            <button ngbDropdownItem (click)="delete(row)">
+              <i class="fa fa-trash me-2"></i>{{ '::Delete' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Empty -->
+  <ng-template #emptyState>
+    <div class="card">
+      <div class="card-body cm-empty">
+        <div class="cm-empty__icon"><i class="fa fa-car"></i></div>
+        <div class="cm-empty__title">{{ '::NoRecordsFound' | abpLocalization }}</div>
+        <div class="cm-empty__text">Create a car model to start building your catalog.</div>
+
+        <button class="btn btn-primary mt-3" (click)="openCreate()">
+          <i class="fa fa-plus me-1"></i>
+          {{ '::NewCarModel' | abpLocalization }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </div>
 
+<!-- Keep your modal as-is -->
 <abp-modal [(visible)]="isModalOpen" [busy]="saving">
   <ng-template #abpHeader>
-    <h3>{{ (editingId ? '::EditCarModel' : '::NewCarModel') | abpLocalization }}</h3>
+    <h3 class="m-0">{{ (editingId ? '::EditCarModel' : '::NewCarModel') | abpLocalization }}</h3>
   </ng-template>
 
   <ng-template #abpBody>
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="form-group">
-        <label for="make-name">{{ '::Name' | abpLocalization }}</label><span> * </span>
+        <label for="make-name">{{ '::Name' | abpLocalization }}</label><span class="text-danger"> * </span>
         <input id="make-name" type="text" class="form-control" formControlName="name" autofocus />
       </div>
 
@@ -101,11 +154,7 @@
         <div class="col-6 col-md-3" *ngFor="let img of draftImages">
           <div class="image-tile">
             <img [src]="img.dataUrl" class="image-tile__img" alt="image" />
-            <button
-              type="button"
-              class="btn btn-sm btn-danger image-tile__remove"
-              (click)="removeDraftImage(img.id)"
-            >
+            <button type="button" class="btn btn-sm btn-danger image-tile__remove" (click)="removeDraftImage(img.id)">
               <i class="fa fa-times"></i>
             </button>
           </div>
@@ -124,8 +173,7 @@
     </button>
 
     <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid || saving">
-      <i class="fa fa-check mr-1"></i>
-      {{ '::Save' | abpLocalization }}
+      <i class="fa fa-check me-1"></i>{{ '::Save' | abpLocalization }}
     </button>
   </ng-template>
 </abp-modal>

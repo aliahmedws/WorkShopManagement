@@ -180,4 +180,22 @@ export class CarModel implements OnInit {
       return v.toString(16);
     });
   }
+
+ get totalModels(): number {
+  return this.all?.length ?? 0;
+}
+
+get modelsWithImages(): number {
+  return (this.all ?? []).filter(m => (m.images?.length ?? 0) > 0).length;
+}
+
+get totalImages(): number {
+  return (this.all ?? []).reduce((sum, m) => sum + (m.images?.length ?? 0), 0);
+}
+
+refresh(): void {
+  this.reload();
+}
+
+
 }
