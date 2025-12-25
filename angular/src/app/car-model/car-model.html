@@ -13,38 +13,50 @@
   </div>
 
   <!-- Toolbar -->
-  <div class="card cm-toolbar">
-    <div class="card-body cm-toolbar__body">
-      <div class="input-group cm-search">
-        <span class="input-group-text bg-white">
-          <i class="fa fa-search text-muted"></i>
-        </span>
+  <div class="cm-toolbar">
+    <div class="cm-toolbar__body">
+      <!-- Search -->
+      <div class="cm-search">
+        <div class="cm-searchbox">
+          <i class="fa fa-search cm-searchbox__icon"></i>
 
-        <input
-          type="text"
-          class="form-control"
-          [placeholder]="'::Search' | abpLocalization"
-          [(ngModel)]="filter"
-          (input)="applyFilter()"
-        />
+          <input
+            type="text"
+            class="cm-searchbox__input"
+            [placeholder]="'::Search' | abpLocalization"
+            [(ngModel)]="filter"
+            (input)="applyFilter()"
+            (keydown.enter)="applyFilter()"
+          />
 
-        <button
-          class="btn btn-outline-secondary"
-          type="button"
-          *ngIf="filter"
-          (click)="filter=''; applyFilter()"
-        >
-          <i class="fa fa-times"></i>
-        </button>
+          <button
+            type="button"
+            class="cm-searchbox__clear"
+            *ngIf="filter?.length"
+            (click)="clearFilter()"
+            aria-label="Clear"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
       </div>
 
+      <!-- Stats -->
       <div class="cm-stats">
-        <!-- <span class="cm-stat">
-               <div class="cm-sub">
-                    Total : {{ view.length }} {{ view.length === 1 ? 'model' : 'models' }}
-                </div>
-        </span> -->
+        <div class="cm-kpi">
+          <div class="cm-kpi__label">Total Cars</div>
+          <div class="cm-kpi__value">{{ all.length }}</div>
+        </div>
 
+        <div class="cm-kpi">
+          <div class="cm-kpi__label">Visible</div>
+          <div class="cm-kpi__value">{{ view.length }}</div>
+        </div>
+
+        <!-- <div class="cm-kpi">
+          <div class="cm-kpi__label">With Model</div>
+          <div class="cm-kpi__value">{{ carsWithModelCount }}</div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -130,50 +142,80 @@
 </div>
 
 <!-- Keep your modal as-is -->
-<abp-modal [(visible)]="isModalOpen" [busy]="saving">
+<abp-modal [(visible)]="isModalOpen" [busy]="saving" class="cm-modal">
   <ng-template #abpHeader>
-    <h3 class="m-0">{{ (editingId ? '::EditCarModel' : '::NewCarModel') | abpLocalization }}</h3>
+    <div class="cm-modal__header">
+      <h3 class="cm-modal__title m-0">
+        {{ (editingId ? '::EditCarModel' : '::NewCarModel') | abpLocalization }}
+      </h3>
+    </div>
   </ng-template>
 
   <ng-template #abpBody>
-    <form [formGroup]="form" (ngSubmit)="save()">
-      <div class="form-group">
-        <label for="make-name">{{ '::Name' | abpLocalization }}</label><span class="text-danger"> * </span>
-        <input id="make-name" type="text" class="form-control" formControlName="name" autofocus />
-      </div>
+    <div class="cm-modal__body">
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="form-group">
+          <label for="make-name" class="cm-label">
+            {{ '::Name' | abpLocalization }} <span class="text-danger">*</span>
+          </label>
 
-      <div class="mt-3">
-        <label class="form-label">{{ '::Images' | abpLocalization }}</label>
-        <input type="file" class="form-control" accept="image/*" multiple (change)="onImagesSelected($event)" />
-        <small class="text-muted">
-          Max {{ maxImages }} images, max {{ maxFileSizeMB }}MB each.
-        </small>
-      </div>
+          <input
+            id="make-name"
+            type="text"
+            class="form-control cm-input"
+            formControlName="name"
+            autofocus
+          />
+        </div>
 
-      <div class="row g-2 mt-2" *ngIf="draftImages.length > 0">
-        <div class="col-6 col-md-3" *ngFor="let img of draftImages">
-          <div class="image-tile">
-            <img [src]="img.dataUrl" class="image-tile__img" alt="image" />
-            <button type="button" class="btn btn-sm btn-danger image-tile__remove" (click)="removeDraftImage(img.id)">
-              <i class="fa fa-times"></i>
-            </button>
+        <div class="mt-3">
+          <label class="cm-label">{{ '::Images' | abpLocalization }}</label>
+
+          <input
+            type="file"
+            class="form-control cm-input"
+            accept="image/*"
+            multiple
+            (change)="onImagesSelected($event)"
+          />
+
+          <small class="cm-help">
+            Max {{ maxImages }} images, max {{ maxFileSizeMB }}MB each.
+          </small>
+        </div>
+
+        <div class="row g-2 mt-2" *ngIf="draftImages.length > 0">
+          <div class="col-6 col-md-3" *ngFor="let img of draftImages">
+            <div class="image-tile cm-image-tile">
+              <img [src]="img.dataUrl" class="image-tile__img" alt="image" />
+              <button
+                type="button"
+                class="btn btn-sm btn-danger image-tile__remove cm-image-remove"
+                (click)="removeDraftImage(img.id)"
+              >
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="text-danger mt-2" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
-        {{ '::NameIsRequired' | abpLocalization }}
-      </div>
-    </form>
+        <div class="cm-error mt-2" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+          {{ '::NameIsRequired' | abpLocalization }}
+        </div>
+      </form>
+    </div>
   </ng-template>
 
   <ng-template #abpFooter>
-    <button type="button" class="btn btn-secondary" abpClose>
-      {{ '::Close' | abpLocalization }}
-    </button>
+    <div class="cm-modal__footer">
+      <button type="button" class="btn btn-outline-secondary cm-btn" abpClose>
+        {{ '::Close' | abpLocalization }}
+      </button>
 
-    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid || saving">
-      <i class="fa fa-check me-1"></i>{{ '::Save' | abpLocalization }}
-    </button>
+      <button class="btn btn-primary cm-btn" (click)="save()" [disabled]="form.invalid || saving">
+        <i class="fa fa-check me-1"></i>{{ '::Save' | abpLocalization }}
+      </button>
+    </div>
   </ng-template>
 </abp-modal>
+

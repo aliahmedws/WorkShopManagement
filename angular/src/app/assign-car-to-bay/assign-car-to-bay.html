@@ -1,43 +1,77 @@
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <div class="fw-semibold">Assign Car to Bay</div>
+<div class="card car-form-card">
+  <!-- Header -->
+  <div class="card-header car-form-header">
+    <div class="d-flex align-items-center justify-content-between">
+      <!-- LEFT: Back + Title -->
+      <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn btn-link car-back-btn" (click)="back()">
+          <i class="fa fa-arrow-left me-1"></i>
+        </button>
+
+        <div>
+          <div class="car-form-title">Assign Car to Bay</div>
+          <div class="car-form-subtitle">Set priority, bay and due date</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Actions -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="clear()">
+          <i class="fa fa-eraser me-1"></i>
+          Clear
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="assign()" [disabled]="form.invalid">
+          <i class="fa fa-check me-1"></i>
+          Assign
+        </button>
+      </div>
+    </div>
   </div>
 
+  <!-- Body -->
   <div class="card-body">
     <form [formGroup]="form">
-      <div class="mb-3">
-        <label class="form-label">Vin#</label>
-        <input class="form-control" formControlName="vinNumber" />
-      </div>
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="field">
+            <label class="field__label">VIN#</label>
+            <input
+              type="text"
+              class="form-control field__control field__control--readonly"
+              formControlName="vinNumber"
+              readonly
+            />
+          </div>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Priority# <span class="text-danger">*</span></label>
-        <select class="form-select" formControlName="priority">
-          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
-        </select>
-      </div>
+        <div class="col-md-6">
+          <div class="field">
+            <label class="field__label">Priority <span class="req">*</span></label>
+            <select class="form-select field__control" formControlName="priority">
+              <option [ngValue]="null" disabled>Select</option>
+              <option *ngFor="let p of priorities" [ngValue]="p">{{ p }}</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Bay# <span class="text-danger">*</span></label>
-        <select class="form-select" formControlName="bay">
-          <option *ngFor="let b of bays" [value]="b">{{ b }}</option>
-        </select>
-      </div>
+        <div class="col-md-6">
+          <div class="field">
+            <label class="field__label">Bay <span class="req">*</span></label>
+            <select class="form-select field__control" formControlName="bay">
+              <option [ngValue]="null" disabled>Select</option>
+              <option *ngFor="let b of bays" [ngValue]="b">{{ b }}</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Due Date</label>
-        <input type="date" class="form-control" formControlName="dueDate" />
+        <div class="col-md-6">
+          <div class="field">
+            <label class="field__label">Due Date</label>
+            <input type="date" class="form-control field__control" formControlName="dueDate" />
+          </div>
+        </div>
       </div>
     </form>
   </div>
-
-  <div class="card-footer d-flex justify-content-between align-items-center">
-    <button class="btn btn-link" type="button" (click)="back()">Back</button>
-
-    <div class="d-flex gap-2">
-      <button class="btn btn-outline-secondary" type="button" (click)="clear()">Clear</button>
-      <button class="btn btn-warning" type="button" (click)="assign()">Assign</button>
-    </div>
-  </div>
 </div>
-

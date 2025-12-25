@@ -1,30 +1,72 @@
 .car-form-card {
-  border-radius: 10px;
-  border: 1px solid #eef0f2;
+  border-radius: 14px;
+  border: 1px solid #eef0f4;
+  box-shadow: 0 10px 28px rgba(18, 38, 63, 0.04);
+  overflow: hidden;
 }
 
 .car-form-header {
   background: #fff;
-  border-bottom: 1px solid #eef0f2;
-  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #eef0f4;
+  padding: 0.95rem 1.25rem;
+}
+
+.car-form-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.car-form-header__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.car-form-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .car-form-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #212529;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
   line-height: 1.2;
 }
 
-.car-form-subtitle {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin-top: 0.15rem;
+.car-back-btn {
+  padding: 0;
+  text-decoration: none;
+
+  i {
+    font-size: 1rem;
+    color: #111827;
+  }
+
+  &:hover {
+    opacity: 0.9;
+    text-decoration: none;
+  }
 }
 
+.car-header-btn {
+  border-radius: 12px;
+  padding: 0.55rem 1rem;
+}
+
+.car-form-body {
+  padding: 1.25rem;
+}
+
+/* Fields */
 .field__label {
   font-size: 0.9rem;
-  color: #495057;
+  color: #374151;
+  font-weight: 700;
   margin-bottom: 0.35rem;
 }
 
@@ -32,123 +74,76 @@
   color: #dc3545;
 }
 
-/* Better looking inputs */
+/* Controls */
 .field__control {
-  border-radius: 10px !important;
-  border: 1px solid #e5e7eb !important;
-  background: #f8f9fa !important;
+  border-radius: 12px !important;
+  border: 1px solid #e6eaf0 !important;
+  background: #f8fafc !important;
 
-  padding: 0.7rem 0.85rem;
+  padding: 0.7rem 0.9rem;
   height: 44px;
 
   box-shadow: none !important;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
 
   &:focus {
-    background: #fff !important;
-    border-color: #b9c2ff !important; /* subtle focus, not loud */
+    background: #ffffff !important;
+    border-color: rgba(13, 110, 253, 0.35) !important;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12) !important;
     outline: 0;
   }
 }
 
-/* Make textarea-ready if you later switch description to textarea */
-textarea.field__control {
-  height: auto;
-  min-height: 110px;
+/* Make select match input height */
+select.field__control {
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
 }
 
-/* Button tweaks */
-.btn.btn-primary {
-  border-radius: 10px;
-  padding: 0.55rem 1rem;
-}
-
-.btn.btn-outline-secondary {
-  border-radius: 10px;
-  padding: 0.55rem 1rem;
-}
-
-.car-back-btn {
-  text-decoration: none;
-  padding: 0;
-  font-weight: 500;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.search-pill {
-  max-width: 520px;
-  width: 100%;
-
+/* VIN layout */
+.vin-row {
   display: flex;
-  align-items: center;
-
-  background: #f8f9fa;
-  border: 1px solid #e5e7eb;
-
-  // not too rounded
-  border-radius: 12px;
-
-  overflow: hidden;
-
-  // subtle depth like your sample
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  align-items: flex-start;
+  gap: 0.75rem;
 }
 
-.search-pill__input {
+.vin-row__input {
   flex: 1;
-  border: 0;
-  background: transparent;
-
-  padding: 0.55rem 0.85rem;
-  font-size: 0.9rem;
-
-  &:focus {
-    outline: 0;
-    box-shadow: none;
-  }
+  min-width: 0;
 }
 
-.search-pill__btn {
-  border: 0;
-  background: transparent;
-
-  padding: 0.55rem 0.9rem;
-  border-left: 1px solid #e5e7eb;
-
-  // mildly rounded, not full circle
-  border-radius: 10px;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.04);
-  }
-
-  i {
-    font-size: 1rem;
-  }
+.vin-row__btn {
+  height: 44px;
+  border-radius: 12px;
+  padding: 0 1.1rem;
+  white-space: nowrap;
 }
 
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+/* Validation */
+.is-invalid {
+  border-color: #dc3545 !important;
+  background: #fff !important;
 }
 
-.field .text-danger {
+.invalid-feedback {
   display: block;
   width: 100%;
+  margin-top: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
-.vin-group {
-  flex-wrap: wrap; // ✅ allow next line
+/* Responsive */
+@media (max-width: 768px) {
+  .car-form-body {
+    padding: 1rem;
+  }
+
+  .vin-row {
+    flex-direction: column;
+  }
+
+  .vin-row__btn {
+    width: 100%;
+  }
 }
-
-.vin-group .invalid-feedback {
-  display: block;
-  width: 100%;     // ✅ force full width under input+button
-  margin-top: 0.25rem;
-}
-
-
-

@@ -5,20 +5,15 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
 import { LocalizationModule } from '@abp/ng.core';
 import { ThemeSharedModule, ToasterService } from '@abp/ng.theme.shared';
-import { CarsStorage } from '../models/cars.storage';
 
-
-
-const VIN_REGEX = /^[A-HJ-NPR-Z0-9]{17}$/i;
-
-export enum PriorityEnum {
+export enum CarPriority {
   Low = 'Low',
   Medium = 'Medium',
   High = 'High',
   Urgent = 'Urgent',
 }
 
-export enum BayEnum {
+export enum ServiceBay {
   Bay1 = 'Bay 1',
   Bay2 = 'Bay 2',
   Bay3 = 'Bay 3',
@@ -43,37 +38,31 @@ export enum BayEnum {
   styleUrls: ['./assign-car-to-bay.scss'],
 })
 export class AssignCarToBay implements OnInit {
-  priorities = Object.values(PriorityEnum);
-  bays = Object.values(BayEnum);
+  priorities = Object.values(CarPriority);
+  bays = Object.values(ServiceBay);
 
   form = this.fb.group({
-    vinNumber: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(VIN_REGEX)]],
-    priority: [PriorityEnum.Medium, Validators.required],
-    bay: [BayEnum.Bay1, Validators.required],
-    dueDate: [''], // optional
+    vinNumber: this.fb.control({ value: '', disabled: true }),
+    priority: this.fb.control<CarPriority | null>(null, Validators.required),
+    bay: this.fb.control<ServiceBay | null>(null, Validators.required),
+    dueDate: this.fb.control<string | null>(null),
   });
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly carsStore: CarsStorage,
     private readonly toaster: ToasterService
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParamMap.subscribe(q => {
-      const vin = (q.get('vin') ?? '').trim().toUpperCase();
-      if (!vin) return;
+    const vin =
+      this.route.snapshot.queryParamMap.get('vin') ??
+      (history.state?.vin as string | undefined);
 
-      this.form.patchValue({ vinNumber: vin }, { emitEvent: false });
-
-      // optional: verify car exists
-      const car = this.carsStore.findByVin(vin);
-      if (!car) {
-        this.toaster.warn('Car not found for this VIN. Please create the car first.');
-      }
-    });
+    if (vin) {
+      this.form.patchValue({ vinNumber: vin.trim().toUpperCase() }, { emitEvent: false });
+    }
   }
 
   back(): void {
@@ -82,12 +71,16 @@ export class AssignCarToBay implements OnInit {
 
   clear(): void {
     const vin = this.form.getRawValue().vinNumber;
-    this.form.reset({
-      vinNumber: vin,
-      priority: PriorityEnum.Medium,
-      bay: BayEnum.Bay1,
-      dueDate: '',
-    });
+    this.form.reset(
+      {
+        vinNumber: vin,
+        priority: null,
+        bay: null,
+        dueDate: null,
+      },
+      { emitEvent: false }
+    );
+    this.form.get('vinNumber')?.disable({ emitEvent: false });
   }
 
   assign(): void {
@@ -96,10 +89,8 @@ export class AssignCarToBay implements OnInit {
       return;
     }
 
-    const v = this.form.getRawValue();
-
-    // Here you can save assignment to local storage / backend later.
-    this.toaster.success(`Assigned ${v.vinNumber} to ${v.bay} (${v.priority})`);
+    const payload = this.form.getRawValue(); // includes disabled vinNumber
+    this.toaster.success(`Assigned ${payload.vinNumber} to ${payload.bay} (${payload.priority}).`);
     this.back();
   }
 }

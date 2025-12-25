@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LocalizationModule } from '@abp/ng.core';
@@ -21,7 +20,6 @@ import { CarModelMake } from '../models/car-model-makes';
     CommonModule,
     RouterModule,
     FormsModule,
-    NgxDatatableModule,
     NgbDropdownModule,
     LocalizationModule,
     ThemeSharedModule,
@@ -45,73 +43,16 @@ export class CarsList implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  // 1) Ensure car models exist
-  this.makesStore.ensureDefaults();
-  this.makes = this.makesStore.getAll();
+    this.makesStore.ensureDefaults();
+    this.makes = this.makesStore.getAll();
 
-  if (!this.makes.length) {
-    this.toaster.error('Car models are not available');
-    return;
+    if (!this.makes.length) {
+      this.toaster.error('Car models are not available');
+      return;
+    }
+
+    this.reload();
   }
-
-  // 2) Build set of valid make IDs
-  const validMakeIds = new Set(this.makes.map(m => m.id));
-
-  // 3) If cars exist but their carModelId is invalid => clear cars (fix old records problem)
-  const existingCars = this.carsStore.getAll();
-  const hasInvalidModel = existingCars.some(c => !validMakeIds.has(c.carModelId));
-
-  if (hasInvalidModel) {
-    this.carsStore.clear(); // removes old cars that point to old model IDs
-  }
-
-  // 4) Pick IDs from current makes list (correct IDs)
-  const challengerDemonId =
-    this.makes.find(x => x.name.toLowerCase() === 'challenger demon')?.id ?? this.makes[0].id;
-
-  const ram1500Id =
-    this.makes.find(x => x.name.toLowerCase() === 'ram 1500')?.id ?? this.makes[0].id;
-
-  const titanId =
-    this.makes.find(x => x.name.toLowerCase() === 'titan')?.id ?? this.makes[0].id;
-
-  // 5) Seed 3 cars only if cars are empty
-  this.carsStore.seedIfEmpty([
-    {
-      color: 'White',
-      vinNumber: '1HGCM82633A004352',
-      ownerContact: '1001',
-      description: 'Default seeded car',
-      ownerName: 'Ali',
-      ownerEmail: 'ali@example.com',
-      buildYear: '2023',
-      carModelId: challengerDemonId,
-    },
-    {
-      color: 'Black',
-      vinNumber: 'JHMCM56557C404453',
-      ownerContact: '1002',
-      description: 'Default seeded car',
-      ownerName: 'Hassan',
-      ownerEmail: 'hassan@example.com',
-      buildYear: '2022',
-      carModelId: ram1500Id,
-    },
-    {
-      color: 'Silver',
-      vinNumber: '2T1BR32E54C331234',
-      ownerContact: '1003',
-      description: 'Default seeded car',
-      ownerName: 'Usman',
-      ownerEmail: 'usman@example.com',
-      buildYear: '2021',
-      carModelId: titanId,
-    },
-  ]);
-
-  this.reload();
-}
-
 
   reload(): void {
     this.all = this.carsStore.getAll();
@@ -120,20 +61,49 @@ export class CarsList implements OnInit {
 
   applyFilter(): void {
     const q = (this.filter ?? '').trim().toLowerCase();
+
     if (!q) {
       this.view = this.all;
       return;
     }
 
-    this.view = this.all.filter(x =>
-      (x.vinNumber ?? '').toLowerCase().includes(q) ||
-      (x.ownerName ?? '').toLowerCase().includes(q) ||
-      (this.makeName(x.carModelId) ?? '').toLowerCase().includes(q)
-    );
+    this.view = this.all.filter(x => {
+      const modelName = (this.makeName(x.carModelId) ?? '').toLowerCase();
+
+      return (
+        (x.vinNumber ?? '').toLowerCase().includes(q) ||
+        modelName.includes(q) ||
+        (x.color ?? '').toLowerCase().includes(q) ||
+        (x.buildYear ?? '').toLowerCase().includes(q) ||
+        (x.ownerName ?? '').toLowerCase().includes(q) ||
+        (x.ownerEmail ?? '').toLowerCase().includes(q) ||
+        (x.ownerContact ?? '').toLowerCase().includes(q) ||
+        (x.description ?? '').toLowerCase().includes(q)
+      );
+    });
   }
 
-  makeName(makeId: string): string {
+  clearFilter(): void {
+    this.filter = '';
+    this.applyFilter();
+  }
+
+  makeName(makeId: string | undefined | null): string {
+    if (!makeId) return '-';
     return this.makes.find(m => m.id === makeId)?.name ?? '-';
+  }
+
+  badgeClass(color?: string | null): string {
+    const c = (color ?? '').trim().toLowerCase();
+    if (c === 'white') return 'cm-badge cm-badge--white';
+    if (c === 'black') return 'cm-badge cm-badge--black';
+    if (c === 'silver') return 'cm-badge cm-badge--silver';
+    if (c === 'blue') return 'cm-badge cm-badge--blue';
+    return 'cm-badge cm-badge--default';
+  }
+
+  get carsWithModelCount(): number {
+    return (this.all ?? []).filter(x => !!x.carModelId && this.makeName(x.carModelId) !== '-').length;
   }
 
   goCreate(): void {
@@ -152,5 +122,8 @@ export class CarsList implements OnInit {
       this.reload();
     });
   }
-}
 
+  trackById(_: number, item: Car): string {
+    return item.id;
+  }
+}

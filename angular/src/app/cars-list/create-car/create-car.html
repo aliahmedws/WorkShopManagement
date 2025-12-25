@@ -1,28 +1,26 @@
 <div class="card car-form-card">
   <!-- Header -->
   <div class="card-header car-form-header">
-    <div class="d-flex align-items-center justify-content-between">
-      <!-- LEFT: Back + Title -->
-      <div class="d-flex align-items-center gap-3">
+    <div class="car-form-header__row">
+      <!-- LEFT -->
+      <div class="car-form-header__left">
         <button type="button" class="btn btn-link car-back-btn" (click)="back()">
-          <i class="fa fa-arrow-left me-1"></i>
+          <i class="fa fa-arrow-left"></i>
         </button>
 
-        <div>
-          <div class="car-form-title">
-            {{ isEdit ? 'Edit Car' : 'New Car' }}
-          </div>
+        <div class="car-form-header__titles">
+          <div class="car-form-title">{{ isEdit ? 'Edit Car' : 'New Car' }}</div>
         </div>
       </div>
 
-      <!-- RIGHT: Actions -->
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-outline-secondary" (click)="clear()">
+      <!-- RIGHT -->
+      <div class="car-form-header__right">
+        <button type="button" class="btn btn-outline-secondary car-header-btn" (click)="clear()">
           <i class="fa fa-eraser me-1"></i>
           Clear
         </button>
 
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+        <button type="button" class="btn btn-primary car-header-btn" (click)="save()" [disabled]="form.invalid">
           <i class="fa fa-check me-1"></i>
           Save
         </button>
@@ -30,52 +28,65 @@
     </div>
   </div>
 
-
   <!-- Body -->
-  <div class="card-body">
+  <div class="card-body car-form-body">
     <form [formGroup]="form">
       <div class="row g-4">
         <!-- LEFT -->
         <div class="col-md-6">
-
+          <!-- VIN + Get Data -->
           <div class="field">
             <label class="field__label">VIN# <span class="req">*</span></label>
 
-            <div class="d-flex gap-2 align-items-start">
-              <!-- Left side: input + error -->
-              <div class="flex-grow-1">
-                <input type="text" class="form-control" formControlName="vinNumber" [class.is-invalid]="vinInvalid" />
+            <div class="vin-row">
+              <div class="vin-row__input">
+                <input
+                  type="text"
+                  class="form-control field__control"
+                  formControlName="vinNumber"
+                  [class.is-invalid]="vinInvalid"
+                />
 
-                <!-- always below input -->
                 <div class="invalid-feedback" *ngIf="vinInvalid">
+                  <div *ngIf="vinCtrl?.errors?.['required']">VIN is required.</div>
                   <div *ngIf="vinCtrl?.errors?.['pattern']">
                     VIN must be 17 characters (letters and digits only; I, O, Q not allowed).
                   </div>
                 </div>
               </div>
 
-              <!-- Right side: button -->
-              <button type="button" class="btn btn-outline-primary flex-shrink-0" (click)="getDataByVin()"
-                [disabled]="isEdit">
+              <button
+                type="button"
+                class="btn btn-outline-primary vin-row__btn"
+                (click)="getDataByVin()"
+                [disabled]="isEdit"
+              >
                 Get Data
               </button>
             </div>
           </div>
 
-
+          <!-- Color -->
           <div class="field mt-3">
             <label class="field__label">Car Colour <span class="req">*</span></label>
-            <input type="text" class="form-control field__control" formControlName="color" />
+            <input
+              type="text"
+              class="form-control field__control"
+              formControlName="color"
+              [class.is-invalid]="form.get('color')?.touched && form.get('color')?.invalid"
+            />
+            <div class="invalid-feedback" *ngIf="form.get('color')?.touched && form.get('color')?.invalid">
+              Car colour is required.
+            </div>
           </div>
 
-
-
-
+          <!-- Contact -->
           <div class="field mt-3">
             <label class="field__label">Contact id</label>
             <input type="text" class="form-control field__control" formControlName="ownerContact" />
           </div>
 
+          <!-- Description -->
           <div class="field mt-3">
             <label class="field__label">Car Description</label>
             <input type="text" class="form-control field__control" formControlName="description" />
@@ -84,37 +95,63 @@
 
         <!-- RIGHT -->
         <div class="col-md-6">
+          <!-- Name -->
           <div class="field">
             <label class="field__label">Name</label>
             <input type="text" class="form-control field__control" formControlName="ownerName" />
           </div>
 
+          <!-- Email -->
           <div class="field mt-3">
             <label class="field__label">Email address <span class="req">*</span></label>
-            <input type="email" class="form-control field__control" formControlName="ownerEmail" />
+            <input
+              type="email"
+              class="form-control field__control"
+              formControlName="ownerEmail"
+              [class.is-invalid]="form.get('ownerEmail')?.touched && form.get('ownerEmail')?.invalid"
+            />
 
-            <div class="text-danger mt-1" *ngIf="form.get('ownerEmail')?.touched && form.get('ownerEmail')?.invalid">
+            <div class="invalid-feedback" *ngIf="form.get('ownerEmail')?.touched && form.get('ownerEmail')?.invalid">
+              <div *ngIf="form.get('ownerEmail')?.errors?.['required']">Email is required.</div>
               <div *ngIf="form.get('ownerEmail')?.errors?.['email']">Email format is invalid.</div>
             </div>
           </div>
 
-
+          <!-- Build Year -->
           <div class="field mt-3">
             <label class="field__label">Build Year <span class="req">*</span></label>
-            <input type="text" class="form-control field__control" formControlName="buildYear"
-              placeholder="e.g. 2023" />
+            <input
+              type="text"
+              class="form-control field__control"
+              formControlName="buildYear"
+              placeholder="e.g. 2023"
+              [class.is-invalid]="form.get('buildYear')?.touched && form.get('buildYear')?.invalid"
+            />
+
+            <div class="invalid-feedback" *ngIf="form.get('buildYear')?.touched && form.get('buildYear')?.invalid">
+              <div *ngIf="form.get('buildYear')?.errors?.['required']">Build year is required.</div>
+              <div *ngIf="form.get('buildYear')?.errors?.['pattern']">Enter a valid year (e.g. 2023).</div>
+            </div>
           </div>
 
+          <!-- CarModel -->
           <div class="field mt-3">
             <label class="field__label">CarModel <span class="req">*</span></label>
-            <select class="form-select field__control" formControlName="carModelId">
+            <select
+              class="form-select field__control"
+              formControlName="carModelId"
+              [class.is-invalid]="form.get('carModelId')?.touched && form.get('carModelId')?.invalid"
+            >
               <option value="" disabled>Select</option>
               <option *ngFor="let m of makes" [value]="m.id">{{ m.name }}</option>
             </select>
+
+            <div class="invalid-feedback" *ngIf="form.get('carModelId')?.touched && form.get('carModelId')?.invalid">
+              Car model is required.
+            </div>
           </div>
         </div>
       </div>
     </form>
-
   </div>
 </div>
