@@ -15,6 +15,15 @@
     "NewCarModel": "New Car Model",
     "EditCarModel": "Edit Car Model",
     "Attachment": "Attachment",
-    "View": "View"
+    "View": "View",
+    "ManageCarModels": "Manage car models, images and visibility.",
+    "TotalCars": "Total Cars",
+    "Visible": "Visible",
+    "Name": "Name",
+    "Updated": "Updated",
+    "Actions": "Actions",
+    "Nocarmodelsfound": "No car models found.",
+    "Tryadjustingsearchoraddanewcarmodel.": "Try adjusting search or add a new car model."
+
   }
 }

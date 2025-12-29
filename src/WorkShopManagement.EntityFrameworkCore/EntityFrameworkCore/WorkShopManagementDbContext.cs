@@ -89,7 +89,6 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.Description).HasMaxLength(CarModelConsts.DescriptionMaxLength).IsRequired(false);
             b.Property(x => x.TenantId)
                 .HasColumnName(nameof(CarModel.TenantId))
                 .IsRequired(false);
