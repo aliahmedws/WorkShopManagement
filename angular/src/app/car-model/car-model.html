@@ -1,0 +1,272 @@
+<div class="card cm-card">
+  <!-- Header / Toolbar -->
+  <div class="card-header cm-header">
+    <div class="cm-header__left">
+      <div class="cm-title">
+        {{ '::Menu:CarModels' | abpLocalization }}
+      </div>
+      <div class="cm-subtitle text-muted">
+        Manage car models and their attachments
+      </div>
+    </div>
+
+    <div class="cm-header__right">
+      <!-- Search -->
+      <div class="input-group input-group-sm cm-search">
+        <span class="input-group-text">
+          <i class="fa fa-search"></i>
+        </span>
+
+        <input
+          class="form-control"
+          [(ngModel)]="filters"
+          (keyup.enter)="search()"
+          placeholder="Search by name / description"
+        />
+
+        <button class="btn btn-outline-secondary" type="button" (click)="search()">
+          {{ '::Search' | abpLocalization }}
+        </button>
+
+        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()" [disabled]="!filters">
+          <i class="fa fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Primary Action -->
+      <button
+        id="create"
+        class="btn btn-primary btn-sm cm-create"
+        type="button"
+        (click)="createCarModel()"
+      >
+        <i class="fa fa-plus me-1"></i>
+        <span>{{ '::NewCarModel' | abpLocalization }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body cm-body">
+    <ngx-datatable
+      class="bootstrap cm-datatable"
+      [rows]="carModels.items"
+      [count]="carModels.totalCount"
+      [list]="list"
+      [columnMode]="'force'"
+      [headerHeight]="44"
+      [rowHeight]="56"
+      [footerHeight]="44"
+      default
+    >
+      <!-- Actions -->
+      <ngx-datatable-column
+        [name]="'::Actions' | abpLocalization"
+        [maxWidth]="88"
+        [sortable]="false"
+        [canAutoResize]="false"
+      >
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div ngbDropdown container="body" placement="bottom-end" class="d-inline-block">
+            <button
+              type="button"
+              class="btn btn-light btn-sm border cm-action-btn"
+              ngbDropdownToggle
+              aria-label="Actions"
+              title="Actions"
+            >
+              <i class="fa fa-ellipsis-vertical"></i>
+            </button>
+
+            <div ngbDropdownMenu class="cm-action-menu">
+              <button
+                type="button"
+                ngbDropdownItem
+                class="dropdown-item"
+                (click)="editCarModel(row.id)"
+              >
+                <i class="fa fa-pen me-2"></i>
+                {{ '::Edit' | abpLocalization }}
+              </button>
+
+              <button
+                type="button"
+                ngbDropdownItem
+                class="dropdown-item text-danger"
+                (click)="delete(row.id)"
+              >
+                <i class="fa fa-trash me-2"></i>
+                {{ '::Delete' | abpLocalization }}
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Name -->
+      <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div class="cm-name">
+            <div class="cm-name__icon">
+              <i class="fa fa-car"></i>
+            </div>
+            <div class="cm-name__text">
+              <div class="cm-name__title">{{ row.name }}</div>
+              <div class="cm-name__meta text-muted">ID: {{ row.id }}</div>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Description -->
+      <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="description">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div class="cm-desc" [title]="row.description || ''">
+            {{ row.description || '—' }}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- Attachment -->
+      <ngx-datatable-column
+        [name]="'::Attachment' | abpLocalization"
+        [maxWidth]="140"
+        [sortable]="false"
+      >
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <span class="text-muted" *ngIf="!row.fileAttachments?.path">—</span>
+
+          <a
+            *ngIf="row.fileAttachments?.path"
+            class="btn btn-sm btn-outline-primary"
+            [href]="row.fileAttachments.path"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="fa fa-arrow-up-right-from-square me-1"></i>
+            {{ '::View' | abpLocalization }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <!-- Optional empty hint (if your datatable doesn't show empty nicely) -->
+    <div class="cm-empty text-muted" *ngIf="carModels.totalCount === 0">
+      <i class="fa fa-circle-info me-1"></i>
+      No car models found.
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<abp-modal [(visible)]="isModalOpen">
+  <ng-template #abpHeader>
+    <div class="cm-modal-header">
+      <div class="cm-modal-header__icon">
+        <i class="fa" [ngClass]="selectedCarModel.id ? 'fa-pen' : 'fa-plus'"></i>
+      </div>
+      <div>
+        <div class="cm-modal-title">
+          {{
+            (selectedCarModel.id ? '::EditCarModel' : '::NewCarModel') | abpLocalization
+          }}
+        </div>
+        <div class="cm-modal-subtitle text-muted">
+          {{ selectedCarModel.id ? 'Update details safely (concurrency protected).' : 'Create a car model with an attachment.' }}
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form [formGroup]="form" (ngSubmit)="save()" class="cm-modal-body">
+      <div class="row g-3">
+        <div class="col-12 col-lg-7">
+          <div class="form-group">
+            <label for="car-model-name" class="form-label">
+              {{ '::Name' | abpLocalization }} <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              id="car-model-name"
+              class="form-control"
+              formControlName="name"
+              autofocus
+              placeholder="e.g., Honda Civic 2020"
+            />
+          </div>
+
+          <div class="form-group mt-2">
+            <label for="car-model-description" class="form-label">
+              {{ '::Description' | abpLocalization }}
+            </label>
+            <textarea
+              id="car-model-description"
+              class="form-control"
+              formControlName="description"
+              rows="6"
+              placeholder="Short notes (optional)"
+            ></textarea>
+          </div>
+
+          <!-- Edit-only: ConcurrencyStamp -->
+          <input *ngIf="selectedCarModel.id" type="hidden" formControlName="concurrencyStamp" />
+        </div>
+
+        <!-- Create-only Upload Panel -->
+        <div class="col-12 col-lg-5" *ngIf="!selectedCarModel.id">
+          <div class="cm-upload">
+            <div class="cm-upload__title">
+              {{ '::Attachment' | abpLocalization }} <span class="text-danger">*</span>
+            </div>
+
+            <label class="cm-upload__box">
+              <div class="cm-upload__icon">
+                <i class="fa fa-cloud-arrow-up"></i>
+              </div>
+              <div class="cm-upload__text">
+                <div class="cm-upload__headline">Click to select a file</div>
+                <div class="cm-upload__hint text-muted">
+                  Supported: images / documents
+                </div>
+              </div>
+
+              <input
+                type="file"
+                class="d-none"
+                (change)="onFileSelected($event)"
+              />
+            </label>
+
+            <div class="cm-upload__file mt-2" *ngIf="selectedFile">
+              <div class="cm-file">
+                <div class="cm-file__badge">
+                  <i class="fa fa-paperclip"></i>
+                </div>
+                <div class="cm-file__info">
+                  <div class="cm-file__name">{{ selectedFile.name }}</div>
+                  <div class="cm-file__meta text-muted">
+                    {{ (selectedFile.size / 1024).toFixed(1) }} KB
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-danger small mt-2" *ngIf="fileError">{{ fileError }}</div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-outline-secondary" abpClose>
+      {{ '::Close' | abpLocalization }}
+    </button>
+
+    <button class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="fa fa-check me-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

@@ -9,11 +9,13 @@ using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
+using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
-using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using WorkShopManagement.CarModels;
+using WorkShopManagement.FileAttachments;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -56,7 +58,7 @@ public class WorkShopManagementDbContext :
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
-
+    public DbSet<CarModel> CarModels { get; set; }
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -78,14 +80,29 @@ public class WorkShopManagementDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
-        //builder.Entity<YourEntity>(b =>
-        //{
-        //    b.ToTable(WorkShopManagementConsts.DbTablePrefix + "YourEntities", WorkShopManagementConsts.DbSchema);
-        //    b.ConfigureByConvention(); //auto configure for the base class props
-        //    //...
-        //});
+        builder.Entity<CarModel>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CarModels", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(CarModelConsts.DescriptionMaxLength).IsRequired(false);
+            b.Property(x => x.TenantId)
+                .HasColumnName(nameof(CarModel.TenantId))
+                .IsRequired(false);
+
+            b.OwnsOne(x => x.FileAttachments, fa =>
+            {
+                fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+                fa.Property(f => f.FileExtension).IsRequired();
+            });
+
+            b.HasIndex(x => x.Name);
+        });
+
     }
 }
