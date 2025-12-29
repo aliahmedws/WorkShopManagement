@@ -4,6 +4,17 @@
     "AppName": "WorkShopManagement",
     "Menu:Home": "Home",
     "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information visit",
-    "Welcome": "Welcome"
+    "Welcome": "Welcome",
+    "EmptyFileError:00004": "The uploaded file is empty. Please select a file that contains data and try again.",
+    "InvalidFileFormatError:00005": "Invalid file format. Please upload a supported file type and try again.",
+    "NullField:00006": "A required field is missing or empty. Please complete all required fields and try again.",
+    "CarModelAlreadyExists": "A car model with the same name : {name} already exists. Please use a different name.",
+    "CarModelNotFound": "Car model was not found.",
+
+    "Menu:CarModels": "Car Models",
+    "NewCarModel": "New Car Model",
+    "EditCarModel": "Edit Car Model",
+    "Attachment": "Attachment",
+    "View": "View"
   }
 }
