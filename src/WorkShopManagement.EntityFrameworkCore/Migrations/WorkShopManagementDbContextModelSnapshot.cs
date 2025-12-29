@@ -1884,72 +1884,6 @@ namespace WorkShopManagement.Migrations
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
                 });
 
-            modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("TenantId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("AppCarModels", (string)null);
-                });
-
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
                 {
                     b.HasOne("Volo.Abp.AuditLogging.AuditLog", null)
@@ -2098,39 +2032,6 @@ namespace WorkShopManagement.Migrations
                         .WithMany("ConnectionStrings")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
-                {
-                    b.OwnsOne("WorkShopManagement.FileAttachments.FileAttachment", "FileAttachments", b1 =>
-                        {
-                            b1.Property<Guid>("CarModelId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("FileExtension")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(256)
-                                .HasColumnType("nvarchar(256)");
-
-                            b1.Property<string>("Path")
-                                .IsRequired()
-                                .HasMaxLength(2048)
-                                .HasColumnType("nvarchar(2048)");
-
-                            b1.HasKey("CarModelId");
-
-                            b1.ToTable("AppCarModels");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CarModelId");
-                        });
-
-                    b.Navigation("FileAttachments")
                         .IsRequired();
                 });
 

@@ -17,13 +17,5 @@ function configureRoutes() {
         order: 1,
         layout: eLayoutType.application,
       },
-       {
-      path: '/car-models',
-      name: '::Menu:CarModels',
-      iconClass: 'fas fa-car',
-      order: 2,
-      layout: eLayoutType.application,
-      // requiredPolicy: 'WorkShopManagement.CarModels',
-    },
   ]);
 }
