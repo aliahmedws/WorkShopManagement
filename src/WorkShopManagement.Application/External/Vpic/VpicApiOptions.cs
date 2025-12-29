@@ -23,6 +23,7 @@ public class ConfigureVpicApiOptions(IConfiguration configuration) : IConfigureO
     {
         _configuration.GetSection(VpicApiOptions.ConfigurationKey).Bind(options);
         options.BaseUrl = options.BaseUrl.TrimEnd('/');
+        options.DecodeVinExtendedUrl = options.DecodeVinExtendedUrl.TrimEnd('/');
     }
 }
 
@@ -30,10 +31,10 @@ public static class VpicApiOptionsExtensions
 {
     public static IRestClient CreateRestClient(this VpicApiOptions options, IRestClientFactory restClientFactory)
     {
-        return restClientFactory.Create(options.BaseUrl, CreateRestClientProfile(options));
+        return restClientFactory.Create(options.BaseUrl, CreateRestClientProfile());
     }
 
-    private static RestClientProfile CreateRestClientProfile(VpicApiOptions options)
+    private static RestClientProfile CreateRestClientProfile()
     {
         return new RestClientProfile()
         {

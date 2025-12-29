@@ -47,7 +47,7 @@ internal class VpicHelper
     {
         if (!response.IsSuccessStatusCode)
         {
-            var errorMessage = "NHTSA vPIC request failed with Status Code: {0}, Message: {1}";
+            var errorMessage = "NHTSA vPIC VIN decode request failed with Status Code: {0}, Message: {1}";
             var parsedError = string.Format(errorMessage, (int)response.StatusCode, response.ErrorMessage ?? response.ErrorException?.Message);
             throw new UserFriendlyException(parsedError);
         }

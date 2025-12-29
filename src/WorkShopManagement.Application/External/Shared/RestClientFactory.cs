@@ -8,6 +8,8 @@ public sealed class RestClientFactory : IRestClientFactory, ITransientDependency
 {
     public RestClient Create(string baseUrl, RestClientProfile? profile = null)
     {
+        ArgumentNullException.ThrowIfNull(baseUrl);
+
         profile ??= new();
         var timeout = profile.Timeout <= TimeSpan.Zero ? TimeSpan.FromSeconds(30) : profile.Timeout;
 
