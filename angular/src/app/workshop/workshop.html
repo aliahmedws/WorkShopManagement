@@ -133,7 +133,7 @@
                             </span>
                         </div>
 
-                        <div class="ws-bay__body">
+                        <div class="ws-bay__body" (click)="openDetails(b)">
                             <img class="ws-thumb" [src]="thumbUrlFor(b.make)" alt="Car Model" />
 
                             <div class="ws-bay__info">
@@ -180,6 +180,78 @@
                     </ng-template>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="detailBay" class="ws-modal-backdrop" (click)="closeDetails()"></div>
+
+<div *ngIf="detailBay" class="ws-modal" role="dialog" aria-modal="true">
+    <div class="ws-modal__card" (click)="$event.stopPropagation()">
+        <div class="ws-modal__head">
+            <div>
+                <div class="ws-modal__title">VIN # : <strong [title]="detailBay.assignment?.vinNumber">{{
+                        detailBay.assignment?.vinNumber }}</strong></div>
+                <div class="ws-modal__sub">
+                    Bay #{{ detailBay.bay }} · Priority: {{ priorityLabel(detailBay.assignment?.priority) }}
+                </div>
+            </div>
+
+            <button class="ws-modal__close" type="button" (click)="closeDetails()" aria-label="Close">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+
+        <div class="ws-modal__summary">
+            <div class="ws-summary__kpi">
+                <div class="ws-summary__kpiLabel">Progress</div>
+                <div class="ws-summary__kpiValue">0%</div>
+            </div>
+
+            <div class="ws-summary__meta">
+               
+                <div><span>Due Date:</span> <strong>{{ detailBay.assignment?.dueDate ? (detailBay.assignment?.dueDate |
+                        date:'yyyy-MM-dd') : '-' }}</strong></div>
+                <div><span>Buyer:</span> <strong>{{ detailBay.car?.ownerName || '-' }}</strong></div>
+                <div><span>Year:</span> <strong>{{ detailBay.car?.buildYear || '-' }}</strong></div>
+                <div><span>Color:</span> <strong>{{ detailBay.car?.color || '-' }}</strong></div>
+                <div><span>Car Model:</span> <strong>{{ detailBay.make?.name || '-' }}</strong></div>
+            </div>
+        </div>
+
+        <div class="ws-modal__body">
+            <div class="ws-detail">
+                <div class="ws-detail__left">
+                    <div class="ws-detail__leftTitle">Checklist</div>
+                    <div class="ws-detail__list">
+                        <div class="ws-detail__row" *ngFor="let s of detailStages; let i = index">
+                            <div class="ws-detail__no">{{ i + 1 }}</div>
+                            <div class="ws-detail__name">{{ s }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ws-detail__right">
+                    <img class="ws-detail__hero" [src]="thumbUrlFor(detailBay.make)" alt="Car" />
+
+                    <div class="ws-detail__actions">
+                        <button type="button" class="ws-cta ws-cta--warning" (click)="addBayCarToWaitingList()">
+                            <i class="fa fa-clock me-2"></i>
+                            Add to Waiting List
+                        </button>
+
+                        <button type="button" class="ws-cta ws-cta--danger" (click)="removeCarFromBay()">
+                            <i class="fa fa-arrow-right-from-bracket me-2"></i>
+                            Remove Car from Bay
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ws-modal__foot">
+            <button type="button" class="btn btn-outline-secondary" (click)="closeDetails()">Close</button>
         </div>
     </div>
 </div>

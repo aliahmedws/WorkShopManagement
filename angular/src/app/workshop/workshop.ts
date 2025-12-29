@@ -1,5 +1,5 @@
 import { ConfirmationService, ThemeSharedModule, ToasterService } from '@abp/ng.theme.shared';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LocalizationModule } from '@abp/ng.core';
 import { CommonModule } from '@angular/common';
@@ -32,6 +32,8 @@ type BayVm = {
   styleUrl: './workshop.scss',
 })
 export class Workshop implements OnInit {
+  
+
   filter = '';
 
   cars: Car[] = [];
@@ -41,6 +43,29 @@ export class Workshop implements OnInit {
   queue: Car[] = [];
   queueView: Car[] = [];
   bays: BayVm[] = [];
+
+  // Details modal
+  detailBay: BayVm | null = null;
+
+  
+  readonly detailStages: string[] = [
+    'Arrival',
+    'Compliance',
+    'Wash _ Pre Inspection',
+    'Wrap',
+    'Disassembly',
+    'Firewall',
+    'Electricals_Looms',
+    'Heater Box',
+    'Dash Build',
+    'Dash Pre Install',
+    'Assembly',
+    'Quality Check',
+    'Test Drive',
+    'Detailing',
+    'Accessories',
+    'Delivery',
+  ];
 
   readonly bayList: Bay[] = [
     Bay.Bay1, Bay.Bay2, Bay.Bay3, Bay.Bay4,
@@ -66,7 +91,7 @@ export class Workshop implements OnInit {
     this.makes = this.makesStore.getAll();
     this.assignments = this.assignmentsStore.getAll();
 
-    // De-dupe cars by VIN (prevents “same VIN removes multiple rows” problem)
+    // keep ONE car per VIN (prevents duplicates showing in queue)
     const carByVin = this.buildLatestCarByVin(this.carsStore.getAll());
     this.cars = Array.from(carByVin.values());
 
@@ -84,15 +109,12 @@ export class Workshop implements OnInit {
   }
 
   private buildQueue(carByVin: Map<string, Car>, latestByBay: Map<Bay, CarAssignment>): void {
-    // Only show cars that are in waiting list
+    // Only show cars explicitly added to waiting list
     const waitingVins = new Set(this.queueStore.getAllVins().map(v => this.normalizeVin(v)));
 
-    // Cars already assigned to some bay
+    // Exclude cars currently assigned
     const assignedVins = new Set<string>();
-    for (const a of latestByBay.values()) {
-      const vin = this.normalizeVin(a.vinNumber);
-      if (vin) assignedVins.add(vin);
-    }
+    for (const a of latestByBay.values()) assignedVins.add(this.normalizeVin(a.vinNumber));
 
     const result: Car[] = [];
     for (const [vin, car] of carByVin.entries()) {
@@ -144,13 +166,13 @@ export class Workshop implements OnInit {
 
   unassignBay(bay: Bay): void {
     const latest = this.assignmentsStore.getLatestForBay(bay);
+
     this.confirmation.warn(`Unassign Bay #${bay}?`, 'Confirm').subscribe(status => {
       if (status !== 'confirm') return;
 
-      // Remove all assignments for that bay
       this.assignmentsStore.removeAllByBay(bay);
 
-      // Return car back to queue (waiting list)
+      // return to waiting list
       if (latest?.vinNumber) this.queueStore.addVin(latest.vinNumber);
 
       this.toaster.success(`Bay #${bay} unassigned`);
@@ -158,20 +180,51 @@ export class Workshop implements OnInit {
     });
   }
 
-  clearAllAssignments(): void {
-    this.confirmation.warn('Clear all bay assignments?', 'Confirm').subscribe(status => {
+  // -------- Details modal --------
+
+  openDetails(bay: BayVm): void {
+    this.detailBay = bay;
+  }
+
+  closeDetails(): void {
+    this.detailBay = null;
+  }
+
+  addBayCarToWaitingList(): void {
+  const bay = this.detailBay?.bay;
+  const vin = this.normalizeVin(this.detailBay?.assignment?.vinNumber);
+
+  if (!bay || !vin) return;
+
+  this.confirmation
+    .warn(`Move this car to the waiting list and unassign Bay #${bay}?`, 'Confirm')
+    .subscribe(status => {
       if (status !== 'confirm') return;
 
-      // Put all currently assigned cars back to queue
-      const latestByBay = this.assignmentsStore.getLatestByBay();
-      for (const a of latestByBay.values()) {
-        this.queueStore.addVin(a.vinNumber);
-      }
+      // 1) Unassign bay (removes assignment)
+      this.assignmentsStore.removeAllByBay(bay);
 
-      this.assignmentsStore.clear();
-      this.toaster.success('All assignments cleared');
+      // 2) Add to waiting list
+      this.queueStore.addVin(vin);
+
+      // 3) Close modal + refresh UI
+      this.closeDetails();
+      this.toaster.success('Moved to waiting list.');
       this.refresh();
     });
+}
+
+
+  removeCarFromBay(): void {
+    const bay = this.detailBay?.bay;
+    if (!bay) return;
+    this.closeDetails();
+    this.unassignBay(bay);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    if (this.detailBay) this.closeDetails();
   }
 
   // -------- display helpers --------
@@ -205,7 +258,6 @@ export class Workshop implements OnInit {
     }
   }
 
-  // Show like: 8932139...JHAS, full VIN on hover via title attr
   vinShort(vinNumber: string | undefined | null): string {
     const vin = this.normalizeVin(vinNumber);
     if (!vin) return '-';
@@ -261,7 +313,6 @@ export class Workshop implements OnInit {
         continue;
       }
 
-      // keep latest by updatedAt/createdAt
       const a = (c.updatedAt ?? c.createdAt) ?? '';
       const b = (existing.updatedAt ?? existing.createdAt) ?? '';
       if (a.localeCompare(b) > 0) map.set(vin, c);
@@ -283,4 +334,8 @@ export class Workshop implements OnInit {
     `);
     return `data:image/svg+xml,${svg}`;
   }
+
+
+  //
+  
 }
