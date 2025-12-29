@@ -22,7 +22,8 @@
     "Actions": "Actions",
     "Edit": "Edit",
     "Delete": "Delete",
-    "Menu:AssignCarToBay": "Assign Car to Bay"
+    "Menu:AssignCarToBay": "Assign Car to Bay",
+    "Menu:Workshop": "Workshop"
 
   }
 }

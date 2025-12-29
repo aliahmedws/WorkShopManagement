@@ -1,0 +1,185 @@
+<div class="ws-shell">
+    <!-- Header -->
+    <div class="ws-header">
+        <div>
+            <div class="ws-title">Workshop</div>
+            <div class="ws-sub">Queue and live service bay status</div>
+        </div>
+
+        <!-- <div class="ws-actions">
+            <button type="button" class="btn btn-outline-secondary" (click)="refresh()">
+                <i class="fa fa-rotate-right me-1"></i> Refresh
+            </button>
+
+            <button type="button" class="btn btn-outline-danger" (click)="clearAllAssignments()">
+                <i class="fa fa-eraser me-1"></i> Clear Bays
+            </button>
+        </div> -->
+    </div>
+
+    <!-- KPI + Search -->
+    <div class="ws-top">
+        <div class="ws-kpi">
+            <div class="ws-kpi__label">In Queue</div>
+            <div class="ws-kpi__value">{{ queue.length }}</div>
+        </div>
+
+        <div class="ws-kpi">
+            <div class="ws-kpi__label">In Bays</div>
+            <div class="ws-kpi__value">{{ assignedCount }}</div>
+        </div>
+
+        <div class="ws-kpi">
+            <div class="ws-kpi__label">Overdue</div>
+            <div class="ws-kpi__value">{{ overdueCount }}</div>
+        </div>
+
+        <div class="ws-search">
+            <i class="fa fa-search ws-search__icon"></i>
+            <input class="ws-search__input" type="text" placeholder="Search VIN, owner, model..." [(ngModel)]="filter"
+                (input)="applyFilter()" (keydown.enter)="applyFilter()" />
+            <button *ngIf="filter?.length" class="ws-search__clear" type="button" (click)="clearFilter()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="ws-grid">
+        <!-- Queue -->
+        <div class="card ws-card">
+            <div class="ws-card__head">
+                <div>
+                    <div class="ws-card__title">Queue</div>
+                    <div class="ws-card__sub">Cars not assigned to any bay</div>
+                </div>
+            </div>
+
+            <div class="ws-table">
+                <div class="ws-row ws-row--head ws-row--queue">
+                    <div></div>
+                    <div>VIN</div>
+                    <div>Model</div>
+                    <div>Owner</div>
+                    <div class="text-center">Action</div>
+                </div>
+
+                <ng-container *ngIf="queueView.length; else queueEmpty">
+                    <div class="ws-row ws-row--queue" *ngFor="let c of queueView; trackBy: trackByCarId">
+                        <div class="ws-cell ws-cell--icon">
+                            <span class="ws-icon">
+                                <i class="fa fa-car"></i>
+                            </span>
+                        </div>
+
+                        <div class="ws-cell">
+                            <div class="ws-vin" [attr.title]="c.vinNumber">{{ c.vinNumber }}</div>
+                            <div class="ws-muted">{{ c.buildYear || '-' }} · {{ c.color || '-' }}</div>
+                        </div>
+
+                        <div class="ws-cell">
+                            <div class="ws-primary">{{ makeName(c.carModelId) }}</div>
+                            <div class="ws-muted text-truncate" [title]="c.description || ''">
+                                {{ c.description || '-' }}
+                            </div>
+                        </div>
+
+                        <div class="ws-cell">
+                            <div class="ws-primary">{{ c.ownerName || '-' }}</div>
+                            <div class="ws-muted text-truncate" [title]="c.ownerEmail || ''">
+                                {{ c.ownerEmail || '-' }}
+                            </div>
+                        </div>
+
+                        <!-- Action -->
+                        <div class="ws-action">
+                            <!-- IMPORTANT: pass c (not car) -->
+                            <button type="button" class="btn ws-assign-btn" (click)="assignFromQueue(c)">
+                                <i class="fa fa-arrow-right ws-assign-btn__icon"></i>
+                                <span>Assign</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </ng-container>
+
+
+                <ng-template #queueEmpty>
+                    <div class="ws-empty">
+                        <div class="ws-empty__icon"><i class="fa fa-check-circle"></i></div>
+                        <div class="ws-empty__title">No cars in queue</div>
+                        <div class="ws-empty__text">All cars are currently assigned to bays.</div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+
+        <!-- Bays -->
+        <div class="card ws-card">
+            <div class="ws-card__head">
+                <div>
+                    <div class="ws-card__title">Service Bays</div>
+                    <div class="ws-card__sub">Current workload by bay</div>
+                </div>
+            </div>
+
+            <div class="ws-bays">
+                <div class="ws-bay" *ngFor="let b of bays">
+                    <ng-container *ngIf="b.assignment; else emptyBay">
+                        <div class="ws-bay__head">
+                            <div class="ws-bay__name">{{ bayLabel(b.bay) }}</div>
+                            <span [class]="priorityPillClass(b.assignment?.priority)">
+                                {{ priorityLabel(b.assignment?.priority) }}
+                            </span>
+                        </div>
+
+                        <div class="ws-bay__body">
+                            <img class="ws-thumb" [src]="thumbUrlFor(b.make)" alt="Car Model" />
+
+                            <div class="ws-bay__info">
+                                <div class="ws-bay__title">{{ b.make?.name || '-' }}</div>
+
+                                <div class="ws-bay__meta">
+                                    <span>VIN: {{ b.assignment?.vinNumber || '-' }}</span>
+                                    <span class="ws-dot">•</span>
+                                    <span>Owner: {{ b.car?.ownerName || '-' }}</span>
+                                </div>
+
+                                <div class="ws-bay__meta mt-1">
+                                    <span>Waiting: {{ waitingDays(b.assignment) }} day(s)</span>
+                                    <span class="ws-dot">•</span>
+                                    <span [class.ws-overdue]="isOverdue(b.assignment)">
+                                        Due: {{ b.assignment?.dueDate ? (b.assignment?.dueDate | date:'mediumDate') :
+                                        '-' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ws-bay__foot">
+                            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="editAssignment(b)">
+                                Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" type="button" (click)="unassignBay(b.bay)">
+                                Unassign
+                            </button>
+                        </div>
+                    </ng-container>
+
+                    <ng-template #emptyBay>
+                        <div class="ws-bay__head">
+                            <div class="ws-bay__name">{{ bayLabel(b.bay) }}</div>
+                            <span class="ws-pill ws-pill--neutral">Empty</span>
+                        </div>
+
+                        <div class="ws-bay__empty">
+                            <div class="ws-bay__emptyIcon"><i class="fa fa-car"></i></div>
+                            <div class="ws-bay__emptyTitle">No car assigned</div>
+                            <div class="ws-bay__emptyText">Assign a car from the queue.</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

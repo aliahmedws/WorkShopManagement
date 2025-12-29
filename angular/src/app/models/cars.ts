@@ -10,8 +10,11 @@ export interface Car {
   ownerName?: string;
   ownerEmail?: string;
 
-  buildYear: string;     // keep as string (e.g. 2022)
-  carModelId: string;    // FK to Car Make
+  buildYear: string;
+  carModelId: string;
+
+  // ✅ NEW: waiting list flag (default false if missing)
+  isInWaitingList?: boolean;
 
   createdAt: string;
   updatedAt?: string;

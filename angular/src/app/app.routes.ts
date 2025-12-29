@@ -41,9 +41,13 @@ export const APP_ROUTES: Routes = [
 },
 {
     path: 'cars/assign-bay',
-    loadComponent: () =>
-      import('./assign-car-to-bay/assign-car-to-bay').then(m => m.AssignCarToBay),
-  },
+    loadComponent: () =>import('./assign-car-to-bay/assign-car-to-bay').then(m => m.AssignCarToBay),
+},
+{
+  path: 'workshop',
+  loadComponent: () => import('./workshop/workshop').then(m => m.Workshop),
+}
+
 
 
 

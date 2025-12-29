@@ -1,8 +1,6 @@
 <div class="card car-form-card">
-  <!-- Header -->
   <div class="card-header car-form-header">
     <div class="d-flex align-items-center justify-content-between">
-      <!-- LEFT: Back + Title -->
       <div class="d-flex align-items-center gap-3">
         <button type="button" class="btn btn-link car-back-btn" (click)="back()">
           <i class="fa fa-arrow-left me-1"></i>
@@ -14,7 +12,6 @@
         </div>
       </div>
 
-      <!-- RIGHT: Actions -->
       <div class="d-flex gap-2">
         <button type="button" class="btn btn-outline-secondary" (click)="clear()">
           <i class="fa fa-eraser me-1"></i>
@@ -29,28 +26,42 @@
     </div>
   </div>
 
-  <!-- Body -->
   <div class="card-body">
     <form [formGroup]="form">
       <div class="row g-4">
         <div class="col-12">
           <div class="field">
-            <label class="field__label">VIN#</label>
-            <input
-              type="text"
-              class="form-control field__control field__control--readonly"
-              formControlName="vinNumber"
-              readonly
-            />
+            <label class="field__label">VIN# <span class="req">*</span></label>
+
+            <!-- ✅ If VIN came from Workshop, show readonly input -->
+            <ng-container *ngIf="vinLocked; else selectVin">
+              <input type="text" class="form-control field__control field__control--readonly"
+                formControlName="vinNumber" readonly />
+            </ng-container>
+
+            <!-- ✅ If VIN not provided, allow selection -->
+            <ng-template #selectVin>
+              <select class="form-select field__control" formControlName="vinNumber">
+                <option value="" disabled>Select a car</option>
+                <option *ngFor="let v of vinOptions" [value]="v.value">
+                  {{ v.label }}
+                </option>
+              </select>
+
+              <div class="text-muted mt-1" style="font-size: 12px;">
+                Shows cars from the waiting list if available; otherwise shows all unassigned cars.
+              </div>
+            </ng-template>
           </div>
         </div>
+
 
         <div class="col-md-6">
           <div class="field">
             <label class="field__label">Priority <span class="req">*</span></label>
             <select class="form-select field__control" formControlName="priority">
               <option [ngValue]="null" disabled>Select</option>
-              <option *ngFor="let p of priorities" [ngValue]="p">{{ p }}</option>
+              <option *ngFor="let p of priorityOptions" [ngValue]="p.value">{{ p.label }}</option>
             </select>
           </div>
         </div>
@@ -60,7 +71,7 @@
             <label class="field__label">Bay <span class="req">*</span></label>
             <select class="form-select field__control" formControlName="bay">
               <option [ngValue]="null" disabled>Select</option>
-              <option *ngFor="let b of bays" [ngValue]="b">{{ b }}</option>
+              <option *ngFor="let b of bayOptions" [ngValue]="b.value">{{ b.label }}</option>
             </select>
           </div>
         </div>

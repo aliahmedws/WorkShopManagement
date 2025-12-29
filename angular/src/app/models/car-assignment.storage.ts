@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CarAssignment } from './car-assignment';
+import { Bay } from './car-assignment.enums';
 
 @Injectable({ providedIn: 'root' })
 export class CarAssignmentsStorage {
@@ -11,11 +12,35 @@ export class CarAssignmentsStorage {
     );
   }
 
+  /** Latest assignment per bay (based on updatedAt/createdAt descending) */
+  getLatestByBay(): Map<Bay, CarAssignment> {
+    const map = new Map<Bay, CarAssignment>();
+    for (const a of this.getAll()) {
+      if (!map.has(a.bay)) map.set(a.bay, a);
+    }
+    return map;
+  }
+
+  getLatestForBay(bay: Bay): CarAssignment | undefined {
+    return this.getLatestByBay().get(bay);
+  }
+
+  removeAllByVin(vinNumber: string): void {
+    const vin = this.normalizeVin(vinNumber);
+    if (!vin) return;
+    this.write(this.read().filter(x => this.normalizeVin(x.vinNumber) !== vin));
+  }
+
+  removeAllByBay(bay: Bay): void {
+    this.write(this.read().filter(x => x.bay !== bay));
+  }
+
   create(input: Omit<CarAssignment, 'id' | 'createdAt' | 'updatedAt'>): CarAssignment {
     const now = new Date().toISOString();
     const entity: CarAssignment = {
       id: this.newId(),
       ...input,
+      vinNumber: this.normalizeVin(input.vinNumber),
       createdAt: now,
       updatedAt: now,
     };
@@ -34,6 +59,7 @@ export class CarAssignmentsStorage {
     const updated: CarAssignment = {
       ...items[idx],
       ...input,
+      vinNumber: this.normalizeVin(input.vinNumber),
       updatedAt: new Date().toISOString(),
     };
 
@@ -55,6 +81,7 @@ export class CarAssignmentsStorage {
   private read(): CarAssignment[] {
     const raw = localStorage.getItem(this.storageKey);
     if (!raw) return [];
+
     try {
       const parsed = JSON.parse(raw) as CarAssignment[];
       return Array.isArray(parsed) ? parsed : [];
@@ -65,6 +92,10 @@ export class CarAssignmentsStorage {
 
   private write(items: CarAssignment[]): void {
     localStorage.setItem(this.storageKey, JSON.stringify(items));
+  }
+
+  private normalizeVin(vinNumber: string): string {
+    return (vinNumber ?? '').trim().toUpperCase();
   }
 
   private newId(): string {
