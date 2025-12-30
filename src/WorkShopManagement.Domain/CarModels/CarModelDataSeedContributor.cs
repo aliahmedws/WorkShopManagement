@@ -13,7 +13,7 @@ using WorkShopManagement.FileAttachments;
 
 namespace WorkShopManagement.CarModels;
 
-public class CarModelDataSeedContributor : IDataSeedContributor, ITransientDependency
+public class CarModelDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<CarModel, Guid> _carModelRepository;
     private readonly ICurrentTenant _currentTenant;
@@ -76,11 +76,6 @@ public class CarModelDataSeedContributor : IDataSeedContributor, ITransientDepen
             foreach (var (name, fileName) in seeds)
             {
                 var filePath = Path.Combine(contentPath, fileName);
-
-                if (!File.Exists(filePath))
-                {
-                    continue;
-                }
 
                 var attachment = new FileAttachment(
                     name: fileName,

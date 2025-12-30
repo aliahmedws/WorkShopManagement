@@ -10,7 +10,7 @@ using WorkShopManagement.CarModels;
 
 namespace WorkShopManagement.CheckLists;
 
-public class CheckListDataSeedContributor : IDataSeedContributor, ITransientDependency
+public class CheckListDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<CheckList, Guid> _checkListRepository;
     private readonly IRepository<CarModel, Guid> _carModelRepository;
@@ -148,7 +148,6 @@ public class CheckListDataSeedContributor : IDataSeedContributor, ITransientDepe
             (5, "Quality"),
         };
 
-    // F-150 Lightning Pro EXT (TEMP = same as Ford Lightning)
     private static List<(int Position, string Name)> GetLightningProExt_Production()
         => GetFordLightning_Production();
 
