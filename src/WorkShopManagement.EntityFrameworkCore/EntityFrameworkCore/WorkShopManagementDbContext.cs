@@ -14,6 +14,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.FileAttachments;
 
@@ -59,6 +60,7 @@ public class WorkShopManagementDbContext :
 
     #endregion
     public DbSet<CarModel> CarModels { get; set; }
+    public DbSet<Bay> Bays { get; set; }
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -100,6 +102,18 @@ public class WorkShopManagementDbContext :
                 fa.Property(f => f.FileExtension).IsRequired();
             });
 
+            b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<Bay>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Bays", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired();
+            b.Property(x => x.TenantId)
+                .HasColumnName(nameof(CarModel.TenantId))
+                .IsRequired(false);
             b.HasIndex(x => x.Name);
         });
 
