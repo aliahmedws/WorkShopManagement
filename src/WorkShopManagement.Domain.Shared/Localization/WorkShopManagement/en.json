@@ -11,19 +11,33 @@
     "CarModelAlreadyExists": "A car model with the same name : {name} already exists. Please use a different name.",
     "CarModelNotFound": "Car model was not found.",
 
+    "Permission:CarModels": "Car Model Management",
+    "Permission:CheckLists": "Check List Management",
+    "Permission:CheckLists.Create": "Create",
+    "Permission:CheckLists.Edit": "Edit",
+    "Permission:CheckLists.Delete": "Delete",
+
+
+    "Enum:CheckListType.1": "Production",
+    "Enum:CheckListType.2": "Sub Production",
+    "Enum:CheckListType.3": "Ancillary Tasks",
+
     "Menu:CarModels": "Car Models",
-    "NewCarModel": "New Car Model",
-    "EditCarModel": "Edit Car Model",
     "Attachment": "Attachment",
-    "View": "View",
-    "ManageCarModels": "Manage car models, images and visibility.",
-    "TotalCars": "Total Cars",
-    "Visible": "Visible",
     "Name": "Name",
-    "Updated": "Updated",
     "Actions": "Actions",
-    "Nocarmodelsfound": "No car models found.",
-    "Tryadjustingsearchoraddanewcarmodel.": "Try adjusting search or add a new car model."
+    "AddCheckList": "Add Check List",
+    "Menu:CheckLists": "Check Lists",
+    "NewCheckList": "New Check List",
+    "CarModel": "Car Model",
+    "CheckListType": "Check List Type",
+    "AreYouSureToDelete": "Are You Sure To Delete?",
+    "SuccessfullyUpdated.": "Successfully Updated.",
+    "SuccessfullyCreated.": "Successfully Created.",
+    "SuccessfullyDeleted.": "Successfully Deleted.",
+    "EditCheckList": "Edit Check List",
+    "CheckList": "Check Lists"
+
 
   }
 }

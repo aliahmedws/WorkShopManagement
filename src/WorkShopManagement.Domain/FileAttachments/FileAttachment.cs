@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using Volo.Abp;
 using Volo.Abp.Domain.Values;
 
@@ -19,7 +17,7 @@ public class FileAttachment : ValueObject
 
     private FileAttachment() { }
 
-    internal FileAttachment(
+    public FileAttachment(
         string name,
         string path,
         string blobName)

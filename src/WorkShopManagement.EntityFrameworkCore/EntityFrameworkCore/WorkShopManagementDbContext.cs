@@ -16,6 +16,7 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -61,6 +62,7 @@ public class WorkShopManagementDbContext :
     #endregion
     public DbSet<CarModel> CarModels { get; set; }
     public DbSet<Bay> Bays { get; set; }
+    public DbSet<CheckList> CheckLists { get; set; }
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -114,6 +116,27 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.TenantId)
                 .HasColumnName(nameof(CarModel.TenantId))
                 .IsRequired(false);
+            b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<CheckList>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckLists", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired();
+            b.Property(x => x.Position).IsRequired();
+            b.Property(x => x.CheckListType).IsRequired();
+            b.Property(x => x.TenantId)
+                .HasColumnName(nameof(CarModel.TenantId))
+                .IsRequired(false);
+
+            b.HasOne(x => x.CarModels)
+                .WithMany(x => x.CheckLists)
+                    .HasForeignKey(x => x.CarModelId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasIndex(x => x.CarModelId);
             b.HasIndex(x => x.Name);
         });
 

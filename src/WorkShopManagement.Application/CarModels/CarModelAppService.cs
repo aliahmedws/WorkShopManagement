@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -19,15 +21,26 @@ public class CarModelAppService : ApplicationService, ICarModelAppService
     }
 
 
-    public async Task<PagedResultDto<CarModelDto>> GetListAsync()
+    public async Task<PagedResultDto<CarModelDto>> GetListAsync(GetCarModelListDto input)
     {
+        var queryable = await _repository.GetQueryableAsync();
 
-        var items = await _repository.GetListAsync();
+        var sorting = input.Sorting.IsNullOrWhiteSpace()
+            ? nameof(CarModel.CreationTime)
+            : input.Sorting;
 
-        var totalCount = await _repository.GetCountAsync();
+        queryable = queryable.OrderBy(sorting);
+
+        var totalCount = await AsyncExecuter.CountAsync(queryable);
+
+        var items = await AsyncExecuter.ToListAsync(
+            queryable
+                .Skip(input.SkipCount)
+                .Take(input.MaxResultCount)
+        );
 
         var dtos = ObjectMapper.Map<List<CarModel>, List<CarModelDto>>(items);
-
         return new PagedResultDto<CarModelDto>(totalCount, dtos);
     }
+ 
 }

@@ -24,8 +24,11 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('@abp/ng.setting-management').then(c => c.createRoutes()),
   },
   {
-  path: 'car-models',
-  loadComponent: () => import('./car-model/car-model').then(m => m.CarModel),
-}
-
+    path: 'car-models',
+    loadComponent: () => import('./car-model/car-model').then(m => m.CarModel),
+  },
+  {
+    path: 'check-lists',
+    loadComponent: () => import('./check-list/check-list').then(m => m.CheckList),
+  },
 ];

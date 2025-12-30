@@ -21,7 +21,7 @@ public class CarModelController : AbpController, ICarModelAppService
     }
 
     [HttpGet]
-    public Task<PagedResultDto<CarModelDto>> GetListAsync()
-        => _appService.GetListAsync();
+    public Task<PagedResultDto<CarModelDto>> GetListAsync(GetCarModelListDto input)
+        => _appService.GetListAsync(input);
 
 }

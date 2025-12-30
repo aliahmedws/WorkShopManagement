@@ -1,44 +1,46 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
-using OpenIddict.Validation.AspNetCore;
-using OpenIddict.Server.AspNetCore;
-using WorkShopManagement.EntityFrameworkCore;
-using WorkShopManagement.MultiTenancy;
-using WorkShopManagement.HealthChecks;
-using Microsoft.OpenApi.Models;
 using Volo.Abp;
-using Volo.Abp.Studio;
 using Volo.Abp.Account;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.MultiTenancy;
 using Volo.Abp.AspNetCore.Mvc;
-using Volo.Abp.Autofac;
-using Volo.Abp.Localization;
-using Volo.Abp.Modularity;
-using Volo.Abp.UI.Navigation.Urls;
-using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
-using Microsoft.AspNetCore.Hosting;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
+using Volo.Abp.Autofac;
+using Volo.Abp.BlobStoring;
+using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.Identity;
+using Volo.Abp.Localization;
+using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
-using Volo.Abp.Swashbuckle;
-using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Security.Claims;
+using Volo.Abp.Studio;
+using Volo.Abp.Studio.Client.AspNetCore;
+using Volo.Abp.Swashbuckle;
+using Volo.Abp.UI.Navigation.Urls;
+using Volo.Abp.VirtualFileSystem;
+using WorkShopManagement.EntityFrameworkCore;
+using WorkShopManagement.HealthChecks;
+using WorkShopManagement.MultiTenancy;
 
 namespace WorkShopManagement;
 
@@ -52,7 +54,8 @@ namespace WorkShopManagement;
     typeof(WorkShopManagementEntityFrameworkCoreModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreSerilogModule)
+    typeof(AbpAspNetCoreSerilogModule),
+    typeof(AbpBlobStoringFileSystemModule)
     )]
 public class WorkShopManagementHttpApiHostModule : AbpModule
 {
@@ -90,6 +93,8 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
+
+        ConfigureBlobStoringOptions(context);
 
         if (!configuration.GetValue<bool>("App:DisablePII"))
         {
@@ -265,6 +270,7 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         app.UseUnitOfWork();
         app.UseDynamicClaims();
         app.UseAuthorization();
+        app.UseStaticFiles();
 
         app.UseSwagger();
         app.UseAbpSwaggerUI(options =>
@@ -277,5 +283,28 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+    }
+
+    private void ConfigureBlobStoringOptions(ServiceConfigurationContext context)
+    {
+        var configuration = context.Services.GetConfiguration();
+        var env = context.Services.GetHostingEnvironment(); // IWebHostEnvironment in host
+
+        Configure<AbpBlobStoringOptions>(options =>
+        {
+            options.Containers.ConfigureDefault(container =>
+            {
+                container.UseFileSystem(fileSystem =>
+                {
+                    var storagePath = configuration["LocalStorageSetting:StoragePath"] ?? "images";
+                    var webRootPath = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+
+                    var absolutePath = Path.Combine(webRootPath, storagePath);
+                    Directory.CreateDirectory(absolutePath);
+
+                    fileSystem.BasePath = absolutePath; // => wwwroot/images
+                });
+            });
+        });
     }
 }

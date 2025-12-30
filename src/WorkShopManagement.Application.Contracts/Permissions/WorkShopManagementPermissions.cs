@@ -4,8 +4,16 @@ public static class WorkShopManagementPermissions
 {
     public const string GroupName = "WorkShopManagement";
 
+    public static class CarModels
+    {
+        public const string Default = GroupName + ".CarModels";
+    }
 
-    
-    //Add your own permission names. Example:
-    //public const string MyPermission1 = GroupName + ".MyPermission1";
+    public static class CheckLists
+    {
+        public const string Default = GroupName + ".CheckLists";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
 }

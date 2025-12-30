@@ -6,5 +6,5 @@ namespace WorkShopManagement.CarModels;
 
 public interface ICarModelAppService : IApplicationService
 {
-    Task<PagedResultDto<CarModelDto>> GetListAsync();
+    Task<PagedResultDto<CarModelDto>> GetListAsync(GetCarModelListDto input);
 }

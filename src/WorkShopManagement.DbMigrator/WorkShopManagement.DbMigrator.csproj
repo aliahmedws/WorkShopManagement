@@ -43,9 +43,5 @@
     </Content>
   </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="seed\car-models\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
-
 
 </Project>

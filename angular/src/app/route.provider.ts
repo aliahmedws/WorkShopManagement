@@ -23,7 +23,15 @@ function configureRoutes() {
       iconClass: 'fas fa-car',
       order: 2,
       layout: eLayoutType.application,
-      // requiredPolicy: 'WorkShopManagement.CarModels',
+      requiredPolicy: 'WorkShopManagement.CarModels',
     },
+    // {
+    //   path: '/check-lists',
+    //   name: '::Menu:CheckLists',
+    //   iconClass: 'fas fa-list-check',
+    //   order: 3,
+    //   layout: eLayoutType.application,
+    //   // requiredPolicy: 'WorkShopManagement.CheckLists',
+    // },
   ]);
 }

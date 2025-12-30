@@ -21,7 +21,7 @@ public class BayDataSeedContributor : IDataSeedContributor, ITransientDependency
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        if (await _bayRepository.GetCountAsync() > 0)
+        if (await _bayRepository.AnyAsync())
         {
             return;
         }

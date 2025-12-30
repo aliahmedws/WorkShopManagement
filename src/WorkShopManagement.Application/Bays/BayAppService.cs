@@ -14,7 +14,7 @@ public class BayAppService : ApplicationService, IBayAppService
 {
     private readonly IRepository<Bay, Guid> _bayRepository;
 
-    public BayAppService(IRepository<Bay, System.Guid> bayRepository)
+    public BayAppService(IRepository<Bay,Guid> bayRepository)
     {
         _bayRepository = bayRepository;
     }
