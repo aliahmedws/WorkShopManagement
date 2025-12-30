@@ -267,7 +267,7 @@ src/WorkShopManagement.Blazor.Server/Logs/*
 src/WorkShopManagement.Blazor.Server.Tiered/Logs/*
 
 # Use abp install-libs to restore.
-**/wwwroot/libs/*
+# **/wwwroot/libs/*
 
 # IdentityServer temp files
 tempkey.rsa
