@@ -63,8 +63,9 @@ public class WorkShopManagementDbContext :
     #endregion
     public DbSet<CarModel> CarModels { get; set; }
     public DbSet<Bay> Bays { get; set; }
-    //public DbSet<CheckList> CheckLists { get; set; }
-    //public DbSet<ListItem> ListItems { get; set; }
+    public DbSet<CheckList> CheckLists { get; set; }
+    public DbSet<ListItem> ListItems { get; set; }
+    
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
