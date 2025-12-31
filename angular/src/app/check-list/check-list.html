@@ -100,6 +100,19 @@
         </ng-template>
       </ngx-datatable-column>
 
+      <ngx-datatable-column [name]="'::Action' | abpLocalization">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addListItem(row.id)"
+          >
+            <i class="fa fa-list-check me-1"></i>
+            {{ '::ListItems' | abpLocalization }}
+          </button>
+        </ng-template>
+        </ngx-datatable-column>
+
       <!-- <ngx-datatable-column [name]="'::CarModel' | abpLocalization">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{ carModelName || '-' }}

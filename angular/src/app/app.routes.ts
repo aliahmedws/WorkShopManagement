@@ -31,4 +31,8 @@ export const APP_ROUTES: Routes = [
     path: 'check-lists',
     loadComponent: () => import('./check-list/check-list').then(m => m.CheckList),
   },
+   {
+    path: 'list-items',
+    loadComponent: () => import('./list-item/list-item').then(m => m.ListItem),
+  },
 ];

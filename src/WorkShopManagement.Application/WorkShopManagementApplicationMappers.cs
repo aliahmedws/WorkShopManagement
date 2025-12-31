@@ -3,6 +3,7 @@ using Volo.Abp.Mapperly;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
+using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement;
 
@@ -21,5 +22,13 @@ public partial class CarModelMapper : MapperBase<CarModel, CarModelDto>
 public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 {
     public override partial CheckListDto Map(CheckList source);
-    public  override partial void Map(CheckList source, CheckListDto destination);
+    public override partial void Map(CheckList source, CheckListDto destination);
+}
+
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class ListItemMapper : MapperBase<ListItem, ListItemDto>
+{
+    public override partial ListItemDto Map(ListItem source);
+    public override partial void Map(ListItem source, ListItemDto destination);
 }

@@ -189,4 +189,8 @@ export class CheckList implements OnInit {
   goBack(): void {
     this.router.navigate(['/car-models']);
   }
+
+  addListItem(checkListId: string): void {
+    this.router.navigate(['list-items'], { queryParams: { checkListId }});
+  }
 }

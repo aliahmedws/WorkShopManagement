@@ -16,11 +16,19 @@
     "Permission:CheckLists.Create": "Create",
     "Permission:CheckLists.Edit": "Edit",
     "Permission:CheckLists.Delete": "Delete",
+    "Permission:ListItems": "List Item Management",
+    "Permission:ListItems.Create": "Create",
+    "Permission:ListItems.Edit": "Edit",
+    "Permission:ListItems.Delete": "Delete",
 
 
     "Enum:CheckListType.1": "Production",
     "Enum:CheckListType.2": "Sub Production",
     "Enum:CheckListType.3": "Ancillary Tasks",
+    "Enum:CommentType.1": "String",
+    "Enum:CommentType.2": "Date",
+    "Enum:CommentType.3": "Number",
+
 
     "Menu:CarModels": "Car Models",
     "Attachment": "Attachment",
@@ -36,8 +44,16 @@
     "SuccessfullyCreated.": "Successfully Created.",
     "SuccessfullyDeleted.": "Successfully Deleted.",
     "EditCheckList": "Edit Check List",
-    "CheckList": "Check Lists"
-
+    "CheckList": "Check Lists",
+    "ListItems": "List Items",
+    "NewListItem": "New List Item",
+    "Position": "Position",
+    "CommentType": "Comment Type",
+    "CommentPlaceholder": "Comment Place holder",
+    "DefaultSameAsName": "Default Same As Name",
+    "IsSeparator": "Is-Separator",
+    "IsAttachmentRequired": "Is Attachment Required",
+    "Menu:ListItems": "List Items"
 
   }
 }

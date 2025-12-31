@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using Volo.Abp.MultiTenancy;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.CheckLists;
 
@@ -14,8 +16,12 @@ public class CheckList : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public string Name { get; set; } = default!;
     public int Position { get; set; }
     public CheckListType CheckListType { get; set; }
+    public virtual ICollection<ListItem> ListItems { get; set; }
 
-    private CheckList() { }
+    private CheckList() 
+    {
+        ListItems = new List<ListItem>();
+    }
 
     public CheckList(Guid id, string name, int position, Guid carModelId, CheckListType checkListType) : base(id)
     {

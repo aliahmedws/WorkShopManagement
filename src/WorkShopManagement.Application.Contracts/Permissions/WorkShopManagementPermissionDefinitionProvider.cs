@@ -19,6 +19,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         checkListsPermission.AddChild(WorkShopManagementPermissions.CheckLists.Edit, L("Permission:CheckLists.Edit"));
         checkListsPermission.AddChild(WorkShopManagementPermissions.CheckLists.Delete, L("Permission:CheckLists.Delete"));
 
+        var listItemsPermission = myGroup.AddPermission(WorkShopManagementPermissions.ListItems.Default, L("Permission:ListItems"));
+        listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Create, L("Permission:ListItems.Create"));
+        listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Edit, L("Permission:ListItems.Edit"));
+        listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Delete, L("Permission:ListItems.Delete"));
+
     }
 
     private static LocalizableString L(string name)

@@ -18,6 +18,7 @@ using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
+using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -63,6 +64,7 @@ public class WorkShopManagementDbContext :
     public DbSet<CarModel> CarModels { get; set; }
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
+    public DbSet<ListItem> ListItems { get; set; }
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -138,6 +140,42 @@ public class WorkShopManagementDbContext :
 
             b.HasIndex(x => x.CarModelId);
             b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<ListItem>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ListItems", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Position).IsRequired();
+
+            b.Property(x => x.Name).IsRequired().HasMaxLength(256);
+
+            b.Property(x => x.CommentPlaceholder).IsRequired().HasMaxLength(512);
+
+            b.Property(x => x.CommentType).IsRequired();
+
+            b.Property(x => x.IsAttachmentRequired).IsRequired();
+
+            b.Property(x => x.IsSeparator).IsRequired();
+
+            b.Property(x => x.TenantId).HasColumnName(nameof(ListItem.TenantId)).IsRequired(false);
+
+            b.HasOne(x => x.CheckLists)
+                .WithMany( x => x.ListItems)
+                .HasForeignKey(x => x.CheckListId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.OwnsOne(x => x.Attachment, fa =>
+            {
+                fa.Property(f => f.Name).HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.Path).HasMaxLength(FileAttachmentConsts.MaxPathLength);
+                fa.Property(f => f.FileExtension);
+                fa.Property(f => f.BlobName);
+            });
+
+            b.HasIndex(x => x.CheckListId);
+            b.HasIndex(x => new { x.CheckListId, x.Position });
         });
 
     }
