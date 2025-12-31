@@ -5,7 +5,6 @@ import { provideFeatureManagementConfig } from '@abp/ng.feature-management';
 import { provideAbpThemeShared,} from '@abp/ng.theme.shared';
 import { provideIdentityConfig } from '@abp/ng.identity/config';
 import { provideAccountConfig } from '@abp/ng.account/config';
-import { provideTenantManagementConfig } from '@abp/ng.tenant-management/config';
 import { provideThemeLeptonX } from '@abp/ng.theme.lepton-x';
 import { provideSideMenuLayout } from '@abp/ng.theme.lepton-x/layouts';
 import { provideLogo, withEnvironmentOptions } from "@abp/ng.theme.shared";
@@ -37,7 +36,6 @@ export const appConfig: ApplicationConfig = {
     provideSideMenuLayout(),
     provideLogo(withEnvironmentOptions(environment)),
     provideAccountConfig(),
-    provideTenantManagementConfig(),
     provideAbpThemeShared(),
   ]
 };
