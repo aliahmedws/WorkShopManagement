@@ -55,35 +55,14 @@
     <None Remove="Logs\**" />
   </ItemGroup>
 
-	<ItemGroup>
-	  <Content Remove="wwwroot\images\CarModels\Challenger Charger DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Challenger Demon DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Challenger Hellcat DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Challenger RT DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Challenger-Charger.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Cruiser DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\DT RAM.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\F-150 Lightning Pro EXT (2).jpg" />
-	  <Content Remove="wwwroot\images\CarModels\F-150 Lightning Pro EXT.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\F-150 Lightning Pro STD.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\F-150LightningLariatExt.avif" />
-	  <Content Remove="wwwroot\images\CarModels\Ford F-150 LEGACY Lightning.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ford F-150 Lightning.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ford F-150.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ford Super Duty.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\HD RAM.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ram 1500 DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ram 2500 DEPRECATED.jpg" />
-	  <Content Remove="wwwroot\images\CarModels\Ram 3500 DEPRECATED.jpg" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Remove="authserver.pfx" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="wwwroot\images\CarModels\**\*.*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
-
-
+  <ItemGroup>
+    <Content Include="authserver.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>

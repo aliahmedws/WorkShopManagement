@@ -1,2 +1,16 @@
 {
+    "production": true,
+    "application": {
+        "baseUrl": "{{Application-BaseUrl}}"
+    },
+    "oAuthConfig": {
+        "issuer": "{{AuthServer-Authority}}",
+        "redirectUri": "{{AuthServer-RedirectUri}}"
+    },
+    "apis": {
+        "default": {
+            "url": "{{Apis-Default-Url}}",
+            "rootNamespace": "Forecast"
+        }
+    }
 }
