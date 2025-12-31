@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.CarModels;
 

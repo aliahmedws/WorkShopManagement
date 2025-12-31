@@ -2395,7 +2395,7 @@ namespace WorkShopManagement.Migrations
 
                             b1.HasKey("CarModelId");
 
-                            b1.ToTable("AppCarModels");
+                            b1.ToTable("AppCarModels", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CarModelId");
@@ -2453,7 +2453,7 @@ namespace WorkShopManagement.Migrations
 
                             b1.HasKey("EntityAttachmentId");
 
-                            b1.ToTable("AppEntityAttachments");
+                            b1.ToTable("AppEntityAttachments", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("EntityAttachmentId");

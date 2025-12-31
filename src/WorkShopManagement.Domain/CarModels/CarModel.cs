@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.CheckLists;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.CarModels;
 

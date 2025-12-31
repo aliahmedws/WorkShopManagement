@@ -2,8 +2,9 @@ using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.Nhtsa;
-using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement;

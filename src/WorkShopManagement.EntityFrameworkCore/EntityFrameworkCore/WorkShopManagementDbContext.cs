@@ -17,7 +17,8 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -96,19 +97,8 @@ public class WorkShopManagementDbContext :
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "EntityAttachments", WorkShopManagementConsts.DbSchema);
             b.ConfigureByConvention();
 
-            b.Property(x => x.CheckListId).IsRequired(false);
-            b.Property(x => x.ListItemId).IsRequired(false);
-
-            b.HasOne(x => x.CheckList)
-                .WithMany(x => x.Attachments)
-                .HasForeignKey(x => x.CheckListId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            b.HasOne(x => x.ListItem)
-                .WithMany(x => x.Attachments)
-                .HasForeignKey(x => x.ListItemId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            b.Property(x => x.EntityId).IsRequired();
+            b.Property(x => x.EntityType).IsRequired();
             b.OwnsOne(x => x.Attachment, fa =>
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
@@ -116,9 +106,6 @@ public class WorkShopManagementDbContext :
                 fa.Property(f => f.FileExtension).IsRequired();
                 fa.Property(f => f.BlobName).IsRequired();
             });
-
-            b.HasIndex(x => x.CheckListId);
-            b.HasIndex(x => x.ListItemId);
         });
 
 

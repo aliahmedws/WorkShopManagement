@@ -43,11 +43,6 @@
           <label class="form-label">
             {{ '::CheckListType' | abpLocalization }} <span class="text-danger">*</span>
           </label>
-          <select class="form-select" formControlName="checkListType">
-            <option *ngFor="let o of checkListType" [ngValue]="o.value">
-                {{ ('::Enum:CheckListType.' + o.value) | abpLocalization }}
-            </option>
-          </select>
 
         </div>
 

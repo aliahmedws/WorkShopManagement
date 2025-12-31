@@ -28,7 +28,6 @@ export class CarModel implements OnInit {
         maxResultCount: query.maxResultCount,
         sorting: query.sorting
       };
-
       return this.carModelService.getList(input);
     };
 

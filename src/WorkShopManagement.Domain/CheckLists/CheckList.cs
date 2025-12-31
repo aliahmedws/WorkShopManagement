@@ -4,7 +4,7 @@ using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.CarModels;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.CheckLists;
@@ -13,14 +13,14 @@ namespace WorkShopManagement.CheckLists;
 public class CheckList : FullAuditedAggregateRoot<Guid>
 {
     public Guid CarModelId { get; set; }
-    public virtual CarModel CarModels { get; set; }
+    public virtual CarModel CarModels { get; set; } = default!;
     public string Name { get; set; } = default!;
     public int Position { get; set; }
     public bool? EnableIssueItems { get; set; } = false;
     public bool? EnableTags { get; set; } = false;
     public bool? EnableCheckInReport { get; set; } = false;
 
-    public virtual ICollection<ListItem> ListItems { get; set; }
+    public virtual ICollection<ListItem> ListItems { get; set; } = new List<ListItem>();
     public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
 
     private CheckList()

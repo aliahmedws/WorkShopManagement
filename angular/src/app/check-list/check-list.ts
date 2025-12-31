@@ -18,7 +18,6 @@ import {
   CheckListService,
   UpdateCheckListDto,
   CreateCheckListDto,
-  checkListTypeOptions,
   GetCheckListListDto,
 } from '../proxy/check-lists';
 
@@ -49,7 +48,6 @@ export class CheckList implements OnInit {
 
   filters = {} as GetCheckListListDto;
 
-  checkListType = checkListTypeOptions;
 
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
@@ -61,7 +59,6 @@ export class CheckList implements OnInit {
   private readonly toaster = inject(ToasterService);
 
   ngOnInit(): void {
-    debugger;
     this.buildForm();
 
     this.carModelId = this.route.snapshot.queryParamMap.get('carModelId');
@@ -106,7 +103,7 @@ export class CheckList implements OnInit {
     this.form = this.fb.group({
       name: [this.selected.name ?? '', [Validators.required, Validators.maxLength(128)]],
       position: [this.selected.position ?? 0, [Validators.required, Validators.min(0)]],
-      checkListType: [this.selected.checkListType ?? 0, Validators.required],
+
       concurrencyStamp: [null],
     });
   }
@@ -116,7 +113,6 @@ export class CheckList implements OnInit {
     this.form.reset({
       name: '',
       position: 0,
-      checkListType: this.checkListType ?? 0,
       concurrencyStamp: null,
     });
   }
@@ -128,7 +124,6 @@ export class CheckList implements OnInit {
       this.form.setValue({
         name: dto.name ?? '',
         position: dto.position ?? 0,
-        checkListType: dto.checkListType,
         concurrencyStamp: (dto as UpdateCheckListDto).concurrencyStamp ?? null,
       });
     });
@@ -145,7 +140,6 @@ export class CheckList implements OnInit {
         carModelId: this.carModelId,
         name,
         position: raw.position,
-        checkListType: raw.checkListType,
         concurrencyStamp: raw.concurrencyStamp,
       };
 
@@ -161,7 +155,6 @@ export class CheckList implements OnInit {
       carModelId: this.carModelId,
       name,
       position: raw.position,
-      checkListType: raw.checkListType,
     };
 
     this.service.create(input).subscribe(() => {

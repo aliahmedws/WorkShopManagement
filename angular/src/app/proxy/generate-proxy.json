@@ -873,13 +873,13 @@
       "rootPath": "app",
       "remoteServiceName": "Default",
       "controllers": {
-        "WorkShopManagement.Bays.BayController": {
+        "WorkShopManagement.Controllers.Bays.BayController": {
           "controllerName": "Bay",
           "controllerGroupName": "Bays",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "WorkShopManagement.Bays.BayController",
+          "type": "WorkShopManagement.Controllers.Bays.BayController",
           "interfaces": [
             {
               "type": "WorkShopManagement.Bays.IBayAppService",
@@ -914,13 +914,13 @@
             }
           }
         },
-        "WorkShopManagement.CarModels.CarModelController": {
+        "WorkShopManagement.Controllers.CarModels.CarModelController": {
           "controllerName": "CarModel",
           "controllerGroupName": "CarModels",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "WorkShopManagement.CarModels.CarModelController",
+          "type": "WorkShopManagement.Controllers.CarModels.CarModelController",
           "interfaces": [
             {
               "type": "WorkShopManagement.CarModels.ICarModelAppService",
@@ -1010,13 +1010,13 @@
             }
           }
         },
-        "WorkShopManagement.CheckLists.CheckListController": {
+        "WorkShopManagement.Controllers.CheckLists.CheckListController": {
           "controllerName": "CheckList",
           "controllerGroupName": "CheckLists",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "WorkShopManagement.CheckLists.CheckListController",
+          "type": "WorkShopManagement.Controllers.CheckLists.CheckListController",
           "interfaces": [
             {
               "type": "WorkShopManagement.CheckLists.ICheckListAppService",
@@ -1166,18 +1166,6 @@
                   "jsonName": null,
                   "type": "System.Int32?",
                   "typeSimple": "number?",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "CheckListType",
-                  "jsonName": null,
-                  "type": "WorkShopManagement.CheckLists.CheckListType?",
-                  "typeSimple": "enum?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -1410,158 +1398,13 @@
             }
           }
         },
-        "WorkShopManagement.External.Shared.TestAppService": {
-          "controllerName": "Test",
-          "controllerGroupName": "Test",
-          "isRemoteService": true,
-          "isIntegrationService": false,
-          "apiVersion": null,
-          "type": "WorkShopManagement.External.Shared.TestAppService",
-          "interfaces": [],
-          "actions": {
-            "DecodeVinExtendedAsyncByVinAndModelYear": {
-              "uniqueName": "DecodeVinExtendedAsyncByVinAndModelYear",
-              "name": "DecodeVinExtendedAsync",
-              "httpMethod": "POST",
-              "url": "api/app/test/decode-vin-extended",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "vin",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "modelYear",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": true,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "vin",
-                  "name": "vin",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "modelYear",
-                  "name": "modelYear",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "WorkShopManagement.External.Vpic.VpicVariableResultDto",
-                "typeSimple": "WorkShopManagement.External.Vpic.VpicVariableResultDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.External.Shared.TestAppService"
-            },
-            "GetRecallByVehicleAsyncByMakeAndModelAndModelYear": {
-              "uniqueName": "GetRecallByVehicleAsyncByMakeAndModelAndModelYear",
-              "name": "GetRecallByVehicleAsync",
-              "httpMethod": "GET",
-              "url": "api/app/test/recall-by-vehicle",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "make",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "model",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "modelYear",
-                  "typeAsString": "System.String, System.Private.CoreLib",
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "make",
-                  "name": "make",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "model",
-                  "name": "model",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "modelYear",
-                  "name": "modelYear",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Collections.Generic.List<WorkShopManagement.External.Nhtsa.NhtsaRecallByVehicleResultDto>",
-                "typeSimple": "[WorkShopManagement.External.Nhtsa.NhtsaRecallByVehicleResultDto]"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.External.Shared.TestAppService"
-            }
-          }
-        },
-        "WorkShopManagement.ListItems.ListItemController": {
+        "WorkShopManagement.Controllers.ListItems.ListItemController": {
           "controllerName": "ListItem",
           "controllerGroupName": "ListItems",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "WorkShopManagement.ListItems.ListItemController",
+          "type": "WorkShopManagement.Controllers.ListItems.ListItemController",
           "interfaces": [
             {
               "type": "WorkShopManagement.ListItems.IListItemAppService",
@@ -1916,6 +1759,151 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.ListItems.IListItemAppService"
+            }
+          }
+        },
+        "WorkShopManagement.External.Shared.TestAppService": {
+          "controllerName": "Test",
+          "controllerGroupName": "Test",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.External.Shared.TestAppService",
+          "interfaces": [],
+          "actions": {
+            "DecodeVinExtendedAsyncByVinAndModelYear": {
+              "uniqueName": "DecodeVinExtendedAsyncByVinAndModelYear",
+              "name": "DecodeVinExtendedAsync",
+              "httpMethod": "POST",
+              "url": "api/app/test/decode-vin-extended",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "vin",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "modelYear",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": true,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "vin",
+                  "name": "vin",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "modelYear",
+                  "name": "modelYear",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.External.Vpic.VpicVariableResultDto",
+                "typeSimple": "WorkShopManagement.External.Vpic.VpicVariableResultDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.External.Shared.TestAppService"
+            },
+            "GetRecallByVehicleAsyncByMakeAndModelAndModelYear": {
+              "uniqueName": "GetRecallByVehicleAsyncByMakeAndModelAndModelYear",
+              "name": "GetRecallByVehicleAsync",
+              "httpMethod": "GET",
+              "url": "api/app/test/recall-by-vehicle",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "make",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "model",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "modelYear",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "make",
+                  "name": "make",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "model",
+                  "name": "model",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "modelYear",
+                  "name": "modelYear",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.External.Nhtsa.NhtsaRecallByVehicleResultDto>",
+                "typeSimple": "[WorkShopManagement.External.Nhtsa.NhtsaRecallByVehicleResultDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.External.Shared.TestAppService"
             }
           }
         }
@@ -4674,41 +4662,6 @@
     }
   },
   "types": {
-    "System.Nullable<T0>": {
-      "baseType": "System.ValueType",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": [
-        "T"
-      ],
-      "properties": [
-        {
-          "name": "HasValue",
-          "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Value",
-          "jsonName": null,
-          "type": "T",
-          "typeSimple": "T",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
     "Volo.Abp.Account.ChangePasswordInput": {
       "baseType": null,
       "isEnum": false,
@@ -10438,18 +10391,6 @@
           "minimum": null,
           "maximum": null,
           "regex": null
-        },
-        {
-          "name": "FileAttachments",
-          "jsonName": null,
-          "type": "WorkShopManagement.FileAttachments.FileAttachmentDto",
-          "typeSimple": "WorkShopManagement.FileAttachments.FileAttachmentDto",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
         }
       ]
     },
@@ -10505,10 +10446,34 @@
           "regex": null
         },
         {
-          "name": "CheckListType",
+          "name": "EnableIssueItems",
           "jsonName": null,
-          "type": "WorkShopManagement.CheckLists.CheckListType",
-          "typeSimple": "enum",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableTags",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableCheckInReport",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -10517,22 +10482,6 @@
           "regex": null
         }
       ]
-    },
-    "WorkShopManagement.CheckLists.CheckListType": {
-      "baseType": "System.Enum",
-      "isEnum": true,
-      "enumNames": [
-        "Production",
-        "SubProduction",
-        "AncillaryTask"
-      ],
-      "enumValues": [
-        1,
-        2,
-        3
-      ],
-      "genericArguments": null,
-      "properties": null
     },
     "WorkShopManagement.CheckLists.CreateCheckListDto": {
       "baseType": null,
@@ -10578,11 +10527,35 @@
           "regex": null
         },
         {
-          "name": "CheckListType",
+          "name": "EnableIssueItems",
           "jsonName": null,
-          "type": "WorkShopManagement.CheckLists.CheckListType",
-          "typeSimple": "enum",
-          "isRequired": true,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableTags",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableCheckInReport",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -10627,18 +10600,6 @@
           "jsonName": null,
           "type": "System.Int32?",
           "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "CheckListType",
-          "jsonName": null,
-          "type": "WorkShopManagement.CheckLists.CheckListType?",
-          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -10704,11 +10665,35 @@
           "regex": null
         },
         {
-          "name": "CheckListType",
+          "name": "EnableIssueItems",
           "jsonName": null,
-          "type": "WorkShopManagement.CheckLists.CheckListType",
-          "typeSimple": "enum",
-          "isRequired": true,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableTags",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EnableCheckInReport",
+          "jsonName": null,
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -10978,63 +10963,6 @@
           "jsonName": null,
           "type": "System.Boolean",
           "typeSimple": "boolean",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "WorkShopManagement.FileAttachments.FileAttachmentDto": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "Name",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "FileExtension",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Path",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BlobName",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
