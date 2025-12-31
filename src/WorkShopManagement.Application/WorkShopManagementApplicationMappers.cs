@@ -47,3 +47,13 @@ public partial class NhtsaRecallByVehicleResultEtoToNhtsaRecallByVehicleResultDt
     public override partial NhtsaRecallByVehicleResultDto Map(NhtsaRecallByVehicleResultEto source);
     public override partial void Map(NhtsaRecallByVehicleResultEto source, NhtsaRecallByVehicleResultDto destination);
 }
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class EntityAttachmentMapper : MapperBase<EntityAttachment, EntityAttachmentDto>
+{
+    public override partial EntityAttachmentDto Map(EntityAttachment source);
+    public override partial void Map(EntityAttachment source, EntityAttachmentDto destination);
+
+    public partial FileAttachmentDto Map(FileAttachment source);
+    public partial void Map(FileAttachment source, FileAttachmentDto destination);
+}

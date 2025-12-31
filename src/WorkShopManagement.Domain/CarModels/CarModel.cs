@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.MultiTenancy;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
 
 namespace WorkShopManagement.CarModels;
 
-public class CarModel : FullAuditedAggregateRoot<Guid>, IMultiTenant
+[Audited]
+public class CarModel : FullAuditedAggregateRoot<Guid>
 {
-    public Guid? TenantId { get; set; }
     public string Name { get; set; }
     public FileAttachment FileAttachments { get; set; }
     public ICollection<CheckList> CheckLists { get; set; }
 
-    private CarModel() 
+    private CarModel()
     {
         CheckLists = new List<CheckList>();
     }

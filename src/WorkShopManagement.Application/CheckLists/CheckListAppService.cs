@@ -85,8 +85,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             GuidGenerator.Create(),
             name!,
             input.Position,
-            input.CarModelId,
-            input.CheckListType
+            input.CarModelId
         );
 
         await _checkListRepository.InsertAsync(entity, autoSave: true);
@@ -130,7 +129,6 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
         }
 
         entity.CarModelId = input.CarModelId;
-        entity.CheckListType = input.CheckListType;
         entity.ChangeName(name!);
         entity.ChangePosition(input.Position);
 

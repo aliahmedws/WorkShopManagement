@@ -13,7 +13,7 @@ public class CreateCheckListDto
     public int Position { get; set; }
     [Required]
     public Guid CarModelId { get; set; }
-
-    [Required]
-    public CheckListType CheckListType { get; set; }
+    public bool? EnableIssueItems { get; set; }
+    public bool? EnableTags { get; set; }
+    public bool? EnableCheckInReport { get; set; }
 }

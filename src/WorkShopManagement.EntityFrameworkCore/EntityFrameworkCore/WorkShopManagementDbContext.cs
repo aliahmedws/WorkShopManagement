@@ -65,7 +65,9 @@ public class WorkShopManagementDbContext :
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
-    
+    public DbSet<EntityAttachment> EntityAttachments { get; set; }
+
+
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -89,6 +91,36 @@ public class WorkShopManagementDbContext :
         builder.ConfigureBlobStoring();
 
         /* Configure your own tables/entities inside here */
+        builder.Entity<EntityAttachment>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "EntityAttachments", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.CheckListId).IsRequired(false);
+            b.Property(x => x.ListItemId).IsRequired(false);
+
+            b.HasOne(x => x.CheckList)
+                .WithMany(x => x.Attachments)
+                .HasForeignKey(x => x.CheckListId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.ListItem)
+                .WithMany(x => x.Attachments)
+                .HasForeignKey(x => x.ListItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.OwnsOne(x => x.Attachment, fa =>
+            {
+                fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+                fa.Property(f => f.FileExtension).IsRequired();
+                fa.Property(f => f.BlobName).IsRequired();
+            });
+
+            b.HasIndex(x => x.CheckListId);
+            b.HasIndex(x => x.ListItemId);
+        });
+
 
         builder.Entity<CarModel>(b =>
         {
@@ -96,9 +128,6 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
 
             b.OwnsOne(x => x.FileAttachments, fa =>
             {
@@ -116,9 +145,6 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
             b.HasIndex(x => x.Name);
         });
 
@@ -129,10 +155,9 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.Name).IsRequired();
             b.Property(x => x.Position).IsRequired();
-            b.Property(x => x.CheckListType).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
+            b.Property(x => x.EnableCheckInReport).IsRequired(false);
+            b.Property(x => x.EnableIssueItems).IsRequired(false);
+            b.Property(x => x.EnableTags).IsRequired(false);
 
             b.HasOne(x => x.CarModels)
                 .WithMany(x => x.CheckLists)
@@ -160,20 +185,11 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.IsSeparator).IsRequired();
 
-            b.Property(x => x.TenantId).HasColumnName(nameof(ListItem.TenantId)).IsRequired(false);
 
             b.HasOne(x => x.CheckLists)
                 .WithMany(x => x.ListItems)
                 .HasForeignKey(x => x.CheckListId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            b.OwnsOne(x => x.Attachment, fa =>
-            {
-                fa.Property(f => f.Name).HasMaxLength(FileAttachmentConsts.MaxNameLength);
-                fa.Property(f => f.Path).HasMaxLength(FileAttachmentConsts.MaxPathLength);
-                fa.Property(f => f.FileExtension);
-                fa.Property(f => f.BlobName);
-            });
 
             b.HasIndex(x => x.CheckListId);
             b.HasIndex(x => new { x.CheckListId, x.Position });

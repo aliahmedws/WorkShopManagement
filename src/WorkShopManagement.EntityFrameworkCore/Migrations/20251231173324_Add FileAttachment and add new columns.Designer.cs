@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251231173324_Add FileAttachment and add new columns")]
+    partial class AddFileAttachmentandaddnewcolumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2086,6 +2089,9 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid?>("CheckListId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CheckListId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -2131,11 +2137,18 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid?>("ListItemId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ListItemId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CheckListId");
 
+                    b.HasIndex("CheckListId1");
+
                     b.HasIndex("ListItemId");
+
+                    b.HasIndex("ListItemId1");
 
                     b.ToTable("AppEntityAttachments", (string)null);
                 });
@@ -2419,14 +2432,22 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.FileAttachments.EntityAttachment", b =>
                 {
                     b.HasOne("WorkShopManagement.CheckLists.CheckList", "CheckList")
-                        .WithMany("Attachments")
+                        .WithMany()
                         .HasForeignKey("CheckListId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("WorkShopManagement.ListItems.ListItem", "ListItem")
+                    b.HasOne("WorkShopManagement.CheckLists.CheckList", null)
                         .WithMany("Attachments")
+                        .HasForeignKey("CheckListId1");
+
+                    b.HasOne("WorkShopManagement.ListItems.ListItem", "ListItem")
+                        .WithMany()
                         .HasForeignKey("ListItemId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WorkShopManagement.ListItems.ListItem", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("ListItemId1");
 
                     b.OwnsOne("WorkShopManagement.FileAttachments.FileAttachment", "Attachment", b1 =>
                         {

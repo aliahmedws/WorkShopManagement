@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.MultiTenancy;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
 
 namespace WorkShopManagement.ListItems;
 
-public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
+[Audited]
+public class ListItem : FullAuditedAggregateRoot<Guid>
 {
-    public Guid? TenantId { get; set; }
-
     public Guid CheckListId { get; set; }
     public virtual CheckList CheckLists { get; set; }
 
@@ -25,7 +25,7 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public bool IsSeparator { get; set; }
 
-    public FileAttachment Attachment { get; set; }
+    public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
 
     private ListItem()
     {
@@ -64,15 +64,5 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
         CommentType = commentType;
         IsAttachmentRequired = isAttachmentRequired;
         IsSeparator = isSeparator;
-    }
-
-    public void SetAttachment(FileAttachment attachment)
-    {
-        Attachment = attachment;
-    }
-
-    public void ClearAttachment()
-    {
-        Attachment = null;
     }
 }
