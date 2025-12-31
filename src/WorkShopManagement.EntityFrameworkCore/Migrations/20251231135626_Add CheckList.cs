@@ -6,22 +6,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WorkShopManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCar_Model : Migration
+    public partial class AddCheckList : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AppCarModels",
+                name: "AppCheckLists",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CarModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
-                    FileAttachments_Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    FileAttachments_Path = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
-                    FileAttachments_FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Position = table.Column<int>(type: "int", nullable: false),
+                    CheckListType = table.Column<int>(type: "int", nullable: false),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -34,12 +33,23 @@ namespace WorkShopManagement.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppCarModels", x => x.Id);
+                    table.PrimaryKey("PK_AppCheckLists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppCheckLists_AppCarModels_CarModelId",
+                        column: x => x.CarModelId,
+                        principalTable: "AppCarModels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppCarModels_Name",
-                table: "AppCarModels",
+                name: "IX_AppCheckLists_CarModelId",
+                table: "AppCheckLists",
+                column: "CarModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppCheckLists_Name",
+                table: "AppCheckLists",
                 column: "Name");
         }
 
@@ -47,7 +57,7 @@ namespace WorkShopManagement.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppCarModels");
+                name: "AppCheckLists");
         }
     }
 }

@@ -6,19 +6,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WorkShopManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCarBay : Migration
+    public partial class AddCarModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AppBays",
+                name: "AppCarModels",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    FileAttachments_Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    FileAttachments_Path = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    FileAttachments_FileExtension = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -31,12 +33,12 @@ namespace WorkShopManagement.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppBays", x => x.Id);
+                    table.PrimaryKey("PK_AppCarModels", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppBays_Name",
-                table: "AppBays",
+                name: "IX_AppCarModels_Name",
+                table: "AppCarModels",
                 column: "Name");
         }
 
@@ -44,7 +46,7 @@ namespace WorkShopManagement.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AppBays");
+                name: "AppCarModels");
         }
     }
 }
