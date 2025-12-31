@@ -36,6 +36,18 @@ public class BayDataSeedContributor : IDataSeedContributor, ITransientDependency
             new(Guid.NewGuid(), "Bay 6", false),
             new(Guid.NewGuid(), "Bay 7", false),
             new(Guid.NewGuid(), "Bay 8", false),
+            new(Guid.NewGuid(), "Bay 9", false),
+            new(Guid.NewGuid(), "Bay 10", false),
+            new(Guid.NewGuid(), "Bay 11", false),
+            new(Guid.NewGuid(), "Bay 12", false),
+            new(Guid.NewGuid(), "Bay 13", false),
+            new(Guid.NewGuid(), "Bay 14", false),
+            new(Guid.NewGuid(), "Bay 15", false),
+            new(Guid.NewGuid(), "Bay 16", false),
+            new(Guid.NewGuid(), "Bay 17", false),
+            new(Guid.NewGuid(), "Bay 18", false),
+            new(Guid.NewGuid(), "Bay 19", false),
+            new(Guid.NewGuid(), "Bay 20", false),
         };
 
         foreach (var bay in bays)

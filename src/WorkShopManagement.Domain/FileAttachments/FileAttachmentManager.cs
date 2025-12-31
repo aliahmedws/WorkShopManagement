@@ -5,54 +5,71 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
-using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.FileAttachments;
 
 public class FileAttachmentManager : DomainService
 {
-    private readonly IRepository<ListItem, Guid> _repository;
+    private readonly IRepository<EntityAttachment, Guid> _repository;
     private readonly FileManager _fileManager;
 
-    public FileAttachmentManager(IRepository<ListItem, Guid> repository, FileManager fileManager)
+    public FileAttachmentManager(IRepository<EntityAttachment, Guid> repository, FileManager fileManager)
     {
         _repository = repository;
         _fileManager = fileManager;
     }
 
-    public async Task<ListItem> SetAttachmentAsync(Guid entityId, IFormFile file)
+    public async Task<EntityAttachment> UploadForListItemAsync(Guid listItemId, IFormFile file)
     {
         Check.NotNull(file, nameof(file));
-
-        var entity = await _repository.GetAsync(entityId);
-
-        if (entity.Attachment != null && !string.IsNullOrWhiteSpace(entity.Attachment.Path))
-        {
-            await _fileManager.DeleteFileAsync(entity.Attachment);
-            entity.ClearAttachment();
-        }
 
         using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
         stream.Position = 0;
 
-        var attachment = await _fileManager.SaveAsync(stream, file.FileName, "attachments");
+        var saved = await _fileManager.SaveAsync(stream, file.FileName, "listitem-attachments");
 
-        entity.SetAttachment(attachment);
+        var entity = new EntityAttachment(
+            id: GuidGenerator.Create(),
+            checkListId: null,
+            listItemId: listItemId,
+            attachment: saved
+        );
 
-        await _repository.UpdateAsync(entity, autoSave: true);
+        await _repository.InsertAsync(entity, autoSave: true);
         return entity;
     }
 
-    public async Task RemoveAttachmentAsync(Guid entityId)
+    public async Task<EntityAttachment> UploadForCheckListAsync(Guid checkListId, IFormFile file)
     {
-        var entity = await _repository.GetAsync(entityId);
+        Check.NotNull(file, nameof(file));
 
-        if (entity.Attachment != null && !string.IsNullOrWhiteSpace(entity.Attachment.Path))
+        using var stream = new MemoryStream();
+        await file.CopyToAsync(stream);
+        stream.Position = 0;
+
+        var saved = await _fileManager.SaveAsync(stream, file.FileName, "checklist-attachments");
+
+        var entity = new EntityAttachment(
+            id: GuidGenerator.Create(),
+            checkListId: checkListId,
+            listItemId: null,
+            attachment: saved
+        );
+
+        await _repository.InsertAsync(entity, autoSave: true);
+        return entity;
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var entity = await _repository.GetAsync(id);
+
+        if (!string.IsNullOrWhiteSpace(entity.Attachment?.Path))
         {
             await _fileManager.DeleteFileAsync(entity.Attachment);
-            entity.ClearAttachment();
-            await _repository.UpdateAsync(entity, autoSave: true);
         }
+
+        await _repository.DeleteAsync(entity, autoSave: true);
     }
 }

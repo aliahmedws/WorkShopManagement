@@ -14,8 +14,8 @@ public class UpdateCheckListDto
 
     [Required]
     public Guid CarModelId { get; set; }
-
-    [Required]
-    public CheckListType CheckListType { get; set; }
+    public bool? EnableIssueItems { get; set; }
+    public bool? EnableTags { get; set; }
+    public bool? EnableCheckInReport { get; set; }
     public string? ConcurrencyStamp { get; set; }
 }
