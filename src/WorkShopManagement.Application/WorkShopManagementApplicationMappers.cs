@@ -2,6 +2,7 @@ using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
+using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
 
@@ -32,16 +33,6 @@ public partial class ListItemMapper : MapperBase<ListItem, ListItemDto>
     public override partial ListItemDto Map(ListItem source);
     public override partial void Map(ListItem source, ListItemDto destination);
 }
-/*
- * You can add your own mappings here.
- * [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
- * public partial class WorkShopManagementApplicationMappers : MapperBase<BookDto, CreateUpdateBookDto>
- * {
- *    public override partial CreateUpdateBookDto Map(BookDto source);
- * 
- *    public override partial void Map(BookDto source, CreateUpdateBookDto destination);
- * }
- */
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class NhtsaRecallByVehicleResponseEtoToNhtsaRecallByVehicleResponseDtoMapper : MapperBase<NhtsaRecallByVehicleResponseEto, NhtsaRecallByVehicleResponseDto>
