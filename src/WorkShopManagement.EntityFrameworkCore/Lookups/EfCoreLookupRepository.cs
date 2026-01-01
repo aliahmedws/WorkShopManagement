@@ -29,6 +29,7 @@ public class EfCoreLookupRepository : ILookupRepository
 
         return await ctx.CarModels
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .Select(x => new GuidLookup(x.Id, x.Name))
             .ToListAsync();
     }
@@ -39,6 +40,7 @@ public class EfCoreLookupRepository : ILookupRepository
 
         return await ctx.CarOwners
             .AsNoTracking()
+            .OrderBy(x => x.Name)
             .Select(x => new GuidLookup(x.Id, x.Name))
             .ToListAsync();
     }

@@ -41,10 +41,10 @@ export class CarCreateEditModal {
   };
 
   get() {
+    this.buildForm();
     this.resolveLookups();
 
     if (!this.carId) {
-      this.buildForm();
       return;
     }
 
@@ -66,9 +66,9 @@ export class CarCreateEditModal {
       cncFirewall: [dto?.cncFirewall ?? null, Validators.maxLength(64)],
       cncColumn: [dto?.cncColumn ?? null, Validators.maxLength(64)],
 
-      dueDate: [dto?.dueDate ?? null],
-      deliverDate: [dto?.deliverDate ?? null],
-      startDate: [dto?.startDate ?? null],
+      dueDate: [dto?.dueDate ? new Date(dto?.dueDate) : null],
+      deliverDate: [dto?.deliverDate ? new Date(dto?.deliverDate) : null],
+      startDate: [dto?.startDate ? new Date(dto?.startDate) : null],
 
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],
@@ -98,7 +98,7 @@ export class CarCreateEditModal {
 
     // apply once for initial value
     const applyNameValidation = (ownerId: any) => {
-      if (ownerId === 'NotFound') {
+      if (ownerId === this.NOT_FOUND) {
         nameCtrl.setValidators([Validators.required, Validators.maxLength(128)]);
       } else {
         nameCtrl.clearValidators();
@@ -121,7 +121,7 @@ export class CarCreateEditModal {
     }
 
     const value = this.form.value;
-    const isNewOwner = value.ownerId === 'NotFound';
+    const isNewOwner = value.ownerId === this.NOT_FOUND;
 
     const payload = {
       ...value,
@@ -135,10 +135,13 @@ export class CarCreateEditModal {
 
     req$
       .subscribe((dto: CarDto) => {
-        const message = this.carId ? '::SuccessfullySaved' : '::SuccessfullyCreated';
-        this.toaster.success(message);
-        this.submit.emit(dto);
+        this.toaster.success(
+          this.carId
+            ? '::SuccessfullySaved'
+            : '::SuccessfullyCreated'
+        );
         this.close();
+        this.submit.emit(dto);
       });
   }
 
@@ -153,15 +156,13 @@ export class CarCreateEditModal {
         .getCarModels()
         .subscribe(response => {
           this.carModelOptions = response;
-        })
+        });
     }
 
-    if (!this.carOwnerOptions?.length) {
-      this.lookupService
-        .getCarOwners()
-        .subscribe(response => {
-          this.carOwnerOptions = response;
-        })
-    }
+    this.lookupService
+      .getCarOwners()
+      .subscribe(response => {
+        this.carOwnerOptions = response;
+      });
   }
 }

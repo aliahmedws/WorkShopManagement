@@ -69,3 +69,9 @@ nz-select {
 .form-group.is-invalid .ant-select-selector {
   border-color: #dc3545;
 }
+
+.form-label.required::after {
+  content: '*';
+  color: #dc3545;
+  margin-left: 1px;
+}

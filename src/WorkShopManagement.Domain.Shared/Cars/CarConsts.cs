@@ -17,9 +17,11 @@ public static class CarConsts
 
     public const string DefaultSorting = "CreationTime DESC";
 
-    public static string GetDefaultSorting(string? sorting)
+    public static string GetNormalizedSorting(string? sorting)
     {
         if (string.IsNullOrWhiteSpace(sorting)) return DefaultSorting;
+        if (sorting.Contains("ownerName")) sorting = sorting.Replace("ownerName", "owner.name");
+        if (sorting.Contains("modelName")) sorting = sorting.Replace("modelName", "model.name");
         return sorting;
     }
 }

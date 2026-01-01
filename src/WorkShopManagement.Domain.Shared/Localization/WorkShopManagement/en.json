@@ -80,6 +80,7 @@
     "SuccessfullyCreated": "Successfully Created!",
     "SuccessfullySaved": "Successfully Saved!",
     "NewCar": "New Car",
-    "EditCar": "Edit Car"
+    "EditCar": "Edit Car",
+    "ContactId": "Contact ID"
   }
 }

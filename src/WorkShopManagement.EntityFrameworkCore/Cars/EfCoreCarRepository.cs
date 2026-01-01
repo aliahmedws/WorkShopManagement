@@ -19,7 +19,7 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
 
     public async Task<List<Car>> GetListAsync(int skipCount = 0, int maxResultCount = 10, string? sorting = null)
     {
-        var query = await GetAllAsync(asNoTracking: true);
+        var query = await GetAllAsync(sorting, asNoTracking: true);
         return await query
             .PageBy(skipCount, maxResultCount)
             .ToListAsync();
@@ -36,9 +36,9 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
         var query = await GetQueryableAsync();
 
         return query
-            .OrderBy(CarConsts.GetDefaultSorting(sorting))
+            .AsNoTrackingIf(asNoTracking)
             .Include(q => q.Owner)
             .Include(q => q.Model)
-            .AsNoTrackingIf(asNoTracking);
+            .OrderBy(CarConsts.GetNormalizedSorting(sorting));
     }
 }
