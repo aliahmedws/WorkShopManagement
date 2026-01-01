@@ -4,6 +4,33 @@
     </ng-template>
     <ng-template #abpBody>
         @if (form) {
+        <div id="top"></div>
+        @if (externalCarDetails) {
+        @if (externalCarDetails.success) {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">Query Successful!</h5>
+            <p class="mb-1">The query against VIN returned successful response.</p>
+            <p class="mb-1">
+                <span class="d-block">{{ '::Model' | abpLocalization }}: {{ externalCarDetails.model }}</span>
+                <span class="d-block">{{ '::ModelYear' | abpLocalization }}: {{ externalCarDetails.modelYear }}</span>
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                (click)="externalCarDetails = null"></button>
+        </div>
+        } @else {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">Query Failed!</h5>
+            <p class="mb-1">The query against VIN did not return a successful response from external provider. Please try changing the Model Year or removing it from form and try again.</p>
+            @if (externalCarDetails?.error) {
+            <!-- <hr> -->
+            <p class="mb-0">Error Details: {{ externalCarDetails.error }}</p>
+            }
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                (click)="externalCarDetails = null"></button>
+        </div>
+        }
+        }
         <form [formGroup]="form" (ngSubmit)="save()">
             <!-- Car Information -->
             <div class="row g-2">
@@ -15,7 +42,14 @@
                         <!-- VIN -->
                         <div class="col-12 form-group">
                             <label class="form-label required">{{ '::Vin' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="vin" [readonly]="!!id" maxlength="17" />
+                            <div class="input-group" validationTarget>
+                                <input class="form-control" formControlName="vin" maxlength="17" />
+                                @if (canFetchVinDetails){
+                                <button type="button" class="btn btn-outline-info" (click)="getExternalCarDetails()">
+                                    {{ '::Fetch Details' | abpLocalization }}
+                                </button>
+                                }
+                            </div>
                         </div>
 
                         <!-- COLOR -->

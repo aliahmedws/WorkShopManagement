@@ -41,4 +41,10 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     {
         return carAppService.UpdateAsync(id, input);
     }
+
+    [HttpPost("external-car-details/{vin}")]
+    public Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(string vin, string? modelYear = null)
+    {
+        return carAppService.GetExternalCarDetailsAsync(vin, modelYear);
+    }
 }

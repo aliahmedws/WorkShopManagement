@@ -1,4 +1,4 @@
-import type { CarDto, CreateCarDto, GetCarListInput, UpdateCarDto } from './models';
+import type { CarDto, CreateCarDto, ExternalCarDetailsDto, GetCarListInput, UpdateCarDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
@@ -32,6 +32,15 @@ export class CarService {
     this.restService.request<any, CarDto>({
       method: 'GET',
       url: `/api/app/cars/${id}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getExternalCarDetails = (vin: string, modelYear?: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ExternalCarDetailsDto>({
+      method: 'POST',
+      url: `/api/app/cars/external-car-details/${vin}`,
+      params: { modelYear },
     },
     { apiName: this.apiName,...config });
   

@@ -1,7 +1,7 @@
 import { ToasterService } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CarService, CarDto } from 'src/app/proxy/cars';
+import { CarService, CarDto, ExternalCarDetailsDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
@@ -40,7 +40,15 @@ export class CarCreateEditModal {
     animation: true,
   };
 
+  externalCarDetails: ExternalCarDetailsDto;
+
+  get canFetchVinDetails(): boolean {
+    const ctrl = this.form.get('vin');
+    return ctrl?.value && ctrl?.valid;
+  }
+
   get() {
+    this.externalCarDetails = null;
     this.buildForm();
     this.resolveLookups();
 
@@ -116,6 +124,7 @@ export class CarCreateEditModal {
 
   save(): void {
     if (this.form.invalid) {
+      this.scrollToTop();
       this.form.markAllAsTouched();
       return;
     }
@@ -164,5 +173,31 @@ export class CarCreateEditModal {
       .subscribe(response => {
         this.carOwnerOptions = response;
       });
+  }
+
+  scrollToTop() {
+    document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  getExternalCarDetails() {
+    if (!this.canFetchVinDetails) return;
+
+    const { vin, modelYear } = this.form.value || {};
+    this.carService
+      .getExternalCarDetails(vin, modelYear)
+      .subscribe(response => {
+        this.externalCarDetails = response;
+        this.resolveExternalCarResponse(response);
+      });
+  }
+
+  resolveExternalCarResponse(response: ExternalCarDetailsDto | null) {
+    if (!response?.success) {
+      return;
+    }
+
+    this.form.patchValue({
+      modelYear: response.modelYear
+    });
   }
 }

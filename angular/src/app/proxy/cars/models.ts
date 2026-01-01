@@ -44,6 +44,14 @@ export interface CreateCarOwnerDto {
   contactId?: string;
 }
 
+export interface ExternalCarDetailsDto {
+  model?: string;
+  modelYear?: string;
+  suggestedVin?: string;
+  error?: string;
+  success: boolean;
+}
+
 export interface GetCarListInput extends PagedAndSortedResultRequestDto {
 }
 

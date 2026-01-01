@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.Cars;
@@ -15,14 +17,17 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 {
     private readonly ICarRepository _carRepository;
     private readonly IRepository<CarOwner, Guid> _carOwnerRepository;
+    private readonly IVpicService _vpicService;
 
     public CarAppService(
         ICarRepository carRepository,
-        IRepository<CarOwner, Guid> carOwnerRepository
+        IRepository<CarOwner, Guid> carOwnerRepository,
+        IVpicService vpicService
         )
     {
         _carRepository = carRepository;
         _carOwnerRepository = carOwnerRepository;
+        _vpicService = vpicService;
     }
 
     public async Task<CarDto> GetAsync(Guid id)
@@ -118,5 +123,15 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         await _carOwnerRepository.InsertAsync(newOwner, autoSave: true);
 
         return newOwner.Id;
+    }
+
+    public async Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(
+        [Length(CarConsts.VinLength, CarConsts.VinLength)] 
+        string vin, 
+        string? modelYear = null
+        )
+    {
+        var externalCarDetails = await _vpicService.DecodeVinExtendedAsync(vin, modelYear);
+        return ObjectMapper.Map<VpicVariableResultDto, ExternalCarDetailsDto>(externalCarDetails);
     }
 }
