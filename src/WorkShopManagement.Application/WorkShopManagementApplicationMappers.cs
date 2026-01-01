@@ -5,6 +5,7 @@ using WorkShopManagement.CheckLists;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.Priorities;
 
 namespace WorkShopManagement;
 
@@ -46,4 +47,11 @@ public partial class NhtsaRecallByVehicleResultEtoToNhtsaRecallByVehicleResultDt
 {
     public override partial NhtsaRecallByVehicleResultDto Map(NhtsaRecallByVehicleResultEto source);
     public override partial void Map(NhtsaRecallByVehicleResultEto source, NhtsaRecallByVehicleResultDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class PriorityMapper : MapperBase<Priority, PriorityDto>
+{
+    public override partial PriorityDto Map(Priority source);
+    public override partial void Map(Priority source, PriorityDto destination);
 }

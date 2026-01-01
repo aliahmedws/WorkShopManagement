@@ -19,6 +19,7 @@ using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.Priorities;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -65,7 +66,9 @@ public class WorkShopManagementDbContext :
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
-    
+    public DbSet<Priority> Priorities { get; set; }
+
+
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -179,5 +182,13 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => new { x.CheckListId, x.Position });
         });
 
+        builder.Entity<Priority>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Priorities", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.Number).IsRequired();
+            b.Property(x => x.Description).HasMaxLength(PriorityConsts.MaxDescriptionLength).IsRequired(false);
+            b.HasIndex(x => x.Number).IsUnique();
+        });
     }
 }

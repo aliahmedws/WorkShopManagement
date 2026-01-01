@@ -24,4 +24,11 @@ public static class WorkShopManagementPermissions
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
     }
+    public static class Priorities
+    {
+        public const string Default = GroupName + ".Priorities";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
 }

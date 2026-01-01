@@ -7,4 +7,6 @@ public static class WorkShopManagementDomainErrorCodes
     public const string NullField = "NullField:00006";
     public const string CarModelAlreadyExists = "CarModelAlreadyExists";
     public const string CarModelNotFound = "CarModelNotFound";
+    public const string PriorityAlreadyExists = "PriorityNumberExists:00001";
+
 }

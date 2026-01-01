@@ -33,5 +33,15 @@ function configureRoutes() {
     //   layout: eLayoutType.application,
     //   // requiredPolicy: 'WorkShopManagement.CheckLists',
     // },
+
+     {
+      path: '/priorities',
+      name: '::Menu:Priorities',
+      //parentName: '::Menu:BookStore',
+      iconClass: 'fas fa-tasks',
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Priorities',
+    },
+
   ]);
 }
