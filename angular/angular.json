@@ -132,6 +132,7 @@
                 "bundleName": "bootstrap-icons"
               },
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "src/assets/css/theme-overrides.scss",
               "src/styles.scss"
             ],
             "scripts": [],

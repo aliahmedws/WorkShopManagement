@@ -5,32 +5,33 @@
     <ng-template #abpBody>
         @if (form) {
         <div id="top"></div>
-        @if (externalCarDetails) {
-        @if (externalCarDetails.success) {
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <h5 class="alert-heading">Query Successful!</h5>
-            <p class="mb-1">The query against VIN returned successful response.</p>
+        @if (external) {
+        <div class="alert alert-dismissible fade show"
+            [ngClass]="external.success ? 'alert-info' : 'alert-warning'" role="alert">
+            <h4 class="alert-heading">
+                {{ (external.success ? '::Car.VinQuery.SuccessTitle' : '::Car.VinQuery.FailedTitle') | abpLocalization }}
+            </h4>
+
             <p class="mb-1">
-                <span class="d-block">{{ '::Model' | abpLocalization }}: {{ externalCarDetails.model }}</span>
-                <span class="d-block">{{ '::ModelYear' | abpLocalization }}: {{ externalCarDetails.modelYear }}</span>
+                {{ (external.success ? '::Car.VinQuery.SuccessMessage' : '::Car.VinQuery.FailedMessage') | abpLocalization }}
             </p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-                (click)="externalCarDetails = null"></button>
-        </div>
-        } @else {
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <h5 class="alert-heading">Query Failed!</h5>
-            <p class="mb-1">The query against VIN did not return a successful response from external provider. Please try changing the Model Year or removing it from form and try again.</p>
-            @if (externalCarDetails?.error) {
-            <!-- <hr> -->
-            <p class="mb-0">Error Details: {{ externalCarDetails.error }}</p>
+
+            @if (external.success) {
+            <p class="mb-1">
+                <span class="d-block">{{ '::Model' | abpLocalization }}: {{ external.model }}</span>
+                <span class="d-block">{{ '::ModelYear' | abpLocalization }}: {{ external.modelYear }}</span>
+            </p>
+            } 
+            @if (external.error) {
+            <p class="mb-0">
+                {{ '::Car.VinQuery.ErrorDetails' | abpLocalization }}: {{ external.error }}
+            </p>
             }
 
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-                (click)="externalCarDetails = null"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" [attr.aria-label]="'::Close' | abpLocalization" (click)="external = null"></button>
         </div>
         }
-        }
+
         <form [formGroup]="form" (ngSubmit)="save()">
             <!-- Car Information -->
             <div class="row g-2">

@@ -1,0 +1,1418 @@
+// =========================================================
+// THEME OVERRIDES & CUSTOM STYLES
+// =========================================================
+// This file contains your specific custom overrides.
+@use "sass:color";
+
+// ---------------------------------------------------------
+// 1. Theme Changes
+// ---------------------------------------------------------
+
+
+// SCSS palette
+$brand-primary: #134d69;
+$brand-primary-dark: #10394a;
+$brand-primary-light: #076c9e;
+$brand-primary-medium: #194d67;
+
+$brand-secondary: #79898f;
+$brand-secondary-dark: #465962;
+$brand-secondary-light: #a7beca;
+
+$brand-tertiary: #72D0FF;
+$brand-tertiary-light: #D0EFFF;
+$brand-tertiary-dark: #2EB9FF;
+
+$accent-success: #008F45;
+$accent-success-light: #e6f4ed;
+
+$accent-warning: #ff9f38;
+$accent-warning-light: #fff1e1;
+
+$accent-danger: #af0000;
+$accent-danger-light: #f7e6e6;
+
+$accent-info: #65A4A4;
+$accent-info-light: #eef6f6;
+
+// Helper for focus ring rgb
+@function color-rgb($color) {
+    @return "#{color.channel($color, "red", $space: rgb)}, #{color.channel($color, "green", $space: rgb)}, #{color.channel($color, "blue", $space: rgb)}";
+}
+
+/* =========================================
+    Forecast Theme – ABP / LeptonX overrides
+   ========================================= */
+
+/* 1) Design tokens – palette & text */
+:root {
+    /* Neutrals / surfaces */
+    --bg-primary: #f5f5f7;
+    --bg-border: #e7e9ec;
+    --surface-primary: #ffffff;
+    --surface-border: #e7e9ec;
+
+    /* Text – follow Lepton/Bootstrap defaults (black/grey/white) */
+    --text-primary: var(--bs-body-color, #686b6e);
+    --text-secondary: var(--bs-secondary-color, #6c757d);
+    --text-tertiary: var(--bs-tertiary-color, #adb5bd);
+
+    /* Brand text palette (you can opt-in to these where you want) */
+    // TODO: issue text color
+    --brand-text-dark-1: #021c29;
+    --brand-text-dark-2: #032e41;
+    --brand-text-light: #bae2f5;
+    --brand-text-grey: #919ca5;
+
+    --ft-header-bg: #f9fafb;
+    --ft-header-alt-bg: #e9f2f7;
+    /* Brand colors (NEW) */
+    --brand-primary: #{$brand-primary};
+    --brand-primary-dark: #{$brand-primary-dark};
+    --brand-primary-light: #{$brand-primary-light};
+    --brand-primary-medium: #{$brand-primary-medium};
+    --brand-primary-grey: #39525a;
+
+    --brand-secondary: #{$brand-secondary};
+    --brand-secondary-dark: #{$brand-secondary-dark};
+    --brand-secondary-light: #{$brand-secondary-light};
+
+    --brand-tertiary: #{$brand-tertiary};
+    --brand-tertiary-dark: #{$brand-tertiary-dark};
+    --brand-tertiary-light: #{$brand-tertiary-light};
+
+    /* Accents (unchanged) */
+    --accent-success: #{$accent-success};
+    --accent-success-light: #{$accent-success-light};
+
+    --accent-warning: #{$accent-warning};
+    --accent-warning-light: #{$accent-warning-light};
+
+    --accent-danger: #{$accent-danger};
+    --accent-danger-light: #{$accent-danger-light};
+
+    --accent-info: #{$accent-info};
+    --accent-info-light: #{$accent-info-light};
+
+    /* Shadows, based on brand-primary */
+    --shadow-sm: 0 2px 4px 0 rgba(5, 53, 76, 0.08);
+    --shadow-md: 0 4px 8px 0 rgba(5, 53, 76, 0.12), 0 2px 4px -1px rgba(5, 53, 76, 0.08);
+    --shadow-lg: 0 8px 16px -2px rgba(5, 53, 76, 0.16), 0 4px 8px -2px rgba(5, 53, 76, 0.12);
+    --shadow-xl: 0 12px 24px -4px rgba(5, 53, 76, 0.2), 0 6px 12px -2px rgba(5, 53, 76, 0.15);
+
+    /* Chart colors */
+    --fc-chart-1: #{color.scale($brand-primary,        $lightness: 10%)};
+    --fc-chart-2: #{color.scale($accent-info,          $lightness: 0%)};
+    --fc-chart-3: #{color.scale($brand-secondary,      $lightness: 15%)};
+    --fc-chart-4: #{color.scale($accent-success,       $lightness: 5%)};
+    --fc-chart-5: #{color.scale($accent-warning,       $lightness: 5%)};
+    --fc-chart-6: #{color.scale($accent-info,          $lightness: 5%)};
+
+    --loader-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* RGB helpers for our palette */
+:root {
+    --brand-primary-rgb: #{color-rgb($brand-primary)};
+    --brand-primary-dark-rgb: #{color-rgb($brand-primary-dark)};
+    --brand-primary-light-rgb: #{color-rgb($brand-primary-light)};
+
+    --brand-secondary-rgb: #{color-rgb($brand-secondary)};
+    --brand-secondary-dark-rgb: #{color-rgb($brand-secondary-dark)};
+    --brand-secondary-light-rgb: #{color-rgb($brand-secondary-light)};
+
+    --brand-tertiary-rgb: #{color-rgb($brand-tertiary)};
+    --brand-tertiary-dark-rgb: #{color-rgb($brand-tertiary-dark)};
+    --brand-tertiary-light-rgb: #{color-rgb($brand-tertiary-light)};
+
+    --accent-success-rgb: #{color-rgb($accent-success)};
+    --accent-warning-rgb: #{color-rgb($accent-warning)};
+    --accent-danger-rgb: #{color-rgb($accent-danger)};
+    --accent-info-rgb: #{color-rgb($accent-info)};
+}
+
+/* 2) Map tokens → Bootstrap + LeptonX variables */
+:root {
+    /* --- Brand & semantic colors --- */
+    --bs-primary: var(--brand-primary);
+    --bs-secondary: var(--brand-secondary);
+    --bs-success: var(--accent-success);
+    --bs-warning: var(--accent-warning);
+    --bs-danger: var(--accent-danger);
+    --bs-info: var(--accent-info);
+    --bs-primary-rgb: var(--brand-primary-rgb);
+    --bs-secondary-rgb: var(--brand-secondary-rgb);
+    --bs-success-rgb: var(--accent-success-rgb);
+    --bs-warning-rgb: var(--accent-warning-rgb);
+    --bs-danger-rgb: var(--accent-danger-rgb);
+    --bs-info-rgb: var(--accent-info-rgb);
+
+    // darker emphasis
+    // --bs-primary-text-emphasis: rgb(21.2, 37.2, 102);
+    // --bs-secondary-text-emphasis: rgb(43.2, 37.2, 84.4);
+    // --bs-success-text-emphasis: #{color-rgb($accent-success)};
+    // --bs-success-bg-subtle: #{color-rgb($accent-success)};
+    // --bs-info-text-emphasis: rgb(26.8, 55.2, 66.8);
+    // --bs-warning-text-emphasis: rgb(102, 63.6, 22.4);
+    // --bs-danger-text-emphasis: rgb(76.8, 5.2, 29.2);
+
+
+    --bs-code-color: var(--brand-primary);
+
+    --bs-form-valid-color: var(--accent-success);
+    --bs-form-valid-border-color: var(--accent-success);
+    --bs-form-invalid-color: var(--accent-danger);
+    --bs-form-invalid-border-color: var(--accent-danger);
+
+    /* Links */
+    --bs-link-color: var(--brand-tertiary-dark);
+    --bs-link-color-rgb: var(--brand-tertiary-dark-rgb);
+    --bs-link-hover-color: #{color.scale($brand-tertiary-dark, $lightness: -20%)};
+    --bs-link-hover-color-rgb: #{color-rgb(color.scale($brand-tertiary-dark, $lightness: -20%))};
+
+    /* Focus rings */
+    --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.125);
+
+    /* LeptonX brand mapping */
+
+    --lpx-brand: var(--brand-primary);
+    --lpx-brand-rgb: var(--brand-primary-rgb);
+    --lpx-primary: var(--brand-primary);
+    --lpx-primary-rgb: var(--brand-primary-rgb);
+
+    --lpx-secondary: var(--brand-secondary);
+    --lpx-secondary-rgb: var(--brand-secondary-rgb);
+
+    --lpx-success: var(--accent-success);
+    --lpx-success-rgb: var(--accent-success-rgb);
+    --lpx-warning: var(--accent-warning);
+    --lpx-warning-rgb: var(--accent-warning-rgb);
+    --lpx-danger: var(--accent-danger);
+    --lpx-danger-rgb: var(--accent-danger-rgb);
+    --lpx-info: var(--accent-info);
+    --lpx-info-rgb: var(--accent-info-rgb);
+
+    --lpx-light: #e9ecef;
+
+    --lpx-light-rgb: 233, 236, 239;
+
+    /* Content container colors */
+    --lpx-content-text-rgb: var(--bs-body-color-rgb, 104, 107, 110);
+
+    --lpx-brand-text: #ffffff;
+    --lpx-container-active-text: #ffffff;
+    --lpx-text-white: #ffffff;
+    --lpx-text-grey: #d1d2d5;
+}
+
+/* 3) Light vs dark tweaks (keep brand same) */
+:root {
+
+    /* Light / dim */
+    .lpx-theme-light &,
+    .lpx-theme-dim & {
+        --lpx-content-text-rgb: var(--bs-body-color-rgb, 104, 107, 110);
+    }
+
+    /* Dark style – just darken content, keep brand colors */
+    .lpx-theme-dark & {
+        --bs-body-bg: #0f172a;
+        --bs-body-bg-rgb: 15, 23, 42;
+        --lpx-content-bg-rgb: 31, 41, 55;
+        --lpx-content-text-rgb: 248, 249, 250;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.content-header-title {
+    color: var(--brand-primary-dark);
+}
+
+/* ---------------------------------------------------------
+    4. Components – buttons, links, sidebar, cards, tables, forms
+   --------------------------------------------------------- */
+
+/* =========================================
+    Button theme (override bootstrap-dim.css)
+   ========================================= */
+
+/* Primary = brand-primary */
+.btn-primary {
+    $base: $brand-primary-medium;
+    $hover: color.scale($base, $lightness: -20%);
+    $active: color.scale($base, $lightness: -35%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -10%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 10%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.6);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+
+/* Secondary = brand-secondary */
+.btn-secondary {
+    $base: $brand-secondary-dark;
+    $hover: color.scale($base, $lightness: -20%);
+    $active: color.scale($base, $lightness: -35%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.6);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+/* Secondary = brand-tertiary */
+.btn-tertiary {
+    $base: $brand-tertiary-dark;
+    $hover: color.scale($base, $lightness: -8%);
+    $active: color.scale($base, $lightness: -16%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+
+/* Success = accent-success */
+.btn-success {
+    $base: $accent-success;
+    $hover: color.scale($base, $lightness: -8%);
+    $active: color.scale($base, $lightness: -16%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+/* Info = accent-info */
+.btn-info {
+    $base: $accent-info;
+    $hover: color.scale($base, $lightness: -8%);
+    $active: color.scale($base, $lightness: -16%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+/* Warning = accent-warning */
+.btn-warning {
+    $base: $accent-warning;
+    $hover: color.scale($base, $lightness: -6%);
+    $active: color.scale($base, $lightness: -12%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+/* Danger = accent-danger */
+.btn-danger {
+    $base: $accent-danger;
+    $hover: color.scale($base, $lightness: -8%);
+    $active: color.scale($base, $lightness: -16%);
+
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #{$base};
+    --bs-btn-border-color: #{$base};
+
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$hover};
+    --bs-btn-hover-border-color: #{color.scale($hover, $lightness: -5%)};
+    --bs-btn-focus-shadow-rgb: #{color-rgb(color.scale($base, $lightness: 6%))};
+
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{color.scale($active, $lightness: -10%)};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #{$base};
+    --bs-btn-disabled-border-color: #{$base};
+}
+
+/* =========================================
+    Outline buttons – themed with Forecast palette
+    ========================================= */
+
+/* Outline Primary = brand primary */
+.btn-outline-primary {
+
+    $base: $brand-primary;
+    $active: color.scale($base, $lightness: -15%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+/* Outline Secondary = brand secondary */
+.btn-outline-secondary {
+    $base: $brand-secondary-dark;
+    $active: color.scale($base, $lightness: -15%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+/* Outline tertiary = brand secondary */
+.btn-outline-tertiary {
+    $base: $brand-tertiary-dark;
+    $active: color.scale($base, $lightness: -8%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+
+/* Outline Success = accent-success */
+.btn-outline-success {
+    $base: $accent-success;
+    $active: color.scale($base, $lightness: -8%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+/* Outline Info = accent-info */
+.btn-outline-info {
+    $base: $accent-info;
+    $active: color.scale($base, $lightness: -8%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+/* Outline Warning = accent-warning */
+.btn-outline-warning {
+    $base: $accent-warning;
+    $active: color.scale($base, $lightness: -6%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+/* Outline Danger = accent-danger */
+.btn-outline-danger {
+    $base: $accent-danger;
+    $active: color.scale($base, $lightness: -8%);
+
+    --bs-btn-color: #{$base};
+    --bs-btn-border-color: #{$base};
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #{$base};
+    --bs-btn-hover-border-color: #{$base};
+    ;
+    --bs-btn-focus-shadow-rgb: #{$base};
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #{$active};
+    --bs-btn-active-border-color: #{$active};
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #{$base};
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #{$base};
+    --bs-gradient: none;
+}
+
+
+/* Link button – tied to your link colors */
+
+.btn-link {
+    --bs-btn-active-color: #{$brand-secondary};
+    text-decoration: none;
+}
+
+
+/* Links */
+a,
+.abp-link {
+    color: var(--bs-link-color);
+}
+
+
+a:hover,
+a:focus,
+.abp-link:hover {
+    color: var(--bs-link-hover-color);
+}
+
+a:active {
+    color: var(--brand-secondary)
+}
+
+
+/* Sidebar */
+
+.lpx-nav-menu .lpx-menu-item-link {
+    color: #c9cdd5;
+    transition: color 0.25s ease, background-color 0.3s ease;
+}
+
+.lpx-sidebar-container {
+    background: linear-gradient(90deg,
+            var(--brand-primary-dark),
+            var(--brand-primary-light));
+}
+
+.lpx-sidebar,
+.lpx-logo-container,
+.lpx-brand-name,
+.lpx-nav-menu {
+    background: transparent !important;
+}
+
+.lpx-sidebar-container .lpx-brand-name {
+    display: none;
+}
+
+.lpx-nav-menu .lpx-menu-item-link {
+    border-left: 2px solid transparent;
+}
+
+.lpx-nav-menu .lpx-menu-item-link:hover {
+    color: var(--lpx-text-white);
+    background: var(--brand-primary-medium);
+    border-left: 2px solid var(--brand-tertiary);
+    transform: scale(1.005);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+    animation: pulseGlow 1s ease-in-out infinite;
+}
+
+.lpx-nav-menu .lpx-menu-item-link.selected .lpx-menu-item-icon,
+.lpx-nav-menu .lpx-menu-item-link.selected .dd-icon,
+.lpx-nav-menu .lpx-menu-item-link.expanded .lpx-menu-item-icon,
+.lpx-nav-menu .lpx-menu-item-link.expanded .dd-icon {
+    color: var(--brand-tertiary-dark);
+}
+
+.lpx-nav-menu .lpx-inner-menu-item .lpx-menu-item-link.expanded,
+.lpx-nav-menu .lpx-inner-menu-item .lpx-menu-item-link.selected {
+    background-color: var(--brand-primary-medium) !important;
+    color: #ffffff;
+    border-left: 2px solid var(--brand-tertiary);
+}
+
+
+.lpx-nav-menu .lpx-menu-item-link.selected,
+.lpx-nav-menu .lpx-menu-item-link.expanded {
+    background-color: var(--brand-primary-medium) !important;
+    color: #ffffff;
+    border-left: 2px solid var(--brand-tertiary);
+}
+
+
+.lpx-nav-menu .lpx-menu-item-link:hover .lpx-menu-item-icon,
+.lpx-nav-menu .lpx-menu-item-link:hover .dd-icon {
+    color: #{color.scale($brand-tertiary, $lightness: 20%)};
+}
+
+.lpx-nav-menu .lpx-inner-menu-item .lpx-menu-item-link:hover {
+    color: var(--lpx-text-white);
+    background: var(--brand-primary-medium);
+    border-left: 2px solid var(--brand-tertiary);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.05);
+    animation: pulseGlow 1s ease-in-out infinite;
+}
+
+
+/* Top bar */
+
+.lpx-topbar-container {
+    background-color: var(--brand-primary-light);
+}
+
+.lpx-footbar-container {
+    background-color: var(--brand-primary-light);
+}
+
+.lpx-topbar-container .lpx-topbar {
+    border-radius: 0;
+}
+
+.lpx-footbar-container .lpx-footbar {
+    border-radius: 0 0 0 0.3em;
+}
+
+.lpx-topbar {
+    color: var(--text-secondary);
+    align-items: center;
+}
+
+.card,
+.lpx-card,
+.abp-card {
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Mobile top bar */
+.lpx-mobile-navbar-container,
+.lpx-mobile-navbar {
+    background: linear-gradient(90deg,
+            var(--brand-primary-dark),
+            var(--brand-primary-light));
+}
+
+.lpx-mobile-navbar,
+.user-menu-groups,
+.lpx-mobile-nav-items {
+    background-color: transparent;
+}
+
+
+.lpx-mobile-navbar-container .lpx-nav-menu .lpx-menu-item-link {
+    color: var(--lpx-text-grey);
+}
+
+.lpx-mobile-navbar-container .lpx-nav-menu .lpx-menu-item-link:hover {
+    color: var(--lpx-text-white);
+    background-color: var(--brand-primary-medium);
+}
+
+
+.lpx-mobile-navbar-container .lpx-nav-menu .lpx-menu-item-link.selected,
+.lpx-mobile-navbar-container .lpx-nav-menu .lpx-menu-item-link.expanded {
+    background-color: var(--brand-primary-medium);
+    color: #fff;
+}
+
+.lpx-mobile-navbar-container .lpx-brand-name {
+    display: none;
+}
+
+/* Tables */
+.table thead th {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.ngx-datatable.material .datatable-header .datatable-header-cell {
+    color: var(--brand-primary-dark);
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: none;
+}
+
+.ngx-datatable.material .datatable-body .datatable-row-wrapper .datatable-body-row .datatable-body-cell {
+    padding: 0.3rem 1rem !important;
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.table tbody tr:hover {
+    background-color: #{color.change($brand-tertiary-light, $alpha: 0.15)};
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    color: var(--text-primary);
+}
+
+select.form-select option:checked,
+select.form-select option:focus,
+select.form-select option:active {
+    background: var(--brand-primary-light) !important;
+}
+
+select.form-select option:hover {
+    background: var(--brand-primary-light) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.15rem rgba(var(--brand-primary-rgb), 0.25);
+}
+
+/* Dropdown menu items (ngbDropdown / Bootstrap .dropdown-item) */
+.dropdown-menu .dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: rgba(var(--brand-primary-rgb), 0.06);
+    color: var(--text-primary);
+}
+
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: var(--brand-primary);
+    color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+    2. Form & Component Customizations
+   --------------------------------------------------------- */
+
+/* Global Form Control Border Radius */
+.form-control,
+.form-select,
+.btn {
+    border-radius: 0.25rem;
+}
+
+.form-check-input:focus {
+    border-color: #e7e9ec;
+    box-shadow: 0 0 0 0.15rem #{color.change($brand-secondary, $alpha: 0.25)};
+}
+
+
+.form-switch .form-check-input:checked {
+    background-color: var(--brand-primary) !important;
+}
+
+.form-check-input[type=checkbox]:indeterminate {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+
+.has-validation .input-group-text {
+    border-color: var(--accent-danger);
+}
+
+
+.form-check-input:checked {
+    border-color: var(--brand-primary) !important;
+    background-color: var(--brand-primary) !important;
+}
+
+/* ---------------------------------------------------------
+    3. Third-Party Library Overrides
+   --------------------------------------------------------- */
+/* Angular CDK */
+.cdk-overlay-container {
+    z-index: 1100;
+}
+
+/* NGB Datepicker */
+.ngb-dp-navigation-select .form-select {
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
+}
+
+/* NG-ZORRO (Ant Design) Overrides */
+
+nz-select {
+    width: 100%;
+}
+
+.ant-select.ant-select-lg {
+    height: 44px;
+    font-size: .875rem;
+}
+
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-radius: 0.25rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: #e7e9ec;
+}
+
+/* ng-zorro select theming */
+.ant-select:not(.ant-select-disabled) .ant-select-selector {
+    box-shadow: none;
+    color: var(--text-primary);
+}
+
+.ant-select-selection-placeholder {
+    color: var(--text-primary);
+}
+
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-select:not(.ant-select-disabled):focus .ant-select-selector,
+.ant-select:not(.ant-select-disabled):active .ant-select-selector {
+    border-color: var(--brand-primary-light);
+    color: #161616;
+}
+
+.ant-select-focused:not(.ant-select-disabled) .ant-select-selector,
+.ant-select-open:not(.ant-select-disabled) .ant-select-selector {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 0.15rem rgba(var(--brand-primary-rgb), 0.25) !important;
+    outline: none;
+}
+
+.ant-select-disabled.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    background-color: #e7e9ec;
+    color: rgba(104, 107, 110, 0.5);
+    box-shadow: none;
+}
+
+.ant-select:not(.ant-select-disabled) .anticon {
+    background-color: var(--bg-primary); // did this to fix clear (x) icon bg color issue. rest icons are fine.
+}
+
+/* =========================================
+ABP Toaster (ToasterService) colors
+   ========================================= */
+
+.abp-toast {
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-md);
+    font-size: 0.875rem;
+}
+
+/* Success */
+.abp-toast.abp-toast-success {
+    background-color: var(--accent-success) !important;
+    border-color: var(--accent-success) !important;
+    color: #ffffff !important;
+}
+
+/* Info */
+.abp-toast.abp-toast-info {
+    background-color: var(--accent-info) !important;
+    border-color: var(--accent-info) !important;
+    color: #ffffff !important;
+}
+
+/* Warning */
+.abp-toast.abp-toast-warning {
+    background-color: var(--accent-warning) !important;
+    border-color: var(--accent-warning) !important;
+    color: #ffffff !important;
+}
+
+/* Error */
+.abp-toast.abp-toast-error {
+    background-color: var(--accent-danger) !important;
+    border-color: var(--accent-danger) !important;
+    color: #ffffff !important;
+}
+
+/* Reuired Label (*) */
+
+label {
+    color: var(--brand-primary-dark) !important;
+}
+
+label.required::after,
+.form-label.required::after,
+label[required]::after {
+    content: '*';
+    color: var(--accent-danger);
+    margin-left: 2px;
+}
+
+
+/* Abp Confirmation Dialog Box */
+
+.confirmation .confirmation-dialog .content .title {
+    color: #000;
+}
+
+/* If the title contains a span.confirmation-delete-title,
+   then style the confirm button in the footer */
+.confirmation .confirmation-dialog:has(.content .title .confirm-delete-title) .footer #confirm {
+    background-color: var(--accent-danger);
+    border-color: var(--accent-danger);
+    /* optional, if you want it consistent */
+}
+
+// abp confirmation dialog icon buttons
+.confirmation .confirmation-dialog .icon-container .icon {
+    stroke: var(--brand-secondary);
+    color: var(--brand-secondary);
+}
+
+.confirmation .confirmation-dialog .icon-container.info .icon {
+    stroke: var(--accent-info);
+    color: var(--accent-info);
+}
+
+.confirmation .confirmation-dialog .icon-container.success .icon {
+    stroke: var(--accent-success);
+    color: var(--accent-success);
+}
+
+.confirmation .confirmation-dialog .icon-container.warning .icon {
+    stroke: var(--accent-warning);
+    color: var(--accent-warning);
+}
+
+.confirmation .confirmation-dialog .icon-container.error .icon {
+    stroke: var(--accent-danger);
+    color: var(--accent-danger);
+}
+
+
+//-- Custom Components 
+// copy component 
+.copy-component {
+    color: var(--brand-secondary) !important;
+}
+
+// -------- BS NAV
+.nav-tabs {
+    --bs-nav-tabs-link-active-color: var(--brand-primary-dark);
+    --bs-nav-tabs-link-active-border-color: var(--brand-tertiary-light);
+}
+
+.nav-pills {
+    // --bs-nav-pills-border-radius: var(--bs-border-radius);
+    --bs-nav-pills-link-active-color: var(--brand-primary-dark);
+    --bs-nav-pills-link-active-bg: var(--brand-tertiary-light);
+}
+
+
+.nav-tabs .nav-item .nav-link.active {
+    border-bottom: 3px solid var(--brand-primary);
+}
+
+.nav-tabs .nav-item .nav-link:hover {
+    border-bottom: 3px solid var(--brand-primary);
+}
+
+.nav-tabs .dropdown-menu {
+    border-top: 3px solid var(--brand-primary);
+}
+
+// ----- BS Accordian (collapsable paragraphs)
+.accordion {
+    --bs-accordion-active-color: var(--brand-tertiary);
+    --bs-accordion-active-bg: var(--brand-tertiary-light);
+}
+
+
+// ----- BS pagiantion
+.pagination {
+    --bs-pagination-active-bg: var(--brand-tertiary-light);
+}
+
+.pagination .page-item .page-link:hover,
+.pagination .page-item .page-link:focus,
+.pagination .page-item .page-link:active {
+    color: var(--brand-primary-dark);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--brand-primary-dark);
+}
+
+
+// ------ BS Badge
+
+.badge.bg-brand {
+    color: #fff !important;
+    background-color: var(--brand-tertiary-light) !important;
+}
+
+.badge.bg-brand.soft {
+    color: var(--brand-tertiary-light) !important;
+    background-color: var(--brand-tertiary-dark) !important;
+}
+
+.badge.bg-primary {
+    color: #fff !important;
+    background-color: var(--brand-primary) !important;
+}
+
+.badge.bg-primary.soft {
+    color: var(--brand-tertiary) !important;
+    background-color: var(--brand-primary-dark) !important;
+}
+
+.badge.bg-secondary {
+    color: #fff !important;
+    background-color: var(--brand-secondary) !important;
+}
+
+.badge.bg-secondary.soft {
+    color: var(--brand-secondary) !important;
+    background-color: var(--brand-secondary-dark) !important;
+}
+
+
+.badge.bg-success {
+    color: #fff !important;
+    background-color: var(--accent-success) !important;
+}
+
+.badge.bg-success.soft {
+    color: var(--accent-success) !important;
+    background-color: rgba(79, 191, 103, 0.1) !important;
+}
+
+.badge.bg-info {
+    color: #fff !important;
+    background-color: var(--accent-info) !important;
+}
+
+.badge.bg-info.soft {
+    color: var(--accent-info) !important;
+    background-color: rgba(67, 138, 167, 0.1) !important;
+}
+
+.badge.bg-warning {
+    color: #fff !important;
+    background-color: var(--accent-warning) !important;
+}
+
+.badge.bg-warning.soft {
+    color: var(--accent-warning) !important;
+    background-color: rgba(255, 159, 56, 0.1) !important;
+}
+
+.badge.bg-danger {
+    color: #fff !important;
+    background-color: var(--accent-danger) !important;
+}
+
+.badge.bg-danger.soft {
+    color: var(--accent-danger) !important;
+    background-color: rgba(192, 13, 73, 0.1) !important;
+}
+
+
+// --- BS Text 
+
+.text-brand {
+    color: var(--brand-tertiary) !important;
+}
+
+.text-brand.soft {
+    color: var(--brand-tertiary-light) !important;
+}
+
+.text-primary {
+    color: var(--brand-primary) !important;
+}
+
+.text-primary.soft {
+    color: var(--brand-primary-light) !important;
+}
+
+.text-secondary {
+    color: var(--brand-secondary) !important;
+}
+
+.text-secondary.soft {
+    color: var(--brand-secondary-light) !important;
+}
+
+.text-success {
+    color: var(--accent-success) !important;
+}
+
+.text-info {
+    color: var(--accent-info) !important;
+}
+
+.text-warning {
+    color: var(--accent-warning) !important;
+}
+
+.text-danger {
+    color: var(--accent-danger) !important;
+}
+
+
+/* Stronger override for active scroll pills */
+/* Stronger override for active scroll pills (beats Lepton + _ngcontent) */
+.lpx-scroll-pills-container.lpx-scroll-pills-container.lpx-scroll-pills-container.lpx-scroll-pills-container ul li a.active.active.active.active {
+    color: #fff !important;
+    border-color: var(--brand-primary) !important;
+    background-color: var(--brand-primary) !important;
+}
+
+
+/* Ant Steps */
+.ant-steps-item-finish .ant-steps-item-icon {
+    background-color: #fff;
+    border-color: var(--brand-primary);
+}
+
+.anticon {
+    color: var(--brand-primary);
+}
+
+.ant-steps-item-process>.ant-steps-item-container>.ant-steps-item-icon {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+
+.ant-steps .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)>.ant-steps-item-container[role=button]:hover .ant-steps-item-icon {
+    border-color: var(--brand-primary);
+}
+
+.ant-steps-item-finish .ant-steps-item-icon>.ant-steps-icon,
+.ant-steps-item-custom.ant-steps-item-process .ant-steps-item-icon>.ant-steps-icon {
+    color: var(--brand-primary);
+}
+
+.ant-steps .ant-steps-item:not(.ant-steps-item-active)>.ant-steps-item-container[role=button]:hover .ant-steps-item-title {
+    color: var(--brand-primary);
+}
+
+.ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after {
+    background-color: var(--brand-primary);
+}
+
+.ant-steps .ant-steps-item:not(.ant-steps-item-active):not(.ant-steps-item-process)>.ant-steps-item-container[role=button]:hover .ant-steps-item-icon .ant-steps-icon {
+    color: var(--brand-primary);
+}
+
+.ant-steps-small .ant-steps-item-custom .ant-steps-item-icon>.ant-steps-icon {
+    font-size: 18px;
+}
+
+.ant-pagination-item:hover {
+    border-color: var(--brand-primary);
+}
+
+.ant-pagination-item a,
+.ant-pagination-item:hover a {
+    color: var(--brand-primary);
+}
+
+.ant-pagination-item-active {
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
+}
+
+.ant-pagination-item-active:hover {
+    border-color: var(--brand-primary);
+    background-color: var(--brand-primary);
+}
+
+.ant-pagination-item-active a,
+.ant-pagination-item-active:hover a {
+    color: #fff;
+}
+
+.ant-pagination-next:not(.ant-pagination-disabled):hover .ant-pagination-item-link,
+.ant-pagination-prev:not(.ant-pagination-disabled):hover .ant-pagination-item-link {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+}
+
+.currency-symbol {
+    font-family: "Poppins";
+    font-weight: 600;
+    font-size: 0.8rem; // slightly smaller than numbers
+    color: #606464bd; // subtle darker grey
+    margin-right: 0.15rem;
+    display: inline-block;
+    min-width: 0.85em;
+    text-align: right;
+}
+
+.cdk-overlay-container .customer-select-dropdown .ant-select-item-option-disabled {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    color: inherit !important;
+    opacity: 1 !important;
+}
+
+.cdk-overlay-container .customer-select-dropdown .ant-select-item-option-disabled * {
+    pointer-events: auto !important;
+}
+
+/* Hover (match your normal dropdown hover: rgba(var(--brand-primary-rgb), 0.06)) */
+.cdk-overlay-container .customer-select-dropdown .ant-select-item-option-disabled:hover,
+.cdk-overlay-container .customer-select-dropdown .ant-select-item-option-disabled.ant-select-item-option-active {
+    background-color: rgba(var(--brand-primary-rgb), 0.06) !important;
+}
+
+.ngx-actions-btn {
+    --btn-size: 25px;
+
+    width: var(--btn-size);
+    height: var(--btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+
+    color: var(--brand-secondary);
+    padding: 0;
+    line-height: 1;
+    font-size: 0.95rem;
+
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+
+    &:hover,
+    &:focus-visible,
+    &.show {
+        background-color: rgba(19, 77, 105, 0.10); // subtle brand tint
+        border-color: rgba(19, 77, 105, 0.25);
+        color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(19, 77, 105, 0.15);
+        outline: none;
+    }
+
+    &:active {
+        transform: translateY(0.5px);
+    }
+
+    &.dropdown-toggle::after {
+        display: none;
+    }
+}
+
+lpx-footer {
+    display: none;
+}
+
+.alert {
+  --bs-alert-padding-x: 1rem;
+  --bs-alert-padding-y: 1rem;
+  --bs-border-radius: 0.2rem;
+
+  &.alert-with-icon {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+
+    i {
+      font-size: 1.2rem;
+      padding-top: 0.2rem;
+    }
+  }
+
+  .alert-heading {
+    font-weight: 600;
+  }
+
+  // Bootstrap variants mapped to your accent tokens
+  &.alert-primary {
+    background-color: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary);
+
+    .alert-heading { color: var(--bs-primary); }
+  }
+
+  &.alert-secondary {
+    background-color: var(--bs-secondary-bg-subtle);
+    color: var(--bs-secondary);
+
+    .alert-heading { color: var(--bs-secondary); }
+  }
+
+  &.alert-success {
+    background-color: var(--accent-success-light);
+    color: var(--accent-success);
+
+    .alert-heading { color: var(--accent-success); }
+  }
+
+  &.alert-danger {
+    background-color: var(--accent-danger-light);
+    color: var(--accent-danger);
+
+    .alert-heading { color: var(--accent-danger); }
+  }
+
+  &.alert-warning {
+    background-color: var(--accent-warning-light);
+    color: var(--accent-warning);
+
+    .alert-heading { color: var(--accent-warning); }
+  }
+
+  &.alert-info {
+    background-color: var(--accent-info-light);
+    color: var(--accent-info);
+
+    .alert-heading { color: var(--accent-info); }
+  }
+
+  &.alert-light {
+    background-color: var(--bs-light-bg-subtle);
+    color: var(--bs-body-color);
+
+    .alert-heading { color: var(--bs-body-color); }
+  }
+
+  &.alert-dark {
+    background-color: var(--bs-dark-bg-subtle);
+    color: var(--bs-dark);
+
+    .alert-heading { color: var(--bs-dark); }
+  }
+}
+
+.badge {
+    --bs-border-radius: 0.2rem;
+}
+
+.form-group.is-invalid {
+    .form-control,
+    .form-select,
+    .ant-select-selector {
+        border-color: var(--bs-form-invalid-color);
+    }
+}

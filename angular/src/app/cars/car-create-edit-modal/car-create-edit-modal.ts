@@ -40,7 +40,7 @@ export class CarCreateEditModal {
     animation: true,
   };
 
-  externalCarDetails: ExternalCarDetailsDto;
+  external: ExternalCarDetailsDto;
 
   get canFetchVinDetails(): boolean {
     const ctrl = this.form.get('vin');
@@ -48,7 +48,7 @@ export class CarCreateEditModal {
   }
 
   get() {
-    this.externalCarDetails = null;
+    this.external = null;
     this.buildForm();
     this.resolveLookups();
 
@@ -186,7 +186,7 @@ export class CarCreateEditModal {
     this.carService
       .getExternalCarDetails(vin, modelYear)
       .subscribe(response => {
-        this.externalCarDetails = response;
+        this.external = response;
         this.resolveExternalCarResponse(response);
       });
   }

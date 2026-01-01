@@ -81,6 +81,13 @@
     "SuccessfullySaved": "Successfully Saved!",
     "NewCar": "New Car",
     "EditCar": "Edit Car",
-    "ContactId": "Contact ID"
+    "ContactId": "Contact ID",
+    "Car.VinQuery.SuccessTitle": "Query Successful!",
+    "Car.VinQuery.SuccessMessage": "The query against VIN returned a successful response.",
+
+    "Car.VinQuery.FailedTitle": "Query Failed!",
+    "Car.VinQuery.FailedMessage": "The query against VIN did not return a successful response from the external provider. Please try changing the Model Year or removing it from the form, then try again.",
+
+    "Car.VinQuery.ErrorDetails": "Error Details"
   }
 }
