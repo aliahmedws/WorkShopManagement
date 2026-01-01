@@ -1,6 +1,6 @@
 <abp-page [title]="'::Menu:Cars' | abpLocalization" *abpPermission="'WorkShopManagement.Cars'">
     <abp-page-toolbar-container class="col text-end">
-        <button class="btn btn-sm btn-outline-primary" *abpPermission="'WorkShopManagement.Cars'" (click)="create()">
+        <button class="btn btn-sm btn-outline-primary" *abpPermission="'WorkShopManagement.Cars.Create'" (click)="create()">
             <i class="fas fa-plus"></i>
             {{ '::AddNew' | abpLocalization }}
         </button>
