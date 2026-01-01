@@ -1762,6 +1762,268 @@
             }
           }
         },
+        "WorkShopManagement.Controllers.RadioOptions.RadioOptionController": {
+          "controllerName": "RadioOption",
+          "controllerGroupName": "RadioOptions",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.RadioOptions.RadioOptionController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.RadioOptions.IRadioOptionAppService",
+              "name": "IRadioOptionAppService",
+              "methods": [
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.RadioOptions.GetRadioOptionListDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.RadioOptions.GetRadioOptionListDto",
+                      "typeSimple": "WorkShopManagement.RadioOptions.GetRadioOptionListDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.RadioOptions.RadioOptionDto>",
+                    "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]"
+                  }
+                },
+                {
+                  "name": "CreateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.RadioOptions.CreateRadioOptionDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                      "typeSimple": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
+                    "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+                  }
+                },
+                {
+                  "name": "UpdateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                      "typeSimple": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
+                    "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+                  }
+                },
+                {
+                  "name": "DeleteAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetListAsyncByInput": {
+              "uniqueName": "GetListAsyncByInput",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/app/radio-options",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.RadioOptions.GetRadioOptionListDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.RadioOptions.GetRadioOptionListDto",
+                  "typeSimple": "WorkShopManagement.RadioOptions.GetRadioOptionListDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "ListItemId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.RadioOptions.RadioOptionDto>",
+                "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.RadioOptions.IRadioOptionAppService"
+            },
+            "CreateAsyncByInput": {
+              "uniqueName": "CreateAsyncByInput",
+              "name": "CreateAsync",
+              "httpMethod": "POST",
+              "url": "api/app/radio-options",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.RadioOptions.CreateRadioOptionDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                  "typeSimple": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                  "typeSimple": "WorkShopManagement.RadioOptions.CreateRadioOptionDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
+                "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.RadioOptions.IRadioOptionAppService"
+            },
+            "UpdateAsyncByIdAndInput": {
+              "uniqueName": "UpdateAsyncByIdAndInput",
+              "name": "UpdateAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/radio-options/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                  "typeSimple": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                  "typeSimple": "WorkShopManagement.RadioOptions.UpdateRadioOptionDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
+                "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.RadioOptions.IRadioOptionAppService"
+            },
+            "DeleteAsyncById": {
+              "uniqueName": "DeleteAsyncById",
+              "name": "DeleteAsync",
+              "httpMethod": "DELETE",
+              "url": "api/app/radio-options/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.RadioOptions.IRadioOptionAppService"
+            }
+          }
+        },
         "WorkShopManagement.External.Shared.TestAppService": {
           "controllerName": "Test",
           "controllerGroupName": "Test",
@@ -11294,6 +11556,138 @@
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.RadioOptions.CreateRadioOptionDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ListItemId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.RadioOptions.GetRadioOptionListDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ListItemId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.RadioOptions.RadioOptionDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ListItemId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.RadioOptions.UpdateRadioOptionDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ListItemId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": 64,
           "minimum": null,
           "maximum": null,
           "regex": null
