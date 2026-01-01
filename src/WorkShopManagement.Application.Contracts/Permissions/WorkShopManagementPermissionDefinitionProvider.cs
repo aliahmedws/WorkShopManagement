@@ -11,6 +11,10 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
     {
         var myGroup = context.AddGroup(WorkShopManagementPermissions.GroupName);
 
+        var carPermissions = myGroup.AddPermission(WorkShopManagementPermissions.Cars.Default, L("Permission:Cars"));
+        carPermissions.AddChild(WorkShopManagementPermissions.Cars.Create, L("Permission.Create"));
+        carPermissions.AddChild(WorkShopManagementPermissions.Cars.Edit, L("Permission.Edit"));
+        carPermissions.AddChild(WorkShopManagementPermissions.Cars.Delete, L("Permission.Delete"));
 
         var carModelsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarModels.Default, L("Permission:CarModels"));
 

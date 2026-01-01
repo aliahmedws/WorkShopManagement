@@ -16,6 +16,7 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.Cars;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
@@ -65,6 +66,9 @@ public class WorkShopManagementDbContext :
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
+
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<CarOwner> CarOwners { get; set; }
     
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
@@ -179,5 +183,49 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => new { x.CheckListId, x.Position });
         });
 
+        builder.Entity<Car>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Cars", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.OwnerId).IsRequired();
+            b.Property(x => x.ModelId).IsRequired();
+            b.Property(x => x.Color).IsRequired().HasMaxLength(CarConsts.MaxColorLength);
+            b.Property(x => x.ModelYear).IsRequired();
+            b.Property(x => x.Cnc).HasMaxLength(CarConsts.MaxCncLength);
+            b.Property(x => x.CncFirewall).HasMaxLength(CarConsts.MaxCncFirewallLength);
+            b.Property(x => x.CncColumn).HasMaxLength(CarConsts.MaxCncColumnLength);
+            b.Property(x => x.Notes).HasMaxLength(CarConsts.MaxNotesLength);
+            b.Property(x => x.MissingParts).HasMaxLength(CarConsts.MaxMissingPartsLength);
+
+            b.Property(x => x.Vin)
+                .IsRequired()
+                .HasMaxLength(CarConsts.VinLength)
+                .IsUnicode(false);
+            
+            b.HasIndex(x => x.Vin);
+
+            b.HasOne(x => x.Owner)
+                .WithMany()
+                .HasForeignKey(x => x.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Model)
+                .WithMany()
+                .HasForeignKey(x => x.ModelId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<CarOwner>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CarOwners", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired().HasMaxLength(CarOwnerConsts.MaxNameLength);
+            b.Property(x => x.Email).HasMaxLength(CarOwnerConsts.MaxEmailLength);
+            b.Property(x => x.ContactId).HasMaxLength(CarOwnerConsts.MaxContactIdLength);
+            
+            b.HasIndex(x => x.Name);
+        });
     }
 }
