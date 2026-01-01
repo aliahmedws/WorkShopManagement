@@ -20,6 +20,7 @@ using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -66,6 +67,7 @@ public class WorkShopManagementDbContext :
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
+    public DbSet<RadioOption> RadioOptions { get; set; }
     public DbSet<EntityAttachment> EntityAttachments { get; set; }
 
 
@@ -154,6 +156,26 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.CarModelId);
             b.HasIndex(x => x.Name);
         });
+
+        builder.Entity<RadioOption>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "RadioOptions", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.ListItemId).IsRequired();
+
+            b.Property(x => x.Name)
+                .IsRequired()
+                .HasMaxLength(RadioOptionConsts.MaxNameLength);
+
+            b.HasOne(x => x.ListItems)
+                .WithMany(x => x.RadioOptions)
+                .HasForeignKey(x => x.ListItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasIndex(x => x.ListItemId);
+        });
+
 
         builder.Entity<ListItem>(b =>
         {

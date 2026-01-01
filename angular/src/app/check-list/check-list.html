@@ -39,13 +39,6 @@
           <input type="number" class="form-control" formControlName="position" min="0" />
         </div>
 
-        <div class="col-12 col-md-3">
-          <label class="form-label">
-            {{ '::CheckListType' | abpLocalization }} <span class="text-danger">*</span>
-          </label>
-
-        </div>
-
         <div class="col-12 col-md-2 d-flex align-items-end">
           <button class="btn btn-primary" type="submit" [disabled]="form.invalid || !carModelId">
             <i class="fa fa-check me-1"></i>
@@ -89,11 +82,6 @@
       <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
       <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position"></ngx-datatable-column>
 
-      <ngx-datatable-column [name]="'::CheckListType' | abpLocalization">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ ('::Enum:CheckListType.' + row.checkListType) | abpLocalization }}
-        </ng-template>
-      </ngx-datatable-column>
 
       <ngx-datatable-column [name]="'::Action' | abpLocalization">
       <ng-template let-row="row" ngx-datatable-cell-template>

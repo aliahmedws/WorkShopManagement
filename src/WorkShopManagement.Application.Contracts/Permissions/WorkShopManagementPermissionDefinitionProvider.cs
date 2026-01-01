@@ -1,7 +1,6 @@
-using WorkShopManagement.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Localization;
-using Volo.Abp.MultiTenancy;
+using WorkShopManagement.Localization;
 
 namespace WorkShopManagement.Permissions;
 
@@ -23,6 +22,12 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Create, L("Permission:ListItems.Create"));
         listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Edit, L("Permission:ListItems.Edit"));
         listItemsPermission.AddChild(WorkShopManagementPermissions.ListItems.Delete, L("Permission:ListItems.Delete"));
+
+
+        var radioOptionsPermission = myGroup.AddPermission(WorkShopManagementPermissions.RadioOptions.Default, L("Permission:RadioOptions"));
+        radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Create, L("Permission:RadioOptions.Create"));
+        radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Edit, L("Permission:RadioOptions.Edit"));
+        radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Delete, L("Permission:RadioOptions.Delete"));
 
     }
 

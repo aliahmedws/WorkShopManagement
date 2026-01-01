@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -8,10 +9,13 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.ListItems;
 
 [RemoteService(isEnabled: false)]
+
+[Authorize(WorkShopManagementPermissions.ListItems.Default)]
 public class ListItemAppService : ApplicationService, IListItemAppService
 {
     private readonly IRepository<ListItem, Guid> _repository;
@@ -60,6 +64,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }
 
+
+    [Authorize(WorkShopManagementPermissions.ListItems.Create)]
     public async Task<ListItemDto> CreateAsync(CreateListItemDto input)
     {
         var name = input.Name?.Trim();
@@ -104,6 +110,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }
 
+
+    [Authorize(WorkShopManagementPermissions.ListItems.Edit)]
     public async Task<ListItemDto> UpdateAsync(Guid id, UpdateListItemDto input)
     {
         var entity = await _repository.GetAsync(id);
@@ -151,6 +159,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }
 
+
+    [Authorize(WorkShopManagementPermissions.ListItems.Delete)]
     public async Task DeleteAsync(Guid id)
     {
         await _repository.DeleteAsync(id);

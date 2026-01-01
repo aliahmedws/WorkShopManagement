@@ -20,6 +20,10 @@
     "Permission:ListItems.Create": "Create",
     "Permission:ListItems.Edit": "Edit",
     "Permission:ListItems.Delete": "Delete",
+    "Permission:RadioOptions": "Radio Options Management",
+    "Permission:RadioOptions.Create": "Create",
+    "Permission:RadioOptions.Edit": "Edit",
+    "Permission:RadioOptions.Delete": "Delete",
 
 
     "Enum:CheckListType.1": "Production",

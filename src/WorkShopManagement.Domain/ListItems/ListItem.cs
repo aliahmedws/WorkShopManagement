@@ -4,6 +4,7 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.ListItems;
 
@@ -26,9 +27,11 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
     public bool IsSeparator { get; set; }
 
     public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
+    public virtual ICollection<RadioOption> RadioOptions { get; set; }
 
     private ListItem()
     {
+        RadioOptions = new List<RadioOption>();
     }
 
     public ListItem(
