@@ -178,6 +178,7 @@ export class CheckList implements OnInit {
     this.service.create(input).subscribe(() => {
       this.resetForm();
       this.list.get();
+      this.isModalOpen = false;
       this.toaster.success('::SuccessfullyCreated.');
     });
   }
@@ -202,6 +203,6 @@ export class CheckList implements OnInit {
   }
 
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId }});
+    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId }});
   }
 }

@@ -1,3 +1,4 @@
+// list-item.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -18,6 +19,16 @@ import {
   UpdateListItemDto,
 } from '../proxy/list-items';
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
+
+type ListItemFormModel = {
+  name: string;
+  position: number;
+  commentType: number | null;
+  commentPlaceholder: string | null;
+  isAttachmentRequired: boolean;
+  isSeparator: boolean;
+  concurrencyStamp: string | null;
+};
 
 @Component({
   standalone: true,
@@ -48,7 +59,8 @@ export class ListItem implements OnInit {
 
   commentTypes = commentTypeOptions;
 
-  radioOptions: RadioOptionDto[] = [];
+  radioOptions: RadioOptionDto[] = [];     
+  pendingRadioNames: string[] = [];   
   radioOptionName = '';
   isRadioBusy = false;
 
@@ -114,14 +126,16 @@ export class ListItem implements OnInit {
 
       this.isModalOpen = true;
 
+      this.pendingRadioNames = [];
+      this.radioOptionName = '';
       this.loadRadioOptions();
     });
   }
 
-  save(){
+  save(): void {
     if (!this.checkListId) return;
 
-    const raw = this.form.getRawValue();
+    const raw = this.form.getRawValue() as ListItemFormModel;
     const isSep = !!raw.isSeparator;
 
     const name = (raw.name || '').trim();
@@ -147,14 +161,15 @@ export class ListItem implements OnInit {
         commentPlaceholder,
         isAttachmentRequired,
         isSeparator: isSep,
-        concurrencyStamp: raw.concurrencyStamp,
+        concurrencyStamp: raw.concurrencyStamp ?? undefined,
       };
 
       this.listItemService.update(this.selected.id, input).subscribe((updated) => {
         this.toaster.success('::SuccessfullyUpdated.');
-
         this.selected = updated ?? this.selected;
 
+        this.savePendingRadioOptions(this.selected.id);
+        this.isModalOpen = false;
         this.list.get();
         this.loadRadioOptions();
       });
@@ -174,8 +189,9 @@ export class ListItem implements OnInit {
 
     this.listItemService.create(input).subscribe((created) => {
       this.toaster.success('::SuccessfullyCreated.');
-
       this.selected = created;
+
+      this.savePendingRadioOptions(created.id);
 
       this.list.get();
       this.loadRadioOptions();
@@ -197,8 +213,7 @@ export class ListItem implements OnInit {
     });
   }
 
-  // Radio options
-
+  // Radio options (bulk save)
   loadRadioOptions(): void {
     const listItemId = this.selected?.id;
     if (!listItemId) {
@@ -215,29 +230,55 @@ export class ListItem implements OnInit {
   }
 
   addRadioOption(): void {
-    const listItemId = this.selected?.id;
     const name = (this.radioOptionName || '').trim();
+    if (!name) return;
 
-    if (!listItemId) {
-      this.toaster.warn('::SaveListItemFirst');
+    const lower = name.toLowerCase();
+
+    const existsInDb = this.radioOptions.some((x) => (x.name || '').trim().toLowerCase() === lower);
+    const existsPending = this.pendingRadioNames.some((x) => x.toLowerCase() === lower);
+
+    if (existsInDb || existsPending) {
+      this.toaster.warn('::AlreadyExists');
       return;
     }
 
-    if (!name) return;
-
-    const dto: CreateRadioOptionDto = { listItemId, name };
-
-    this.isRadioBusy = true;
-    this.radioOptionService.create(dto).subscribe({
-      next: (created) => {
-        this.radioOptions = [...this.radioOptions.filter((x) => x.id !== created.id), created];
-        this.radioOptionName = '';
-        this.toaster.success('::SuccessfullyCreated.');
-      },
-      error: () => (this.isRadioBusy = false),
-      complete: () => (this.isRadioBusy = false),
-    });
+    this.pendingRadioNames = [...this.pendingRadioNames, name];
+    this.radioOptionName = '';
   }
+
+  removePendingRadio(name: string): void {
+    this.pendingRadioNames = this.pendingRadioNames.filter((x) => x !== name);
+  }
+
+  private savePendingRadioOptions(listItemId: string): void {
+  const names = (this.pendingRadioNames || []).map(x => x.trim()).filter(Boolean);
+  if (!names.length) return;
+
+  this.isRadioBusy = true;
+
+  const dto = { listItemId, names } as any;
+
+  this.radioOptionService.create(dto).subscribe({
+    next: (res: any) => {
+      // Normalize to array no matter what backend returns
+      const created: RadioOptionDto[] = Array.isArray(res) ? res : (res ? [res] : []);
+
+      // Merge by id
+      const existingById = new Map<string, RadioOptionDto>(this.radioOptions.map(x => [x.id, x]));
+      for (const c of created) {
+        if (c?.id) existingById.set(c.id, c);
+      }
+      this.radioOptions = Array.from(existingById.values());
+
+      this.pendingRadioNames = [];
+      this.toaster.success('::SuccessfullyCreated.');
+    },
+    error: () => (this.isRadioBusy = false),
+    complete: () => (this.isRadioBusy = false),
+  });
+}
+
 
   deleteRadioOption(id: string): void {
     this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe((status) => {
@@ -256,6 +297,7 @@ export class ListItem implements OnInit {
   }
 
   // Separator behavior
+
   private buildForm(): void {
     this.form = this.fb.group({
       name: [this.selected.name ?? '', [Validators.required, Validators.maxLength(256)]],
@@ -282,17 +324,14 @@ export class ListItem implements OnInit {
     const placeholderCtrl = this.form.get('commentPlaceholder');
 
     if (isSep) {
-      // FORCE values
       attCtrl?.setValue(false, { emitEvent: false });
       typeCtrl?.setValue(null, { emitEvent: false });
       placeholderCtrl?.setValue(null, { emitEvent: false });
 
-      // DISABLE controls
       attCtrl?.disable({ emitEvent: false });
       typeCtrl?.disable({ emitEvent: false });
       placeholderCtrl?.disable({ emitEvent: false });
     } else {
-      // ENABLE controls
       attCtrl?.enable({ emitEvent: false });
       typeCtrl?.enable({ emitEvent: false });
       placeholderCtrl?.enable({ emitEvent: false });
@@ -323,7 +362,6 @@ export class ListItem implements OnInit {
     this.applySeparatorState(false);
   }
 
-
   private loadCheckListName(): void {
     if (!this.checkListId) {
       this.checkListName = null;
@@ -337,11 +375,12 @@ export class ListItem implements OnInit {
 
   private clearRadioUi(): void {
     this.radioOptions = [];
+    this.pendingRadioNames = [];
     this.radioOptionName = '';
     this.isRadioBusy = false;
   }
 
-  goBack(): void {
+  goBack() {
     this.router.navigate(['/check-lists'], {
       queryParams: { carModelId: this.route.snapshot.queryParamMap.get('carModelId') },
       queryParamsHandling: 'merge',

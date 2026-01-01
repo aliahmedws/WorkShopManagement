@@ -48,12 +48,11 @@
             </div>
           </ng-template>
         </ngx-datatable-column>
-
-        <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
         <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
 
         <!-- ListItems action button -->
-        <ngx-datatable-column [name]="'::Action' | abpLocalization" [sortable]="false">
+        <ngx-datatable-column [name]="'::Items' | abpLocalization" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button type="button" class="btn btn-outline-primary btn-sm" (click)="addListItem(row.id)">
               <i class="fa fa-list-check me-1"></i>

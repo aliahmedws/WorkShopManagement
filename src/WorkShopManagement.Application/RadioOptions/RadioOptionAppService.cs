@@ -32,23 +32,41 @@ public class RadioOptionAppService : ApplicationService, IRadioOptionAppService
     }
 
     [Authorize(WorkShopManagementPermissions.RadioOptions.Create)]
-    public async Task<RadioOptionDto> CreateAsync(CreateRadioOptionDto input)
+    public async Task<List<RadioOptionDto>> CreateAsync(CreateRadioOptionDto input)
     {
-        var name = input.Name?.Trim();
+        if (input.Names == null || input.Names.Count == 0)
+            return new List<RadioOptionDto>();
 
-        var exists = await _repository.AnyAsync(x =>
-            x.ListItemId == input.ListItemId &&
-            x.Name == name);
+        var normalized = input.Names
+            .Select(x => x?.Trim())
+            .Where(x => !x.IsNullOrWhiteSpace())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
 
-        if (exists)
-        {
-            throw new UserFriendlyException($"Radio option '{name}' already exists for this list item.");
-        }
+        if (normalized.Count == 0)
+            return new List<RadioOptionDto>();
 
-        var entity = new RadioOption(GuidGenerator.Create(), input.ListItemId, name!);
-        await _repository.InsertAsync(entity, autoSave: true);
+        var queryable = await _repository.GetQueryableAsync();
+        var existing = await AsyncExecuter.ToListAsync(
+            queryable.Where(x => x.ListItemId == input.ListItemId)
+            .Select(x => x.Name));
 
-        return ObjectMapper.Map<RadioOption, RadioOptionDto>(entity);
+        var existingSet = new HashSet<String>(existing, StringComparer.OrdinalIgnoreCase);
+
+        var toCreate = normalized
+        .Where(x => !existingSet.Contains(x))
+        .ToList();
+
+        if (toCreate.Count == 0)
+            return new List<RadioOptionDto>();
+
+        var entities = toCreate
+            .Select(name => new RadioOption(GuidGenerator.Create(), input.ListItemId, name))
+            .ToList();
+
+        await _repository.InsertManyAsync(entities, autoSave: true);
+
+        return ObjectMapper.Map<List<RadioOption>, List<RadioOptionDto>>(entities);
     }
 
     [Authorize(WorkShopManagementPermissions.RadioOptions.Edit)]
