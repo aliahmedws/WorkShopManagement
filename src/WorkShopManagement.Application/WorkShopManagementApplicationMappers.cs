@@ -1,10 +1,12 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.Cars;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.Lookups;
 
 namespace WorkShopManagement;
 
@@ -46,4 +48,18 @@ public partial class NhtsaRecallByVehicleResultEtoToNhtsaRecallByVehicleResultDt
 {
     public override partial NhtsaRecallByVehicleResultDto Map(NhtsaRecallByVehicleResultEto source);
     public override partial void Map(NhtsaRecallByVehicleResultEto source, NhtsaRecallByVehicleResultDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CarToCarDtoMapper : MapperBase<Car, CarDto>
+{
+    public override partial CarDto Map(Car source);
+    public override partial void Map(Car source, CarDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class GuidLookupToGuidLookupDto : MapperBase<GuidLookup, GuidLookupDto>
+{
+    public override partial GuidLookupDto Map(GuidLookup source);
+    public override partial void Map(GuidLookup source, GuidLookupDto destination);
 }
