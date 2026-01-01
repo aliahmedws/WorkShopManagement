@@ -9,7 +9,7 @@ using Volo.Abp.Uow;
 
 namespace WorkShopManagement.Bays;
 
-public class BayDataSeedContributor : IDataSeedContributor, ITransientDependency
+public class BayDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<Bay, Guid> _bayRepository;
 

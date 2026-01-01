@@ -1,108 +1,28 @@
 <div class="card mb-3">
-    <div class="card-header d-flex align-items-center justify-content-between">
+    <div class="card-header d-flex align-items-center justify-content-between mb-2">
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-link p-0" (click)="goBack()">
                 <i class="fa fa-arrow-left me-2"></i>
             </button>
 
-            <h5 class="card-title m-0">
-                {{ (isEditMode ? '::EditListItem' : '::NewListItem') | abpLocalization }}
-            </h5>
+            <h5 class="card-title m-0">{{ '::Menu:ListItems' | abpLocalization }}</h5>
+
+            <span class="text-muted small" *ngIf="checkListName">
+                ({{ checkListName }})
+            </span>
         </div>
 
-        <button *ngIf="isEditMode" type="button" class="btn btn-outline-secondary btn-sm" (click)="resetForm()">
-            {{ '::Cancel' | abpLocalization }}
+        <button *abpPermission="'WorkShopManagement.ListItems.Create'" class="btn btn-outline-primary btn-sm"
+            type="button" (click)="createListItem()" [disabled]="!checkListId">
+            <i class="fa fa-plus me-1"></i>
+            {{ '::NewListItem' | abpLocalization }}
         </button>
-    </div>
-
-    <div class="card-body">
-        <form [formGroup]="form" (ngSubmit)="save()">
-            <div class="row g-3">
-
-                <div class="col-12 col-md-4">
-                    <label class="form-label">
-                        {{ '::Name' | abpLocalization }} <span class="text-danger">*</span>
-                    </label>
-                    <input type="text" class="form-control" formControlName="name" />
-                </div>
-
-                <div class="col-12 col-md-2">
-                    <label class="form-label">
-                        {{ '::Position' | abpLocalization }} <span class="text-danger">*</span>
-                    </label>
-                    <input type="number" class="form-control" formControlName="position" min="0" />
-                </div>
-
-                <div class="col-12 col-md-3">
-                    <label class="form-label">
-                        {{ '::CommentType' | abpLocalization }} <span class="text-danger">*</span>
-                    </label>
-                    <select class="form-select" formControlName="commentType">
-                        <option *ngFor="let o of commentTypes" [ngValue]="o.value">
-                            {{ ('::Enum:CommentType.' + o.value) | abpLocalization }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="col-12 col-md-3">
-                    <label class="form-label">
-                        {{ '::CommentPlaceholder' | abpLocalization }}
-                    </label>
-                    <input type="text" class="form-control" formControlName="commentPlaceholder" />
-                    <small class="text-muted">
-                        {{ '::DefaultSameAsName' | abpLocalization }}
-                    </small>
-                </div>
-
-                <div class="row g-3 align-items-end mt-2">
-                    <!-- Is Separator -->
-                    <div class="col-12 col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" formControlName="isSeparator"
-                                id="isSeparator" />
-                            <label class="form-check-label" for="isSeparator">
-                                {{ '::IsSeparator' | abpLocalization }}
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Is Attachment Required -->
-                    <div class="col-12 col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" formControlName="isAttachmentRequired"
-                                id="isAttachmentRequired" [disabled]="form.get('isSeparator')?.value" />
-                            <label class="form-check-label" for="isAttachmentRequired">
-                                {{ '::IsAttachmentRequired' | abpLocalization }}
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Save Button -->
-                    <div class="col-12 col-md-6 d-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit" [disabled]="form.invalid || !checkListId">
-                            <i class="fa fa-check me-1"></i>
-                            {{ (isEditMode ? '::Update' : '::Save') | abpLocalization }}
-                        </button>
-                    </div>
-                </div>
-
-
-            </div>
-        </form>
     </div>
 </div>
 
+
 <!-- List Card -->
 <div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between">
-        <h5 class="card-title m-0">{{ '::Menu:ListItems' | abpLocalization }}</h5>
-
-        <div class="text-muted small">
-            <span>{{ '::CheckList' | abpLocalization }}:</span>
-            <strong>{{ checkListName || '-' }}</strong>
-        </div>
-    </div>
-
     <div class="card-body">
         <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [list]="list" default>
             <!-- Actions -->
@@ -134,12 +54,18 @@
 
             <ngx-datatable-column [name]="'::CommentType' | abpLocalization">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{ ('::Enum:CommentType.' + row.commentType) | abpLocalization }}
+                    <ng-container *ngIf="row?.commentType != null; else noValue">
+                        {{ ('::Enum:CommentType.' + row.commentType) | abpLocalization }}
+                    </ng-container>
+                    <ng-template #noValue>-</ng-template>
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::CommentPlaceholder' | abpLocalization"
-                prop="commentPlaceholder"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::CommentPlaceholder' | abpLocalization" prop="commentPlaceholder">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.commentPlaceholder ? row.commentPlaceholder : '-'}}
+                </ng-template>
+            </ngx-datatable-column>
 
             <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [maxWidth]="140">
                 <ng-template let-row="row" ngx-datatable-cell-template>
@@ -156,3 +82,141 @@
         </ngx-datatable>
     </div>
 </div>
+
+<abp-modal [(visible)]="isModalOpen">
+    <ng-template #abpHeader>
+        <h3>
+            {{ (selected?.id ? '::EditListItem' : '::NewListItem') | abpLocalization }}
+        </h3>
+    </ng-template>
+
+    <ng-template #abpBody>
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="row g-3">
+
+                <div class="col-12 col-md-8">
+                    <label class="form-label">
+                        {{ '::Name' | abpLocalization }} <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" formControlName="name" />
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label class="form-label">
+                        {{ '::Position' | abpLocalization }} <span class="text-danger">*</span>
+                    </label>
+                    <input type="number" class="form-control" formControlName="position" min="0" />
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label class="form-label">
+                        {{ '::CommentType' | abpLocalization }} <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select" formControlName="commentType">
+                        <option *ngFor="let o of commentTypes" [ngValue]="o.value">
+                            {{ ('::Enum:CommentType.' + o.value) | abpLocalization }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <label class="form-label">
+                        {{ '::CommentPlaceholder' | abpLocalization }}
+                    </label>
+                    <input type="text" class="form-control" formControlName="commentPlaceholder" />
+                    <small class="text-muted">
+                        {{ '::DefaultSameAsName' | abpLocalization }}
+                    </small>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="form-check mt-1">
+                        <input class="form-check-input" type="checkbox" formControlName="isSeparator"
+                            id="isSeparator" />
+                        <label class="form-check-label" for="isSeparator">
+                            {{ '::IsSeparator' | abpLocalization }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="form-check mt-1">
+                        <input class="form-check-input" type="checkbox" formControlName="isAttachmentRequired"
+                            id="isAttachmentRequired" />
+                        <label class="form-check-label" for="isAttachmentRequired">
+                            {{ '::IsAttachmentRequired' | abpLocalization }}
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="my-3" />
+            
+            <div class="row g-2" *ngIf="selected?.id" >
+                <div class="col-12">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="m-0">{{ '::RadioOptions' | abpLocalization }}</h6>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-8">
+                    <input type="text" class="form-control" [(ngModel)]="radioOptionName"
+                        [ngModelOptions]="{ standalone: true }" [disabled]="!selected?.id || isRadioBusy"
+                        [placeholder]="'::RadioOptionName' | abpLocalization" />
+                </div>
+
+                <div class="col-12 col-md-4 d-flex align-items-start">
+                    <button type="button" class="btn btn-outline-primary w-100" (click)="addRadioOption()"
+                        [disabled]="!selected?.id || !radioOptionName?.trim() || isRadioBusy">
+                        <i class="fa fa-plus me-1"></i>
+                        {{ '::Add' | abpLocalization }}
+                    </button>
+                </div>
+
+                <div class="col-12" *ngIf="selected?.id">
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{{ '::Name' | abpLocalization }}</th>
+                                    <th style="width: 100px;">{{ '::Actions' | abpLocalization }}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let o of radioOptions">
+                                    <td>{{ o.name }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                            (click)="deleteRadioOption(o.id)" [disabled]="isRadioBusy">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="!radioOptions?.length">
+                                    <td colspan="2" class="text-muted">
+                                        {{ '::NoData' | abpLocalization }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            {{ '::Cancel' | abpLocalization }}
+        </button>
+
+        <button type="submit" class="btn btn-primary" (click)="save()" [disabled]="form?.invalid || !checkListId">
+            <i class="fas fa-check"></i>
+            {{ (selected?.id ? '::Update' : '::Save') | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

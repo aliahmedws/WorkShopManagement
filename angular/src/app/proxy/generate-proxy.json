@@ -4924,6 +4924,41 @@
     }
   },
   "types": {
+    "System.Nullable<T0>": {
+      "baseType": "System.ValueType",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "T"
+      ],
+      "properties": [
+        {
+          "name": "HasValue",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Value",
+          "jsonName": null,
+          "type": "T",
+          "typeSimple": "T",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "Volo.Abp.Account.ChangePasswordInput": {
       "baseType": null,
       "isEnum": false,
@@ -10653,6 +10688,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "FileAttachments",
+          "jsonName": null,
+          "type": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
+          "typeSimple": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -10964,6 +11011,63 @@
         },
         {
           "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FileExtension",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Path",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BlobName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -11308,8 +11412,8 @@
         {
           "name": "CommentType",
           "jsonName": null,
-          "type": "WorkShopManagement.ListItems.CommentType",
-          "typeSimple": "enum",
+          "type": "WorkShopManagement.ListItems.CommentType?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11320,8 +11424,8 @@
         {
           "name": "IsAttachmentRequired",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11332,8 +11436,8 @@
         {
           "name": "IsSeparator",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11434,8 +11538,8 @@
         {
           "name": "CommentType",
           "jsonName": null,
-          "type": "WorkShopManagement.ListItems.CommentType",
-          "typeSimple": "enum",
+          "type": "WorkShopManagement.ListItems.CommentType?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11446,8 +11550,8 @@
         {
           "name": "IsAttachmentRequired",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11458,8 +11562,8 @@
         {
           "name": "IsSeparator",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11527,8 +11631,8 @@
         {
           "name": "CommentType",
           "jsonName": null,
-          "type": "WorkShopManagement.ListItems.CommentType",
-          "typeSimple": "enum",
+          "type": "WorkShopManagement.ListItems.CommentType?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11539,8 +11643,8 @@
         {
           "name": "IsAttachmentRequired",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11551,8 +11655,8 @@
         {
           "name": "IsSeparator",
           "jsonName": null,
-          "type": "System.Boolean",
-          "typeSimple": "boolean",
+          "type": "System.Boolean?",
+          "typeSimple": "boolean?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

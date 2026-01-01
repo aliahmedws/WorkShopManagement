@@ -45,6 +45,7 @@ export class CheckList implements OnInit {
 
   carModelId: string | null = null;
   carModelName: string | null = null;
+  isModalOpen = false;
 
   filters = {} as GetCheckListListDto;
 
@@ -108,6 +109,22 @@ export class CheckList implements OnInit {
     });
   }
 
+  createCheckList() {
+    if(!this.carModelId) return;
+
+    this.selected = {} as CheckListDto;
+    this.buildForm();
+    this.isModalOpen = true;
+  }
+
+  editCheckList(id: string) {
+    this.service.get(id).subscribe(dto => {
+      this.selected = dto;
+      this.buildForm();
+      this.isModalOpen = true;
+    })
+  }
+
   resetForm(): void {
     this.selected = {} as CheckListDto;
     this.form.reset({
@@ -144,9 +161,10 @@ export class CheckList implements OnInit {
       };
 
       this.service.update(this.selected.id, input).subscribe(() => {
-        this.toaster.success('::SuccessfullyUpdated.');
         this.resetForm();
         this.list.get();
+        this.isModalOpen = false;
+        this.toaster.success('::SuccessfullyUpdated.');
       });
       return;
     }
@@ -158,9 +176,9 @@ export class CheckList implements OnInit {
     };
 
     this.service.create(input).subscribe(() => {
-      this.toaster.success('::SuccessfullyCreated.');
       this.resetForm();
       this.list.get();
+      this.toaster.success('::SuccessfullyCreated.');
     });
   }
 
