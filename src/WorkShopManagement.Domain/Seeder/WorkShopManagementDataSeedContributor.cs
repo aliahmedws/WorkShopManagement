@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
@@ -31,10 +33,37 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
     [UnitOfWork]
     public virtual async Task SeedAsync(DataSeedContext context)
     {
-        await _baySeeder.SeedAsync(context);
+        var sw = Stopwatch.StartNew();
 
-        await _carModelSeeder.SeedAsync(context);
+        _logger.LogInformation(
+            "WorkShop seed started. PropertiesCount={PropertiesCount}",
+            context?.Properties?.Count ?? 0);
 
-        await _checkListSeeder.SeedAsync(context);
+        try
+        {
+            await RunStepAsync("Bays", () => _baySeeder.SeedAsync(context!));
+            await RunStepAsync("CarModels", () => _carModelSeeder.SeedAsync(context!));
+            await RunStepAsync("CheckLists", () => _checkListSeeder.SeedAsync(context!));
+
+            sw.Stop();
+            _logger.LogInformation("Workshop seed finished successfully. ElapsedMs={ElapsedMs}", sw.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            _logger.LogError(ex, "Workshop seed failed. ElapsedMs={ElapsedMs}", sw.ElapsedMilliseconds);
+            throw;
+        }
+    }
+
+    private async Task RunStepAsync(string stepName, Func<Task> action)
+    {
+        _logger.LogInformation("seeding {Step} started.", stepName);
+
+        var sw = Stopwatch.StartNew();
+        await action();
+        sw.Stop();
+
+        _logger.LogInformation("Seeding {Step} finished. ElapsedMs={ElapsedMs}", stepName, sw.ElapsedMilliseconds);
     }
 }

@@ -16,18 +16,15 @@ namespace WorkShopManagement.CarModels;
 public class CarModelDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<CarModel, Guid> _carModelRepository;
-    private readonly ICurrentTenant _currentTenant;
     private readonly IGuidGenerator _guidGenerator;
     private readonly IConfiguration _configuration;
 
     public CarModelDataSeedContributor(
         IRepository<CarModel, Guid> carModelRepository,
-        ICurrentTenant currentTenant,
         IGuidGenerator guidGenerator,
         IConfiguration configuration)
     {
         _carModelRepository = carModelRepository;
-        _currentTenant = currentTenant;
         _guidGenerator = guidGenerator;
         _configuration = configuration;
     }
@@ -35,22 +32,20 @@ public class CarModelDataSeedContributor : ITransientDependency
     [UnitOfWork]
     public virtual async Task SeedAsync(DataSeedContext context)
     {
-        using (_currentTenant.Change(context?.TenantId))
+        if (await _carModelRepository.AnyAsync())
         {
-            if (await _carModelRepository.AnyAsync())
-            {
-                return;
-            }
+            return;
+        }
 
-            var configuredDir = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
-            if (string.IsNullOrWhiteSpace(configuredDir))
-            {
-                throw new Exception("Missing configuration: Seed:CarModelsDir");
-            }
+        var configuredDir = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
+        if (string.IsNullOrWhiteSpace(configuredDir))
+        {
+            throw new Exception("Missing configuration: Seed:CarModelsDir");
+        }
 
-            var contentPath = Path.Combine(configuredDir, "images", "CarModels");
+        var contentPath = Path.Combine(configuredDir, "images", "CarModels");
 
-            var seeds = new List<(string Name, string FileName)>
+        var seeds = new List<(string Name, string FileName)>
             {
                 ("Challenger Charger DEPRECATED", "Challenger Charger DEPRECATED.jpg"),
                 ("Challenger Demon DEPRECATED", "Challenger Demon DEPRECATED.jpg"),
@@ -73,24 +68,23 @@ public class CarModelDataSeedContributor : ITransientDependency
                 ("Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
             };
 
-            foreach (var (name, fileName) in seeds)
-            {
-                var filePath = Path.Combine(contentPath, fileName);
+        foreach (var (name, fileName) in seeds)
+        {
+            var filePath = Path.Combine(contentPath, fileName);
 
-                var attachment = new FileAttachment(
-                    name: fileName,
-                    path: filePath,
-                    blobName: fileName
-                );
+            var attachment = new FileAttachment(
+                name: fileName,
+                path: filePath,
+                blobName: fileName
+            );
 
-                var carModel = new CarModel(
-                    _guidGenerator.Create(),
-                    name,
-                    attachment
-                );
+            var carModel = new CarModel(
+                _guidGenerator.Create(),
+                name,
+                attachment
+            );
 
-                await _carModelRepository.InsertAsync(carModel, autoSave: true);
-            }
+            await _carModelRepository.InsertAsync(carModel, autoSave: true);
         }
     }
 }
