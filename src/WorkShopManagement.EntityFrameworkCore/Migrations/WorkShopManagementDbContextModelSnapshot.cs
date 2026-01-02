@@ -2447,10 +2447,6 @@ namespace WorkShopManagement.Migrations
                             b1.Property<Guid>("CarModelId")
                                 .HasColumnType("uniqueidentifier");
 
-                            b1.Property<string>("FileExtension")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasMaxLength(256)
@@ -2498,14 +2494,6 @@ namespace WorkShopManagement.Migrations
                         {
                             b1.Property<Guid>("EntityAttachmentId")
                                 .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("BlobName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("FileExtension")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Name")
                                 .IsRequired()

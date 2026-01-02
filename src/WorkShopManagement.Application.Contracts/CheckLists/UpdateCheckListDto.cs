@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.CheckLists;
 
@@ -17,5 +20,9 @@ public class UpdateCheckListDto
     public bool? EnableIssueItems { get; set; }
     public bool? EnableTags { get; set; }
     public bool? EnableCheckInReport { get; set; }
-    public string? ConcurrencyStamp { get; set; }
+
+    [Required]
+    public string ConcurrencyStamp { get; set; } = default!;
+    public List<TempFileDto> TempFiles { get; set; } = [];
+    public List<EntityAttachmentDto> Attachments { get; set; } = [];
 }

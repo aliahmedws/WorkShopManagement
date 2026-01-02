@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.CheckLists;
 
@@ -16,4 +18,5 @@ public class CreateCheckListDto
     public bool? EnableIssueItems { get; set; }
     public bool? EnableTags { get; set; }
     public bool? EnableCheckInReport { get; set; }
+    public List<TempFileDto> TempFiles { get; set; } = [];
 }

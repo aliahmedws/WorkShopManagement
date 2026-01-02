@@ -94,7 +94,6 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        ConfigureBlobStoringOptions(context);
 
         if (!configuration.GetValue<bool>("App:DisablePII"))
         {
@@ -285,26 +284,4 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         app.UseConfiguredEndpoints();
     }
 
-    private void ConfigureBlobStoringOptions(ServiceConfigurationContext context)
-    {
-        var configuration = context.Services.GetConfiguration();
-        var env = context.Services.GetHostingEnvironment(); // IWebHostEnvironment in host
-
-        Configure<AbpBlobStoringOptions>(options =>
-        {
-            options.Containers.ConfigureDefault(container =>
-            {
-                container.UseFileSystem(fileSystem =>
-                {
-                    var storagePath = configuration["LocalStorageSetting:StoragePath"] ?? "images";
-                    var webRootPath = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
-
-                    var absolutePath = Path.Combine(webRootPath, storagePath);
-                    Directory.CreateDirectory(absolutePath);
-
-                    fileSystem.BasePath = absolutePath; // => wwwroot/images
-                });
-            });
-        });
-    }
 }

@@ -5,5 +5,5 @@ namespace WorkShopManagement.EntityAttachments.FileAttachments;
 [BlobContainerName(FileContainerName)]
 public class FileContainer
 {
-    public const string FileContainerName = "file";
+    public const string FileContainerName = "files";
 }

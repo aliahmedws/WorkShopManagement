@@ -105,8 +105,6 @@ public class WorkShopManagementDbContext :
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
                 fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
-                fa.Property(f => f.FileExtension).IsRequired();
-                fa.Property(f => f.BlobName).IsRequired();
             });
         });
 
@@ -122,7 +120,6 @@ public class WorkShopManagementDbContext :
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
                 fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
-                fa.Property(f => f.FileExtension).IsRequired();
             });
 
             b.HasIndex(x => x.Name);

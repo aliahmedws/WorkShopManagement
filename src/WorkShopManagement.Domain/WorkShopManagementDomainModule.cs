@@ -38,8 +38,8 @@ namespace WorkShopManagement;
     typeof(AbpIdentityDomainModule),
     typeof(AbpOpenIddictDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(BlobStoringDatabaseDomainModule)
-    //typeof(AbpBlobStoringFileSystemModule)
+    typeof(BlobStoringDatabaseDomainModule),
+    typeof(AbpBlobStoringFileSystemModule)
     )]
 public class WorkShopManagementDomainModule : AbpModule
 {
@@ -50,34 +50,25 @@ public class WorkShopManagementDomainModule : AbpModule
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
        
-        //ConfigureBlobStoringOptions(context.Services.GetConfiguration());
+        ConfigureBlobStoringOptions(context.Services.GetConfiguration());
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
     }
 
-    //private void ConfigureBlobStoringOptions(IConfiguration configuration)
-    //{
-    //    Configure<AbpBlobStoringOptions>(options =>
-    //    {
-    //        options.Containers.ConfigureDefault(container =>
-    //        {
-    //            container.UseFileSystem(fileSystem =>
-    //            {
-    //                var storagePath = configuration["LocalStorageSetting:StoragePath"] ?? "images/files";
-
-    //                var absolutePath = Path.Combine(
-    //                    Environment.CurrentDirectory, "wwwroot", storagePath);
-
-    //                if (!Directory.Exists(absolutePath))
-    //                {
-    //                    Directory.CreateDirectory(absolutePath);
-    //                }
-
-    //                fileSystem.BasePath = absolutePath;
-    //            });
-    //        });
-    //    });
-    //}
+    private void ConfigureBlobStoringOptions(IConfiguration configuration)
+    {
+        Configure<AbpBlobStoringOptions>(options =>
+        {
+            options.Containers.ConfigureDefault(container =>
+            {
+                container.UseFileSystem(fileSystem =>
+                {
+                    var baseDir = configuration["BlobStorageSettings:BaseDir"] ?? "storage";
+                    fileSystem.BasePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", baseDir);
+                });
+            });
+        });
+    }
 }

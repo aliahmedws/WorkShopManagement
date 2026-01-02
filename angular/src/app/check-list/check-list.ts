@@ -12,7 +12,7 @@ import { PageModule } from '@abp/ng.components/page';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
-import { PermissionDirective } from '@abp/ng.core'; 
+import { PermissionDirective } from '@abp/ng.core';
 import {
   CheckListDto,
   CheckListService,
@@ -20,6 +20,7 @@ import {
   CreateCheckListDto,
   GetCheckListListDto,
 } from '../proxy/check-lists';
+import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
 
 @Component({
   standalone: true,
@@ -47,7 +48,8 @@ export class CheckList implements OnInit {
   carModelName: string | null = null;
 
   filters = {} as GetCheckListListDto;
-
+  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
+  uploadedFiles: TempFileDto[] = [];
 
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
@@ -57,6 +59,7 @@ export class CheckList implements OnInit {
   private readonly router = inject(Router);
   private readonly carModelService = inject(CarModelService);
   private readonly toaster = inject(ToasterService);
+  private readonly uploadService = inject(UploadFileService);
 
   ngOnInit(): void {
     this.buildForm();
@@ -66,18 +69,14 @@ export class CheckList implements OnInit {
 
     this.filters.carModelId = this.carModelId;
 
-    const streamCreator = query => {
-      const input: GetCheckListListDto = {
-        skipCount: query.skipCount,
-        maxResultCount: query.maxResultCount,
-        sorting: query.sorting || 'position asc, name asc',
-        carModelId: this.carModelId ?? undefined,
-      };
+    const streamCreator = (query: GetCheckListListDto) => this.service.getList({...query, ...this.filters});
 
-      return this.service.getList(input);
-    };
+    this.list
+      .hookToQuery(streamCreator)
+      .subscribe((response: PagedResultDto<CheckListDto>) => {
+        this.checkLists = response;
+      })
 
-    this.list.hookToQuery(streamCreator).subscribe(res => (this.checkLists = res));
     this.list.get();
   }
 
@@ -100,11 +99,11 @@ export class CheckList implements OnInit {
   }
 
   buildForm(): void {
+    const {name, position, concurrencyStamp} = this.selected || {};
     this.form = this.fb.group({
-      name: [this.selected.name ?? '', [Validators.required, Validators.maxLength(128)]],
-      position: [this.selected.position ?? 0, [Validators.required, Validators.min(0)]],
-
-      concurrencyStamp: [null],
+      name: [name ?? '', [Validators.required, Validators.maxLength(128)]],
+      position: [position ?? 0, [Validators.required, Validators.min(0)]],
+      concurrencyStamp: [concurrencyStamp ?? null],
     });
   }
 
@@ -124,7 +123,7 @@ export class CheckList implements OnInit {
       this.form.setValue({
         name: dto.name ?? '',
         position: dto.position ?? 0,
-        concurrencyStamp: (dto as UpdateCheckListDto).concurrencyStamp ?? null,
+        concurrencyStamp: dto.concurrencyStamp ?? null,
       });
     });
   }
@@ -141,6 +140,8 @@ export class CheckList implements OnInit {
         name,
         position: raw.position,
         concurrencyStamp: raw.concurrencyStamp,
+        tempFiles: this.uploadedFiles,
+        attachments: this.selected.attachments,
       };
 
       this.service.update(this.selected.id, input).subscribe(() => {
@@ -155,6 +156,7 @@ export class CheckList implements OnInit {
       carModelId: this.carModelId,
       name,
       position: raw.position,
+      tempFiles: this.uploadedFiles,
     };
 
     this.service.create(input).subscribe(() => {
@@ -184,6 +186,43 @@ export class CheckList implements OnInit {
   }
 
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId }});
+    this.router.navigate(['list-items'], { queryParams: { checkListId } });
+  }
+
+  // Update onFileSelected and add helper methods
+  onFileSelected(event: any): void {
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+
+        formData.append('files', files[i]);
+
+      };
+
+      this.uploadService.uploadFile(formData).subscribe({
+        next: (res: TempFileDto[]) => {
+          // Add the returned files (with server URLs) to our list
+          this.uploadedFiles = [...this.uploadedFiles, ...res];
+          this.toaster.success('::SuccessfullyUploaded');
+        },
+        error: (err) => {
+          this.toaster.error('::UploadFailed');
+          console.error(err);
+        }
+      });
+
+    }
+    event.target.value = ''; 
+  }
+
+
+  removeFile(index: number): void {
+    this.uploadedFiles.splice(index, 1);
+  }
+
+  isImage(name: string): boolean {
+    if (!name) return false;
+    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
   }
 }

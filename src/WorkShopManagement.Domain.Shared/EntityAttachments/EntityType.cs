@@ -2,7 +2,7 @@
 {
     public enum EntityType
     {
-        Model = 1,
+        CarModel = 1,
         CheckList = 2,
         ListItem = 3,
 

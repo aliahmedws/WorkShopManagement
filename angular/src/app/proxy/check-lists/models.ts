@@ -1,4 +1,6 @@
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { EntityAttachmentDto } from '../entity-attachments/models';
+import type { TempFileDto } from '../temp-files/models';
 
 export interface CheckListDto extends FullAuditedEntityDto<string> {
   name?: string;
@@ -7,6 +9,8 @@ export interface CheckListDto extends FullAuditedEntityDto<string> {
   enableIssueItems?: boolean;
   enableTags?: boolean;
   enableCheckInReport?: boolean;
+  concurrencyStamp?: string;
+  attachments: EntityAttachmentDto[];
 }
 
 export interface CreateCheckListDto {
@@ -16,6 +20,7 @@ export interface CreateCheckListDto {
   enableIssueItems?: boolean;
   enableTags?: boolean;
   enableCheckInReport?: boolean;
+  tempFiles: TempFileDto[];
 }
 
 export interface GetCheckListListDto extends PagedAndSortedResultRequestDto {
@@ -23,6 +28,7 @@ export interface GetCheckListListDto extends PagedAndSortedResultRequestDto {
   name?: string;
   position?: number;
   carModelId?: string;
+  attachments: EntityAttachmentDto[];
 }
 
 export interface UpdateCheckListDto {
@@ -32,5 +38,7 @@ export interface UpdateCheckListDto {
   enableIssueItems?: boolean;
   enableTags?: boolean;
   enableCheckInReport?: boolean;
-  concurrencyStamp?: string;
+  concurrencyStamp: string;
+  tempFiles: TempFileDto[];
+  attachments: EntityAttachmentDto[];
 }
