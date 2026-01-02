@@ -28,7 +28,6 @@ export interface GetCheckListListDto extends PagedAndSortedResultRequestDto {
   name?: string;
   position?: number;
   carModelId?: string;
-  attachments: EntityAttachmentDto[];
 }
 
 export interface UpdateCheckListDto {

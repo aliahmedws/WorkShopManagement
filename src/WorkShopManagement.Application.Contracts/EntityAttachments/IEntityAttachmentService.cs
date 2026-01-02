@@ -5,7 +5,7 @@ using Volo.Abp.Application.Services;
 
 namespace WorkShopManagement.EntityAttachments;
 
-public interface IEntityAttachmentAppService : IApplicationService
+public interface IEntityAttachmentService : IApplicationService
 {
     Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input);
     Task<List<EntityAttachmentDto>> CreateAsync(CreateAttachmentDto input);

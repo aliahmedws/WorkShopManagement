@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.BlobStoring;
-using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Services;
-using Volo.Abp.MultiTenancy;
-using WorkShopManagement.Data;
 
 namespace WorkShopManagement.EntityAttachments.FileAttachments;
 
@@ -78,6 +74,14 @@ public class FileManager(
         //}
     }
 
+
+    public async Task DeleteFileAsync(string fileName)
+    {
+        if (!string.IsNullOrWhiteSpace(fileName))
+            throw new BusinessException("FileAttachment cannot be null.");
+
+        await _blobContainer.DeleteAsync(fileName);
+    }
     public async Task<byte[]> GetAllBytesAsync(string fileName, CancellationToken cancellationToken = default)
     {
         ValidateFileName(fileName);

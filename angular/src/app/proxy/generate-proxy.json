@@ -1186,18 +1186,6 @@
                 },
                 {
                   "nameOnMethod": "input",
-                  "name": "Attachments",
-                  "jsonName": null,
-                  "type": "System.Collections.Generic.List<WorkShopManagement.EntityAttachments.EntityAttachmentDto>",
-                  "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "input"
-                },
-                {
-                  "nameOnMethod": "input",
                   "name": "Sorting",
                   "jsonName": null,
                   "type": "System.String",
@@ -11128,18 +11116,6 @@
           "minimum": null,
           "maximum": null,
           "regex": null
-        },
-        {
-          "name": "Attachments",
-          "jsonName": null,
-          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
-          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
         }
       ]
     },
@@ -11261,7 +11237,7 @@
       ]
     },
     "WorkShopManagement.EntityAttachments.EntityAttachmentDto": {
-      "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,

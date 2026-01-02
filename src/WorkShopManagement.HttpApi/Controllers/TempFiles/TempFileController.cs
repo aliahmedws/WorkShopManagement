@@ -11,7 +11,7 @@ namespace WorkShopManagement.Controllers.TempFiles
     [RemoteService(IsEnabled = true)]
     [ControllerName("TempFile")]
     [Area("app")]
-    [Route("api/temp-file")]
+    [Route("api/app/temp-file")]
     public class TempFileController(ITempFileAppService tempFileAppService) : WorkShopManagementController, ITempFileAppService
     {
         [ApiExplorerSettings(IgnoreApi = true)]

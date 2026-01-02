@@ -113,6 +113,7 @@ export class ListItem implements OnInit {
   }
 
   createListItem(): void {
+    this.resetAttachmentAfterSave();
     this.resetForm();
     this.clearRadioUi();
     this.isModalOpen = true;
@@ -120,6 +121,7 @@ export class ListItem implements OnInit {
 
   closeModal(): void {
     this.isModalOpen = false;
+    this.resetAttachmentAfterSave();
     this.resetForm();
     this.clearRadioUi();
   }

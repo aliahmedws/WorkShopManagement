@@ -20,9 +20,9 @@ namespace WorkShopManagement.ListItems;
 public class ListItemAppService : ApplicationService, IListItemAppService
 {
     private readonly IRepository<ListItem, Guid> _repository;
-    private readonly IEntityAttachmentAppService _entityAttachmentAppService;
+    private readonly IEntityAttachmentService _entityAttachmentAppService;
 
-    public ListItemAppService(IRepository<ListItem, Guid> repository, IEntityAttachmentAppService entityAttachmentAppService)
+    public ListItemAppService(IRepository<ListItem, Guid> repository, IEntityAttachmentService entityAttachmentAppService)
     {
         _repository = repository;
         _entityAttachmentAppService = entityAttachmentAppService;
@@ -97,15 +97,15 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             throw new UserFriendlyException("Name is required.");
         }
 
-        var placeHolder = input.CommentPlaceholder;
+        var placeHolder = input.CommentPlaceholder.IsNullOrWhiteSpace()
+            ? name
+            : input.CommentPlaceholder.Trim();
 
         if (input.IsSeparator.HasValue)
         {
             input.IsAttachmentRequired = false;
 
-            placeHolder = input.CommentPlaceholder.IsNullOrWhiteSpace()
-                ? name
-                : input.CommentPlaceholder.Trim();
+            placeHolder = null;
         }
 
         var normalizedName = name.ToUpperInvariant();
@@ -167,7 +167,12 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder!.Trim();
 
-        var isAttachmentRequired = input.IsSeparator.HasValue ? false : input.IsAttachmentRequired;
+        if (input.IsSeparator.HasValue)
+        {
+            input.IsAttachmentRequired = false;
+
+            placeholder = null;
+        }
 
         var normalizedName = name.ToUpperInvariant();
 
@@ -201,7 +206,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             name,
             placeholder,
             input.CommentType,
-            isAttachmentRequired,
+            input.IsAttachmentRequired,
             input.IsSeparator
         );
 

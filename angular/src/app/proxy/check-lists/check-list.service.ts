@@ -40,7 +40,7 @@ export class CheckListService {
     this.restService.request<any, PagedResultDto<CheckListDto>>({
       method: 'GET',
       url: '/api/app/check-lists',
-      params: { filter: input.filter, name: input.name, position: input.position, carModelId: input.carModelId, attachments: input.attachments, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { filter: input.filter, name: input.name, position: input.position, carModelId: input.carModelId, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   

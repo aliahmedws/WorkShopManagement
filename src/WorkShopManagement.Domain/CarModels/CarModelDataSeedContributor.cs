@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,15 +19,19 @@ public class CarModelDataSeedContributor : ITransientDependency
     private readonly IRepository<CarModel, Guid> _carModelRepository;
     private readonly IGuidGenerator _guidGenerator;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<CarModelDataSeedContributor> _logger;
+
 
     public CarModelDataSeedContributor(
         IRepository<CarModel, Guid> carModelRepository,
-        IGuidGenerator guidGenerator,
+        ILogger<CarModelDataSeedContributor> logger,
+    IGuidGenerator guidGenerator,
         IConfiguration configuration)
     {
         _carModelRepository = carModelRepository;
         _guidGenerator = guidGenerator;
         _configuration = configuration;
+        _logger = logger;
     }
 
     [UnitOfWork]
@@ -34,6 +39,7 @@ public class CarModelDataSeedContributor : ITransientDependency
     {
         if (await _carModelRepository.AnyAsync())
         {
+            _logger.LogInformation("CarModel data is already added. Skipping.");
             return;
         }
 
@@ -45,6 +51,7 @@ public class CarModelDataSeedContributor : ITransientDependency
 
         var contentPath = Path.Combine(configuredDir, "images", "CarModels");
 
+        _logger.LogInformation("Seeding car model data");
         var seeds = new List<(string Name, string FileName)>
             {
                 ("Challenger Charger DEPRECATED", "Challenger Charger DEPRECATED.jpg"),
@@ -84,6 +91,9 @@ public class CarModelDataSeedContributor : ITransientDependency
             );
 
             await _carModelRepository.InsertAsync(carModel, autoSave: true);
+
         }
+
+        _logger.LogInformation("Added {0} car model records", seeds.Count);
     }
 }

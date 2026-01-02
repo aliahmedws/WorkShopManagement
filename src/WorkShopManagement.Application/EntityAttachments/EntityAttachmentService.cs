@@ -11,18 +11,12 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 namespace WorkShopManagement.EntityAttachments;
 
 [RemoteService(IsEnabled = false)]
-public class EntityAttachmentAppService : ApplicationService, IEntityAttachmentAppService
+public class EntityAttachmentService(
+    IRepository<EntityAttachment, Guid> repository,
+    FileManager fileManager) : ApplicationService, IEntityAttachmentService
 {
-    private readonly IRepository<EntityAttachment, Guid> _repository;
-    private readonly FileManager _fileManager;
-
-    public EntityAttachmentAppService(
-        IRepository<EntityAttachment, Guid> repository,
-        FileManager fileManager)
-    {
-        _repository = repository;
-        _fileManager = fileManager;
-    }
+    private readonly IRepository<EntityAttachment, Guid> _repository = repository;
+    private readonly FileManager _fileManager = fileManager;
 
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
@@ -74,7 +68,7 @@ public class EntityAttachmentAppService : ApplicationService, IEntityAttachmentA
 
         foreach (var f in input.TempFiles)
         {
-            var saved = await _fileManager.SaveFileAsync(f.Name, "listitem-attachments");
+            var saved = await _fileManager.SaveFileAsync(f.Name);
 
             entities.Add(new EntityAttachment(
                 id: GuidGenerator.Create(),
@@ -102,19 +96,16 @@ public class EntityAttachmentAppService : ApplicationService, IEntityAttachmentA
         var queryable = await _repository.GetQueryableAsync();
         var dbItems = await AsyncExecuter.ToListAsync(
             queryable
+                //.AsNoTracking()
                 .Where(x => x.EntityType.Equals(input.EntityType) && x.EntityId == input.EntityId && !keptIds.Contains(x.Id))
-                .Select(x => new { 
-                    x.Id,
-                    AttachmentName = x.Attachment.Name,
-                    AttachmentPath = x.Attachment.Path
-                })
+                .Select(x => new { x.Id, Name = x.Attachment.Name, Path = x.Attachment.Path  })
         );
 
         if (dbItems != null && dbItems.Count != 0)
         {
             foreach (var dbItem in dbItems)
             {
-                await _fileManager.DeleteFileAsync(new FileAttachment(dbItem.AttachmentName, dbItem.AttachmentPath));
+                await _fileManager.DeleteFileAsync(new FileAttachment(dbItem.Name, dbItem.Path));
 
             }
             var ids = dbItems.Select(x => x.Id).ToList();

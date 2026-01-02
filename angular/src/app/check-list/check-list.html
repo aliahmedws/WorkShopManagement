@@ -7,14 +7,11 @@
           <button type="button" class="btn btn-link p-0" (click)="goBack()">
             <i class="fa fa-arrow-left me-2"></i>
           </button>
-
           <h5 class="card-title m-0">{{ '::Menu:CheckLists' | abpLocalization }}</h5>
-
           <span class="text-muted small" *ngIf="carModelName">
             ({{ carModelName }})
           </span>
         </div>
-
         <button *abpPermission="'WorkShopManagement.CheckLists.Create'" class="btn btn-outline-primary btn-sm"
           type="button" (click)="createCheckList()" [disabled]="!carModelId">
           <i class="fa fa-plus me-1"></i>
@@ -23,12 +20,10 @@
       </div>
     </div>
   </abp-page-toolbar-container>
-
   <!-- List -->
   <div class="card">
     <div class="card-body">
       <ngx-datatable [rows]="checkLists.items" [count]="checkLists.totalCount" [list]="list" default>
-
         <!-- Actions dropdown -->
         <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
@@ -36,13 +31,11 @@
               <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
                 <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
               </button>
-
               <div ngbDropdownMenu>
                 <button ngbDropdownItem (click)="editCheckList(row.id)"
                   *abpPermission="'WorkShopManagement.CheckLists.Edit'">
                   {{ '::Edit' | abpLocalization }}
                 </button>
-
                 <button ngbDropdownItem (click)="delete(row.id)"
                   *abpPermission="'WorkShopManagement.CheckLists.Delete'">
                   {{ '::Delete' | abpLocalization }}
@@ -51,13 +44,10 @@
             </div>
           </ng-template>
         </ngx-datatable-column>
-
         <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position" [maxWidth]="120">
         </ngx-datatable-column>
-
         <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
         </ngx-datatable-column>
-
         <!-- ListItems action button -->
         <ngx-datatable-column [name]="'::ListItems' | abpLocalization" [sortable]="false" [maxWidth]="160">
           <ng-template let-row="row" ngx-datatable-cell-template>
@@ -67,18 +57,15 @@
             </button>
           </ng-template>
         </ngx-datatable-column>
-
       </ngx-datatable>
     </div>
   </div>
 </abp-page>
-
 <!-- Create/Edit Modal (includes attachments now) -->
 <abp-modal [(visible)]="isModalOpen" size="lg">
   <ng-template #abpHeader>
     <h3>{{ (selected?.id ? '::EditCheckList' : '::NewCheckList') | abpLocalization }}</h3>
   </ng-template>
-
   <ng-template #abpBody>
     <form [formGroup]="form" (ngSubmit)="save()">
       <div class="row g-3">
@@ -88,37 +75,30 @@
           </label>
           <input class="form-control" formControlName="name" />
         </div>
-
         <div class="col-12 col-md-4">
           <label class="form-label">
             {{ '::Position' | abpLocalization }} <span class="text-danger">*</span>
           </label>
           <input type="number" class="form-control" formControlName="position" min="0" />
         </div>
-
         <!-- Attachments -->
         <div class="col-12">
           <label class="form-label">{{ '::Attachments' | abpLocalization }}</label>
-
           <input #fileInput type="file" class="d-none" (change)="onFileSelected($event)" multiple />
-
           <div class="input-group mb-2">
             <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
               <i class="fa fa-folder-open me-2"></i>
               {{ '::ChooseFiles' | abpLocalization }}
             </button>
-
             <div class="form-control text-muted bg-transparent">
               {{ '::NoFileChosen' | abpLocalization }}
             </div>
           </div>
-
           <!-- NEW temp uploads: show immediately after user selects -->
           <div class="d-flex flex-wrap gap-3 mt-3" *ngIf="(uploadedFiles?.length ?? 0) > 0">
             <div class="position-relative" *ngFor="let item of uploadedFiles; let i = index">
               <img *ngIf="isImage(item.name)" [src]="item.path" class="border rounded"
                 style="width: 100px; height: 100px; object-fit: cover;" [title]="item.name" />
-
               <div *ngIf="!isImage(item.name)"
                 class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"
                 style="width: 100px; height: 100px;" [title]="item.name">
@@ -127,7 +107,6 @@
                   {{ item.name }}
                 </small>
               </div>
-
               <button type="button"
                 class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center"
                 style="width: 20px; height: 20px;" (click)="removeTempFile(i)" title="Remove temp file">
@@ -135,13 +114,11 @@
               </button>
             </div>
           </div>
-
           <!-- EXISTING saved attachments -->
           <div class="d-flex flex-wrap gap-3 mt-3" *ngIf="(selected?.attachments?.length ?? 0) > 0">
             <div class="position-relative" *ngFor="let att of selected.attachments; let i = index">
               <img *ngIf="isImage(att?.attachment?.name)" [src]="att?.attachment?.path" class="border rounded"
                 style="width: 100px; height: 100px; object-fit: cover;" [title]="att?.attachment?.name" />
-
               <div *ngIf="!isImage(att?.attachment?.name)"
                 class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"
                 style="width: 100px; height: 100px;" [title]="att?.attachment?.name">
@@ -150,7 +127,6 @@
                   {{ att?.attachment?.name }}
                 </small>
               </div>
-
               <button type="button"
                 class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center"
                 style="width: 20px; height: 20px;" (click)="removeExistingAttachment(i)"
@@ -160,16 +136,13 @@
             </div>
           </div>
         </div>
-
       </div>
     </form>
   </ng-template>
-
   <ng-template #abpFooter>
     <button type="button" class="btn btn-secondary" (click)="closeModal()">
       {{ '::Cancel' | abpLocalization }}
     </button>
-
     <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || !carModelId">
       <i class="fas fa-check"></i>
       {{ (selected?.id ? '::Update' : '::Save') | abpLocalization }}

@@ -22,7 +22,7 @@ export class UploadFileService {
     uploadFile = (file: FormData, config?: Partial<Rest.Config>) =>
         this.restService.request<any, TempFileDto[]>({
             method: 'POST',
-            url: `/api/temp-file/upload`,
+            url: `/api/app/temp-file/upload`,
             body:file
         },
     { apiName: this.apiName,...config });

@@ -19,15 +19,17 @@ namespace WorkShopManagement.CheckLists;
 public class CheckListAppService : ApplicationService, ICheckListAppService
 {
     private readonly IRepository<CheckList, Guid> _checkListRepository;
-    private readonly IEntityAttachmentAppService _entityAttachmentAppService;
+    private readonly IEntityAttachmentService _entityAttachmentAppService;
 
-    public CheckListAppService(IRepository<CheckList, Guid> checkListRepository, IEntityAttachmentAppService entityAttachmentAppService)
+    public CheckListAppService(IRepository<CheckList, Guid> checkListRepository
+        , IEntityAttachmentService entityAttachmentAppService
+        )
     {
         _checkListRepository = checkListRepository;
         _entityAttachmentAppService = entityAttachmentAppService;
     }
 
-    public async Task<PagedResultDto<CheckListDto>> GetListAsync(GetCheckListListDto input)
+    public async Task<PagedResultDto<CheckListDto?>> GetListAsync(GetCheckListListDto input)
     {
         var queryable = await _checkListRepository.GetQueryableAsync();
 
@@ -60,7 +62,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             });
             dto.Attachments = attachments!;
         }
-        return new PagedResultDto<CheckListDto>(totalCount, dtos);
+        return new PagedResultDto<CheckListDto?>(totalCount, dtos);
     }
 
     public async Task<CheckListDto> GetAsync(Guid id)
@@ -84,6 +86,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
     public async Task<CheckListDto> CreateAsync(CreateCheckListDto input)
     {
         var name = input.Name?.Trim();
+
 
         var exists = await _checkListRepository.AnyAsync(x =>
             x.CarModelId == input.CarModelId &&

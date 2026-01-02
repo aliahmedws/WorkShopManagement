@@ -65,4 +65,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\storage\host\files\" />
+    <Folder Include="wwwroot\storage\host\temp-files\" />
+  </ItemGroup>
+
 </Project>

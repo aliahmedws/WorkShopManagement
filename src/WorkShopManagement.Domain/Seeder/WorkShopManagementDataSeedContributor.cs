@@ -58,7 +58,7 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
 
     private async Task RunStepAsync(string stepName, Func<Task> action)
     {
-        _logger.LogInformation("seeding {Step} started.", stepName);
+        _logger.LogInformation("Seeding {Step} started.", stepName);
 
         var sw = Stopwatch.StartNew();
         await action();
