@@ -7,7 +7,6 @@ using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
-using WorkShopManagement.FileAttachments;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.Lookups;
 using WorkShopManagement.RadioOptions;
