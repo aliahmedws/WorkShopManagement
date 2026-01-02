@@ -25,7 +25,7 @@ export class Cars implements OnInit {
   selectedId?: string;
 
   ngOnInit(): void {
-    const carStreamCreator = (query: any) => this.carService.getList(query);
+    const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
   }
 

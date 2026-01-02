@@ -53,6 +53,7 @@ export interface ExternalCarDetailsDto {
 }
 
 export interface GetCarListInput extends PagedAndSortedResultRequestDto {
+  filter?: string;
 }
 
 export interface UpdateCarDto {

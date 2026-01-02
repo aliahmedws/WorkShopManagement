@@ -49,7 +49,7 @@ export class CarService {
     this.restService.request<any, PagedResultDto<CarDto>>({
       method: 'GET',
       url: '/api/app/cars',
-      params: { sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { filter: input.filter, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   
