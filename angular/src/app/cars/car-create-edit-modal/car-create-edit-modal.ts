@@ -40,6 +40,8 @@ export class CarCreateEditModal {
     animation: true,
   };
 
+  loading: boolean = true;
+
   external: ExternalCarDetailsDto;
 
   get canFetchVinDetails(): boolean {
@@ -49,17 +51,21 @@ export class CarCreateEditModal {
 
   get() {
     this.external = null;
-    this.buildForm();
+    this.loading = true;
+    
     this.resolveLookups();
 
     if (!this.carId) {
+      this.buildForm();
+      this.loading = false;
       return;
     }
 
     this.carService
       .get(this.carId)
       .subscribe((dto: CarDto) => {
-        this.buildForm(dto)
+        this.buildForm(dto);
+        this.loading = false;
       });
   }
 
