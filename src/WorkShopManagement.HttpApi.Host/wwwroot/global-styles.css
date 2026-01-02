@@ -1,11 +1,7 @@
 :root {
-    --lpx-logo: url('/images/logo/logo.svg');
-    --lpx-logo-icon: url('/images/logo/logo.svg');
+    --lpx-logo: url('/images/logo/logo.png');
+    --lpx-logo-icon: url('/images/logo/logo.png');
 }
-    :root .abp-account-layout .lpx-brand-logo {
-        --lpx-logo: url('/images/logo/logo.svg');
-        background-position: left;
-    }
 
 .abp-account-layout .lpx-brand-name {
     display: none !important;
