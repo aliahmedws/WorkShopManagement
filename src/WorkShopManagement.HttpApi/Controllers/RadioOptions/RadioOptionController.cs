@@ -27,7 +27,7 @@ public class RadioOptionController : AbpController, IRadioOptionAppService
         => _appService.GetListAsync(input);
 
     [HttpPost]
-    public Task<RadioOptionDto> CreateAsync(CreateRadioOptionDto input)
+    public Task<List<RadioOptionDto>> CreateAsync(CreateRadioOptionDto input)
         => _appService.CreateAsync(input);
 
     [HttpPut("{id}")]

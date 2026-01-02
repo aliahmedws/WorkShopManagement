@@ -6,6 +6,7 @@ using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement;
 
@@ -57,4 +58,11 @@ public partial class EntityAttachmentMapper : MapperBase<EntityAttachment, Entit
 
     public partial FileAttachmentDto Map(FileAttachment source);
     public partial void Map(FileAttachment source, FileAttachmentDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class RadioOptionMapper : MapperBase<RadioOption, RadioOptionDto>
+{
+    public override partial RadioOptionDto Map(RadioOption source);
+    public override partial void Map(RadioOption source, RadioOptionDto destination);
 }

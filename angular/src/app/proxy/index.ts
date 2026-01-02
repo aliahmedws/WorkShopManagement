@@ -8,3 +8,4 @@ import * as Microsoft from './microsoft';
 import * as RadioOptions from './radio-options';
 import * as TempFiles from './temp-files';
 export { Bays, CarModels, CheckLists, EntityAttachments, External, ListItems, Microsoft, RadioOptions, TempFiles };
+export { Bays, CarModels, CheckLists, EntityAttachments, External, ListItems, RadioOptions };

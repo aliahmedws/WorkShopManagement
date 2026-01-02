@@ -18,13 +18,13 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
 
     public string Name { get; set; } = default!;
 
-    public string CommentPlaceholder { get; set; } = default!;
+    public string? CommentPlaceholder { get; set; } = default!;
 
-    public CommentType CommentType { get; set; }
+    public CommentType? CommentType { get; set; }
 
-    public bool IsAttachmentRequired { get; set; }
+    public bool? IsAttachmentRequired { get; set; }
 
-    public bool IsSeparator { get; set; }
+    public bool? IsSeparator { get; set; }
 
     public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
     public virtual ICollection<RadioOption> RadioOptions { get; set; }
@@ -39,10 +39,10 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
         Guid checkListId,
         int position,
         string name,
-        string commentPlaceholder,
-        CommentType commentType,
-        bool isAttachmentRequired,
-        bool isSeparator) : base(id)
+        string? commentPlaceholder,
+        CommentType? commentType,
+        bool? isAttachmentRequired,
+        bool? isSeparator) : base(id)
     {
         CheckListId = checkListId;
         Position = position;
@@ -56,10 +56,10 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
     public void Update(
         int position,
         string name,
-        string commentPlaceholder,
-        CommentType commentType,
-        bool isAttachmentRequired,
-        bool isSeparator)
+        string? commentPlaceholder,
+        CommentType? commentType,
+        bool? isAttachmentRequired,
+        bool? isSeparator)
     {
         Position = position;
         Name = name;

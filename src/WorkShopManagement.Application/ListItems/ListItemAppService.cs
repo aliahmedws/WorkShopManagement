@@ -37,7 +37,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         if (!input.Filter.IsNullOrWhiteSpace())
         {
             var filter = input.Filter.Trim();
-            queryable = queryable.Where(x => x.Name.Contains(filter) || x.CommentPlaceholder.Contains(filter));
+            queryable = queryable.Where(x => x.Name.Contains(filter) || x.CommentPlaceholder!.Contains(filter));
         }
 
         var sorting = input.Sorting.IsNullOrWhiteSpace()
@@ -74,13 +74,15 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             throw new UserFriendlyException("Name is required.");
         }
 
-        var placeholder = input.CommentPlaceholder.IsNullOrWhiteSpace()
-            ? name
-            : input.CommentPlaceholder!.Trim();
+        var placeHolder = input.CommentPlaceholder;
 
-        if (input.IsSeparator)
+        if (input.IsSeparator.HasValue)
         {
             input.IsAttachmentRequired = false;
+
+            placeHolder = input.CommentPlaceholder.IsNullOrWhiteSpace()
+                ? name
+                : input.CommentPlaceholder.Trim();
         }
 
         var normalizedName = name.ToUpperInvariant();
@@ -94,12 +96,21 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             throw new UserFriendlyException($"List item '{name}' already exists in this checklist.");
         }
 
+        var positionExists = await _repository.AnyAsync(x =>
+            x.CheckListId == input.CheckListId &&
+            x.Position == input.Position);
+
+        if (positionExists)
+        {
+            throw new UserFriendlyException($"Position '{input.Position}' already exists for this checklist.");
+        }
+
         var entity = new ListItem(
             GuidGenerator.Create(),
             input.CheckListId,
             input.Position,
             name,
-            placeholder,
+            placeHolder,
             input.CommentType,
             input.IsAttachmentRequired,
             input.IsSeparator
@@ -126,7 +137,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder!.Trim();
 
-        var isAttachmentRequired = input.IsSeparator ? false : input.IsAttachmentRequired;
+        var isAttachmentRequired = input.IsSeparator.HasValue ? false : input.IsAttachmentRequired;
 
         var normalizedName = name.ToUpperInvariant();
 
@@ -138,6 +149,16 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         if (exists)
         {
             throw new UserFriendlyException($"List item '{name}' already exists in this checklist.");
+        }
+
+        var positionExists = await _repository.AnyAsync(x =>
+           x.Id != id &&
+           x.CheckListId == input.CheckListId &&
+           x.Position == input.Position);
+
+        if (positionExists)
+        {
+            throw new UserFriendlyException($"Position '{input.Position}' already exists for this checklist.");
         }
 
         if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())

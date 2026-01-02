@@ -7,8 +7,8 @@ export interface CreateListItemDto {
   name: string;
   commentPlaceholder?: string;
   commentType?: CommentType;
-  isAttachmentRequired: boolean;
-  isSeparator: boolean;
+  isAttachmentRequired?: boolean;
+  isSeparator?: boolean;
 }
 
 export interface GetListItemListDto extends PagedAndSortedResultRequestDto {
@@ -22,8 +22,8 @@ export interface ListItemDto extends FullAuditedEntityDto<string> {
   name?: string;
   commentPlaceholder?: string;
   commentType?: CommentType;
-  isAttachmentRequired: boolean;
-  isSeparator: boolean;
+  isAttachmentRequired?: boolean;
+  isSeparator?: boolean;
 }
 
 export interface UpdateListItemDto {
@@ -32,7 +32,7 @@ export interface UpdateListItemDto {
   name: string;
   commentPlaceholder?: string;
   commentType?: CommentType;
-  isAttachmentRequired: boolean;
-  isSeparator: boolean;
+  isAttachmentRequired?: boolean;
+  isSeparator?: boolean;
   concurrencyStamp?: string;
 }

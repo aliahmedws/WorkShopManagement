@@ -23,51 +23,17 @@
       ></ngx-datatable-column>
 
       <ngx-datatable-column
+        [sortable]="false"
         [name]="'::Image' | abpLocalization"
         prop=""
       >
       <ng-template let-row="row" ngx-datatable-cell-template>
-        <!-- @if (row.fileAttachments.path) {
+        @if (row.fileAttachments.path) {
           <img [src]="row.fileAttachments.path" alt="car-model-image" class="img-fluid" style="max-height: 50px;">
-        } -->
+        }
       </ng-template>
     </ngx-datatable-column>
-      <!-- <ngx-datatable-column
-        [name]="'::Image' | abpLocalization"
-        [sortable]="false"
-        [maxWidth]="160"
-      >
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <div class="d-flex align-items-center gap-2">
-            <img
-              *ngIf="row.fileAttachments?.path; else noImg"
-              [src]="row.fileAttachments.path"
-              alt="car"
-              style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid #e9ecef;"
-            />
-
-            <ng-template #noImg>
-              <div
-                class="d-flex align-items-center justify-content-center"
-                style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #e9ecef; background: #f8f9fa;"
-              >
-                <i class="fa fa-image text-muted"></i>
-              </div>
-            </ng-template>
-
-            <a
-              *ngIf="row.fileAttachments?.path"
-              class="btn btn-link btn-sm p-0"
-              [href]="row.fileAttachments.path"
-              target="_blank"
-              rel="noopener"
-            >
-              {{ '::View' | abpLocalization }}
-            </a>
-          </div>
-        </ng-template>
-      </ngx-datatable-column> -->
-
+   
       <!-- Add CheckList button -->
       <ngx-datatable-column
         [name]="'::Actions' | abpLocalization"

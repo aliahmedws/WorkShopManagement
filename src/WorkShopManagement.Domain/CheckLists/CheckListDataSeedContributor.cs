@@ -5,167 +5,93 @@ using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Guids;
 using Volo.Abp.Uow;
 using WorkShopManagement.CarModels;
-using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.CheckLists;
 
 public class CheckListDataSeedContributor : ITransientDependency
 {
+    private const string TargetCarModelName = "Ford F-150 Lightning";
+
     private readonly IRepository<CheckList, Guid> _checkListRepository;
     private readonly IRepository<CarModel, Guid> _carModelRepository;
-    private readonly IRepository<ListItem, Guid> _listItemRepository;
+    private readonly IGuidGenerator _guidGenerator;
 
     public CheckListDataSeedContributor(
         IRepository<CheckList, Guid> checkListRepository,
         IRepository<CarModel, Guid> carModelRepository,
-        IRepository<ListItem, Guid> listItemRepository)
+        IGuidGenerator guidGenerator)
     {
         _checkListRepository = checkListRepository;
         _carModelRepository = carModelRepository;
-        _listItemRepository = listItemRepository;
+        _guidGenerator = guidGenerator;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        var templates = GetModelTemplates();
-
-        var carModels = await _carModelRepository.GetListAsync();
-        var modelByName = carModels
-            .Where(m => !string.IsNullOrWhiteSpace(m.Name))
-            .ToDictionary(m => Normalize(m.Name), m => m);
-
-        foreach (var template in templates)
+        var carModel = await _carModelRepository.FirstOrDefaultAsync(x => x.Name == TargetCarModelName);
+        if (carModel == null)
         {
-            if (!modelByName.TryGetValue(Normalize(template.ModelName), out var model))
+            throw new Exception($"CarModel not found: '{TargetCarModelName}'.");
+        }
+
+        var seeds = GetFordLightning_CheckLists();
+
+        var existing = await _checkListRepository.GetListAsync(x => x.CarModelId == carModel.Id);
+        var existingNames = existing
+            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+            .Select(x => x.Name.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var s in seeds.OrderBy(x => x.Position))
+        {
+            if (existingNames.Contains(s.Name))
             {
-                throw new Exception($"CarModel not found for checklist seeding: '{template.ModelName}'.");
+                continue;
             }
 
-            var checklist = await _checkListRepository.FirstOrDefaultAsync(x =>
-                x.CarModelId == model.Id &&
-                x.Name == template.CheckListName);
-
-            if (checklist == null)
-            {
-                checklist = new CheckList(
-                    id: Guid.NewGuid(),
-                    name: template.CheckListName,
-                    position: template.CheckListPosition,
-                    carModelId: model.Id
-                );
-
-                await _checkListRepository.InsertAsync(checklist, autoSave: true);
-            }
-
-            await SeedListItemsIfMissingAsync(checklist.Id, template.Items);
-        }
-    }
-
-    private static async Task EnsureStepsNotEmpty(string modelName, List<ListItemSeed> items)
-    {
-        if (items == null || items.Count == 0)
-        {
-            throw new Exception($"ListItems are empty for model '{modelName}'.");
-        }
-        await Task.CompletedTask;
-    }
-
-    private async Task SeedListItemsIfMissingAsync(Guid checkListId, List<ListItemSeed> items)
-    {
-        await EnsureStepsNotEmpty("N/A", items);
-
-        var anyExisting = await _listItemRepository.AnyAsync(x => x.CheckListId == checkListId);
-        if (anyExisting)
-        {
-            return;
-        }
-
-        foreach (var it in items.OrderBy(x => x.Position))
-        {
-            var placeholder = string.IsNullOrWhiteSpace(it.CommentPlaceholder)
-                ? it.Name
-                : it.CommentPlaceholder!.Trim();
-
-            var isAttachmentRequired = it.IsSeparator ? false : it.IsAttachmentRequired;
-
-            var entity = new ListItem(
-                id: Guid.NewGuid(),
-                checkListId: checkListId,
-                position: it.Position,
-                name: it.Name.Trim(),
-                commentPlaceholder: placeholder,
-                commentType: it.CommentType,
-                isAttachmentRequired: isAttachmentRequired,
-                isSeparator: it.IsSeparator
+            var entity = new CheckList(
+                id: _guidGenerator.Create(),
+                name: s.Name,
+                position: s.Position,
+                carModelId: carModel.Id
             );
 
-            await _listItemRepository.InsertAsync(entity, autoSave: true);
+            //entity.EnableCheckList = s.IsEnabled;
+
+            await _checkListRepository.InsertAsync(entity, autoSave: true);
         }
     }
 
-    private static string Normalize(string value)
-        => value.Trim().ToUpperInvariant();
-
-
-    private static List<ModelTemplate> GetModelTemplates()
+    private static List<CheckListSeed> GetFordLightning_CheckLists()
         => new()
         {
-            new ModelTemplate(
-                ModelName: "Ford F-150 Lightning",
-                CheckListName: "Default",
-                CheckListPosition: 1,
-                Items: GetFordLightning_Items()
-            ),
-
-            new ModelTemplate(
-                ModelName: "F-150 Lightning Pro EXT",
-                CheckListName: "Default",
-                CheckListPosition: 1,
-                Items: GetFordLightning_Items()
-            ),
+            new(1,  "Station 0 - Receiving Compliance Audit", true),
+            new(2,  "Station 1A", true),
+            new(3,  "Station 1B", true),
+            new(4,  "Station 2", true),
+            new(5,  "Station 3A", true),
+            new(6,  "Station 3B", true),
+            new(7,  "Station 4", true),
+            new(8,  "Station 5 (QC)", true),
+            new(9,  "Wheel Alignment", true),
+            new(10, "Quality Control", true),
+            new(11, "Quality Release", true),
+            new(12, "Dash Remanufacture", true),
+            new(13, "HVAC", true),
+            new(14, "Centre Console", true),
+            new(15, "Seats Conversion", true),
+            new(16, "Leather Seat Kit", true),
+            new(17, "Sub Assembly Electrical", true),
+            new(18, "Invoice", true),
+            new(19, "Procurement", true),
+            new(20, "AVV Package", true),
+            new(21, "Pre-Delivery Inspection", true),
+            new(22, "Quality", true),
         };
 
-    private static List<ListItemSeed> GetFordLightning_Items()
-        => new()
-        {
-            new(1,  "Station 0 - Receiving Compliance Audit", null, CommentType.String, false, false),
-            new(2,  "Station 1A", null, CommentType.String, false, false),
-            new(3,  "Station 1B", null, CommentType.String, false, false),
-            new(4,  "Station 2", null, CommentType.String, false, false),
-            new(5,  "Station 3A", null, CommentType.String, false, false),
-            new(6,  "Station 3B", null, CommentType.String, false, false),
-            new(7,  "Station 4", null, CommentType.String, false, false),
-            new(8,  "Station 5 (QC)", null, CommentType.String, false, false),
-            new(9,  "Wheel Alignment", null, CommentType.String, false, false),
-            new(10, "Quality Control", null, CommentType.String, false, false),
-            new(11, "Quality Release", null, CommentType.String, false, false),
-            new(12, "Dash Remanufacture", null, CommentType.String, false, false),
-            new(13, "HVAC", null, CommentType.String, false, false),
-            new(14, "Centre Console", null, CommentType.String, false, false),
-            new(15, "Seats Conversion", null, CommentType.String, false, false),
-            new(16, "Leather Seat Kit", null, CommentType.String, false, false),
-            new(17, "Sub Assembly Electrical", null, CommentType.String, false, false),
-            new(18, "Invoice", null, CommentType.String, false, false),
-            new(19, "Procurement", null, CommentType.String, false, false),
-            new(20, "AVV Package", null, CommentType.String, false, false),
-            new(21, "Pre-Delivery Inspection", null, CommentType.String, false, false),
-            new(22, "Quality", null, CommentType.String, false, false),
-        };
-
-    private sealed record ModelTemplate(
-        string ModelName,
-        string CheckListName,
-        int CheckListPosition,
-        List<ListItemSeed> Items);
-
-    private sealed record ListItemSeed(
-        int Position,
-        string Name,
-        string? CommentPlaceholder,
-        CommentType CommentType,
-        bool IsAttachmentRequired,
-        bool IsSeparator);
+    private sealed record CheckListSeed(int Position, string Name, bool IsEnabled);
 }

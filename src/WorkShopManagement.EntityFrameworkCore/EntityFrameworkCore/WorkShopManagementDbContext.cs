@@ -183,13 +183,13 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.Name).IsRequired().HasMaxLength(256);
 
-            b.Property(x => x.CommentPlaceholder).IsRequired().HasMaxLength(512);
+            b.Property(x => x.CommentPlaceholder).IsRequired(false).HasMaxLength(512);
 
-            b.Property(x => x.CommentType).IsRequired();
+            b.Property(x => x.CommentType).IsRequired(false);
 
-            b.Property(x => x.IsAttachmentRequired).IsRequired();
+            b.Property(x => x.IsAttachmentRequired).IsRequired(false);
 
-            b.Property(x => x.IsSeparator).IsRequired();
+            b.Property(x => x.IsSeparator).IsRequired(false);
 
 
             b.HasOne(x => x.CheckLists)
