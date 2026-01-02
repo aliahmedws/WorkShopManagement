@@ -111,6 +111,7 @@
     "CopyService:Copied": "Text Copied: {0}",
     "RecordCreatedTitle": "Record Created!",
     "RecordUpdatedTitle": "Record Updated!",
-    "RecordDeletedTitle": "Record Deleted!"
+    "RecordDeletedTitle": "Record Deleted!",
+    "PhoneConfirmationSms": "Hello {0}! Here is your account confirmation code: {1}. If you didn't request this code, you can ignore this message. Please do not share this code with anyone."
   }
 }

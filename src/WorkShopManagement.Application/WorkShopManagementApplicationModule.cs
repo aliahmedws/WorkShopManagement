@@ -4,6 +4,7 @@ using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
+using Volo.Abp.Sms;
 using Volo.Abp.TenantManagement;
 using WorkShopManagement.External.Shared;
 
@@ -17,7 +18,8 @@ namespace WorkShopManagement;
     typeof(AbpIdentityApplicationModule),
     typeof(AbpAccountApplicationModule),
     typeof(AbpTenantManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule)
+    typeof(AbpSettingManagementApplicationModule),
+    typeof(AbpSmsModule)
     )]
 public class WorkShopManagementApplicationModule : AbpModule
 {

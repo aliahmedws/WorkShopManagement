@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,6 +44,7 @@ using Volo.Abp.VirtualFileSystem;
 using WorkShopManagement.EntityFrameworkCore;
 using WorkShopManagement.HealthChecks;
 using WorkShopManagement.MultiTenancy;
+using WorkShopManagement.Pages.Account;
 
 namespace WorkShopManagement;
 
@@ -126,6 +130,15 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
+        context.Services.AddAuthentication().AddCookie(ConfirmUserModel.ConfirmUserScheme, options =>
+        {
+            options.LoginPath = new PathString("/Account/Login");
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+            options.Events = new CookieAuthenticationEvents
+            {
+                OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync
+            };
+        });
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
