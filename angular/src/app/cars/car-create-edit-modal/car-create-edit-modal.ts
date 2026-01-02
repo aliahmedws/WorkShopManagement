@@ -1,10 +1,10 @@
-import { ToasterService } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarService, CarDto, ExternalCarDetailsDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
+import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 
 @Component({
   selector: 'app-car-create-edit-modal',
@@ -17,7 +17,7 @@ export class CarCreateEditModal {
   private readonly fb = inject(FormBuilder);
   private readonly carService = inject(CarService);
   private readonly lookupService = inject(LookupService);
-  private readonly toaster = inject(ToasterService);
+  private readonly toaster = inject(ToasterHelperService);
 
   @Input() carId?: string;
   @Output() submit = new EventEmitter<CarDto>();
@@ -150,11 +150,7 @@ export class CarCreateEditModal {
 
     req$
       .subscribe((dto: CarDto) => {
-        this.toaster.success(
-          this.carId
-            ? '::SuccessfullySaved'
-            : '::SuccessfullyCreated'
-        );
+        this.toaster.createdOrUpdated(this.carId);
         this.close();
         this.submit.emit(dto);
       });

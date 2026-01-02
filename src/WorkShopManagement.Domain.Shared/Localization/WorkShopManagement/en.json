@@ -100,6 +100,17 @@
     "Car.VinQuery.FailedTitle": "Query Failed!",
     "Car.VinQuery.FailedMessage": "The query against VIN did not return a successful response from the external provider. Please try changing the Model Year or removing it from the form, then try again.",
 
-    "Car.VinQuery.ErrorDetails": "Error Details"
+    "Car.VinQuery.ErrorDetails": "Error Details",
+    "Button:ConfirmDelete": "Yes, Delete!",
+    "DeleteConfirmationTitle": "<span class=\"confirm-delete-title\">Delete Record?</span>",
+    "DeleteConfirmationMessage": "By deleting this record, you agree to remove it and all related data from the system. Please be aware that once a record is deleted, it cannot be restored.",
+    "Button:Reset": "Reset",
+    "Button:Filter": "Filter",
+    "Button:SaveAndNext": "Save & Next",
+    "Button:SaveAndFinish": "Save & Finish",
+    "CopyService:Copied": "Text Copied: {0}",
+    "RecordCreatedTitle": "Record Created!",
+    "RecordUpdatedTitle": "Record Updated!",
+    "RecordDeletedTitle": "Record Deleted!"
   }
 }

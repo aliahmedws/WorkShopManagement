@@ -1,9 +1,9 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { ConfirmationService } from '@abp/ng.theme.shared';
 import { Component, inject, OnInit } from '@angular/core';
-import { CarService, CarDto } from '../proxy/cars';
+import { CarService, CarDto, GetCarListInput } from '../proxy/cars';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { CarCreateEditModal } from './car-create-edit-modal/car-create-edit-modal';
+import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 
 @Component({
   selector: 'app-cars',
@@ -15,9 +15,11 @@ import { CarCreateEditModal } from './car-create-edit-modal/car-create-edit-moda
 export class Cars implements OnInit {
   public readonly list = inject(ListService);
   private readonly carService = inject(CarService);
-  private readonly confirmation = inject(ConfirmationService);
+  private readonly confirmation = inject(ConfirmationHelperService);
 
   cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
+
+  filters = {} as GetCarListInput;
 
   isModalVisible = false;
   selectedId?: string;
@@ -38,7 +40,7 @@ export class Cars implements OnInit {
   }
   
   delete(id: string): void {
-    this.confirmation.warn('::CarDeletionConfirmation', '::AreYouSure').subscribe((status) => {
+    this.confirmation.confirmDelete().subscribe((status) => {
       if (status !== 'confirm') return;
 
       this.carService.delete(id).subscribe(() => this.list.get());

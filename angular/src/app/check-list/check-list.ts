@@ -15,18 +15,11 @@ import { PermissionDirective } from '@abp/ng.core';
 import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
+import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 @Component({
   standalone: true,
   selector: 'app-check-list',
-  imports: [
-    CommonModule,
-    PageModule,
-    ThemeSharedModule,
-    LocalizationPipe,
-    ReactiveFormsModule,
-    NgbDropdownModule,
-    PermissionDirective
-  ],
+  imports: [...SHARED_IMPORTS],
   templateUrl: './check-list.html',
   styleUrl: './check-list.scss',
   providers: [ListService],
