@@ -1816,8 +1816,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
-                    "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+                    "type": "System.Collections.Generic.List<WorkShopManagement.RadioOptions.RadioOptionDto>",
+                    "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]"
                   }
                 },
                 {
@@ -1934,8 +1934,8 @@
                 }
               ],
               "returnValue": {
-                "type": "WorkShopManagement.RadioOptions.RadioOptionDto",
-                "typeSimple": "WorkShopManagement.RadioOptions.RadioOptionDto"
+                "type": "System.Collections.Generic.List<WorkShopManagement.RadioOptions.RadioOptionDto>",
+                "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.RadioOptions.IRadioOptionAppService"
@@ -5080,6 +5080,41 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "System.Nullable<T0>": {
+      "baseType": "System.ValueType",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": [
+        "T"
+      ],
+      "properties": [
+        {
+          "name": "HasValue",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Value",
+          "jsonName": null,
+          "type": "T",
+          "typeSimple": "T",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11306,7 +11341,7 @@
           "regex": null
         },
         {
-          "name": "FileExtension",
+          "name": "Path",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -11683,6 +11718,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "TempFiles",
+          "jsonName": null,
+          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -11809,6 +11856,30 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Attachments",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -11908,6 +11979,30 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TempFiles",
+          "jsonName": null,
+          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Attachments",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -11937,10 +12032,10 @@
           "regex": null
         },
         {
-          "name": "Name",
+          "name": "Names",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "[System.String]",
+          "typeSimple": "[string]",
           "isRequired": true,
           "minLength": null,
           "maxLength": 64,

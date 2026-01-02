@@ -9,6 +9,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.ListItems;
@@ -19,10 +20,12 @@ namespace WorkShopManagement.ListItems;
 public class ListItemAppService : ApplicationService, IListItemAppService
 {
     private readonly IRepository<ListItem, Guid> _repository;
+    private readonly IEntityAttachmentAppService _entityAttachmentAppService;
 
-    public ListItemAppService(IRepository<ListItem, Guid> repository)
+    public ListItemAppService(IRepository<ListItem, Guid> repository, IEntityAttachmentAppService entityAttachmentAppService)
     {
         _repository = repository;
+        _entityAttachmentAppService = entityAttachmentAppService;
     }
 
     public async Task<PagedResultDto<ListItemDto>> GetListAsync(GetListItemListDto input)
@@ -55,13 +58,33 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         );
 
         var dtos = ObjectMapper.Map<List<ListItem>, List<ListItemDto>>(items);
+
+        foreach(var dto in dtos)
+        {
+            var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+            {
+                EntityId = dto.Id,
+                EntityType = EntityType.ListItem
+            });
+
+            dto.Attachments = attachments!;
+        }
         return new PagedResultDto<ListItemDto>(totalCount, dtos);
     }
 
     public async Task<ListItemDto> GetAsync(Guid id)
     {
         var entity = await _repository.GetAsync(id);
-        return ObjectMapper.Map<ListItem, ListItemDto>(entity);
+        var dto = ObjectMapper.Map<ListItem, ListItemDto>(entity);
+
+        var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+        {
+            EntityId = id,
+            EntityType = EntityType.ListItem
+        });
+
+        dto.Attachments = attachments!;
+        return dto;
     }
 
 
@@ -116,9 +139,16 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             input.IsSeparator
         );
 
-        await _repository.InsertAsync(entity, autoSave: true);
+        entity = await _repository.InsertAsync(entity, autoSave: true);
 
-        return ObjectMapper.Map<ListItem, ListItemDto>(entity);
+        await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
+        {
+            EntityType = EntityType.ListItem,
+            EntityId = entity.Id,
+            TempFiles = input.TempFiles
+        });
+
+        return await GetAsync(entity.Id);
     }
 
 
@@ -177,6 +207,14 @@ public class ListItemAppService : ApplicationService, IListItemAppService
 
         await _repository.UpdateAsync(entity, autoSave: true);
 
+        await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+        {
+            EntityId = entity.Id,
+            EntityType = EntityType.ListItem,
+            TempFiles = input.TempFiles,
+            Attachments = input.Attachments
+        });
+
         return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }
 
@@ -184,6 +222,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
     [Authorize(WorkShopManagementPermissions.ListItems.Delete)]
     public async Task DeleteAsync(Guid id)
     {
+        await _entityAttachmentAppService.DeleteAsync(id, EntityType.ListItem);
         await _repository.DeleteAsync(id);
     }
     

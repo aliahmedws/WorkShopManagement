@@ -1,11 +1,22 @@
 // list-item.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalizationPipe, ListService, PagedResultDto, PermissionDirective } from '@abp/ng.core';
-import { Confirmation, ConfirmationService, ThemeSharedModule, ToasterService } from '@abp/ng.theme.shared';
+import {
+  Confirmation,
+  ConfirmationService,
+  ThemeSharedModule,
+  ToasterService,
+} from '@abp/ng.theme.shared';
 import { PageModule } from '@abp/ng.components/page';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -19,6 +30,7 @@ import {
   UpdateListItemDto,
 } from '../proxy/list-items';
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
+import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
 
 type ListItemFormModel = {
   name: string;
@@ -59,10 +71,13 @@ export class ListItem implements OnInit {
 
   commentTypes = commentTypeOptions;
 
-  radioOptions: RadioOptionDto[] = [];     
-  pendingRadioNames: string[] = [];   
+  radioOptions: RadioOptionDto[] = [];
+  pendingRadioNames: string[] = [];
   radioOptionName = '';
   isRadioBusy = false;
+
+  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
+  uploadedFiles: TempFileDto[] = [];
 
   public readonly list = inject(ListService);
   private readonly listItemService = inject(ListItemService);
@@ -73,6 +88,7 @@ export class ListItem implements OnInit {
   private readonly toaster = inject(ToasterService);
   private readonly checkListService = inject(CheckListService);
   private readonly radioOptionService = inject(RadioOptionService);
+  private readonly uploadService = inject(UploadFileService);
 
   ngOnInit(): void {
     this.checkListId = this.route.snapshot.queryParamMap.get('checkListId');
@@ -81,7 +97,7 @@ export class ListItem implements OnInit {
     this.buildForm();
     this.attachSeparatorBehavior();
 
-    const streamCreator = (query) => {
+    const streamCreator = query => {
       const input: GetListItemListDto = {
         skipCount: query.skipCount,
         maxResultCount: query.maxResultCount,
@@ -92,7 +108,7 @@ export class ListItem implements OnInit {
       return this.listItemService.getList(input);
     };
 
-    this.list.hookToQuery(streamCreator).subscribe((res) => (this.listItems = res));
+    this.list.hookToQuery(streamCreator).subscribe(res => (this.listItems = res));
     this.list.get();
   }
 
@@ -109,7 +125,7 @@ export class ListItem implements OnInit {
   }
 
   edit(id: string): void {
-    this.listItemService.get(id).subscribe((dto) => {
+    this.listItemService.get(id).subscribe(dto => {
       this.selected = dto;
 
       this.form.setValue({
@@ -119,10 +135,12 @@ export class ListItem implements OnInit {
         commentPlaceholder: dto.commentPlaceholder ?? null,
         isAttachmentRequired: dto.isAttachmentRequired ?? false,
         isSeparator: dto.isSeparator ?? false,
-        concurrencyStamp: (dto as UpdateListItemDto).concurrencyStamp ?? null,
+        concurrencyStamp: dto.concurrencyStamp ?? null,
       });
 
       this.applySeparatorState(!!dto.isSeparator);
+      this.uploadedFiles = [];
+      this.selectedFiles = [];
 
       this.isModalOpen = true;
 
@@ -149,7 +167,7 @@ export class ListItem implements OnInit {
     const placeholderTrimmed = (raw.commentPlaceholder || '').trim();
 
     const commentType = isSep ? null : raw.commentType;
-    const commentPlaceholder = isSep ? null : (placeholderTrimmed || name);
+    const commentPlaceholder = isSep ? null : placeholderTrimmed || name;
     const isAttachmentRequired = isSep ? false : !!raw.isAttachmentRequired;
 
     if (this.selected?.id) {
@@ -161,13 +179,15 @@ export class ListItem implements OnInit {
         commentPlaceholder,
         isAttachmentRequired,
         isSeparator: isSep,
-        concurrencyStamp: raw.concurrencyStamp ?? undefined,
+        concurrencyStamp: raw.concurrencyStamp ?? this.selected.concurrencyStamp,
+        tempFiles: this.uploadedFiles,
+        attachments: this.selected.attachments,
       };
 
-      this.listItemService.update(this.selected.id, input).subscribe((updated) => {
-        this.toaster.success('::SuccessfullyUpdated.');
+      this.listItemService.update(this.selected.id, input).subscribe(updated => {
         this.selected = updated ?? this.selected;
 
+        this.resetAttachmentAfterSave();
         this.savePendingRadioOptions(this.selected.id);
         this.isModalOpen = false;
         this.list.get();
@@ -185,12 +205,14 @@ export class ListItem implements OnInit {
       commentPlaceholder,
       isAttachmentRequired,
       isSeparator: isSep,
+      tempFiles: this.uploadedFiles,
     };
 
-    this.listItemService.create(input).subscribe((created) => {
+    this.listItemService.create(input).subscribe(created => {
       this.toaster.success('::SuccessfullyCreated.');
       this.selected = created;
 
+      this.resetAttachmentAfterSave();
       this.savePendingRadioOptions(created.id);
 
       this.list.get();
@@ -199,7 +221,7 @@ export class ListItem implements OnInit {
   }
 
   delete(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe((status) => {
+    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
       if (status !== Confirmation.Status.confirm) return;
 
       this.listItemService.delete(id).subscribe(() => {
@@ -213,7 +235,47 @@ export class ListItem implements OnInit {
     });
   }
 
-  // Radio options (bulk save)
+  onFileSelected(event: any): void {
+    const files: FileList = event.target.files;
+    if (files && files.length > 0) {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+
+      this.uploadService.uploadFile(formData).subscribe({
+        next: (res: TempFileDto[]) => {
+          this.uploadedFiles = [...this.uploadedFiles, ...(res ?? [])];
+          event.target.value = '';
+        },
+        error: err => {
+          this.toaster.error('::UploadFailed');
+          console.error(err);
+        },
+      });
+    }
+  }
+
+  removeTempFile(index: number): void {
+    this.uploadedFiles.splice(index, 1);
+  }
+
+  removeExistingAttachment(index: number): void {
+    const existing = this.selected?.attachments ?? [];
+    existing.splice(index, 1);
+    this.selected.attachments = [...existing];
+  }
+
+  isImage(name: string): boolean {
+    if (!name) return false;
+    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
+  }
+
+  private clearAttachmentUi(): void {
+    this.selectedFiles = [];
+    this.uploadedFiles = [];
+  }
+
   loadRadioOptions(): void {
     const listItemId = this.selected?.id;
     if (!listItemId) {
@@ -223,7 +285,7 @@ export class ListItem implements OnInit {
 
     this.isRadioBusy = true;
     this.radioOptionService.getList({ listItemId }).subscribe({
-      next: (res) => (this.radioOptions = res ?? []),
+      next: res => (this.radioOptions = res ?? []),
       error: () => (this.isRadioBusy = false),
       complete: () => (this.isRadioBusy = false),
     });
@@ -235,8 +297,8 @@ export class ListItem implements OnInit {
 
     const lower = name.toLowerCase();
 
-    const existsInDb = this.radioOptions.some((x) => (x.name || '').trim().toLowerCase() === lower);
-    const existsPending = this.pendingRadioNames.some((x) => x.toLowerCase() === lower);
+    const existsInDb = this.radioOptions.some(x => (x.name || '').trim().toLowerCase() === lower);
+    const existsPending = this.pendingRadioNames.some(x => x.toLowerCase() === lower);
 
     if (existsInDb || existsPending) {
       this.toaster.warn('::AlreadyExists');
@@ -248,46 +310,43 @@ export class ListItem implements OnInit {
   }
 
   removePendingRadio(name: string): void {
-    this.pendingRadioNames = this.pendingRadioNames.filter((x) => x !== name);
+    this.pendingRadioNames = this.pendingRadioNames.filter(x => x !== name);
   }
 
   private savePendingRadioOptions(listItemId: string): void {
-  const names = (this.pendingRadioNames || []).map(x => x.trim()).filter(Boolean);
-  if (!names.length) return;
+    const names = (this.pendingRadioNames || []).map(x => x.trim()).filter(Boolean);
+    if (!names.length) return;
 
-  this.isRadioBusy = true;
+    this.isRadioBusy = true;
 
-  const dto = { listItemId, names } as any;
+    const dto = { listItemId, names } as any;
 
-  this.radioOptionService.create(dto).subscribe({
-    next: (res: any) => {
-      // Normalize to array no matter what backend returns
-      const created: RadioOptionDto[] = Array.isArray(res) ? res : (res ? [res] : []);
+    this.radioOptionService.create(dto).subscribe({
+      next: (res: any) => {
+        const created: RadioOptionDto[] = Array.isArray(res) ? res : res ? [res] : [];
 
-      // Merge by id
-      const existingById = new Map<string, RadioOptionDto>(this.radioOptions.map(x => [x.id, x]));
-      for (const c of created) {
-        if (c?.id) existingById.set(c.id, c);
-      }
-      this.radioOptions = Array.from(existingById.values());
+        const existingById = new Map<string, RadioOptionDto>(this.radioOptions.map(x => [x.id, x]));
+        for (const c of created) {
+          if (c?.id) existingById.set(c.id, c);
+        }
+        this.radioOptions = Array.from(existingById.values());
 
-      this.pendingRadioNames = [];
-      this.toaster.success('::SuccessfullyCreated.');
-    },
-    error: () => (this.isRadioBusy = false),
-    complete: () => (this.isRadioBusy = false),
-  });
-}
-
+        this.pendingRadioNames = [];
+        this.toaster.success('::SuccessfullyCreated.');
+      },
+      error: () => (this.isRadioBusy = false),
+      complete: () => (this.isRadioBusy = false),
+    });
+  }
 
   deleteRadioOption(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe((status) => {
+    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
       if (status !== Confirmation.Status.confirm) return;
 
       this.isRadioBusy = true;
       this.radioOptionService.delete(id).subscribe({
         next: () => {
-          this.radioOptions = this.radioOptions.filter((x) => x.id !== id);
+          this.radioOptions = this.radioOptions.filter(x => x.id !== id);
           this.toaster.success('::SuccessfullyDeleted.');
         },
         error: () => (this.isRadioBusy = false),
@@ -300,13 +359,13 @@ export class ListItem implements OnInit {
 
   private buildForm(): void {
     this.form = this.fb.group({
-      name: [this.selected.name ?? '', [Validators.required, Validators.maxLength(256)]],
+      name: [this.selected.name ?? '', [Validators.required, Validators.maxLength(128)]],
       position: [this.selected.position ?? 0, [Validators.required, Validators.min(0)]],
       commentType: [this.selected.commentType ?? null],
-      commentPlaceholder: [this.selected.commentPlaceholder ?? null, [Validators.maxLength(256)]],
+      commentPlaceholder: [this.selected.commentPlaceholder ?? null, [Validators.maxLength(128)]],
       isAttachmentRequired: [this.selected.isAttachmentRequired ?? false],
       isSeparator: [this.selected.isSeparator ?? false],
-      concurrencyStamp: [null],
+      concurrencyStamp: [this.selected.concurrencyStamp ?? null],
     });
 
     this.applySeparatorState(!!this.form.get('isSeparator')?.value);
@@ -368,7 +427,7 @@ export class ListItem implements OnInit {
       return;
     }
 
-    this.checkListService.get(this.checkListId).subscribe((dto) => {
+    this.checkListService.get(this.checkListId).subscribe(dto => {
       this.checkListName = dto?.name ?? null;
     });
   }
@@ -378,6 +437,11 @@ export class ListItem implements OnInit {
     this.pendingRadioNames = [];
     this.radioOptionName = '';
     this.isRadioBusy = false;
+  }
+
+  resetAttachmentAfterSave() {
+    this.uploadedFiles = [];
+    this.selectedFiles = [];
   }
 
   goBack() {

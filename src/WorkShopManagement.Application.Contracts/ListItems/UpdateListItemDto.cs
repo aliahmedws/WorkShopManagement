@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.ListItems;
 
@@ -22,5 +25,9 @@ public class UpdateListItemDto
     public bool? IsAttachmentRequired { get; set; }
 
     public bool? IsSeparator { get; set; }
-    public string? ConcurrencyStamp { get; set; }
+
+    [Required]
+    public string ConcurrencyStamp { get; set; } = default!;
+    public List<TempFileDto> TempFiles { get; set; } = [];
+    public List<EntityAttachmentDto> Attachments { get; set; } = [];
 }

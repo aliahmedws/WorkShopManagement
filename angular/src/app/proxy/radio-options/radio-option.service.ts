@@ -11,7 +11,7 @@ export class RadioOptionService {
   
 
   create = (input: CreateRadioOptionDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, RadioOptionDto>({
+    this.restService.request<any, RadioOptionDto[]>({
       method: 'POST',
       url: '/api/app/radio-options',
       body: input,

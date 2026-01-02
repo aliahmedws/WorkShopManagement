@@ -13,7 +13,7 @@ namespace WorkShopManagement.Controllers.CheckLists;
 [ControllerName("CheckLists")]
 [Area("app")]
 [Route("api/app/check-lists")]
-public class CheckListController : WorkShopManagementController, ICheckListAppService
+public class CheckListController : AbpController, ICheckListAppService
 {
     private readonly ICheckListAppService _appService;
 

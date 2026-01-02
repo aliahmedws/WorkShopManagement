@@ -11,16 +11,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PageModule } from '@abp/ng.components/page';
 import { CommonModule } from '@angular/common';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { PermissionDirective } from '@abp/ng.core';
-import {
-  CheckListDto,
-  CheckListService,
-  UpdateCheckListDto,
-  CreateCheckListDto,
-  GetCheckListListDto,
-} from '../proxy/check-lists';
+
 import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
+import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
+import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
 
 @Component({
   standalone: true,
@@ -111,12 +106,14 @@ export class CheckList implements OnInit {
   createCheckList() {
     if(!this.carModelId) return;
 
+    this.resetAttachmentAfterSave();
     this.selected = {} as CheckListDto;
     this.buildForm();
     this.isModalOpen = true;
   }
 
   editCheckList(id: string) {
+    this.resetAttachmentAfterSave();
     this.service.get(id).subscribe(dto => {
       this.selected = dto;
       this.buildForm();
@@ -162,10 +159,10 @@ export class CheckList implements OnInit {
       };
 
       this.service.update(this.selected.id, input).subscribe(() => {
+        this.resetAttachmentAfterSave();
         this.resetForm();
         this.list.get();
         this.isModalOpen = false;
-        this.toaster.success('::SuccessfullyUpdated.');
       });
       return;
     }
@@ -178,10 +175,12 @@ export class CheckList implements OnInit {
     };
 
     this.service.create(input).subscribe(() => {
+      this.resetAttachmentAfterSave();
       this.resetForm();
       this.list.get();
       this.isModalOpen = false;
       this.toaster.success('::SuccessfullyCreated.');
+      this.resetAttachmentAfterSave();
     });
   }
 
@@ -196,6 +195,11 @@ export class CheckList implements OnInit {
     });
   }
 
+  closeModal() {
+    this.isModalOpen = false;
+    this.resetAttachmentAfterSave();
+  }
+
   get isEditMode(): boolean {
     return !!this.selected?.id;
   }
@@ -205,10 +209,9 @@ export class CheckList implements OnInit {
   }
 
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId } });
+    this.router.navigate(['list-items'], { queryParams: { checkListId , carModelId: this.carModelId} });
   }
 
-  // Update onFileSelected and add helper methods
   onFileSelected(event: any): void {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
@@ -221,9 +224,8 @@ export class CheckList implements OnInit {
 
       this.uploadService.uploadFile(formData).subscribe({
         next: (res: TempFileDto[]) => {
-          // Add the returned files (with server URLs) to our list
           this.uploadedFiles = [...this.uploadedFiles, ...res];
-          this.toaster.success('::SuccessfullyUploaded');
+          event.target.value = '';
         },
         error: (err) => {
           this.toaster.error('::UploadFailed');
@@ -236,12 +238,19 @@ export class CheckList implements OnInit {
   }
 
 
-  removeFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
+  removeExistingAttachment(index: number): void {
+    const list = this.selected.attachments ?? [];
+    list.splice(index, 1);
+    this.selected.attachments = [...list];
   }
 
   isImage(name: string): boolean {
     if (!name) return false;
     return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
+  }
+
+  resetAttachmentAfterSave() {
+    this.uploadedFiles = [];
+    this.selectedFiles = [];
   }
 }

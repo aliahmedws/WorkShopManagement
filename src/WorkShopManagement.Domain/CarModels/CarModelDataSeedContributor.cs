@@ -76,11 +76,6 @@ public class CarModelDataSeedContributor : ITransientDependency
                     name: fileName,
                     path: filePath
                 );
-            var attachment = new FileAttachment(
-                name: fileName,
-                path: filePath,
-                blobName: fileName
-            );
 
             var carModel = new CarModel(
                 _guidGenerator.Create(),

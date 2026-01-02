@@ -47,8 +47,8 @@ public class FileManager(
     private string BuildUrl(string fileName)
     {
         var containerName = BlobContainerNameAttribute.GetContainerName<FileContainer>();
-        var baseUrl = _configuration["LocalStorageSetting:BaseUrl"]!.TrimEnd('/');
-        var basePath = _configuration["LocalStorageSetting:StoragePath"]!.Trim('/');
+        var baseUrl = _configuration["BlobStorageSettings:BaseUrl"]!.TrimEnd('/');
+        var basePath = _configuration["BlobStorageSettings:BasePath"]!.Trim('/');
 
         return $"{baseUrl}/{basePath}/{containerName}/{fileName}".Replace("\\", "/");
 

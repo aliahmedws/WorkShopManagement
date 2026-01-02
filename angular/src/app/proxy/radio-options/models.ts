@@ -2,7 +2,7 @@ import type { EntityDto } from '@abp/ng.core';
 
 export interface CreateRadioOptionDto {
   listItemId: string;
-  name: string;
+  names: string[];
 }
 
 export interface GetRadioOptionListDto {

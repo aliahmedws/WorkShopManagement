@@ -62,7 +62,10 @@
     "RadioOptionName": "Option name",
     "SaveListItemFirst": "Save the list item first to add options.",
     "EditListItem": "Edit List Item",
-    "AlreadyExists": "Already Exists"
+    "AlreadyExists": "Already Exists",
+    "ChooseFiles": "Choose Files",
+    "NoFileChosen": "No File Chosen",
+    "SuccessfullyUpdated": "Successfully Updated"
 
   }
 }

@@ -11,12 +11,18 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 namespace WorkShopManagement.EntityAttachments;
 
 [RemoteService(IsEnabled = false)]
-public class EntityAttachmentService(
-    IRepository<EntityAttachment, Guid> repository,
-    FileManager fileManager) : ApplicationService, IEntityAttachmentAppService
+public class EntityAttachmentAppService : ApplicationService, IEntityAttachmentAppService
 {
-    private readonly IRepository<EntityAttachment, Guid> _repository = repository;
-    private readonly FileManager _fileManager = fileManager;
+    private readonly IRepository<EntityAttachment, Guid> _repository;
+    private readonly FileManager _fileManager;
+
+    public EntityAttachmentAppService(
+        IRepository<EntityAttachment, Guid> repository,
+        FileManager fileManager)
+    {
+        _repository = repository;
+        _fileManager = fileManager;
+    }
 
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
@@ -97,14 +103,18 @@ public class EntityAttachmentService(
         var dbItems = await AsyncExecuter.ToListAsync(
             queryable
                 .Where(x => x.EntityType.Equals(input.EntityType) && x.EntityId == input.EntityId && !keptIds.Contains(x.Id))
-                .Select(x => new { x.Id, x.Attachment })
+                .Select(x => new { 
+                    x.Id,
+                    AttachmentName = x.Attachment.Name,
+                    AttachmentPath = x.Attachment.Path
+                })
         );
 
         if (dbItems != null && dbItems.Count != 0)
         {
             foreach (var dbItem in dbItems)
             {
-                await _fileManager.DeleteFileAsync(dbItem.Attachment);
+                await _fileManager.DeleteFileAsync(new FileAttachment(dbItem.AttachmentName, dbItem.AttachmentPath));
 
             }
             var ids = dbItems.Select(x => x.Id).ToList();
@@ -119,8 +129,11 @@ public class EntityAttachmentService(
             TempFiles = input.TempFiles
         });
 
-        var existingItems = input.Attachments ?? [];
-        return [.. existingItems, .. newItems];
+        return await GetListAsync(new GetEntityAttachmentListDto
+        {
+            EntityId = input.EntityId,
+            EntityType = input.EntityType
+        });
     }
 
 }
