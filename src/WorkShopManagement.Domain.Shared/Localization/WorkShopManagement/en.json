@@ -11,6 +11,11 @@
     "CarModelAlreadyExists": "A car model with the same name : {name} already exists. Please use a different name.",
     "CarModelNotFound": "Car model was not found.",
 
+    "Permission:Cars": "Cars",
+    "Permission:Create": "Create",
+    "Permission:Edit": "Edit",
+    "Permission:Delete": "Delete",
+
     "Permission:CarModels": "Car Model Management",
     "Permission:CheckLists": "Check List Management",
     "Permission:CheckLists.Create": "Create",
@@ -67,5 +72,34 @@
     "NoFileChosen": "No File Chosen",
     "SuccessfullyUpdated": "Successfully Updated"
 
+    "Menu:Cars": "Cars",
+    "AddNew": "Add New",
+    "Error:InvalidVinLength": "VIN must be exactly 17 characters. The provided VIN is {length} characters long.",
+    "ModelYear": "Model Year",
+    "NotFound": "Not Found",
+    "BasicInformation": "Basic Information",
+    "Vin": "VIN",
+    "CncInformation": "CNC Information",
+    "Cnc": "CNC",
+    "CncFirewall": "CNC Firewall",
+    "CncColumn": "CNC Column",
+    "StartDate": "Start Date",
+    "DeliverDate": "Deliver Date",
+    "DueDate": "Due Date",
+    "AdditionalInformation": "Additional Information",
+    "MissingParts": "Missing Parts",
+    "CarDeletionConfirmation": "Are you sure you want to delete this car?",
+    "SuccessfullyCreated": "Successfully Created!",
+    "SuccessfullySaved": "Successfully Saved!",
+    "NewCar": "New Car",
+    "EditCar": "Edit Car",
+    "ContactId": "Contact ID",
+    "Car.VinQuery.SuccessTitle": "Query Successful!",
+    "Car.VinQuery.SuccessMessage": "The query against VIN returned a successful response.",
+
+    "Car.VinQuery.FailedTitle": "Query Failed!",
+    "Car.VinQuery.FailedMessage": "The query against VIN did not return a successful response from the external provider. Please try changing the Model Year or removing it from the form, then try again.",
+
+    "Car.VinQuery.ErrorDetails": "Error Details"
   }
 }

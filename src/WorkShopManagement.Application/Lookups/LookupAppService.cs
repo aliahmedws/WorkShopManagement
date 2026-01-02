@@ -1,0 +1,27 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Volo.Abp;
+
+namespace WorkShopManagement.Lookups;
+
+[RemoteService(false)]
+[Authorize]
+public class LookupAppService(ILookupRepository lookupRepository) : WorkShopManagementAppService, ILookupAppService
+{
+    private readonly ILookupRepository _lookupRepository = lookupRepository;
+
+    public async Task<List<GuidLookupDto>> GetCarModelsAsync()
+    {
+        var carModels = await _lookupRepository.GetCarModelsAsync();
+        return Map(carModels);
+    }
+
+    public async Task<List<GuidLookupDto>> GetCarOwnersAsync()
+    {
+        var owners = await _lookupRepository.GetCarOwnersAsync();
+        return Map(owners);
+    }
+
+    List<GuidLookupDto> Map(List<GuidLookup> input) => ObjectMapper.Map<List<GuidLookup>, List<GuidLookupDto>>(input);
+}
