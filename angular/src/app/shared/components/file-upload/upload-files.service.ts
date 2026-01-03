@@ -1,6 +1,6 @@
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
-import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
+import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 
 
 export interface AttachmentUiModel {

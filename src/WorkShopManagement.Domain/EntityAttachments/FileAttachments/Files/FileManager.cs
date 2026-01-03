@@ -54,10 +54,6 @@ public class FileManager(
         FileHelper.ValidateFileNameWithExtension(tempBlobName);
 
         var fileStream = await _tempFileManager.GetAsync(tempBlobName, cancellationToken);
-        //if (fileStream == null || fileStream.Length == 0)
-        //{
-        //    throw new BusinessException(WorkShopManagementDomainErrorCodes.EmptyFile);
-        //}
 
         var blobName = tempBlobName;                //save with same name, can be changed to new name if needed
 

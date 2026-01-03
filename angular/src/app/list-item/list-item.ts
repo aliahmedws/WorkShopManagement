@@ -30,7 +30,7 @@ import {
   UpdateListItemDto,
 } from '../proxy/list-items';
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
-import { UploadFileService } from '../entity-attachment/upload-files.service';
+import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
 import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 
 type ListItemFormModel = {
@@ -77,7 +77,6 @@ export class ListItem implements OnInit {
   radioOptionName = '';
   isRadioBusy = false;
 
-  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
   uploadedFiles: FileAttachmentDto[] = [];
 
   public readonly list = inject(ListService);
@@ -143,7 +142,6 @@ export class ListItem implements OnInit {
 
       this.applySeparatorState(!!dto.isSeparator);
       this.uploadedFiles = [];
-      this.selectedFiles = [];
 
       this.isModalOpen = true;
 
@@ -238,35 +236,34 @@ export class ListItem implements OnInit {
     });
   }
 
-  onFileSelected(event: any): void {
-    const files: FileList = event.target.files;
-    if (files && files.length > 0) {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
+  uploadSelectedFiles(files: File[]) {
+    const formData = new FormData();
+    for (const f of files) formData.append('files', f);
 
-      this.uploadService.uploadFile(formData).subscribe({
-        next: (res: FileAttachmentDto[]) => {
-          this.uploadedFiles = [...this.uploadedFiles, ...(res ?? [])];
-          event.target.value = '';
-        },
-        error: err => {
-          this.toaster.error('::UploadFailed');
-          console.error(err);
-        },
-      });
-    }
+    this.uploadService.uploadFile(formData).subscribe({
+      next: (res: FileAttachmentDto[]) => {
+        this.uploadedFiles = [...this.uploadedFiles, ...res];
+      },
+      error: () => this.toaster.error('::UploadFailed')
+    });
   }
 
-  removeTempFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
+  removeTempFile(index: number) {
+    const list = [...(this.uploadedFiles ?? [])];
+    list.splice(index, 1);
+    this.uploadedFiles = list;
   }
 
-  removeExistingAttachment(index: number): void {
-    const existing = this.selected?.attachments ?? [];
-    existing.splice(index, 1);
-    this.selected.attachments = [...existing];
+  removeExistingAttachment(index: number) {
+    const list = [...(this.selected.attachments ?? [])];
+    list.splice(index, 1);
+    this.selected.attachments = list;
+  }
+
+  get existingFiles(): FileAttachmentDto[] {
+    return (this.selected?.attachments ?? [])
+      .map(x => x?.attachment)
+      .filter((x): x is FileAttachmentDto => !!x);
   }
 
   isImage(name: string): boolean {
@@ -274,10 +271,6 @@ export class ListItem implements OnInit {
     return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
   }
 
-  private clearAttachmentUi(): void {
-    this.selectedFiles = [];
-    this.uploadedFiles = [];
-  }
 
   loadRadioOptions(): void {
     const listItemId = this.selected?.id;
@@ -444,7 +437,6 @@ export class ListItem implements OnInit {
 
   resetAttachmentAfterSave() {
     this.uploadedFiles = [];
-    this.selectedFiles = [];
   }
 
   goBack() {

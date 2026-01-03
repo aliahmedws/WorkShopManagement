@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { booleanAttribute, Component, EventEmitter, Input, Output } from '@angular/core';
+import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 
 @Component({
   selector: 'app-file-upload',
@@ -11,7 +12,13 @@ export class FileUploadComponent {
   @Input({ transform: booleanAttribute }) multiple: boolean = false;
   @Input() maxSizeMB: number = 10;
   @Input() acceptedTypes: string[] = ['image/*', 'application/pdf'];
+  // @Output() filesSelected = new EventEmitter<File[]>();
+  @Input() tempFiles: FileAttachmentDto[] = [];
+  @Input() existingFiles: FileAttachmentDto[] = [];
+
   @Output() filesSelected = new EventEmitter<File[]>();
+  @Output() removeTemp = new EventEmitter<number>();
+  @Output() removeExisting = new EventEmitter<number>();
 
   isDragging = false;
   selectedFiles: File[] = [];
@@ -21,6 +28,7 @@ export class FileUploadComponent {
     const input = event.target as HTMLInputElement;
     if (input.files) {
       this.handleFiles(Array.from(input.files));
+      input.value = '';
     }
   }
 
@@ -93,4 +101,20 @@ export class FileUploadComponent {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   }
+
+  isImage(name?: string): boolean {
+    if (!name) return false;
+    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
+  }
+
+  onRemoveTemp(i: number): void {
+    this.removeTemp.emit(i);
+  }
+
+  onRemoveExisting(i: number): void {
+    this.removeExisting.emit(i);
+  }
+
+  
+
 }
