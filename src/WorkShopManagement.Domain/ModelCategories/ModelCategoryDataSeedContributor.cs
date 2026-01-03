@@ -66,6 +66,7 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
 
             var attachment = new FileAttachment(
                 name: fileName,
+                blobName: filePath,
                 path: filePath
             );
 

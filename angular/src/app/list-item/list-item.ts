@@ -32,6 +32,7 @@ import {
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
 import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
 import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
+import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 
 type ListItemFormModel = {
   name: string;
@@ -47,14 +48,7 @@ type ListItemFormModel = {
   standalone: true,
   selector: 'app-list-item',
   imports: [
-    CommonModule,
-    PageModule,
-    ThemeSharedModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbDropdownModule,
-    PermissionDirective,
-    LocalizationPipe,
+    ...SHARED_IMPORTS
   ],
   templateUrl: './list-item.html',
   styleUrl: './list-item.scss',

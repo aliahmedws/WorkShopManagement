@@ -119,8 +119,7 @@
     "MissingConfiguration:00001": "The Application has missing configuration setting(s).",
     "MissingConfiguration:00002": "The Application has missing configuration setting(s): {joinedFields}",
     "NewAttachment": "New Attachments",
-    "ExistingAttachments": "Existing Attachments"
-    "RecordDeletedTitle": "Record Deleted!",
+    "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
     "Variants": "Variants"

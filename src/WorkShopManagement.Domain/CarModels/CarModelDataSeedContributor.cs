@@ -93,6 +93,7 @@ public class CarModelDataSeedContributor : ITransientDependency
 
                 var catAttachment = new FileAttachment(
                     name: Path.GetFileName(categoryFilePath),
+                    blobName: categoryFilePath,
                     path: categoryFilePath
                 );
 
