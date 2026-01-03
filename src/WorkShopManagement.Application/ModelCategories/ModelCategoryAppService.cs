@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -8,30 +8,25 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
-namespace WorkShopManagement.CarModels;
+namespace WorkShopManagement.ModelCategories;
 
 [RemoteService(isEnabled: false)]
-public class CarModelAppService : ApplicationService, ICarModelAppService
+public class ModelCategoryAppService : ApplicationService, IModelCategoryAppService
 {
-    private readonly IRepository<CarModel, Guid> _repository;
+    private readonly IRepository<ModelCategory, Guid> _repository;
 
-    public CarModelAppService(IRepository<CarModel, Guid> repository)
+    public ModelCategoryAppService(IRepository<ModelCategory, Guid> repository)
     {
         _repository = repository;
     }
 
 
-    public async Task<PagedResultDto<CarModelDto>> GetListAsync(GetCarModelListDto input)
+    public async Task<PagedResultDto<ModelCategoryDto>> GetListAsync(GetModelCategoryListDto input)
     {
         var queryable = await _repository.GetQueryableAsync();
 
-        if (input.ModelCategoryId.HasValue)
-        {
-            queryable = queryable.Where(x => x.ModelCategoryId == input.ModelCategoryId.Value);
-        }
-
         var sorting = input.Sorting.IsNullOrWhiteSpace()
-            ? nameof(CarModel.CreationTime)
+            ? nameof(ModelCategory.CreationTime)
             : input.Sorting;
 
         queryable = queryable.OrderBy(sorting);
@@ -44,8 +39,7 @@ public class CarModelAppService : ApplicationService, ICarModelAppService
                 .Take(input.MaxResultCount)
         );
 
-        var dtos = ObjectMapper.Map<List<CarModel>, List<CarModelDto>>(items);
-        return new PagedResultDto<CarModelDto>(totalCount, dtos);
+        var dtos = ObjectMapper.Map<List<ModelCategory>, List<ModelCategoryDto>>(items);
+        return new PagedResultDto<ModelCategoryDto>(totalCount, dtos);
     }
- 
 }

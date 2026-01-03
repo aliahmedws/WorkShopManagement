@@ -26,12 +26,12 @@ function configureRoutes() {
       requiredPolicy: 'WorkShopManagement.Cars',
     },
     {
-      path: '/car-models',
-      name: '::Menu:CarModels',
+      path: '/vehicles',
+      name: '::Menu:Vehicles',
       iconClass: 'fas fa-car',
       order: 3,
       layout: eLayoutType.application,
-      requiredPolicy: 'WorkShopManagement.CarModels',
+      // requiredPolicy: 'WorkShopManagement.CarModels',
     },
     // {
     //   path: '/check-lists',

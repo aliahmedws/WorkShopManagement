@@ -7,6 +7,7 @@ import * as External from './external';
 import * as ListItems from './list-items';
 import * as Lookups from './lookups';
 import * as Microsoft from './microsoft';
+import * as ModelCategories from './model-categories';
 import * as RadioOptions from './radio-options';
 import * as TempFiles from './temp-files';
-export { Bays, CarModels, Cars, CheckLists, EntityAttachments, External, ListItems, Lookups, Microsoft, RadioOptions, TempFiles };
+export { Bays, CarModels, Cars, CheckLists, EntityAttachments, External, ListItems, Lookups, Microsoft, ModelCategories, RadioOptions, TempFiles };

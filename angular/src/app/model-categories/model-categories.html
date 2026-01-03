@@ -1,12 +1,12 @@
 <div class="card">
   <div class="card-header">
-     <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-link p-0" (click)="goBack()">
-            <i class="fa fa-arrow-left me-2"></i>
-          </button>
-          <h5 class="card-title m-0">{{ 'Variants' | abpLocalization }}</h5>
-
-        </div>
+    <div class="row">
+      <div class="col col-md-6">
+        <h5 class="card-title" >
+          {{ '::Menu:Vehicles' | abpLocalization }}
+        </h5>
+      </div>
+    </div>
   </div>
 
   <div class="card-body">
@@ -36,19 +36,19 @@
    
       <!-- Add CheckList button -->
       <ngx-datatable-column
-        [name]="'::Actions' | abpLocalization"
+        [name]="'::Action' | abpLocalization"
         [sortable]="false"
         [maxWidth]="170"
-        *abpPermission="'WorkShopManagement.CheckLists.Create'"
       >
+      <!-- *abpPermission="'WorkShopManagement.CheckLists.Create'" -->
         <ng-template let-row="row" ngx-datatable-cell-template>
           <button
             type="button"
             class="btn btn-outline-primary btn-sm"
-            (click)="addCheckList(row.id)"
+            (click)="carModel(row.id)"
           >
             <i class="fa fa-list-check me-1"></i>
-            {{ '::CheckList' | abpLocalization }}
+            {{ '::Variants' | abpLocalization }}
           </button>
         </ng-template>
       </ngx-datatable-column>

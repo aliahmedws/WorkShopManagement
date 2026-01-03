@@ -17,6 +17,7 @@
     "Permission:Delete": "Delete",
 
     "Permission:CarModels": "Car Model Management",
+    "Permission:Vehicles": "Vehicles Model Management",
     "Permission:CheckLists": "Check List Management",
     "Permission:CheckLists.Create": "Create",
     "Permission:CheckLists.Edit": "Edit",
@@ -111,6 +112,9 @@
     "CopyService:Copied": "Text Copied: {0}",
     "RecordCreatedTitle": "Record Created!",
     "RecordUpdatedTitle": "Record Updated!",
-    "RecordDeletedTitle": "Record Deleted!"
+    "RecordDeletedTitle": "Record Deleted!",
+    "Menu:Models": "Models",
+    "Menu:Vehicles": "Vehicles",
+    "Variants": "Variants"
   }
 }

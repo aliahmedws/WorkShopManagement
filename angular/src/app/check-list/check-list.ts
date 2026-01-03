@@ -2,16 +2,11 @@ import { PagedResultDto, ListService, LocalizationPipe } from '@abp/ng.core';
 import {
   ConfirmationService,
   Confirmation,
-  ThemeSharedModule,
   ToasterService,
 } from '@abp/ng.theme.shared';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PageModule } from '@abp/ng.components/page';
-import { CommonModule } from '@angular/common';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { PermissionDirective } from '@abp/ng.core';
 import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
