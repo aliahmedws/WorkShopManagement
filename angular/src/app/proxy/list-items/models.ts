@@ -1,5 +1,5 @@
 import type { CommentType } from './comment-type.enum';
-import type { TempFileDto } from '../temp-files/models';
+import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
 
@@ -11,7 +11,7 @@ export interface CreateListItemDto {
   commentType?: CommentType;
   isAttachmentRequired?: boolean;
   isSeparator?: boolean;
-  tempFiles: TempFileDto[];
+  tempFiles: FileAttachmentDto[];
 }
 
 export interface GetListItemListDto extends PagedAndSortedResultRequestDto {
@@ -40,6 +40,6 @@ export interface UpdateListItemDto {
   isAttachmentRequired?: boolean;
   isSeparator?: boolean;
   concurrencyStamp: string;
-  tempFiles: TempFileDto[];
+  tempFiles: FileAttachmentDto[];
   attachments: EntityAttachmentDto[];
 }

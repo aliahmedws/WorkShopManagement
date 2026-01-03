@@ -2692,8 +2692,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "System.Collections.Generic.List<WorkShopManagement.TempFiles.TempFileDto>",
-                    "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]"
+                    "type": "System.Collections.Generic.List<WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto>",
+                    "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]"
                   }
                 }
               ]
@@ -2731,8 +2731,8 @@
                 }
               ],
               "returnValue": {
-                "type": "System.Collections.Generic.List<WorkShopManagement.TempFiles.TempFileDto>",
-                "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]"
+                "type": "System.Collections.Generic.List<WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto>",
+                "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.TempFiles.ITempFileAppService"
@@ -12263,8 +12263,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12425,8 +12425,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12518,6 +12518,18 @@
       "properties": [
         {
           "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BlobName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -12910,8 +12922,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -13177,8 +13189,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -13353,39 +13365,6 @@
         },
         {
           "name": "ConcurrencyStamp",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "WorkShopManagement.TempFiles.TempFileDto": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "Name",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Path",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",

@@ -81,6 +81,7 @@ public class CarModelDataSeedContributor : ITransientDependency
 
                 var attachment = new FileAttachment(
                     name: fileName,
+                    blobName: fileName,
                     path: filePath
                 );
 

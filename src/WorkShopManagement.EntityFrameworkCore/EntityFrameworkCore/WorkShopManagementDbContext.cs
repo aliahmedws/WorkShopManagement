@@ -109,6 +109,7 @@ public class WorkShopManagementDbContext :
             b.OwnsOne(x => x.Attachment, fa =>
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.BlobName).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
                 fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
             });
         });

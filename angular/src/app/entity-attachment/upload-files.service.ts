@@ -1,10 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 
-export interface TempFileDto {
-    name?: string;
-    path?: string;
-}
 
 export interface AttachmentUiModel {
     id?: string;
@@ -20,7 +17,7 @@ export class UploadFileService {
     apiName = 'Default';
 
     uploadFile = (file: FormData, config?: Partial<Rest.Config>) =>
-        this.restService.request<any, TempFileDto[]>({
+        this.restService.request<any, FileAttachmentDto[]>({
             method: 'POST',
             url: `/api/app/temp-file/upload`,
             body:file

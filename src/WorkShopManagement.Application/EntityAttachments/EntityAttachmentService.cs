@@ -7,6 +7,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments.Files;
 
 namespace WorkShopManagement.EntityAttachments;
 
@@ -50,7 +51,7 @@ public class EntityAttachmentService(
         {
             foreach (var item in items)
             {
-                await _fileManager.DeleteFileAsync(item.Attachment);
+                await _fileManager.DeleteAsync(item.Attachment);
             }
 
             var ids = items.Select(x => x.Id).ToList();
@@ -68,16 +69,13 @@ public class EntityAttachmentService(
 
         foreach (var f in input.TempFiles)
         {
-            var saved = await _fileManager.SaveFileAsync(f.Name);
+            var saved = await _fileManager.SaveFromTempAsync(f.Name, f.BlobName);
 
             entities.Add(new EntityAttachment(
                 id: GuidGenerator.Create(),
                 entityId: input.EntityId,
                 entityType: input.EntityType,
-                attachment: new FileAttachment(
-                    name: saved.Name,
-                    path: saved.Path 
-                    )
+                attachment: saved
             ));
         }
 
@@ -98,14 +96,14 @@ public class EntityAttachmentService(
             queryable
                 //.AsNoTracking()
                 .Where(x => x.EntityType.Equals(input.EntityType) && x.EntityId == input.EntityId && !keptIds.Contains(x.Id))
-                .Select(x => new { x.Id, Name = x.Attachment.Name, Path = x.Attachment.Path  })
+                .Select(x => new { x.Id, Name = x.Attachment.Name, BlobName = x.Attachment.BlobName, Path = x.Attachment.Path  })
         );
 
         if (dbItems != null && dbItems.Count != 0)
         {
             foreach (var dbItem in dbItems)
             {
-                await _fileManager.DeleteFileAsync(new FileAttachment(dbItem.Name, dbItem.Path));
+                await _fileManager.DeleteAsync(new FileAttachment(dbItem.Name, dbItem.BlobName, dbItem.Path));
 
             }
             var ids = dbItems.Select(x => x.Id).ToList();

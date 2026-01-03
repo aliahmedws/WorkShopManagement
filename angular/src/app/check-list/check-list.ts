@@ -8,14 +8,11 @@ import {
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PageModule } from '@abp/ng.components/page';
-import { CommonModule } from '@angular/common';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { PermissionDirective } from '@abp/ng.core';
-import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
+import { UploadFileService } from '../entity-attachment/upload-files.service';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 @Component({
   standalone: true,
   selector: 'app-check-list',
@@ -33,7 +30,7 @@ export class CheckList implements OnInit {
   isModalOpen = false;
   filters = {} as GetCheckListListDto;
   selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
-  uploadedFiles: TempFileDto[] = [];
+  uploadedFiles: FileAttachmentDto[] = [];
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
   private readonly fb = inject(FormBuilder);
@@ -179,7 +176,7 @@ export class CheckList implements OnInit {
         formData.append('files', files[i]);
       };
       this.uploadService.uploadFile(formData).subscribe({
-        next: (res: TempFileDto[]) => {
+        next: (res: FileAttachmentDto[]) => {
           this.uploadedFiles = [...this.uploadedFiles, ...res];
           event.target.value = '';
         },

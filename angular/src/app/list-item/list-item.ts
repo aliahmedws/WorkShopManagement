@@ -30,7 +30,8 @@ import {
   UpdateListItemDto,
 } from '../proxy/list-items';
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
-import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
+import { UploadFileService } from '../entity-attachment/upload-files.service';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 
 type ListItemFormModel = {
   name: string;
@@ -77,7 +78,7 @@ export class ListItem implements OnInit {
   isRadioBusy = false;
 
   selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
-  uploadedFiles: TempFileDto[] = [];
+  uploadedFiles: FileAttachmentDto[] = [];
 
   public readonly list = inject(ListService);
   private readonly listItemService = inject(ListItemService);
@@ -246,7 +247,7 @@ export class ListItem implements OnInit {
       }
 
       this.uploadService.uploadFile(formData).subscribe({
-        next: (res: TempFileDto[]) => {
+        next: (res: FileAttachmentDto[]) => {
           this.uploadedFiles = [...this.uploadedFiles, ...(res ?? [])];
           event.target.value = '';
         },
