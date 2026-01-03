@@ -13,38 +13,37 @@ namespace WorkShopManagement.EntityAttachments;
 
 [RemoteService(IsEnabled = false)]
 public class EntityAttachmentService(
-    IRepository<EntityAttachment, Guid> repository,
+    IEntityAttachmentRepository repository,
     FileManager fileManager) : ApplicationService, IEntityAttachmentService
 {
-    private readonly IRepository<EntityAttachment, Guid> _repository = repository;
+    private readonly IEntityAttachmentRepository _repository = repository;
     private readonly FileManager _fileManager = fileManager;
 
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
-        var queryable = await _repository.GetQueryableAsync();
-
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == input.EntityId && x.EntityType.Equals(input.EntityType))
+        
+        var items = await _repository.GetListByEntityAsync(
+            entityId: input.EntityId,
+            entityType: input.EntityType
         );
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
-    public async Task<List<EntityAttachmentDto>> GetListAsync(Guid entityId, string entityType)
+    public async Task<List<EntityAttachmentDto>> GetListAsync(Guid entityId, EntityType entityType)
     {
 
-        var queryable = await _repository.GetQueryableAsync();
-
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == entityId && x.EntityType.Equals(entityType))
+        var items = await _repository.GetListByEntityAsync(
+           entityId: entityId,
+           entityType: entityType
         );
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
     public async Task DeleteAsync(Guid entityId, EntityType entityType)
     {
-        var queryable = await _repository.GetQueryableAsync();
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == entityId && x.EntityType.Equals(entityType))
+        var items = await _repository.GetListByEntityAsync(
+            entityId: entityId,
+            entityType: entityType
         );
 
         if (items != null && items.Count != 0)
@@ -91,11 +90,10 @@ public class EntityAttachmentService(
 
         var keptIds = input.EntityAttachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
 
-        var queryable = await _repository.GetQueryableAsync();
+        var queryable = await _repository.GetQueryableByEntityAsync(input.EntityId, input.EntityType);
         var dbItems = await AsyncExecuter.ToListAsync(
             queryable
-                //.AsNoTracking()
-                .Where(x => x.EntityType.Equals(input.EntityType) && x.EntityId == input.EntityId && !keptIds.Contains(x.Id))
+                .Where(x => !keptIds.Contains(x.Id))
                 .Select(x => new { x.Id, Name = x.Attachment.Name, BlobName = x.Attachment.BlobName, Path = x.Attachment.Path  })
         );
 
