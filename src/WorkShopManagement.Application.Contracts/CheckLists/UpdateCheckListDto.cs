@@ -25,5 +25,5 @@ public class UpdateCheckListDto
     [Required]
     public string ConcurrencyStamp { get; set; } = default!;
     public List<FileAttachmentDto> TempFiles { get; set; } = [];
-    public List<EntityAttachmentDto> Attachments { get; set; } = [];
+    public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
 }

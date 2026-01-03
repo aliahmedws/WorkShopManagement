@@ -173,7 +173,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             EntityId = entity.Id,
             EntityType = EntityType.CheckList,
             TempFiles = input.TempFiles,
-            EntityAttachments = input.Attachments
+            EntityAttachments = input.EntityAttachments
         });
         // --- update end
         return ObjectMapper.Map<CheckList, CheckListDto>(entity);
