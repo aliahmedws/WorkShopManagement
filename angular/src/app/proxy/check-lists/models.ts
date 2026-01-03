@@ -10,7 +10,7 @@ export interface CheckListDto extends FullAuditedEntityDto<string> {
   enableTags?: boolean;
   enableCheckInReport?: boolean;
   concurrencyStamp?: string;
-  attachments: EntityAttachmentDto[];
+  entityAttachments: EntityAttachmentDto[];
 }
 
 export interface CreateCheckListDto {
@@ -39,5 +39,5 @@ export interface UpdateCheckListDto {
   enableCheckInReport?: boolean;
   concurrencyStamp: string;
   tempFiles: FileAttachmentDto[];
-  attachments: EntityAttachmentDto[];
+  entityAttachments: EntityAttachmentDto[];
 }

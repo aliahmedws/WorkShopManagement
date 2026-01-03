@@ -89,7 +89,7 @@ public class EntityAttachmentService(
     public async Task<List<EntityAttachmentDto>> UpdateAsync(UpdateEntityAttachmentDto input)
     {
 
-        var keptIds = input.Attachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
+        var keptIds = input.EntityAttachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
 
         var queryable = await _repository.GetQueryableAsync();
         var dbItems = await AsyncExecuter.ToListAsync(

@@ -67,7 +67,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
                 EntityType = EntityType.ListItem
             });
 
-            dto.Attachments = attachments!;
+            dto.EntityAttachments = attachments!;
         }
         return new PagedResultDto<ListItemDto>(totalCount, dtos);
     }
@@ -83,7 +83,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             EntityType = EntityType.ListItem
         });
 
-        dto.Attachments = attachments!;
+        dto.EntityAttachments = attachments!;
         return dto;
     }
 
@@ -141,12 +141,14 @@ public class ListItemAppService : ApplicationService, IListItemAppService
 
         entity = await _repository.InsertAsync(entity, autoSave: true);
 
+        // --- CREATE EntityAttachment 
         await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
         {
             EntityType = EntityType.ListItem,
             EntityId = entity.Id,
             TempFiles = input.TempFiles
         });
+        // --- create end
 
         return await GetAsync(entity.Id);
     }
@@ -212,13 +214,15 @@ public class ListItemAppService : ApplicationService, IListItemAppService
 
         await _repository.UpdateAsync(entity, autoSave: true);
 
+        // --- UPDATE EntityAttachment 
         await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.ListItem,
             TempFiles = input.TempFiles,
-            Attachments = input.Attachments
+            EntityAttachments = input.EntityAttachments
         });
+        // --- update end
 
         return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }

@@ -15,7 +15,7 @@ namespace WorkShopManagement.EntityAttachments
         [Required]
         public List<FileAttachmentDto> TempFiles { get; set; } = [];
         [Required]
-        public List<EntityAttachmentDto> Attachments { get; set; } = [];
+        public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
         //[Required]
         //public string ConcurrencyStamp { get; set; } = default!;
     }

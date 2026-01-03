@@ -14,5 +14,5 @@ public class CheckListDto : FullAuditedEntityDto<Guid>
     public bool? EnableTags { get; set; } 
     public bool? EnableCheckInReport { get; set; }
     public string ConcurrencyStamp { get; set; } = default!;
-    public List<EntityAttachmentDto?> Attachments { get; set; } = [];
+    public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
 }

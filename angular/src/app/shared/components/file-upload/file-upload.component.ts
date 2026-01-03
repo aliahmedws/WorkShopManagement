@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { booleanAttribute, Component, EventEmitter, Input, Output } from '@angular/core';
+import { booleanAttribute, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
+import { UploadFileService } from './upload-files.service';
+import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 
 @Component({
   selector: 'app-file-upload',
@@ -12,16 +14,16 @@ export class FileUploadComponent {
   @Input({ transform: booleanAttribute }) multiple: boolean = false;
   @Input() maxSizeMB: number = 10;
   @Input() acceptedTypes: string[] = ['image/*', 'application/pdf'];
-  // @Output() filesSelected = new EventEmitter<File[]>();
   @Input() tempFiles: FileAttachmentDto[] = [];
-  @Input() existingFiles: FileAttachmentDto[] = [];
+  @Output() tempFilesChange = new EventEmitter<FileAttachmentDto[]>();
 
-  @Output() filesSelected = new EventEmitter<File[]>();
-  @Output() removeTemp = new EventEmitter<number>();
-  @Output() removeExisting = new EventEmitter<number>();
+  @Input() existingFiles: EntityAttachmentDto[] = [];
+  @Output() existingFilesChange = new EventEmitter<EntityAttachmentDto[]>();
+
+  private readonly uploadService = inject(UploadFileService);
 
   isDragging = false;
-  selectedFiles: File[] = [];
+  // selectedFiles: File[] = [];
   error: string = '';
 
   onFileSelect(event: Event): void {
@@ -53,7 +55,7 @@ export class FileUploadComponent {
   private handleFiles(files: File[]): void {
     this.error = '';
     const validFiles: File[] = [];
-
+  
     for (const file of files) {
       if (!this.validateFile(file)) continue;
       validFiles.push(file);
@@ -61,8 +63,21 @@ export class FileUploadComponent {
     }
 
     if (validFiles.length > 0) {
-      this.selectedFiles = validFiles;
-      this.filesSelected.emit(validFiles);
+      // this.tempFiles = validFiles;     //should i do this. also if i add invalid files what should be behavior (ignore or show error)
+      // this.filesSelected.emit(validFiles);
+
+      const formData = new FormData();
+      for (const file of validFiles){
+        formData.append('files', file);
+      }
+
+      this.uploadService.uploadFile(formData).subscribe({
+        next: (res:FileAttachmentDto[]) => {
+          this.tempFiles = [...this.tempFiles, ...res];
+          this.tempFilesChange.emit(this.tempFiles);
+        }
+        // error: () => this.error = '::UploadFailed'
+      })
     }
   }
 
@@ -89,10 +104,11 @@ export class FileUploadComponent {
     return true;
   }
 
-  removeFile(index: number): void {
-    this.selectedFiles.splice(index, 1);
-    this.filesSelected.emit(this.selectedFiles);
-  }
+  // removeFile(index: number): void {
+  //   this.selectedFiles.splice(index, 1);
+  //   this.filesSelected.emit(this.selectedFiles);
+  // }
+
 
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -108,13 +124,17 @@ export class FileUploadComponent {
   }
 
   onRemoveTemp(i: number): void {
-    this.removeTemp.emit(i);
+    const list = [...(this.tempFiles ?? [])]
+    list.splice(i, 1);
+    this.tempFiles = list;
+    this.tempFilesChange.emit(this.tempFiles);
   }
 
   onRemoveExisting(i: number): void {
-    this.removeExisting.emit(i);
+    const list = [...(this.existingFiles ?? [])];
+    list.splice(i, 1);
+    this.existingFiles = list;
+    this.existingFilesChange.emit(this.existingFiles);
   }
-
-  
 
 }

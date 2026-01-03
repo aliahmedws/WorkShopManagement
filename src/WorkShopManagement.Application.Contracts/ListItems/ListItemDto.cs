@@ -16,5 +16,5 @@ public class ListItemDto : FullAuditedEntityDto<Guid>
     public bool? IsSeparator { get; set; }
     public string ConcurrencyStamp { get; set; } = default!;
 
-    public List<EntityAttachmentDto?> Attachments { get; set; } = [];
+    public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
 }

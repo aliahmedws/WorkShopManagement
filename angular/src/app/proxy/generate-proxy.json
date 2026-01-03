@@ -12337,7 +12337,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -12604,7 +12604,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -13239,7 +13239,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -13368,7 +13368,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",

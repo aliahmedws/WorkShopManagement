@@ -84,9 +84,7 @@
         <!-- Attachments -->
         <div class="col-12">
           <label class="form-label">{{ '::Attachments' | abpLocalization }}</label>
-          <app-file-upload [multiple]="true" [tempFiles]="uploadedFiles" [existingFiles]="existingFiles"
-            (filesSelected)="uploadSelectedFiles($event)" (removeTemp)="removeTempFile($event)"
-            (removeExisting)="removeExistingAttachment($event)">
+          <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles">
           </app-file-upload>
         </div>
       </div>

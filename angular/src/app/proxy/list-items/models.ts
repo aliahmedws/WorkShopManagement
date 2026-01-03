@@ -28,7 +28,7 @@ export interface ListItemDto extends FullAuditedEntityDto<string> {
   isAttachmentRequired?: boolean;
   isSeparator?: boolean;
   concurrencyStamp?: string;
-  attachments: EntityAttachmentDto[];
+  entityAttachments: EntityAttachmentDto[];
 }
 
 export interface UpdateListItemDto {
@@ -41,5 +41,5 @@ export interface UpdateListItemDto {
   isSeparator?: boolean;
   concurrencyStamp: string;
   tempFiles: FileAttachmentDto[];
-  attachments: EntityAttachmentDto[];
+  entityAttachments: EntityAttachmentDto[];
 }
