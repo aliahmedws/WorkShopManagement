@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.Controllers.TempFiles
@@ -16,7 +18,7 @@ namespace WorkShopManagement.Controllers.TempFiles
     {
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("upload")]
-        public Task<List<TempFileDto>> UploadTempFilesAsync(List<IFormFile?> files)
+        public Task<List<FileAttachmentDto>> UploadTempFilesAsync(List<IFormFile?> files)
         {
             return tempFileAppService.UploadTempFilesAsync(files);
         }

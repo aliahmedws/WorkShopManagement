@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.ListItems;
@@ -25,5 +26,5 @@ public class CreateListItemDto
 
     public bool? IsSeparator { get; set; }
 
-    public List<TempFileDto> TempFiles { get; set; } = [];
+    public List<FileAttachmentDto> TempFiles { get; set; } = [];
 }

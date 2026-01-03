@@ -113,6 +113,14 @@
     "RecordCreatedTitle": "Record Created!",
     "RecordUpdatedTitle": "Record Updated!",
     "RecordDeletedTitle": "Record Deleted!",
+    "DuplicateRecord:00001": "A record already exists",
+    "DuplicateRecord:00002": "A record with same {property} already exists",
+    "DuplicateRecord:00003": "A record with same {property} '{value}' already exists",
+    "MissingConfiguration:00001": "The Application has missing configuration setting(s).",
+    "MissingConfiguration:00002": "The Application has missing configuration setting(s): {joinedFields}",
+    "NewAttachment": "New Attachments",
+    "ExistingAttachments": "Existing Attachments"
+    "RecordDeletedTitle": "Record Deleted!",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
     "Variants": "Variants"

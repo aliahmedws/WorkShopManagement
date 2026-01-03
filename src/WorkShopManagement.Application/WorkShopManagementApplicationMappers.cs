@@ -103,3 +103,10 @@ public partial class RadioOptionMapper : MapperBase<RadioOption, RadioOptionDto>
     public override partial RadioOptionDto Map(RadioOption source);
     public override partial void Map(RadioOption source, RadioOptionDto destination);
 }
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttachmentDto>
+{
+    public override partial FileAttachmentDto Map(FileAttachment source);
+    public override partial void Map(FileAttachment source, FileAttachmentDto destination);
+}

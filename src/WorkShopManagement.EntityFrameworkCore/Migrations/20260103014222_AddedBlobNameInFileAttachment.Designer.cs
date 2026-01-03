@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260103014222_AddedBlobNameInFileAttachment")]
+    partial class AddedBlobNameInFileAttachment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1992,16 +1995,11 @@ namespace WorkShopManagement.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<Guid>("ModelCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ModelCategoryId");
 
                     b.HasIndex("Name");
 
@@ -2408,64 +2406,6 @@ namespace WorkShopManagement.Migrations
                     b.ToTable("AppListItems", (string)null);
                 });
 
-            modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("AppModelCategories", (string)null);
-                });
-
             modelBuilder.Entity("WorkShopManagement.RadioOptions.RadioOption", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2681,12 +2621,6 @@ namespace WorkShopManagement.Migrations
 
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
                 {
-                    b.HasOne("WorkShopManagement.ModelCategories.ModelCategory", "ModelCategory")
-                        .WithMany("CarModels")
-                        .HasForeignKey("ModelCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.OwnsOne("WorkShopManagement.EntityAttachments.FileAttachments.FileAttachment", "FileAttachments", b1 =>
                         {
                             b1.Property<Guid>("CarModelId")
@@ -2712,8 +2646,6 @@ namespace WorkShopManagement.Migrations
 
                     b.Navigation("FileAttachments")
                         .IsRequired();
-
-                    b.Navigation("ModelCategory");
                 });
 
             modelBuilder.Entity("WorkShopManagement.Cars.Car", b =>
@@ -2799,35 +2731,6 @@ namespace WorkShopManagement.Migrations
                     b.Navigation("CheckLists");
                 });
 
-            modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
-                {
-                    b.OwnsOne("WorkShopManagement.EntityAttachments.FileAttachments.FileAttachment", "FileAttachments", b1 =>
-                        {
-                            b1.Property<Guid>("ModelCategoryId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasMaxLength(256)
-                                .HasColumnType("nvarchar(256)");
-
-                            b1.Property<string>("Path")
-                                .IsRequired()
-                                .HasMaxLength(2048)
-                                .HasColumnType("nvarchar(2048)");
-
-                            b1.HasKey("ModelCategoryId");
-
-                            b1.ToTable("AppModelCategories");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ModelCategoryId");
-                        });
-
-                    b.Navigation("FileAttachments")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("WorkShopManagement.RadioOptions.RadioOption", b =>
                 {
                     b.HasOne("WorkShopManagement.ListItems.ListItem", "ListItems")
@@ -2896,11 +2799,6 @@ namespace WorkShopManagement.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("RadioOptions");
-                });
-
-            modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
-                {
-                    b.Navigation("CarModels");
                 });
 #pragma warning restore 612, 618
         }

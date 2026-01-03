@@ -7,10 +7,11 @@ import {
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
+import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 @Component({
   standalone: true,
   selector: 'app-check-list',
@@ -27,8 +28,7 @@ export class CheckList implements OnInit {
   carModelName: string | null = null;
   isModalOpen = false;
   filters = {} as GetCheckListListDto;
-  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
-  uploadedFiles: TempFileDto[] = [];
+  uploadedFiles: FileAttachmentDto[] = [];
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
   private readonly fb = inject(FormBuilder);
@@ -43,7 +43,7 @@ export class CheckList implements OnInit {
     this.carModelId = this.route.snapshot.queryParamMap.get('carModelId');
     this.loadCarModelName();
     this.filters.carModelId = this.carModelId;
-    const streamCreator = (query: GetCheckListListDto) => this.service.getList({...query, ...this.filters});
+    const streamCreator = (query: GetCheckListListDto) => this.service.getList({ ...query, ...this.filters });
     this.list
       .hookToQuery(streamCreator)
       .subscribe((response: PagedResultDto<CheckListDto>) => {
@@ -67,7 +67,7 @@ export class CheckList implements OnInit {
     });
   }
   buildForm(): void {
-    const {name, position, concurrencyStamp} = this.selected || {};
+    const { name, position, concurrencyStamp } = this.selected || {};
     this.form = this.fb.group({
       name: [name ?? '', [Validators.required, Validators.maxLength(128)]],
       position: [position ?? 0, [Validators.required, Validators.min(0)]],
@@ -75,7 +75,7 @@ export class CheckList implements OnInit {
     });
   }
   createCheckList() {
-    if(!this.carModelId) return;
+    if (!this.carModelId) return;
     this.resetAttachmentAfterSave();
     this.selected = {} as CheckListDto;
     this.buildForm();
@@ -164,39 +164,44 @@ export class CheckList implements OnInit {
     this.router.navigate(['/car-models']);
   }
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId , carModelId: this.carModelId} });
+    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId } });
   }
-  onFileSelected(event: any): void {
-    const files: FileList = event.target.files;
-    if (files && files.length > 0) {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      };
-      this.uploadService.uploadFile(formData).subscribe({
-        next: (res: TempFileDto[]) => {
-          this.uploadedFiles = [...this.uploadedFiles, ...res];
-          event.target.value = '';
-        },
-        error: (err) => {
-          this.toaster.error('::UploadFailed');
-          console.error(err);
-        }
-      });
-    }
-    event.target.value = '';
-  }
-  removeExistingAttachment(index: number): void {
-    const list = this.selected.attachments ?? [];
-    list.splice(index, 1);
-    this.selected.attachments = [...list];
-  }
+
   isImage(name: string): boolean {
     if (!name) return false;
     return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
   }
   resetAttachmentAfterSave() {
     this.uploadedFiles = [];
-    this.selectedFiles = [];
+  }
+
+  uploadSelectedFiles(files: File[]) {
+    const formData = new FormData();
+    for (const f of files) formData.append('files', f);
+
+    this.uploadService.uploadFile(formData).subscribe({
+      next: (res: FileAttachmentDto[]) => {
+        this.uploadedFiles = [...this.uploadedFiles, ...res];
+      },
+      error: () => this.toaster.error('::UploadFailed')
+    });
+  }
+
+  removeTempFile(index: number) {
+    const list = [...(this.uploadedFiles ?? [])];
+    list.splice(index, 1);
+    this.uploadedFiles = list;
+  }
+
+  removeExistingAttachment(index: number) {
+    const list = [...(this.selected.attachments ?? [])];
+    list.splice(index, 1);
+    this.selected.attachments = list;
+  }
+
+  get existingFiles(): FileAttachmentDto[] {
+    return (this.selected?.attachments ?? [])
+      .map(x => x?.attachment)
+      .filter((x): x is FileAttachmentDto => !!x);
   }
 }
