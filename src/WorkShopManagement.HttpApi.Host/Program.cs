@@ -35,7 +35,12 @@ public class Program
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                         .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                         .Enrich.FromLogContext()
-                        .WriteTo.Async(c => c.File("Logs/logs.txt"))
+                        .WriteTo.Async(c => c.File(
+                            path: "Logs/logs-.txt",
+                            rollingInterval: RollingInterval.Day,
+                            fileSizeLimitBytes: 40 * 1024 * 1024,
+                            rollOnFileSizeLimit: true
+                            ))
                         .WriteTo.Async(c => c.Console())
                         .WriteTo.Async(c => c.AbpStudio(services));
                 });
