@@ -60,6 +60,8 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
 
             };
 
+        _logger.LogInformation("Started.");
+
         foreach (var (name, fileName) in seeds)
         {
             var filePath = Path.Combine(contentPath, fileName);

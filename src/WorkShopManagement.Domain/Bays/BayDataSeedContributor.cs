@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
@@ -13,11 +14,16 @@ public class BayDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<Bay, Guid> _bayRepository;
     private readonly IGuidGenerator _guidGenerator;
+    private readonly ILogger<BayDataSeedContributor> _logger;
 
-    public BayDataSeedContributor(IRepository<Bay, Guid> bayRepository, IGuidGenerator guidGenerator)
+    public BayDataSeedContributor(
+        ILogger<BayDataSeedContributor> logger,
+        IRepository<Bay, Guid> bayRepository,
+        IGuidGenerator guidGenerator)
     {
         _bayRepository = bayRepository;
         _guidGenerator = guidGenerator;
+        _logger = logger;
     }
 
     [UnitOfWork]
@@ -25,8 +31,11 @@ public class BayDataSeedContributor : ITransientDependency
     {
         if (await _bayRepository.AnyAsync())
         {
+            _logger.LogInformation("Bays data already exists. Skipping.");
             return;
         }
+
+        _logger.LogInformation("Started.");
 
         var bays = new List<Bay>
         {
@@ -56,5 +65,8 @@ public class BayDataSeedContributor : ITransientDependency
         {
             await _bayRepository.InsertAsync(bay, autoSave: true);
         }
+
+
+        _logger.LogInformation("Added {Count} bays records", bays.Count);
     }
 }

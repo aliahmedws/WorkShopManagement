@@ -52,7 +52,6 @@ public class CarModelDataSeedContributor : ITransientDependency
 
         var carModelsContentPath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels");
 
-        // CategoryName, CarModelName, FileName
         var seeds = new List<(string CategoryName, string Name, string FileName)>
         {
             // FORD 150
@@ -75,7 +74,6 @@ public class CarModelDataSeedContributor : ITransientDependency
             ("RAM HEAVY DUTY", "Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
         };
 
-        // Load categories once (fast, avoids N queries)
         var categories = await _modelCategoryRepository.GetListAsync();
         var categoryByName = categories
             .Where(x => !string.IsNullOrWhiteSpace(x.Name))
@@ -87,7 +85,6 @@ public class CarModelDataSeedContributor : ITransientDependency
 
             if (!categoryByName.TryGetValue(normalizedCategoryName, out var category))
             {
-                // Option A (recommended for seeding): auto-create missing category
                 // If you DON'T want auto-create, replace this block with "throw new BusinessException(...)".
                 var categoryFilePath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels", $"{categoryName}.png");
 

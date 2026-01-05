@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,24 +18,34 @@ public class CheckListDataSeedContributor : ITransientDependency
 
     private readonly IRepository<CheckList, Guid> _checkListRepository;
     private readonly IRepository<CarModel, Guid> _carModelRepository;
+    private readonly ILogger<CheckListDataSeedContributor> _logger;
     private readonly IGuidGenerator _guidGenerator;
 
     public CheckListDataSeedContributor(
         IRepository<CheckList, Guid> checkListRepository,
         IRepository<CarModel, Guid> carModelRepository,
+        ILogger<CheckListDataSeedContributor> logger,
         IGuidGenerator guidGenerator)
     {
         _checkListRepository = checkListRepository;
         _carModelRepository = carModelRepository;
         _guidGenerator = guidGenerator;
+        _logger = logger;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
+        if(await _checkListRepository.AnyAsync())
+        {
+            _logger.LogInformation("CheckList data already exists. Skipping.");
+            return;
+        }
+
         var carModel = await _carModelRepository.FirstOrDefaultAsync(x => x.Name == TargetCarModelName);
         if (carModel == null)
         {
+            _logger.LogInformation("CarModel not found");
             throw new Exception($"CarModel not found: '{TargetCarModelName}'.");
         }
 
@@ -45,6 +56,8 @@ public class CheckListDataSeedContributor : ITransientDependency
             .Where(x => !string.IsNullOrWhiteSpace(x.Name))
             .Select(x => x.Name.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        _logger.LogInformation("Started.");
 
         foreach (var s in seeds.OrderBy(x => x.Position))
         {
@@ -64,6 +77,7 @@ public class CheckListDataSeedContributor : ITransientDependency
 
             await _checkListRepository.InsertAsync(entity, autoSave: true);
         }
+        _logger.LogInformation("Added {Count} checklist records", seeds.Count);
     }
 
     private static List<CheckListSeed> GetFordLightning_CheckLists()
