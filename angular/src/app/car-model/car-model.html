@@ -1,14 +1,11 @@
-<div class="card">
-  <div class="card-header">
-     <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-link p-0" (click)="goBack()">
-            <i class="fa fa-arrow-left me-2"></i>
-          </button>
-          <h5 class="card-title m-0">{{ 'Variants' | abpLocalization }}</h5>
-
-        </div>
+<abp-page *abpPermission="'WorkShopManagement.CarModels'">
+<app-topbar-layout titleKey="Menu:Variants" [(filters)]="filters" [list]="list">
+ <div topbarLeft>
+    <button type="button" class="btn btn-link p-0" (click)="goBack()" title="Back">
+      <i class="fa fa-arrow-left"></i>
+    </button>
   </div>
-
+<div class="card">
   <div class="card-body">
     <ngx-datatable
       [rows]="carModels.items"
@@ -36,7 +33,7 @@
    
       <!-- Add CheckList button -->
       <ngx-datatable-column
-        [name]="'::Actions' | abpLocalization"
+        [name]="'::Action' | abpLocalization"
         [sortable]="false"
         [maxWidth]="170"
         *abpPermission="'WorkShopManagement.CheckLists.Create'"
@@ -56,3 +53,5 @@
     </ngx-datatable>
   </div>
 </div>
+</app-topbar-layout>
+</abp-page>

@@ -25,6 +25,12 @@ public class CarModelAppService : ApplicationService, ICarModelAppService
     {
         var queryable = await _repository.GetQueryableAsync();
 
+        if(!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter.Trim();
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(f));
+        }
+
         if (input.ModelCategoryId.HasValue)
         {
             queryable = queryable.Where(x => x.ModelCategoryId == input.ModelCategoryId.Value);

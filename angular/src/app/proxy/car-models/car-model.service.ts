@@ -15,7 +15,7 @@ export class CarModelService {
     this.restService.request<any, PagedResultDto<CarModelDto>>({
       method: 'GET',
       url: '/api/app/car-models',
-      params: { filters: input.filters, modelCategoryId: input.modelCategoryId, carModelId: input.carModelId, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { filter: input.filter, modelCategoryId: input.modelCategoryId, carModelId: input.carModelId, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
 }

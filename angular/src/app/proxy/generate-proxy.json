@@ -966,7 +966,7 @@
               "parameters": [
                 {
                   "nameOnMethod": "input",
-                  "name": "Filters",
+                  "name": "Filter",
                   "jsonName": null,
                   "type": "System.String",
                   "typeSimple": "string",
@@ -11518,7 +11518,7 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "Filters",
+          "name": "Filter",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
