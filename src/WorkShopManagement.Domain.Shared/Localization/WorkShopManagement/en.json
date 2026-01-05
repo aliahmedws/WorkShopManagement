@@ -121,7 +121,8 @@
     "NewAttachment": "New Attachments",
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
-    "Menu:Vehicles": "Vehicles",
+    "Menu:Vehicles": "Vehicle Models",
+    "Menu:Vehicle": "Vehicles",
     "Variants": "Variants",
     "Menu:Variants": "Variants"
   }

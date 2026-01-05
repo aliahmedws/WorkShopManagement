@@ -14,73 +14,93 @@ namespace WorkShopManagement.CheckLists;
 
 public class CheckListDataSeedContributor : ITransientDependency
 {
-    private const string TargetCarModelName = "Ford F-150 Lightning";
-
     private readonly IRepository<CheckList, Guid> _checkListRepository;
     private readonly IRepository<CarModel, Guid> _carModelRepository;
     private readonly ILogger<CheckListDataSeedContributor> _logger;
     private readonly IGuidGenerator _guidGenerator;
+    private readonly IUnitOfWorkManager _uowManager;
 
     public CheckListDataSeedContributor(
         IRepository<CheckList, Guid> checkListRepository,
         IRepository<CarModel, Guid> carModelRepository,
         ILogger<CheckListDataSeedContributor> logger,
-        IGuidGenerator guidGenerator)
+        IGuidGenerator guidGenerator,
+        IUnitOfWorkManager uowManager)
     {
         _checkListRepository = checkListRepository;
         _carModelRepository = carModelRepository;
         _guidGenerator = guidGenerator;
         _logger = logger;
+        _uowManager = uowManager;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        if(await _checkListRepository.AnyAsync())
+        var seeds = GetDefaultCheckLists();
+
+        // Get all existing car models
+        var carModels = await _carModelRepository.GetListAsync();
+        if (!carModels.Any())
         {
-            _logger.LogInformation("CheckList data already exists. Skipping.");
+            _logger.LogInformation("No CarModels found. Skipping checklist seeding.");
             return;
         }
 
-        var carModel = await _carModelRepository.FirstOrDefaultAsync(x => x.Name == TargetCarModelName);
-        if (carModel == null)
+        _logger.LogInformation("Seeding default CheckLists for {Count} CarModels...", carModels.Count);
+
+        var totalInserted = 0;
+
+        foreach (var carModel in carModels)
         {
-            _logger.LogInformation("CarModel not found");
-            throw new Exception($"CarModel not found: '{TargetCarModelName}'.");
-        }
+            var existing = await _checkListRepository.GetListAsync(x => x.CarModelId == carModel.Id);
 
-        var seeds = GetFordLightning_CheckLists();
+            var existingNames = existing
+                .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+                .Select(x => x.Name.Trim())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        var existing = await _checkListRepository.GetListAsync(x => x.CarModelId == carModel.Id);
-        var existingNames = existing
-            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-            .Select(x => x.Name.Trim())
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var insertedForModel = 0;
 
-        _logger.LogInformation("Started.");
-
-        foreach (var s in seeds.OrderBy(x => x.Position))
-        {
-            if (existingNames.Contains(s.Name))
+            foreach (var s in seeds.OrderBy(x => x.Position))
             {
-                continue;
+                if (existingNames.Contains(s.Name))
+                {
+                    continue;
+                }
+
+                var entity = new CheckList(
+                    id: _guidGenerator.Create(),
+                    name: s.Name,
+                    position: s.Position,
+                    carModelId: carModel.Id
+                );
+
+                // If you later want to map enable flags:
+                // entity.EnableCheckList = s.IsEnabled;
+
+                await _checkListRepository.InsertAsync(entity, autoSave: false);
+
+                insertedForModel++;
+                totalInserted++;
             }
 
-            var entity = new CheckList(
-                id: _guidGenerator.Create(),
-                name: s.Name,
-                position: s.Position,
-                carModelId: carModel.Id
-            );
-
-            //entity.EnableCheckList = s.IsEnabled;
-
-            await _checkListRepository.InsertAsync(entity, autoSave: true);
+            if (insertedForModel > 0)
+            {
+                _logger.LogInformation(
+                    "Inserted {Inserted} CheckLists for CarModel: {Name} ({Id})",
+                    insertedForModel, carModel.Name, carModel.Id
+                );
+            }
         }
-        _logger.LogInformation("Added {Count} checklist records", seeds.Count);
+
+        // Persist all inserts in this UoW
+        await _uowManager.Current.SaveChangesAsync();
+
+        _logger.LogInformation("Done. Total inserted CheckLists: {TotalInserted}", totalInserted);
     }
 
-    private static List<CheckListSeed> GetFordLightning_CheckLists()
+    private static List<CheckListSeed> GetDefaultCheckLists()
         => new()
         {
             new(1,  "Station 0 - Receiving Compliance Audit", true),
