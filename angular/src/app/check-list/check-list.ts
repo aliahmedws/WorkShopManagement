@@ -132,6 +132,7 @@ export class CheckList implements OnInit {
         this.resetForm();
         this.list.get();
         this.isModalOpen = false;
+        this.toaster.success('::SuccessfullyUpdated.');
       });
       return;
     }

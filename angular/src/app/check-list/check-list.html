@@ -1,66 +1,58 @@
-<abp-page>
-  <!-- Header / Toolbar -->
-  <abp-page-toolbar-container class="col">
-    <div class="card mb-3">
-      <div class="card-header d-flex align-items-center justify-content-between mb-3">
-        <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-link p-0" (click)="goBack()">
-            <i class="fa fa-arrow-left me-2"></i>
-          </button>
-          <h5 class="card-title m-0">{{ '::Menu:CheckLists' | abpLocalization }}</h5>
-          <span class="text-muted small" *ngIf="carModelName">
-            ({{ carModelName }})
-          </span>
-        </div>
-        <button *abpPermission="'WorkShopManagement.CheckLists.Create'" class="btn btn-outline-primary btn-sm"
-          type="button" (click)="createCheckList()" [disabled]="!carModelId">
-          <i class="fa fa-plus me-1"></i>
-          {{ '::NewCheckList' | abpLocalization }}
+<abp-page *abpPermission="'WorkShopManagement.CheckLists'">
+  <app-topbar-layout titleKey="Menu:CheckLists" [(filters)]="filters" [list]="list">
+    <div topbarLeft>
+      <button type="button" class="btn btn-link p-0" (click)="goBack()" title="Back">
+        <i class="fa fa-arrow-left"></i>
+      </button>
+    </div>
+    <div topbarActions>
+      <ng-container *abpPermission="'WorkShopManagement.CheckLists.Create'">
+        <button class="btn btn-sm btn-outline-primary" (click)="createCheckList()">
+          <i class="fas fa-plus"></i>
+          {{ '::AddNew' | abpLocalization }}
         </button>
+      </ng-container>
+    </div>
+    <!-- List -->
+    <div class="card">
+      <div class="card-body">
+        <ngx-datatable [rows]="checkLists.items" [count]="checkLists.totalCount" [list]="list" default>
+          <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div ngbDropdown container="body" class="d-inline-block">
+                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true" ngbDropdownToggle>
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <div ngbDropdownMenu>
+                  <button *abpPermission="'WorkShopManagement.CheckLists.Edit'" ngbDropdownItem
+                    (click)="editCheckList(row.id)">
+                    {{ '::Edit' | abpLocalization }}
+                  </button>
+                  <button *abpPermission="'WorkShopManagement.CheckLists.Delete'" ngbDropdownItem
+                    (click)="delete(row.id)">
+                    {{ '::Delete' | abpLocalization }}
+                  </button>
+                  <button *abpPermission="'WorkShopManagement.CheckLists.Delete'" ngbDropdownItem
+                    (click)="addListItem(row.id)">
+                    {{ '::ListItems' | abpLocalization }}
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <!-- Actions dropdown -->
+
+          <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position" [maxWidth]="120">
+          </ngx-datatable-column>
+          <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
+          </ngx-datatable-column>
+        </ngx-datatable>
       </div>
     </div>
-  </abp-page-toolbar-container>
-  <!-- List -->
-  <div class="card">
-    <div class="card-body">
-      <ngx-datatable [rows]="checkLists.items" [count]="checkLists.totalCount" [list]="list" default>
-        <!-- Actions dropdown -->
-        <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div ngbDropdown container="body" class="d-inline-block">
-              <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
-                <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
-              </button>
-              <div ngbDropdownMenu>
-                <button ngbDropdownItem (click)="editCheckList(row.id)"
-                  *abpPermission="'WorkShopManagement.CheckLists.Edit'">
-                  {{ '::Edit' | abpLocalization }}
-                </button>
-                <button ngbDropdownItem (click)="delete(row.id)"
-                  *abpPermission="'WorkShopManagement.CheckLists.Delete'">
-                  {{ '::Delete' | abpLocalization }}
-                </button>
-              </div>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position" [maxWidth]="120">
-        </ngx-datatable-column>
-        <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
-        </ngx-datatable-column>
-        <!-- ListItems action button -->
-        <ngx-datatable-column [name]="'::ListItems' | abpLocalization" [sortable]="false" [maxWidth]="160">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <button type="button" class="btn btn-outline-primary btn-sm" (click)="addListItem(row.id)">
-              <i class="fa fa-list-check me-1"></i>
-              {{ '::ListItems' | abpLocalization }}
-            </button>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
-  </div>
+  </app-topbar-layout>
 </abp-page>
+
+
 <!-- Create/Edit Modal (includes attachments now) -->
 <abp-modal [(visible)]="isModalOpen" size="lg">
   <ng-template #abpHeader>
