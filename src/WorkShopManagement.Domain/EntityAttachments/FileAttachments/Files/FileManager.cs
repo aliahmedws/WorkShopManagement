@@ -1,28 +1,31 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Services;
 using WorkShopManagement.EntityAttachments.FileAttachments.TempFiles;
-using WorkShopManagement.Utils.Exceptions;
 
 namespace WorkShopManagement.EntityAttachments.FileAttachments.Files;
 
-public class FileManager(
-    IBlobContainer<FileContainer> blobContainer,
-    IConfiguration configuration,
-    TempFileManager tempFileManager
-) : DomainService
+public class FileManager: DomainService
 {
-    private readonly IBlobContainer<FileContainer> _blobContainer = blobContainer;
-    private readonly IConfiguration _configuration = configuration;
-    private readonly TempFileManager _tempFileManager = tempFileManager;
+    private readonly IBlobContainer<FileContainer> _blobContainer;
+    private readonly TempFileManager _tempFileManager;
+    private readonly BlobStorageOptions _options;
 
+    public FileManager(
+        IBlobContainer<FileContainer> blobContainer,
+        IOptions<BlobStorageOptions> options,
+        TempFileManager tempFileManager
+        )
+    {
+        _blobContainer = blobContainer;
+        _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+        _tempFileManager = tempFileManager;
+    }
 
     public async Task<FileAttachment> SaveAsync(MemoryStream fileStream, string fileName, string? folder = null, CancellationToken ct = default)
     {
@@ -43,7 +46,7 @@ public class FileManager(
 
         await _blobContainer.SaveAsync(blobName, fileStream, overrideExisting: true, cancellationToken: ct);
 
-        var filePath = BuildUrl(blobName);
+        var filePath = BuildBlobUrl(blobName);
         return new FileAttachment(fileName, filePath, blobName);
 
     }
@@ -64,7 +67,7 @@ public class FileManager(
         }
 
         await _blobContainer.SaveAsync(blobName, fileStream, overrideExisting: true, cancellationToken: cancellationToken);
-        var filePath = BuildUrl(blobName);
+        var filePath = BuildBlobUrl(blobName);
 
         //await _tempFileManager.DeleteAsync(fileName); // Optionally delete the temp file after saving
 
@@ -100,24 +103,11 @@ public class FileManager(
         return await _blobContainer.GetAsync(blobName, cancellationToken: cancellationToken);
     }
 
-    private string BuildUrl(string blobName)
+    private string BuildBlobUrl(string blobName)
     {
         var containerName = BlobContainerNameAttribute.GetContainerName<FileContainer>();
-        var baseUrl = _configuration["BlobStorageSettings:BaseUrl"];
-        var basePath = _configuration["BlobStorageSettings:BasePath"];
-        List<string> missingFields = [];
-        if (string.IsNullOrWhiteSpace(baseUrl))
-            missingFields.Add("BlobStorageSettings:BaseUrl");
-        if (string.IsNullOrWhiteSpace(basePath))
-            missingFields.Add("BlobStorageSettings:BasePath");
-        if (missingFields.Count > 0)
-        {
-            throw new MissingConfigurationsException([.. missingFields]);
-        }
-
-        baseUrl = baseUrl!.TrimEnd('/');
-        basePath = basePath!.Trim('/');
-
+        var baseUrl = _options.BaseUrl;
+        var basePath = _options.BasePath;
         return $"{baseUrl}/{basePath}/{containerName}/{blobName}".Replace("\\", "/");
 
     }
