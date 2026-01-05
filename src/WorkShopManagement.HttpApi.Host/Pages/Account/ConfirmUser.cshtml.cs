@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Volo.Abp.Account.Web.Pages.Account;
 using Volo.Abp.Identity.Settings;
 using Volo.Abp.Settings;
 
 namespace WorkShopManagement.Pages.Account;
 
 #nullable disable
-public class ConfirmUserModel : AccountPageModel
+public class ConfirmUserModel : CustomAccountPageModel
 {
     public const string ConfirmUserScheme = "Abp.ConfirmUser";
 
@@ -77,6 +76,11 @@ public class ConfirmUserModel : AccountPageModel
         });
     }
 
+    public virtual Task<IActionResult> OnPostAsync()
+    {
+        return Task.FromResult<IActionResult>(Page());
+    }
+
     protected virtual async Task<UserInfoModel> RetrieveConfirmUser()
     {
         var result = await HttpContext.AuthenticateAsync(ConfirmUserModel.ConfirmUserScheme);
@@ -115,11 +119,6 @@ public class ConfirmUserModel : AccountPageModel
         }
 
         return null;
-    }
-
-    public virtual Task<IActionResult> OnPostAsync()
-    {
-        return Task.FromResult<IActionResult>(Page());
     }
 
     public class UserInfoModel

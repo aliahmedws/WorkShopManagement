@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Account;
@@ -12,7 +14,7 @@ using WorkShopManagement.Account.Phone;
 
 namespace WorkShopManagement.Account;
 
-public class CustomAccountAppService : AccountAppService
+public class CustomAccountAppService : AccountAppService, ICustomAccountAppService
 {
     protected IAccountPhoneService PhoneService { get; }
 
@@ -54,11 +56,18 @@ public class CustomAccountAppService : AccountAppService
         CheckPhoneNumber(user);
 
         (await UserManager.ChangePhoneNumberAsync(user, user.PhoneNumber, input.Token)).CheckErrors();
+        (await UserManager.SetTwoFactorEnabledAsync(user, enabled: true)).CheckErrors();
 
         await IdentitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext
         {
             Identity = IdentitySecurityLogIdentityConsts.Identity,
             Action = IdentitySecurityLogActionConsts.ChangePhoneNumber
+        });
+
+        await IdentitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext
+        {
+            Identity = IdentitySecurityLogIdentityConsts.Identity,
+            Action = IdentitySecurityLogActionConsts.TwoFactorEnabled
         });
     }
 
@@ -76,5 +85,59 @@ public class CustomAccountAppService : AccountAppService
         {
             throw new BusinessException("Volo.Account:PhoneNumberConfirmationDisabled");
         }
+    }
+
+    public virtual async Task<List<string>> GetTwoFactorProvidersAsync(GetTwoFactorProvidersInput input)
+    {
+        var user = await UserManager.GetByIdAsync(input.UserId);
+        if (await UserManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, nameof(SignInResult.RequiresTwoFactor), input.Token))
+        {
+            var providers = (await UserManager.GetValidTwoFactorProvidersAsync(user)).ToList();
+
+            //TODO: Uncomment for enabling Authenticator.
+            //if (!user.HasAuthenticator())
+            //{
+            //    providers.RemoveAll(x => x == TwoFactorProviderConsts.Authenticator);
+            //}
+            //TODO: Remove for enabling Authenticator
+            providers.RemoveAll(x => x == TwoFactorProviderConsts.Authenticator);
+            return providers;
+        }
+
+        throw new UserFriendlyException(L["Volo.Account:InvalidUserToken"]);
+    }
+
+    public virtual async Task SendTwoFactorCodeAsync(SendTwoFactorCodeInput input)
+    {
+        var user = await UserManager.GetByIdAsync(input.UserId);
+        if (await UserManager.VerifyUserTokenAsync(user, TokenOptions.DefaultProvider, nameof(SignInResult.RequiresTwoFactor), input.Token))
+        {
+            switch (input.Provider)
+            {
+                case TwoFactorProviderConsts.Email:
+                    {
+                        //TODO: Enable if implementing Email Verification
+                        //var code = await UserManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+                        //await AccountEmailer.SendEmailSecurityCodeAsync(user, code);
+                        return;
+                    }
+                case TwoFactorProviderConsts.Phone:
+                    {
+                        var code = await UserManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultPhoneProvider);
+                        await PhoneService.SendSecurityCodeAsync(user, code);
+                        return;
+                    }
+                case TwoFactorProviderConsts.Authenticator:
+                    {
+                        // No need to send code. The client will use the TOTP generator.
+                        return;
+                    }
+
+                default:
+                    throw new UserFriendlyException(L["Volo.Account:UnsupportedTwoFactorProvider"]);
+            }
+        }
+
+        throw new UserFriendlyException(L["Volo.Account:InvalidUserToken"]);
     }
 }

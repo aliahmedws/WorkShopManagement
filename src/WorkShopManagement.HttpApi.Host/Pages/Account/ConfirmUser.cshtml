@@ -1,9 +1,11 @@
 ﻿@page
 @inject IHtmlLocalizer<AccountResource> L
+@inject IHtmlLocalizer<WorkShopManagementResource> Localizer
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Volo.Abp.Account.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
 @using Volo.Abp.AspNetCore.Mvc.UI.Theming
+@using WorkShopManagement.Localization
 @using WorkShopManagement.Pages.Account
 @model ConfirmUserModel
 @inject IThemeManager ThemeManager
@@ -64,17 +66,17 @@
                 @if (Model.UserInfo.PhoneNumber.IsNullOrWhiteSpace())
                 {
                     <small class="form-text text-muted">
-                        @L["PhoneNumberEmptyHelpText"]
+                        @Localizer["PhoneNumberEmptyHelpText"]
                     </small>
                 }
             </div>
 
             <form id="PhoneNumberForm">
-                <abp-modal size="Small" id="PhoneNumberModal" static="true">
+                <abp-modal id="PhoneNumberModal" static="true">
                     <abp-modal-header title="@(L["Verify"].Value)"></abp-modal-header>
                     <abp-modal-body>
-                        <p>@L["ConfirmationTokenSentMessage"].Value</p>
-                        <abp-input asp-for="PhoneConfirmationToken" id="PhoneConfirmationToken" />
+                        <p>@Localizer["ConfirmationTokenSentMessage"].Value</p>
+                        <abp-input asp-for="PhoneConfirmationToken" label="@(Localizer["PhoneConfirmationToken"].Value + " *")" id="PhoneConfirmationToken" />
                     </abp-modal-body>
                     <abp-modal-footer buttons="@(AbpModalButtons.Cancel | AbpModalButtons.Save)"></abp-modal-footer>
                 </abp-modal>

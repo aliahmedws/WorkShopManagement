@@ -1,0 +1,36 @@
+﻿@page
+@inject IHtmlLocalizer<WorkShopManagementResource> L
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Theming
+@using WorkShopManagement.Localization
+@using WorkShopManagement.Pages.Account
+@model SendSecurityCodeModel
+@inject IThemeManager ThemeManager
+@{
+    Layout = ThemeManager.CurrentTheme.GetAccountLayout();
+}
+
+@section scripts {
+    <abp-script-bundle name="@typeof(SendSecurityCodeModel).FullName">
+        <abp-script src="/Pages/Account/SendSecurityCode.js"/>
+    </abp-script-bundle>
+}
+
+<div class="card">
+    <div class="card-body p-5">
+        <form method="post">
+            <p id="SendSecurityCode_Information" style="display: none;">
+                @L["SendSecurityCode_Information"]
+            </p>
+            <abp-input asp-for="RememberMe" />
+            <abp-select asp-for="SelectedProvider" asp-items="@Model.Providers" />
+            <abp-button type="submit" button-type="Primary" text="@L["Submit"].Value" />
+        </form>
+
+        <div class="mt-3" id="loginWithRecoveryCode" style="display: none;">
+            <p>
+                <a asp-page="./LoginWithRecoveryCode" asp-route-returnUrl="@Model.ReturnUrl">@L["LoginWithRecoveryCode_URL"]</a>.
+            </p>
+        </div>
+    </div>
+</div>

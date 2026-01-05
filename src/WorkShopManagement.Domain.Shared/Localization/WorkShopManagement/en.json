@@ -112,6 +112,14 @@
     "RecordCreatedTitle": "Record Created!",
     "RecordUpdatedTitle": "Record Updated!",
     "RecordDeletedTitle": "Record Deleted!",
-    "PhoneConfirmationSms": "Hello {0}! Here is your account confirmation code: {1}. If you didn't request this code, you can ignore this message. Please do not share this code with anyone."
+    "PhoneConfirmationSms": "Hello {0}! Here is your account confirmation code: {1}. If you didn't request this code, you can ignore this message. Please do not share this code with anyone.",
+    "EmailSecurityCodeBody": "Hello! Here is your Two Factor login OTP: {0}. If you didn't request this code, please change your password immediately. Please do not share this code with anyone.",
+    "TwoFactorVerification": "Two Factor Verification",
+    "SendSecurityCode_Information": "Your account is protected by Two Factor Authentication. Please click Submit to receive a One Time Password.",
+    "VerifySecurityCode_Information": "Please submit the One Time Password received on your selected provider to login.",
+    "ConfirmationTokenSentMessage": "A message containing One Time Password has been sent to registered phone number.",
+    "PhoneConfirmationToken": "One Time Password",
+    "SelectedProvider": "Selected Provider",
+    "DisplayName:RememberBrowser": "Remember Browser"
   }
 }

@@ -106,6 +106,16 @@ public class CustomLoginModel : LoginModel
         return await RedirectSafelyAsync(ReturnUrl, ReturnUrlHash);
     }
 
+    protected override async Task<IActionResult> TwoFactorLoginResultAsync()
+    {
+        return RedirectToPage("./SendSecurityCode", new
+        {
+            returnUrl = ReturnUrl,
+            returnUrlHash = ReturnUrlHash,
+            rememberMe = LoginInput.RememberMe
+        });
+    }
+
     protected virtual async Task<IActionResult> NotAllowedResultAsync()
     {
         var notAllowedUser = await GetIdentityUser(LoginInput.UserNameOrEmailAddress);
@@ -136,7 +146,6 @@ public class CustomLoginModel : LoginModel
         Alerts.Danger(L["LoginIsNotAllowed"]);
         return Page();
     }
-
 
     protected virtual async Task<IdentityUser> GetIdentityUser(string userNameOrEmailAddress)
     {

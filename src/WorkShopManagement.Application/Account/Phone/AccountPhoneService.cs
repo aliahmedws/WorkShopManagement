@@ -22,8 +22,8 @@ public class AccountPhoneService : IAccountPhoneService, ITransientDependency
 
     public virtual async Task SendConfirmationCodeAsync(IdentityUser user, string confirmationToken)
     {
-        var name = string.IsNullOrWhiteSpace(user.Name) ?
-            user.UserName
+        var name = string.IsNullOrWhiteSpace(user.Name) 
+            ? user.UserName
             : $"{user.Name}{user.Surname?.EnsureStartsWith(' ')}";
 
         await SmsSender.SendAsync(user.PhoneNumber, Localizer["PhoneConfirmationSms", name, confirmationToken]);
