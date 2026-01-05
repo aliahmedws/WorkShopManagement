@@ -62,16 +62,35 @@ public class CarModelDataSeedContributor : ITransientDependency
             ("FORD 1500", "F-150LightningLariatExt", "F-150LightningLariatExt.avif"),
 
             // FORD SUPER DUTY
-            ("FORD SUPER DUTY", "Ford Super Duty", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-250 XL", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-350 XL", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-450 XL", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-250 XLT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-350 XLT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-450 XLT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-250 LARIAT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-350 LARIAT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-450 LARIAT", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-250 King Ranch", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-350 King Ranch", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-450 King Ranch", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-250 Platinum", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-350 Platinum", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Super Duty F-450 Platinum", "Ford Super Duty.jpg"),
+
 
             // RAM 150
             ("RAM 1500", "DT RAM", "DT RAM.jpg"),
             ("RAM 1500", "Ram 1500 DEPRECATED", "Ram 1500 DEPRECATED.jpg"),
 
             // RAM HEAVY DUTY
-            ("RAM HEAVY DUTY", "HD RAM", "HD RAM.jpg"),
-            ("RAM HEAVY DUTY", "Ram 2500 DEPRECATED", "Ram 2500 DEPRECATED.jpg"),
-            ("RAM HEAVY DUTY", "Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 2500 REBEL", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 2500 LIMITED LONGORN", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 2500 LIMITED", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 3500 LIMITED", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 3500 TRADESMAN", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 3500 LARAMIE", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 3500 LIMITED LONGHORN", "HD RAM.jpg"),
         };
 
         var categories = await _modelCategoryRepository.GetListAsync();
@@ -85,7 +104,6 @@ public class CarModelDataSeedContributor : ITransientDependency
 
             if (!categoryByName.TryGetValue(normalizedCategoryName, out var category))
             {
-                // If you DON'T want auto-create, replace this block with "throw new BusinessException(...)".
                 var categoryFilePath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels", $"{categoryName}.png");
 
                 var catAttachment = new FileAttachment(
