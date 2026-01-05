@@ -131,6 +131,7 @@
     "ConfirmationTokenSentMessage": "A message containing One Time Password has been sent to registered phone number.",
     "PhoneConfirmationToken": "One Time Password",
     "SelectedProvider": "Selected Provider",
-    "DisplayName:RememberBrowser": "Remember Browser"
+    "DisplayName:RememberBrowser": "Remember Browser",
+    "PhoneNumberEmptyHelpText": "A valid phone number is required to confirm your account."
   }
 }
