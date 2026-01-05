@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -51,6 +51,10 @@ type ListItemFormModel = {
 export class ListItem implements OnInit {
   listItems = { items: [], totalCount: 0 } as PagedResultDto<ListItemDto>;
 
+  tagInputVisible = false;
+  tagInputValue = '';
+  @ViewChild('tagInputEl', { static: false }) tagInputEl?: ElementRef<HTMLInputElement>;
+
   form!: FormGroup;
   isModalOpen = false;
   selected = {} as ListItemDto;
@@ -64,7 +68,6 @@ export class ListItem implements OnInit {
 
   radioOptions: RadioOptionDto[] = [];
   pendingRadioNames: string[] = [];
-  radioOptionName = '';
   isRadioBusy = false;
 
   tempFiles: FileAttachmentDto[] = [];  // for file attachments
@@ -79,7 +82,6 @@ export class ListItem implements OnInit {
   private readonly toaster = inject(ToasterService);
   private readonly checkListService = inject(CheckListService);
   private readonly radioOptionService = inject(RadioOptionService);
-  private readonly uploadService = inject(UploadFileService);
 
   ngOnInit(): void {
     this.checkListId = this.route.snapshot.queryParamMap.get('checkListId');
@@ -120,7 +122,6 @@ export class ListItem implements OnInit {
   }
 
   edit(id: string): void {
-    // this.resetAttachment();
     this.listItemService.get(id).subscribe(dto => {
       this.selected = dto;
 
@@ -140,7 +141,6 @@ export class ListItem implements OnInit {
       this.isModalOpen = true;
 
       this.pendingRadioNames = [];
-      this.radioOptionName = '';
       this.loadRadioOptions();
     });
   }
@@ -245,28 +245,6 @@ export class ListItem implements OnInit {
     });
   }
 
-  addRadioOption(): void {
-    const name = (this.radioOptionName || '').trim();
-    if (!name) return;
-
-    const lower = name.toLowerCase();
-
-    const existsInDb = this.radioOptions.some(x => (x.name || '').trim().toLowerCase() === lower);
-    const existsPending = this.pendingRadioNames.some(x => x.toLowerCase() === lower);
-
-    if (existsInDb || existsPending) {
-      this.toaster.warn('::AlreadyExists');
-      return;
-    }
-
-    this.pendingRadioNames = [...this.pendingRadioNames, name];
-    this.radioOptionName = '';
-  }
-
-  removePendingRadio(name: string): void {
-    this.pendingRadioNames = this.pendingRadioNames.filter(x => x !== name);
-  }
-
   private savePendingRadioOptions(listItemId: string): void {
     const names = (this.pendingRadioNames || []).map(x => x.trim()).filter(Boolean);
     if (!names.length) return;
@@ -292,24 +270,6 @@ export class ListItem implements OnInit {
       complete: () => (this.isRadioBusy = false),
     });
   }
-
-  deleteRadioOption(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
-      if (status !== Confirmation.Status.confirm) return;
-
-      this.isRadioBusy = true;
-      this.radioOptionService.delete(id).subscribe({
-        next: () => {
-          this.radioOptions = this.radioOptions.filter(x => x.id !== id);
-          this.toaster.success('::SuccessfullyDeleted.');
-        },
-        error: () => (this.isRadioBusy = false),
-        complete: () => (this.isRadioBusy = false),
-      });
-    });
-  }
-
-  // Separator behavior
 
   private buildForm(): void {
     this.form = this.fb.group({
@@ -390,7 +350,6 @@ export class ListItem implements OnInit {
   private clearRadioUi(): void {
     this.radioOptions = [];
     this.pendingRadioNames = [];
-    this.radioOptionName = '';
     this.isRadioBusy = false;
   }
 
@@ -410,4 +369,63 @@ export class ListItem implements OnInit {
     getExisitingAttachments(dto:ListItemDto): void {
       this.existingFiles = [...(dto.entityAttachments ?? [])];
     }
+
+    private normalizeName(v: string): string {
+  return (v || '').trim();
+}
+
+private normalizeKey(v: string): string {
+  return this.normalizeName(v).toLowerCase();
+}
+
+showTagInput(): void {
+  this.tagInputVisible = true;
+  setTimeout(() => this.tagInputEl?.nativeElement?.focus(), 10);
+}
+
+confirmTagInput(): void {
+  const name = this.normalizeName(this.tagInputValue);
+  if (!name) {
+    this.tagInputValue = '';
+    this.tagInputVisible = false;
+    return;
+  }
+
+  const key = this.normalizeKey(name);
+
+  const existsInDb = (this.radioOptions ?? []).some(x => this.normalizeKey(x.name || '') === key);
+  const existsPending = (this.pendingRadioNames ?? []).some(x => this.normalizeKey(x) === key);
+
+  if (existsInDb || existsPending) {
+    this.toaster.warn('::AlreadyExists');
+  } else {
+    this.pendingRadioNames = [...this.pendingRadioNames, name];
+  }
+
+  this.tagInputValue = '';
+  this.tagInputVisible = false;
+}
+
+removePendingTag(name: string): void {
+  const key = this.normalizeKey(name);
+  this.pendingRadioNames = (this.pendingRadioNames ?? []).filter(x => this.normalizeKey(x) !== key);
+}
+
+removeDbTag(option: RadioOptionDto): void {
+  if (!option?.id) return;
+
+  this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
+    if (status !== Confirmation.Status.confirm) return;
+
+    this.isRadioBusy = true;
+    this.radioOptionService.delete(option.id).subscribe({
+      next: () => {
+        this.radioOptions = (this.radioOptions ?? []).filter(x => x.id !== option.id);
+        this.toaster.success('::SuccessfullyDeleted.');
+      },
+      error: () => (this.isRadioBusy = false),
+      complete: () => (this.isRadioBusy = false),
+    });
+  });
+}
 }

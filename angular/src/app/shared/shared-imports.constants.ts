@@ -8,6 +8,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { CopyComponent } from "./components/copy/copy.component";
 import { FileUploadComponent } from "./components/file-upload/file-upload.component";
 import { TopbarLayoutComponent } from "./components/topbar/topbar-layout.component";
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -21,7 +24,10 @@ export const SHARED_IMPORTS = [
     NgbDropdownModule,
     CopyComponent,
     TopbarLayoutComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    NzIconModule,
+    NzInputModule,
+    NzTagModule
 ];
 
 export { 
