@@ -55,4 +55,8 @@ export class CarModel implements OnInit {
    goBack(): void {
     this.router.navigate(['/vehicles', { queryParams: { modelCategoryId: this.modelCategoryId }}]);
   }
+
+   normilzeUrl(url?: string) {
+    return (url ?? '').replace(/\\/g, '/');
+  }
 }

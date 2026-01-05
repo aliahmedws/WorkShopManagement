@@ -8,7 +8,7 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 namespace WorkShopManagement.ModelCategories;
 
 [Audited]
-public class ModelCategory : FullAuditedAggregateRoot<Guid>
+public class ModelCategory : FullAuditedAggregateRoot<Guid> //Vehicles
 {
     public string Name { get; set; }
     public FileAttachment FileAttachments { get; set; }

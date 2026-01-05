@@ -11,6 +11,7 @@ import { TopbarLayoutComponent } from "./components/topbar/topbar-layout.compone
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -27,7 +28,8 @@ export const SHARED_IMPORTS = [
     FileUploadComponent,
     NzIconModule,
     NzInputModule,
-    NzTagModule
+    NzTagModule,
+    NzImageModule
 ];
 
 export { 

@@ -46,6 +46,19 @@
           </ngx-datatable-column>
           <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
           </ngx-datatable-column>
+          <ngx-datatable-column [name]="'::Images' | abpLocalization" [sortable]="false" [width]="160">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="d-flex gap-2 flex-wrap" *ngIf="row?.entityAttachments?.length">
+                <ng-container *ngFor="let ea of row.entityAttachments">
+                  <img *ngIf="ea?.attachment?.path" nz-image width="60" height="60" [nzSrc]="ea.attachment.path"
+                    [alt]="ea?.attachment?.name || 'attachment'" style="object-fit: cover; border-radius: 6px;" />
+                </ng-container>
+              </div>
+
+              <span class="text-muted" *ngIf="!row?.entityAttachments?.length">-</span>
+            </ng-template>
+          </ngx-datatable-column>
+
         </ngx-datatable>
       </div>
     </div>
