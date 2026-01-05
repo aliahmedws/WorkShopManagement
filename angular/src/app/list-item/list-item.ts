@@ -63,6 +63,7 @@ export class ListItem implements OnInit {
   selected = {} as ListItemDto;
 
   checkListId: string | null = null;
+  modelCategoryId: string | null = null;
   checkListName: string | null = null;
 
   commentTypes = commentTypeOptions;
@@ -88,6 +89,7 @@ export class ListItem implements OnInit {
 
   ngOnInit(): void {
     this.checkListId = this.route.snapshot.queryParamMap.get('checkListId');
+    this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
     this.loadCheckListName();
 
     this.buildForm();
@@ -399,7 +401,7 @@ export class ListItem implements OnInit {
 
   goBack() {
     this.router.navigate(['/check-lists'], {
-      queryParams: { carModelId: this.route.snapshot.queryParamMap.get('carModelId') },
+      queryParams: { carModelId: this.route.snapshot.queryParamMap.get('carModelId') , modelCategoryId: this.modelCategoryId },
       queryParamsHandling: 'merge',
     });
   }

@@ -30,6 +30,11 @@ public class CarModelAppService : ApplicationService, ICarModelAppService
             queryable = queryable.Where(x => x.ModelCategoryId == input.ModelCategoryId.Value);
         }
 
+        if(input.CarModelId.HasValue)
+        {
+            queryable = queryable.Where(x => x.Id == input.CarModelId.Value);
+        }
+
         var sorting = input.Sorting.IsNullOrWhiteSpace()
             ? nameof(CarModel.CreationTime)
             : input.Sorting;

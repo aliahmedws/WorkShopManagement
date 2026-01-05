@@ -25,6 +25,7 @@ export class CheckList implements OnInit {
   form!: FormGroup;
   selected = {} as CheckListDto;
   carModelId: string | null = null;
+  modelCategoryId:string | null = null;
   carModelName: string | null = null;
   isModalOpen = false;
   filters = {} as GetCheckListListDto;
@@ -44,6 +45,7 @@ export class CheckList implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.carModelId = this.route.snapshot.queryParamMap.get('carModelId');
+    this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
     this.loadCarModelName();
     this.filters.carModelId = this.carModelId;
     const streamCreator = (query: GetCheckListListDto) => this.service.getList({ ...query, ...this.filters });
@@ -163,14 +165,17 @@ export class CheckList implements OnInit {
   get isEditMode(): boolean {
     return !!this.selected?.id;
   }
+
   goBack(): void {
-    this.router.navigate(['/car-models']);
-  }
+  this.router.navigate(['/car-models'], {
+    queryParams: { modelCategoryId: this.modelCategoryId }
+  });
+}
+
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId } });
+    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId , modelCategoryId: this.modelCategoryId } });
   }
 
-  // -----File Attachment helpers
   resetAttachment() {
     this.tempFiles = [];
     this.existingFiles = [];
@@ -179,7 +184,5 @@ export class CheckList implements OnInit {
   getExisitingAttachments(dto:CheckListDto): void {
     this.existingFiles = [...(dto.entityAttachments ?? [])];
   }
-  // ----------- File Attachment helpers Ends
-
 
 }

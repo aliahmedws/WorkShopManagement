@@ -7,4 +7,5 @@ public class GetCarModelListDto : PagedAndSortedResultRequestDto
 {
     public string? Filters { get; set; }
     public Guid? ModelCategoryId { get; set; }
+    public Guid? CarModelId { get; set; }
 }
