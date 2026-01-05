@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using WorkShopManagement.Data;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments.TempFiles;
 
 namespace WorkShopManagement.TempFiles
 {
     public class TempFileAppService(
-        FileManager fileManager) : WorkShopManagementAppService, ITempFileAppService
+        TempFileManager tempManager) : WorkShopManagementAppService, ITempFileAppService
     {
-        private readonly FileManager _fileManager = fileManager;
+        private readonly TempFileManager _tempFileManager = tempManager;
 
-        public async Task<List<TempFileDto>> UploadTempFilesAsync(List<IFormFile?> files)
+        public async Task<List<FileAttachmentDto>> UploadTempFilesAsync(List<IFormFile?> files)
         {
-            var tempFiles = new List<TempFileDto>();
+            var tempFiles = new List<FileAttachment>();
             if (files != null && files.Count != 0)
             {
                 foreach (var f in files)
@@ -24,14 +24,14 @@ namespace WorkShopManagement.TempFiles
                         using var stream = new MemoryStream();
                         await f.CopyToAsync(stream);
                         stream.Position = 0;
-                        var (name, path) = await _fileManager.SaveTempFileAsync(stream, f.FileName);
-                        tempFiles.Add(new TempFileDto { Name = name, Path = path });
+                        var file = await _tempFileManager.SaveAsync(stream, f.FileName);
+                        tempFiles.Add(file);
                     }
 
                 }
             }
 
-            return tempFiles;
+            return ObjectMapper.Map<List<FileAttachment>, List<FileAttachmentDto>>(tempFiles);
         }
     }
 }

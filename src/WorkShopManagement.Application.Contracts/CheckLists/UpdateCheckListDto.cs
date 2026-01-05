@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.CheckLists;
@@ -23,6 +24,6 @@ public class UpdateCheckListDto
 
     [Required]
     public string ConcurrencyStamp { get; set; } = default!;
-    public List<TempFileDto> TempFiles { get; set; } = [];
-    public List<EntityAttachmentDto> Attachments { get; set; } = [];
+    public List<FileAttachmentDto> TempFiles { get; set; } = [];
+    public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
 }

@@ -84,58 +84,8 @@
         <!-- Attachments -->
         <div class="col-12">
           <label class="form-label">{{ '::Attachments' | abpLocalization }}</label>
-          <input #fileInput type="file" class="d-none" (change)="onFileSelected($event)" multiple />
-          <!-- <app-file-upload /> -->
-          <div class="input-group mb-2">
-            <button type="button" class="btn btn-outline-secondary" (click)="fileInput.click()">
-              <i class="fa fa-folder-open me-2"></i>
-              {{ '::ChooseFiles' | abpLocalization }}
-            </button>
-            <div class="form-control text-muted bg-transparent">
-              {{ '::NoFileChosen' | abpLocalization }}
-            </div>
-          </div>
-          <!-- NEW temp uploads: show immediately after user selects -->
-          <div class="d-flex flex-wrap gap-3 mt-3" *ngIf="(uploadedFiles?.length ?? 0) > 0">
-            <div class="position-relative" *ngFor="let item of uploadedFiles; let i = index">
-              <img *ngIf="isImage(item.name)" [src]="item.path" class="border rounded"
-                style="width: 100px; height: 100px; object-fit: cover;" [title]="item.name" />
-              <div *ngIf="!isImage(item.name)"
-                class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"
-                style="width: 100px; height: 100px;" [title]="item.name">
-                <i class="fa fa-file-lines fa-2x text-secondary mb-1"></i>
-                <small class="text-truncate w-75 text-center" style="font-size: 10px;">
-                  {{ item.name }}
-                </small>
-              </div>
-              <button type="button"
-                class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center"
-                style="width: 20px; height: 20px;" (click)="removeTempFile(i)" title="Remove temp file">
-                <i class="fa fa-times" style="font-size: 12px;"></i>
-              </button>
-            </div>
-          </div>
-          <!-- EXISTING saved attachments -->
-          <div class="d-flex flex-wrap gap-3 mt-3" *ngIf="(selected?.attachments?.length ?? 0) > 0">
-            <div class="position-relative" *ngFor="let att of selected.attachments; let i = index">
-              <img *ngIf="isImage(att?.attachment?.name)" [src]="att?.attachment?.path" class="border rounded"
-                style="width: 100px; height: 100px; object-fit: cover;" [title]="att?.attachment?.name" />
-              <div *ngIf="!isImage(att?.attachment?.name)"
-                class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"
-                style="width: 100px; height: 100px;" [title]="att?.attachment?.name">
-                <i class="fa fa-file-lines fa-2x text-secondary mb-1"></i>
-                <small class="text-truncate w-75 text-center" style="font-size: 10px;">
-                  {{ att?.attachment?.name }}
-                </small>
-              </div>
-              <button type="button"
-                class="btn btn-danger btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center"
-                style="width: 20px; height: 20px;" (click)="removeExistingAttachment(i)"
-                title="Remove existing attachment">
-                <i class="fa fa-times" style="font-size: 12px;"></i>
-              </button>
-            </div>
-          </div>
+          <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles">
+          </app-file-upload>
         </div>
       </div>
     </form>

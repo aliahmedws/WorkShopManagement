@@ -32,6 +32,10 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./cars/car-create-edit-modal/car-create-edit-modal').then(m => m.CarCreateEditModal),
   },
   {
+    path: 'vehicles',
+    loadComponent: () => import('./model-categories/model-categories').then(m => m.ModelCategories),
+  },
+  {
     path: 'car-models',
     loadComponent: () => import('./car-model/car-model').then(m => m.CarModel),
   },

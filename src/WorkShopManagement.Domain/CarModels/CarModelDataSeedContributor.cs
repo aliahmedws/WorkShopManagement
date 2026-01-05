@@ -3,32 +3,35 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
-using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.ModelCategories;
 
 namespace WorkShopManagement.CarModels;
 
 public class CarModelDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<CarModel, Guid> _carModelRepository;
+    private readonly IRepository<ModelCategory, Guid> _modelCategoryRepository;
     private readonly IGuidGenerator _guidGenerator;
     private readonly IConfiguration _configuration;
     private readonly ILogger<CarModelDataSeedContributor> _logger;
 
-
     public CarModelDataSeedContributor(
         IRepository<CarModel, Guid> carModelRepository,
+        IRepository<ModelCategory, Guid> modelCategoryRepository,
         ILogger<CarModelDataSeedContributor> logger,
-    IGuidGenerator guidGenerator,
+        IGuidGenerator guidGenerator,
         IConfiguration configuration)
     {
         _carModelRepository = carModelRepository;
+        _modelCategoryRepository = modelCategoryRepository;
         _guidGenerator = guidGenerator;
         _configuration = configuration;
         _logger = logger;
@@ -39,61 +42,94 @@ public class CarModelDataSeedContributor : ITransientDependency
     {
         if (await _carModelRepository.AnyAsync())
         {
-            _logger.LogInformation("CarModel data is already added. Skipping.");
+            _logger.LogInformation("CarModel data already exists. Skipping.");
             return;
         }
 
-        var configuredDir = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
-        if (string.IsNullOrWhiteSpace(configuredDir))
+        var rootUrl = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
+        if (string.IsNullOrWhiteSpace(rootUrl))
+            throw new Exception("Missing configuration: OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl");
+
+        var carModelsContentPath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels");
+
+        // CategoryName, CarModelName, FileName
+        var seeds = new List<(string CategoryName, string Name, string FileName)>
         {
-            throw new Exception("Missing configuration: Seed:CarModelsDir");
-        }
+            // FORD 150
+            ("FORD 1500", "Ford F-1500", "Ford F-150.jpg"),
+            ("FORD 1500", "Ford F-150 Lightning", "Ford F-150 Lightning.jpg"),
+            ("FORD 1500", "F-150 Lightning Pro EXT", "F-150 Lightning Pro EXT.jpg"),
+            ("FORD 1500", "F-150 Lightning Pro STD", "F-150 Lightning Pro STD.jpg"),
+            ("FORD 1500", "F-150LightningLariatExt", "F-150LightningLariatExt.avif"),
 
-        var contentPath = Path.Combine(configuredDir, "images", "CarModels");
+            // FORD SUPER DUTY
+            ("FORD SUPER DUTY", "Ford Super Duty", "Ford Super Duty.jpg"),
 
-        _logger.LogInformation("Seeding car model data");
-        var seeds = new List<(string Name, string FileName)>
+            // RAM 150
+            ("RAM 1500", "DT RAM", "DT RAM.jpg"),
+            ("RAM 1500", "Ram 1500 DEPRECATED", "Ram 1500 DEPRECATED.jpg"),
+
+            // RAM HEAVY DUTY
+            ("RAM HEAVY DUTY", "HD RAM", "HD RAM.jpg"),
+            ("RAM HEAVY DUTY", "Ram 2500 DEPRECATED", "Ram 2500 DEPRECATED.jpg"),
+            ("RAM HEAVY DUTY", "Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
+        };
+
+        // Load categories once (fast, avoids N queries)
+        var categories = await _modelCategoryRepository.GetListAsync();
+        var categoryByName = categories
+            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+            .ToDictionary(x => Normalize(x.Name), x => x);
+
+        foreach (var (categoryName, name, fileName) in seeds)
+        {
+            var normalizedCategoryName = Normalize(categoryName);
+
+            if (!categoryByName.TryGetValue(normalizedCategoryName, out var category))
             {
-                ("Challenger Charger DEPRECATED", "Challenger Charger DEPRECATED.jpg"),
-                ("Challenger Demon DEPRECATED", "Challenger Demon DEPRECATED.jpg"),
-                ("Challenger Hellcat DEPRECATED", "Challenger Hellcat DEPRECATED.jpg"),
-                ("Challenger RT DEPRECATED", "Challenger RT DEPRECATED.jpg"),
-                ("Challenger/Charger", "Challenger-Charger.jpg"),
-                ("Cruiser DEPRECATED", "Cruiser DEPRECATED.jpg"),
-                ("DT RAM", "DT RAM.jpg"),
-                ("F-150 Lightning Pro EXT (2)", "F-150 Lightning Pro EXT (2).jpg"),
-                ("F-150 Lightning Pro EXT", "F-150 Lightning Pro EXT.jpg"),
-                ("F-150 Lightning Pro STD", "F-150 Lightning Pro STD.jpg"),
-                ("F-150LightningLariatExt", "F-150LightningLariatExt.avif"),
-                ("Ford F-150 LEGACY Lightning", "Ford F-150 LEGACY Lightning.jpg"),
-                ("Ford F-150 Lightning", "Ford F-150 Lightning.jpg"),
-                ("Ford F-150", "Ford F-150.jpg"),
-                ("Ford Super Duty", "Ford Super Duty.jpg"),
-                ("HD RAM", "HD RAM.jpg"),
-                ("Ram 1500 DEPRECATED", "Ram 1500 DEPRECATED.jpg"),
-                ("Ram 2500 DEPRECATED", "Ram 2500 DEPRECATED.jpg"),
-                ("Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
-            };
+                // Option A (recommended for seeding): auto-create missing category
+                // If you DON'T want auto-create, replace this block with "throw new BusinessException(...)".
+                var categoryFilePath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels", $"{categoryName}.png");
 
-        foreach (var (name, fileName) in seeds)
-        {
-            var filePath = Path.Combine(contentPath, fileName);
+                var catAttachment = new FileAttachment(
+                    name: Path.GetFileName(categoryFilePath),
+                    blobName: categoryFilePath,
+                    path: categoryFilePath
+                );
+
+                category = new ModelCategory(
+                    _guidGenerator.Create(),
+                    categoryName.Trim(),
+                    catAttachment
+                );
+
+                category = await _modelCategoryRepository.InsertAsync(category, autoSave: true);
+                categoryByName[normalizedCategoryName] = category;
+
+                _logger.LogInformation("Created missing ModelCategory: {CategoryName}", categoryName);
+            }
+
+            var filePath = Path.Combine(carModelsContentPath, fileName);
 
                 var attachment = new FileAttachment(
                     name: fileName,
+                    blobName: fileName,
                     path: filePath
                 );
 
             var carModel = new CarModel(
                 _guidGenerator.Create(),
+                category.Id,
                 name,
                 attachment
             );
 
             await _carModelRepository.InsertAsync(carModel, autoSave: true);
-
         }
 
-        _logger.LogInformation("Added {0} car model records", seeds.Count);
+        _logger.LogInformation("Added {Count} car model records", seeds.Count);
     }
+
+    private static string Normalize(string value)
+        => (value ?? string.Empty).Trim().ToUpperInvariant();
 }

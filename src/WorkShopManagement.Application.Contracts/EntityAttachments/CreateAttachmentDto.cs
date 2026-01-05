@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.EntityAttachments
@@ -12,7 +13,7 @@ namespace WorkShopManagement.EntityAttachments
         [Required]
         public EntityType EntityType { get; set; }
         [Required]
-        public List<TempFileDto> TempFiles { get; set; } = [];
+        public List<FileAttachmentDto> TempFiles { get; set; } = [];
 
     }
 }

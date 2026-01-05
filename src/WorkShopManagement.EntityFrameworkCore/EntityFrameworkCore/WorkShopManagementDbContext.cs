@@ -21,6 +21,7 @@ using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.ModelCategories;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -64,6 +65,7 @@ public class WorkShopManagementDbContext :
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
+    public DbSet<ModelCategory> ModelCategories { get; set; }
     public DbSet<CarModel> CarModels { get; set; }
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
@@ -109,10 +111,32 @@ public class WorkShopManagementDbContext :
             b.OwnsOne(x => x.Attachment, fa =>
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.BlobName).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
                 fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
             });
         });
 
+        builder.Entity<ModelCategory>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ModelCategories", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired();
+
+            b.HasMany(x => x.CarModels)
+               .WithOne(x => x.ModelCategory)
+               .HasForeignKey(x => x.ModelCategoryId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            b.OwnsOne(x => x.FileAttachments, fa =>
+            {
+                fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+            });
+
+            b.HasIndex(x => x.Name);
+        });
 
         builder.Entity<CarModel>(b =>
         {

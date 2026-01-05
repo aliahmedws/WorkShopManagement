@@ -60,7 +60,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
                 EntityId = dto.Id,
                 EntityType = EntityType.CheckList
             });
-            dto.Attachments = attachments!;
+            dto.EntityAttachments = attachments!;
         }
         return new PagedResultDto<CheckListDto?>(totalCount, dtos);
     }
@@ -76,7 +76,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             EntityType = EntityType.CheckList
         });
 
-        dtos.Attachments = attachments!;
+        dtos.EntityAttachments = attachments!;
 
         return dtos;
     }
@@ -115,12 +115,14 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
 
         entity = await _checkListRepository.InsertAsync(entity, autoSave: true);
 
+        // --- CREATE EntityAttachment 
         await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
         {
             EntityType = EntityType.CheckList,
             EntityId = entity.Id,
             TempFiles = input.TempFiles
         });
+        // --- create end
 
         return ObjectMapper.Map<CheckList, CheckListDto>(entity);
     }
@@ -165,13 +167,15 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
 
         await _checkListRepository.UpdateAsync(entity, autoSave: true);
 
+        // --- UPDATE EntityAttachment 
         await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.CheckList,
             TempFiles = input.TempFiles,
-            Attachments = input.Attachments
+            EntityAttachments = input.EntityAttachments
         });
+        // --- update end
         return ObjectMapper.Map<CheckList, CheckListDto>(entity);
     }
 

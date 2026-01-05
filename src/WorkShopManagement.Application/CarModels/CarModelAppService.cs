@@ -25,6 +25,11 @@ public class CarModelAppService : ApplicationService, ICarModelAppService
     {
         var queryable = await _repository.GetQueryableAsync();
 
+        if (input.ModelCategoryId.HasValue)
+        {
+            queryable = queryable.Where(x => x.ModelCategoryId == input.ModelCategoryId.Value);
+        }
+
         var sorting = input.Sorting.IsNullOrWhiteSpace()
             ? nameof(CarModel.CreationTime)
             : input.Sorting;

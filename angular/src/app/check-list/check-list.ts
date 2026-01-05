@@ -2,20 +2,16 @@ import { PagedResultDto, ListService, LocalizationPipe } from '@abp/ng.core';
 import {
   ConfirmationService,
   Confirmation,
-  ThemeSharedModule,
   ToasterService,
 } from '@abp/ng.theme.shared';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PageModule } from '@abp/ng.components/page';
-import { CommonModule } from '@angular/common';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { PermissionDirective } from '@abp/ng.core';
-import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
 import { CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto, CreateCheckListDto } from '../proxy/check-lists';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
+import { EntityAttachmentDto } from '../proxy/entity-attachments';
 @Component({
   standalone: true,
   selector: 'app-check-list',
@@ -32,8 +28,10 @@ export class CheckList implements OnInit {
   carModelName: string | null = null;
   isModalOpen = false;
   filters = {} as GetCheckListListDto;
-  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
-  uploadedFiles: TempFileDto[] = [];
+
+  tempFiles: FileAttachmentDto[] = [];  // for file attachments
+  existingFiles: EntityAttachmentDto[] = []; // for existing attachments
+  
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
   private readonly fb = inject(FormBuilder);
@@ -42,13 +40,13 @@ export class CheckList implements OnInit {
   private readonly router = inject(Router);
   private readonly carModelService = inject(CarModelService);
   private readonly toaster = inject(ToasterService);
-  private readonly uploadService = inject(UploadFileService);
+
   ngOnInit(): void {
     this.buildForm();
     this.carModelId = this.route.snapshot.queryParamMap.get('carModelId');
     this.loadCarModelName();
     this.filters.carModelId = this.carModelId;
-    const streamCreator = (query: GetCheckListListDto) => this.service.getList({...query, ...this.filters});
+    const streamCreator = (query: GetCheckListListDto) => this.service.getList({ ...query, ...this.filters });
     this.list
       .hookToQuery(streamCreator)
       .subscribe((response: PagedResultDto<CheckListDto>) => {
@@ -72,7 +70,7 @@ export class CheckList implements OnInit {
     });
   }
   buildForm(): void {
-    const {name, position, concurrencyStamp} = this.selected || {};
+    const { name, position, concurrencyStamp } = this.selected || {};
     this.form = this.fb.group({
       name: [name ?? '', [Validators.required, Validators.maxLength(128)]],
       position: [position ?? 0, [Validators.required, Validators.min(0)]],
@@ -80,21 +78,23 @@ export class CheckList implements OnInit {
     });
   }
   createCheckList() {
-    if(!this.carModelId) return;
-    this.resetAttachmentAfterSave();
+    if (!this.carModelId) return;
+    this.resetAttachment();               // reset attachments on create - remove this line if persisting temp attachments on modal reopens
     this.selected = {} as CheckListDto;
     this.buildForm();
     this.isModalOpen = true;
   }
   editCheckList(id: string) {
-    this.resetAttachmentAfterSave();
+    this.resetAttachment();               // reset attachments on edit
     this.service.get(id).subscribe(dto => {
       this.selected = dto;
+      this.getExisitingAttachments(dto);
       this.buildForm();
       this.isModalOpen = true;
     })
   }
   resetForm(): void {
+    this.resetAttachment();             // reset attachments on form reset
     this.selected = {} as CheckListDto;
     this.form.reset({
       name: '',
@@ -114,6 +114,7 @@ export class CheckList implements OnInit {
   }
   save(): void {
     if (this.form.invalid || !this.carModelId) return;
+    debugger;
     const raw = this.form.getRawValue();
     const name = (raw.name || '').trim();
     if (this.selected.id) {
@@ -122,11 +123,10 @@ export class CheckList implements OnInit {
         name,
         position: raw.position,
         concurrencyStamp: raw.concurrencyStamp,
-        tempFiles: this.uploadedFiles,
-        attachments: this.selected.attachments,
+        tempFiles: this.tempFiles,
+        entityAttachments: this.existingFiles,
       };
       this.service.update(this.selected.id, input).subscribe(() => {
-        this.resetAttachmentAfterSave();
         this.resetForm();
         this.list.get();
         this.isModalOpen = false;
@@ -137,15 +137,13 @@ export class CheckList implements OnInit {
       carModelId: this.carModelId,
       name,
       position: raw.position,
-      tempFiles: this.uploadedFiles,
+      tempFiles: this.tempFiles,
     };
     this.service.create(input).subscribe(() => {
-      this.resetAttachmentAfterSave();
       this.resetForm();
       this.list.get();
       this.isModalOpen = false;
       this.toaster.success('::SuccessfullyCreated.');
-      this.resetAttachmentAfterSave();
     });
   }
   delete(id: string): void {
@@ -160,7 +158,7 @@ export class CheckList implements OnInit {
   }
   closeModal() {
     this.isModalOpen = false;
-    this.resetAttachmentAfterSave();
+    this.resetForm();
   }
   get isEditMode(): boolean {
     return !!this.selected?.id;
@@ -169,39 +167,19 @@ export class CheckList implements OnInit {
     this.router.navigate(['/car-models']);
   }
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId , carModelId: this.carModelId} });
+    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId } });
   }
-  onFileSelected(event: any): void {
-    const files: FileList = event.target.files;
-    if (files && files.length > 0) {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      };
-      this.uploadService.uploadFile(formData).subscribe({
-        next: (res: TempFileDto[]) => {
-          this.uploadedFiles = [...this.uploadedFiles, ...res];
-          event.target.value = '';
-        },
-        error: (err) => {
-          this.toaster.error('::UploadFailed');
-          console.error(err);
-        }
-      });
-    }
-    event.target.value = '';
+
+  // -----File Attachment helpers
+  resetAttachment() {
+    this.tempFiles = [];
+    this.existingFiles = [];
   }
-  removeExistingAttachment(index: number): void {
-    const list = this.selected.attachments ?? [];
-    list.splice(index, 1);
-    this.selected.attachments = [...list];
+
+  getExisitingAttachments(dto:CheckListDto): void {
+    this.existingFiles = [...(dto.entityAttachments ?? [])];
   }
-  isImage(name: string): boolean {
-    if (!name) return false;
-    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
-  }
-  resetAttachmentAfterSave() {
-    this.uploadedFiles = [];
-    this.selectedFiles = [];
-  }
+  // ----------- File Attachment helpers Ends
+
+
 }

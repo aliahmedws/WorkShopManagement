@@ -30,7 +30,10 @@ import {
   UpdateListItemDto,
 } from '../proxy/list-items';
 import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
-import { TempFileDto, UploadFileService } from '../entity-attachment/upload-files.service';
+import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
+import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
+import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { EntityAttachmentDto } from '../proxy/entity-attachments';
 
 type ListItemFormModel = {
   name: string;
@@ -46,14 +49,7 @@ type ListItemFormModel = {
   standalone: true,
   selector: 'app-list-item',
   imports: [
-    CommonModule,
-    PageModule,
-    ThemeSharedModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbDropdownModule,
-    PermissionDirective,
-    LocalizationPipe,
+    ...SHARED_IMPORTS
   ],
   templateUrl: './list-item.html',
   styleUrl: './list-item.scss',
@@ -76,8 +72,8 @@ export class ListItem implements OnInit {
   radioOptionName = '';
   isRadioBusy = false;
 
-  selectedFiles: { file: File; url: string | ArrayBuffer | null; name: string }[] = [];
-  uploadedFiles: TempFileDto[] = [];
+  tempFiles: FileAttachmentDto[] = [];  // for file attachments
+  existingFiles: EntityAttachmentDto[] = []; // for existing attachments
 
   public readonly list = inject(ListService);
   private readonly listItemService = inject(ListItemService);
@@ -113,7 +109,7 @@ export class ListItem implements OnInit {
   }
 
   createListItem(): void {
-    this.resetAttachmentAfterSave();
+    this.resetAttachment();
     this.resetForm();
     this.clearRadioUi();
     this.isModalOpen = true;
@@ -121,12 +117,12 @@ export class ListItem implements OnInit {
 
   closeModal(): void {
     this.isModalOpen = false;
-    this.resetAttachmentAfterSave();
     this.resetForm();
     this.clearRadioUi();
   }
 
   edit(id: string): void {
+    // this.resetAttachment();
     this.listItemService.get(id).subscribe(dto => {
       this.selected = dto;
 
@@ -139,10 +135,9 @@ export class ListItem implements OnInit {
         isSeparator: dto.isSeparator ?? false,
         concurrencyStamp: dto.concurrencyStamp ?? null,
       });
-
+      
       this.applySeparatorState(!!dto.isSeparator);
-      this.uploadedFiles = [];
-      this.selectedFiles = [];
+      this.getExisitingAttachments(dto);
 
       this.isModalOpen = true;
 
@@ -182,14 +177,14 @@ export class ListItem implements OnInit {
         isAttachmentRequired,
         isSeparator: isSep,
         concurrencyStamp: raw.concurrencyStamp ?? this.selected.concurrencyStamp,
-        tempFiles: this.uploadedFiles,
-        attachments: this.selected.attachments,
+        tempFiles: this.tempFiles,
+        entityAttachments: this.existingFiles,
       };
 
       this.listItemService.update(this.selected.id, input).subscribe(updated => {
         this.selected = updated ?? this.selected;
 
-        this.resetAttachmentAfterSave();
+        this.resetAttachment();
         this.savePendingRadioOptions(this.selected.id);
         this.isModalOpen = false;
         this.list.get();
@@ -207,14 +202,14 @@ export class ListItem implements OnInit {
       commentPlaceholder,
       isAttachmentRequired,
       isSeparator: isSep,
-      tempFiles: this.uploadedFiles,
+      tempFiles: this.tempFiles,
     };
 
     this.listItemService.create(input).subscribe(created => {
       this.toaster.success('::SuccessfullyCreated.');
       this.selected = created;
 
-      this.resetAttachmentAfterSave();
+      this.resetAttachment();
       this.savePendingRadioOptions(created.id);
 
       this.list.get();
@@ -235,47 +230,6 @@ export class ListItem implements OnInit {
         }
       });
     });
-  }
-
-  onFileSelected(event: any): void {
-    const files: FileList = event.target.files;
-    if (files && files.length > 0) {
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
-
-      this.uploadService.uploadFile(formData).subscribe({
-        next: (res: TempFileDto[]) => {
-          this.uploadedFiles = [...this.uploadedFiles, ...(res ?? [])];
-          event.target.value = '';
-        },
-        error: err => {
-          this.toaster.error('::UploadFailed');
-          console.error(err);
-        },
-      });
-    }
-  }
-
-  removeTempFile(index: number): void {
-    this.uploadedFiles.splice(index, 1);
-  }
-
-  removeExistingAttachment(index: number): void {
-    const existing = this.selected?.attachments ?? [];
-    existing.splice(index, 1);
-    this.selected.attachments = [...existing];
-  }
-
-  isImage(name: string): boolean {
-    if (!name) return false;
-    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
-  }
-
-  private clearAttachmentUi(): void {
-    this.selectedFiles = [];
-    this.uploadedFiles = [];
   }
 
   loadRadioOptions(): void {
@@ -408,6 +362,7 @@ export class ListItem implements OnInit {
   }
 
   private resetForm(): void {
+    this.resetAttachment();
     this.selected = {} as ListItemDto;
 
     this.form.reset({
@@ -441,10 +396,6 @@ export class ListItem implements OnInit {
     this.isRadioBusy = false;
   }
 
-  resetAttachmentAfterSave() {
-    this.uploadedFiles = [];
-    this.selectedFiles = [];
-  }
 
   goBack() {
     this.router.navigate(['/check-lists'], {
@@ -452,4 +403,15 @@ export class ListItem implements OnInit {
       queryParamsHandling: 'merge',
     });
   }
+
+  // -----File Attachment helpers
+    resetAttachment() {
+      this.tempFiles = [];
+      this.existingFiles = [];
+    }
+  
+    getExisitingAttachments(dto:ListItemDto): void {
+      this.existingFiles = [...(dto.entityAttachments ?? [])];
+    }
+    // ----------- File Attachment helpers Ends
 }

@@ -1,12 +1,12 @@
 <div class="card">
   <div class="card-header">
-    <div class="row">
-      <div class="col col-md-6">
-        <h5 class="card-title" >
-          {{ '::Menu:CarModels' | abpLocalization }}
-        </h5>
-      </div>
-    </div>
+     <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-link p-0" (click)="goBack()">
+            <i class="fa fa-arrow-left me-2"></i>
+          </button>
+          <h5 class="card-title m-0">{{ 'Variants' | abpLocalization }}</h5>
+
+        </div>
   </div>
 
   <div class="card-body">

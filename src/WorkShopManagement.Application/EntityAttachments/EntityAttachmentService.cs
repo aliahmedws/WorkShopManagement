@@ -7,50 +7,50 @@ using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments.Files;
 
 namespace WorkShopManagement.EntityAttachments;
 
 [RemoteService(IsEnabled = false)]
 public class EntityAttachmentService(
-    IRepository<EntityAttachment, Guid> repository,
+    IEntityAttachmentRepository repository,
     FileManager fileManager) : ApplicationService, IEntityAttachmentService
 {
-    private readonly IRepository<EntityAttachment, Guid> _repository = repository;
+    private readonly IEntityAttachmentRepository _repository = repository;
     private readonly FileManager _fileManager = fileManager;
 
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
-        var queryable = await _repository.GetQueryableAsync();
-
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == input.EntityId && x.EntityType.Equals(input.EntityType))
+        
+        var items = await _repository.GetListByEntityAsync(
+            entityId: input.EntityId,
+            entityType: input.EntityType
         );
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
-    public async Task<List<EntityAttachmentDto>> GetListAsync(Guid entityId, string entityType)
+    public async Task<List<EntityAttachmentDto>> GetListAsync(Guid entityId, EntityType entityType)
     {
 
-        var queryable = await _repository.GetQueryableAsync();
-
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == entityId && x.EntityType.Equals(entityType))
+        var items = await _repository.GetListByEntityAsync(
+           entityId: entityId,
+           entityType: entityType
         );
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
     public async Task DeleteAsync(Guid entityId, EntityType entityType)
     {
-        var queryable = await _repository.GetQueryableAsync();
-        var items = await AsyncExecuter.ToListAsync(
-            queryable.Where(x => x.EntityId == entityId && x.EntityType.Equals(entityType))
+        var items = await _repository.GetListByEntityAsync(
+            entityId: entityId,
+            entityType: entityType
         );
 
         if (items != null && items.Count != 0)
         {
             foreach (var item in items)
             {
-                await _fileManager.DeleteFileAsync(item.Attachment);
+                await _fileManager.DeleteAsync(item.Attachment);
             }
 
             var ids = items.Select(x => x.Id).ToList();
@@ -68,16 +68,13 @@ public class EntityAttachmentService(
 
         foreach (var f in input.TempFiles)
         {
-            var saved = await _fileManager.SaveFileAsync(f.Name);
+            var saved = await _fileManager.SaveFromTempAsync(f.Name, f.BlobName);
 
             entities.Add(new EntityAttachment(
                 id: GuidGenerator.Create(),
                 entityId: input.EntityId,
                 entityType: input.EntityType,
-                attachment: new FileAttachment(
-                    name: saved.Name,
-                    path: saved.Path 
-                    )
+                attachment: saved
             ));
         }
 
@@ -91,21 +88,20 @@ public class EntityAttachmentService(
     public async Task<List<EntityAttachmentDto>> UpdateAsync(UpdateEntityAttachmentDto input)
     {
 
-        var keptIds = input.Attachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
+        var keptIds = input.EntityAttachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
 
-        var queryable = await _repository.GetQueryableAsync();
+        var queryable = await _repository.GetQueryableByEntityAsync(input.EntityId, input.EntityType);
         var dbItems = await AsyncExecuter.ToListAsync(
             queryable
-                //.AsNoTracking()
-                .Where(x => x.EntityType.Equals(input.EntityType) && x.EntityId == input.EntityId && !keptIds.Contains(x.Id))
-                .Select(x => new { x.Id, Name = x.Attachment.Name, Path = x.Attachment.Path  })
+                .Where(x => !keptIds.Contains(x.Id))
+                .Select(x => new { x.Id, Name = x.Attachment.Name, BlobName = x.Attachment.BlobName, Path = x.Attachment.Path  })
         );
 
         if (dbItems != null && dbItems.Count != 0)
         {
             foreach (var dbItem in dbItems)
             {
-                await _fileManager.DeleteFileAsync(new FileAttachment(dbItem.Name, dbItem.Path));
+                await _fileManager.DeleteAsync(new FileAttachment(dbItem.Name, dbItem.BlobName, dbItem.Path));
 
             }
             var ids = dbItems.Select(x => x.Id).ToList();

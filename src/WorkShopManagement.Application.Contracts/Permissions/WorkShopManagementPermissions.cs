@@ -17,6 +17,11 @@ public static class WorkShopManagementPermissions
         public const string Default = GroupName + ".CarModels";
     }
 
+    public static class Vehicles
+    {
+        public const string Default = GroupName + ".Vehicles";
+    }
+
     public static class CheckLists
     {
         public const string Default = GroupName + ".CheckLists";

@@ -9,10 +9,21 @@ using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.Lookups;
+using WorkShopManagement.ModelCategories;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement;
 
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class ModelCategoryMapper : MapperBase<ModelCategory, ModelCategoryDto>
+{
+    public override partial ModelCategoryDto Map(ModelCategory source);
+    public override partial void Map(ModelCategory source, ModelCategoryDto destination);
+
+    public partial FileAttachmentDto Map(FileAttachment source);
+    public partial void Map(FileAttachment source, FileAttachmentDto destination);
+}
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class CarModelMapper : MapperBase<CarModel, CarModelDto>
@@ -23,6 +34,8 @@ public partial class CarModelMapper : MapperBase<CarModel, CarModelDto>
     public partial FileAttachmentDto Map(FileAttachment source);
     public partial void Map(FileAttachment source, FileAttachmentDto destination);
 }
+
+
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
@@ -89,4 +102,11 @@ public partial class RadioOptionMapper : MapperBase<RadioOption, RadioOptionDto>
 {
     public override partial RadioOptionDto Map(RadioOption source);
     public override partial void Map(RadioOption source, RadioOptionDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttachmentDto>
+{
+    public override partial FileAttachmentDto Map(FileAttachment source);
+    public override partial void Map(FileAttachment source, FileAttachmentDto destination);
 }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Entities;
-using WorkShopManagement.TempFiles;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.EntityAttachments
 {
@@ -15,9 +13,9 @@ namespace WorkShopManagement.EntityAttachments
         [Required]
         public EntityType EntityType { get; set; }
         [Required]
-        public List<TempFileDto> TempFiles { get; set; } = [];
+        public List<FileAttachmentDto> TempFiles { get; set; } = [];
         [Required]
-        public List<EntityAttachmentDto> Attachments { get; set; } = [];
+        public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
         //[Required]
         //public string ConcurrencyStamp { get; set; } = default!;
     }

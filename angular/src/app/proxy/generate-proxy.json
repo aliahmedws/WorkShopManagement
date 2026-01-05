@@ -966,6 +966,30 @@
               "parameters": [
                 {
                   "nameOnMethod": "input",
+                  "name": "Filters",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "ModelCategoryId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
                   "name": "Sorting",
                   "jsonName": null,
                   "type": "System.String",
@@ -2260,6 +2284,114 @@
             }
           }
         },
+        "WorkShopManagement.Controllers.ModelCategories.ModelCategoryController": {
+          "controllerName": "ModelCategory",
+          "controllerGroupName": "ModelCategories",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.ModelCategories.ModelCategoryController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.ModelCategories.IModelCategoryAppService",
+              "name": "IModelCategoryAppService",
+              "methods": [
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.ModelCategories.GetModelCategoryListDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.ModelCategories.GetModelCategoryListDto",
+                      "typeSimple": "WorkShopManagement.ModelCategories.GetModelCategoryListDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.PagedResultDto<WorkShopManagement.ModelCategories.ModelCategoryDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<WorkShopManagement.ModelCategories.ModelCategoryDto>"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetListAsyncByInput": {
+              "uniqueName": "GetListAsyncByInput",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/app/model-category",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.ModelCategories.GetModelCategoryListDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.ModelCategories.GetModelCategoryListDto",
+                  "typeSimple": "WorkShopManagement.ModelCategories.GetModelCategoryListDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "Filters",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "Sorting",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "SkipCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "MaxResultCount",
+                  "jsonName": null,
+                  "type": "System.Int32",
+                  "typeSimple": "number",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.PagedResultDto<WorkShopManagement.ModelCategories.ModelCategoryDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.PagedResultDto<WorkShopManagement.ModelCategories.ModelCategoryDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.ModelCategories.IModelCategoryAppService"
+            }
+          }
+        },
         "WorkShopManagement.Controllers.RadioOptions.RadioOptionController": {
           "controllerName": "RadioOption",
           "controllerGroupName": "RadioOptions",
@@ -2692,8 +2824,8 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "System.Collections.Generic.List<WorkShopManagement.TempFiles.TempFileDto>",
-                    "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]"
+                    "type": "System.Collections.Generic.List<WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto>",
+                    "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]"
                   }
                 }
               ]
@@ -2731,8 +2863,8 @@
                 }
               ],
               "returnValue": {
-                "type": "System.Collections.Generic.List<WorkShopManagement.TempFiles.TempFileDto>",
-                "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]"
+                "type": "System.Collections.Generic.List<WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto>",
+                "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.TempFiles.ITempFileAppService"
@@ -11329,6 +11461,18 @@
           "regex": null
         },
         {
+          "name": "ModelCategoryId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Name",
           "jsonName": null,
           "type": "System.String",
@@ -11360,7 +11504,32 @@
       "enumNames": null,
       "enumValues": null,
       "genericArguments": null,
-      "properties": []
+      "properties": [
+        {
+          "name": "Filters",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelCategoryId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
     },
     "WorkShopManagement.Cars.CarDto": {
       "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
@@ -12168,7 +12337,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -12263,8 +12432,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12425,8 +12594,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -12435,7 +12604,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -12518,6 +12687,18 @@
       "properties": [
         {
           "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BlobName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -12910,8 +13091,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -13058,7 +13239,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -13177,8 +13358,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.TempFiles.TempFileDto]",
-          "typeSimple": "[WorkShopManagement.TempFiles.TempFileDto]",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -13187,7 +13368,7 @@
           "regex": null
         },
         {
-          "name": "Attachments",
+          "name": "EntityAttachments",
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
@@ -13224,6 +13405,72 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.ModelCategories.GetModelCategoryListDto": {
+      "baseType": "Volo.Abp.Application.Dtos.PagedAndSortedResultRequestDto",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Filters",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.ModelCategories.ModelCategoryDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Name",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FileAttachments",
+          "jsonName": null,
+          "type": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
+          "typeSimple": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -13353,39 +13600,6 @@
         },
         {
           "name": "ConcurrencyStamp",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "WorkShopManagement.TempFiles.TempFileDto": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
-        {
-          "name": "Name",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Path",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",

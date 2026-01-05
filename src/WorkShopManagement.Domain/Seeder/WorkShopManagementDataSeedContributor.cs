@@ -8,22 +8,26 @@ using Volo.Abp.Uow;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
+using WorkShopManagement.ModelCategories;
 
 namespace WorkShopManagement.Seeder;
 
 public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITransientDependency
 {
+    private readonly ModelCategoryDataSeedContributor _modelCategorySeeder;
     private readonly CarModelDataSeedContributor _carModelSeeder;
     private readonly CheckListDataSeedContributor _checkListSeeder;
     private readonly BayDataSeedContributor _baySeeder;
     private readonly ILogger<WorkShopManagementDataSeedContributor> _logger;
 
     public WorkShopManagementDataSeedContributor(
+        ModelCategoryDataSeedContributor modelCategorySeeder,
         CarModelDataSeedContributor carModelSeeder,
         CheckListDataSeedContributor checkListSeeder,
         BayDataSeedContributor baySeeder,
         ILogger<WorkShopManagementDataSeedContributor> logger)
     {
+        _modelCategorySeeder = modelCategorySeeder;
         _carModelSeeder = carModelSeeder;
         _checkListSeeder = checkListSeeder;
         _baySeeder = baySeeder;
@@ -42,6 +46,7 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         try
         {
             await RunStepAsync("Bays", () => _baySeeder.SeedAsync(context!));
+            await RunStepAsync("ModelCategories", () => _modelCategorySeeder.SeedAsync(context!));
             await RunStepAsync("CarModels", () => _carModelSeeder.SeedAsync(context!));
             await RunStepAsync("CheckLists", () => _checkListSeeder.SeedAsync(context!));
 
