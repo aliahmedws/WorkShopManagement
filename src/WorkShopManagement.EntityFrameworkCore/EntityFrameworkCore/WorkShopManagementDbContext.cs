@@ -17,6 +17,7 @@ using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
@@ -77,7 +78,7 @@ public class WorkShopManagementDbContext :
 
     public DbSet<Car> Cars { get; set; }
     public DbSet<CarOwner> CarOwners { get; set; }
-    
+
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -249,7 +250,7 @@ public class WorkShopManagementDbContext :
                 .IsRequired()
                 .HasMaxLength(CarConsts.VinLength)
                 .IsUnicode(false);
-            
+
             b.HasIndex(x => x.Vin);
 
             b.HasOne(x => x.Owner)
@@ -271,8 +272,30 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.Name).IsRequired().HasMaxLength(CarOwnerConsts.MaxNameLength);
             b.Property(x => x.Email).HasMaxLength(CarOwnerConsts.MaxEmailLength);
             b.Property(x => x.ContactId).HasMaxLength(CarOwnerConsts.MaxContactIdLength);
-            
+
             b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<CheckInReport>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckInReports", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.VinNo).IsRequired().HasMaxLength(CheckInReportConsts.VINMaxLength);
+            b.Property(x => x.CheckInSumbitterUser).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMoterNumbr).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.HsObjectId).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.Status).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.Model).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.StorageLocation).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.BuildDate);
+            b.HasOne(x => x.Car).WithMany().HasForeignKey(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
+
         });
     }
 }

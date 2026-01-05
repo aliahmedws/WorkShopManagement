@@ -34,6 +34,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Edit, L("Permission:RadioOptions.Edit"));
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Delete, L("Permission:RadioOptions.Delete"));
 
+        var checkInReportPermissions = myGroup.AddPermission(WorkShopManagementPermissions.CheckInReports.Default, L("Permission:CheckInReports"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Create, L("Permission:CheckInReports.Create"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Edit, L("Permission:CheckInReports.Edit"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Delete, L("Permission:CheckInReports.Delete"));
+
     }
 
     private static LocalizableString L(string name)

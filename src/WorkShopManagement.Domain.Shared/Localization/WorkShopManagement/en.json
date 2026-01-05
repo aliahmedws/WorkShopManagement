@@ -31,6 +31,10 @@
     "Permission:RadioOptions.Edit": "Edit",
     "Permission:RadioOptions.Delete": "Delete",
 
+    "Permission:CheckInReports": "Check In Reports",
+    "Permission:CheckInReports.Create": "Create",
+    "Permission:CheckInReports.Edit": "Edit",
+    "Permission:CheckInReports.Delete": "Delete",
 
     "Enum:CheckListType.1": "Production",
     "Enum:CheckListType.2": "Sub Production",

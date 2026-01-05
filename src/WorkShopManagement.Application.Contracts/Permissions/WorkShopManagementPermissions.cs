@@ -46,4 +46,12 @@ public static class WorkShopManagementPermissions
         public const string Delete = Default + ".Delete";
     }
 
+
+    public static class  CheckInReports 
+    {
+        public const string Default = GroupName + ".CheckInReports";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
 }

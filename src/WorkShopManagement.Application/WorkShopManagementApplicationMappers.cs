@@ -2,6 +2,7 @@ using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
@@ -109,4 +110,13 @@ public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttac
 {
     public override partial FileAttachmentDto Map(FileAttachment source);
     public override partial void Map(FileAttachment source, FileAttachmentDto destination);
+}
+
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInReport, CheckInReportDto>
+{
+    public override partial CheckInReportDto Map(CheckInReport source);
+    public override partial void Map(CheckInReport source, CheckInReportDto destination);
+
 }
