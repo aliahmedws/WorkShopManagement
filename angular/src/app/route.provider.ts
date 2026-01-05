@@ -31,7 +31,7 @@ function configureRoutes() {
       iconClass: 'fas fa-car',
       order: 3,
       layout: eLayoutType.application,
-      // requiredPolicy: 'WorkShopManagement.CarModels',
+      requiredPolicy: 'WorkShopManagement.Vehicles',
     },
     // {
     //   path: '/check-lists',

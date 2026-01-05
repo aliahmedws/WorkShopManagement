@@ -4,5 +4,5 @@ namespace WorkShopManagement.ModelCategories;
 
 public class GetModelCategoryListDto : PagedAndSortedResultRequestDto
 {
-    public string? Filters { get; set; }
+    public string? Filter { get; set; }
 }

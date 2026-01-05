@@ -25,6 +25,12 @@ public class ModelCategoryAppService : ApplicationService, IModelCategoryAppServ
     {
         var queryable = await _repository.GetQueryableAsync();
 
+        if (!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter!.Trim();
+            queryable = queryable.Where(x => x.Name.Contains(f));
+        }
+
         var sorting = input.Sorting.IsNullOrWhiteSpace()
             ? nameof(ModelCategory.CreationTime)
             : input.Sorting;

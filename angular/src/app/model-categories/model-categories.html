@@ -1,14 +1,7 @@
+<abp-page *abpPermission="'WorkShopManagement.Vehicles'">
+    <app-topbar-layout titleKey="Menu:Vehicles" [(filters)]="filters" [list]="list">
 <div class="card">
-  <div class="card-header">
-    <div class="row">
-      <div class="col col-md-6">
-        <h5 class="card-title" >
-          {{ '::Menu:Vehicles' | abpLocalization }}
-        </h5>
-      </div>
-    </div>
-  </div>
-
+ 
   <div class="card-body">
     <ngx-datatable
       [rows]="carModels.items"
@@ -56,3 +49,5 @@
     </ngx-datatable>
   </div>
 </div>
+</app-topbar-layout>
+</abp-page>

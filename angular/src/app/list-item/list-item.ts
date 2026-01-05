@@ -406,7 +406,6 @@ export class ListItem implements OnInit {
     });
   }
 
-  // -----File Attachment helpers
     resetAttachment() {
       this.tempFiles = [];
       this.existingFiles = [];
@@ -415,5 +414,4 @@ export class ListItem implements OnInit {
     getExisitingAttachments(dto:ListItemDto): void {
       this.existingFiles = [...(dto.entityAttachments ?? [])];
     }
-    // ----------- File Attachment helpers Ends
 }
