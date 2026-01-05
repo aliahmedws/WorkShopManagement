@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.AspNetCore.Mvc;
 using WorkShopManagement.CheckInReports;
 
 namespace WorkShopManagement.Controllers.CheckInReports;
@@ -12,7 +11,7 @@ namespace WorkShopManagement.Controllers.CheckInReports;
 [ControllerName("CheckInReport")]
 [Area("app")]
 [Route("api/app/check-in-reports")]
-public class CheckInReportController : AbpController, ICheckInReportAppService
+public class CheckInReportController : WorkShopManagementController, ICheckInReportAppService
 {
     private readonly ICheckInReportAppService _checkInReportAppService;
     public CheckInReportController(ICheckInReportAppService checkInReportAppService)
@@ -26,13 +25,13 @@ public class CheckInReportController : AbpController, ICheckInReportAppService
         return await _checkInReportAppService.CreateAsync(input);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{checkInReportId}")]
     public async Task<CheckInReportDto> GetAsync(Guid checkInReportId)
     {
         return await _checkInReportAppService.GetAsync(checkInReportId);
     }
 
-    [HttpGet("Get-List")]
+    [HttpGet]
     public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter, CancellationToken cancellationToken)
     {
         return await _checkInReportAppService.GetListAsync(filter, cancellationToken);

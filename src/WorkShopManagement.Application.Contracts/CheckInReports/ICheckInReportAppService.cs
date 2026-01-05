@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Application.Services;
 
-namespace WorkShopManagement.CheckInReports
+namespace WorkShopManagement.CheckInReports;
+
+public interface ICheckInReportAppService : IApplicationService
 {
-    public interface ICheckInReportAppService
-    {
-        Task<CheckInReportDto> CreateAsync(CreateCheckInReportDto input);
-        Task<CheckInReportDto> GetAsync(Guid checkInReportId);
-        Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter, CancellationToken cancellationToken);
-    }
+    Task<CheckInReportDto> CreateAsync(CreateCheckInReportDto input);
+    Task<CheckInReportDto> GetAsync(Guid checkInReportId);
+    Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter, CancellationToken cancellationToken);
 }
