@@ -1,24 +1,17 @@
-// list-item.ts
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { LocalizationPipe, ListService, PagedResultDto, PermissionDirective } from '@abp/ng.core';
+import { ListService, PagedResultDto } from '@abp/ng.core';
 import {
   Confirmation,
   ConfirmationService,
-  ThemeSharedModule,
   ToasterService,
 } from '@abp/ng.theme.shared';
-import { PageModule } from '@abp/ng.components/page';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CheckListService } from '../proxy/check-lists';
 import {
@@ -29,7 +22,7 @@ import {
   ListItemService,
   UpdateListItemDto,
 } from '../proxy/list-items';
-import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
+import { RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
 import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
 import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
@@ -61,6 +54,7 @@ export class ListItem implements OnInit {
   form!: FormGroup;
   isModalOpen = false;
   selected = {} as ListItemDto;
+  filters = {} as GetListItemListDto;
 
   checkListId: string | null = null;
   modelCategoryId: string | null = null;
@@ -89,6 +83,7 @@ export class ListItem implements OnInit {
 
   ngOnInit(): void {
     this.checkListId = this.route.snapshot.queryParamMap.get('checkListId');
+    this.filters.checkListId = this.checkListId;
     this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
     this.loadCheckListName();
 
@@ -101,6 +96,7 @@ export class ListItem implements OnInit {
         maxResultCount: query.maxResultCount,
         sorting: query.sorting || 'position asc, name asc',
         checkListId: this.checkListId ?? undefined,
+        filter: this.filters.filter
       };
 
       return this.listItemService.getList(input);

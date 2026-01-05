@@ -32,6 +32,12 @@ public class ListItemAppService : ApplicationService, IListItemAppService
     {
         var queryable = await _repository.GetQueryableAsync();
 
+        if(!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter.Trim().ToLower();
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(input.Filter));
+        }
+
         if (input.CheckListId.HasValue)
         {
             queryable = queryable.Where(x => x.CheckListId == input.CheckListId.Value);

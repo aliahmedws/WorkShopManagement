@@ -1,50 +1,42 @@
 <!-- list-item.html -->
-
-<div class="card mb-3">
-    <div class="card-header d-flex align-items-center justify-content-between mb-2">
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-link p-0" (click)="goBack()">
-                <i class="fa fa-arrow-left me-2"></i>
-            </button>
-
-            <h5 class="card-title m-0">{{ '::Menu:ListItems' | abpLocalization }}</h5>
-
-            <span class="text-muted small" *ngIf="checkListName">
-                ({{ checkListName }})
-            </span>
-        </div>
-
-        <button *abpPermission="'WorkShopManagement.ListItems.Create'" class="btn btn-outline-primary btn-sm"
-            type="button" (click)="createListItem()" [disabled]="!checkListId">
-            <i class="fa fa-plus me-1"></i>
-            {{ '::NewListItem' | abpLocalization }}
-        </button>
+<abp-page *abpPermission="'WorkShopManagement.ListItems'">
+<app-topbar-layout titleKey="Menu:ListItems" [(filters)]="filters" [list]="list">
+     <div topbarLeft>
+      <button type="button" class="btn btn-link p-0" (click)="goBack()" title="Back">
+        <i class="fa fa-arrow-left"></i>
+      </button>
     </div>
-</div>
-
+    <div topbarActions>
+      <ng-container *abpPermission="'WorkShopManagement.CheckLists.Create'">
+        <button class="btn btn-sm btn-outline-primary" (click)="createListItem()">
+          <i class="fas fa-plus"></i>
+          {{ '::AddNew' | abpLocalization }}
+        </button>
+      </ng-container>
+    </div>
 <div class="card">
     <div class="card-body">
         <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [list]="list" default>
-            <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div ngbDropdown container="body" class="d-inline-block">
-                        <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
-                            <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
-                        </button>
-
-                        <div ngbDropdownMenu>
-                            <button ngbDropdownItem (click)="edit(row.id)"
-                                *abpPermission="'WorkShopManagement.ListItems.Edit'">
-                                {{ '::Edit' | abpLocalization }}
-                            </button>
-                            <button ngbDropdownItem (click)="delete(row.id)"
-                                *abpPermission="'WorkShopManagement.ListItems.Delete'">
-                                {{ '::Delete' | abpLocalization }}
-                            </button>
-                        </div>
-                    </div>
-                </ng-template>
-            </ngx-datatable-column>
+              <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div ngbDropdown container="body" class="d-inline-block">
+                                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true"
+                                    ngbDropdownToggle>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem
+                                        (click)="edit(row.id)">
+                                        {{ '::Edit' | abpLocalization }}
+                                    </button>
+                                    <button *abpPermission="'WorkShopManagement.Cars.Delete'" ngbDropdownItem
+                                        (click)="delete(row.id)">
+                                        {{ '::Delete' | abpLocalization }}
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
 
             <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position"
                 [maxWidth]="120"></ngx-datatable-column>
@@ -79,6 +71,9 @@
         </ngx-datatable>
     </div>
 </div>
+</app-topbar-layout>
+</abp-page>
+
 
 <abp-modal [(visible)]="isModalOpen">
     <ng-template #abpHeader>

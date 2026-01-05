@@ -120,6 +120,7 @@ export class CheckList implements OnInit {
     const raw = this.form.getRawValue();
     const name = (raw.name || '').trim();
     if (this.selected.id) {
+
       const input: UpdateCheckListDto = {
         carModelId: this.carModelId,
         name,
@@ -128,6 +129,7 @@ export class CheckList implements OnInit {
         tempFiles: this.tempFiles,
         entityAttachments: this.existingFiles,
       };
+      
       this.service.update(this.selected.id, input).subscribe(() => {
         this.resetForm();
         this.list.get();
@@ -149,6 +151,7 @@ export class CheckList implements OnInit {
       this.toaster.success('::SuccessfullyCreated.');
     });
   }
+
   delete(id: string): void {
     this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
       if (status === Confirmation.Status.confirm) {
