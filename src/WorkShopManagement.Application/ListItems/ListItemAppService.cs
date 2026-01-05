@@ -101,7 +101,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder.Trim();
 
-        if (input.IsSeparator.HasValue)
+        if (input.IsSeparator == true)
         {
             input.IsAttachmentRequired = false;
 
@@ -169,7 +169,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder!.Trim();
 
-        if (input.IsSeparator.HasValue)
+        if (input.IsSeparator == true)
         {
             input.IsAttachmentRequired = false;
 
