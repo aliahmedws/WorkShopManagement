@@ -22,6 +22,7 @@ using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
+using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -71,6 +72,7 @@ public class WorkShopManagementDbContext :
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
     public DbSet<RadioOption> RadioOptions { get; set; }
+    public DbSet<QualityGate> QualityGates { get; set; }
     public DbSet<EntityAttachment> EntityAttachments { get; set; }
 
 
@@ -161,6 +163,15 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.Name).IsRequired();
             b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<QualityGate>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "QualityGates", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.GateName).IsRequired();
         });
 
         builder.Entity<CheckList>(b =>

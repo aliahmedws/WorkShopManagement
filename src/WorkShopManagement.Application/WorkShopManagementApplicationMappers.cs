@@ -10,6 +10,7 @@ using WorkShopManagement.External.Vpic;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.Lookups;
 using WorkShopManagement.ModelCategories;
+using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement;
@@ -42,6 +43,13 @@ public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 {
     public override partial CheckListDto Map(CheckList source);
     public override partial void Map(CheckList source, CheckListDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class QualityGateMapper : MapperBase<QualityGate, QualityGateDto>
+{
+    public override partial QualityGateDto Map(QualityGate source);
+    public override partial void Map(QualityGate source, QualityGateDto destination);
 }
 
 

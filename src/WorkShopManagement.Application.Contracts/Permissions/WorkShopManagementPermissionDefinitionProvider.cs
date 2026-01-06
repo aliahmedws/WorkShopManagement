@@ -34,6 +34,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Edit, L("Permission:RadioOptions.Edit"));
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Delete, L("Permission:RadioOptions.Delete"));
 
+        var qualityGatesPermission = myGroup.AddPermission(WorkShopManagementPermissions.QualityGates.Default, L("Permission:QualityGates"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Create, L("Permission:QualityGates.Create"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Edit, L("Permission:QualityGates.Edit"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Delete, L("Permission:QualityGates.Delete"));
+
     }
 
     private static LocalizableString L(string name)

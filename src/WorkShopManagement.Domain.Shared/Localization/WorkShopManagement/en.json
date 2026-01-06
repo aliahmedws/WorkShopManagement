@@ -15,6 +15,10 @@
     "Permission:Create": "Create",
     "Permission:Edit": "Edit",
     "Permission:Delete": "Delete",
+    "Permission:QualityGates": "Quality Gate Management",
+    "Permission:QualityGates.Create": "Create",
+    "Permission:QualityGates.Edit": "Edit",
+    "Permission:QualityGates.Delete": "Delete",
 
     "Permission:CarModels": "Car Model Management",
     "Permission:Vehicles": "Vehicles Model Management",
@@ -38,6 +42,15 @@
     "Enum:CommentType.1": "String",
     "Enum:CommentType.2": "Date",
     "Enum:CommentType.3": "Number",
+    "Enum:GateName.1": "Pre Production",
+    "Enum:GateName.2": "Quality Control",
+    "Enum:GateName.3": "Quality Release",
+    "Enum:GateName.4": "Pre-Delivery",
+    "Enum:QualityGateStatus.1": "PASSED",
+    "Enum:QualityGateStatus.2": "CONDITIONAL PASSED - MAJOR",
+    "Enum:QualityGateStatus.3": "CONDITIONAL PASSED - MINOR",
+    "Enum:QualityGateStatus.4": "OPEN",
+    "Enum:QualityGateStatus.5": "RESET",
 
 
     "Menu:CarModels": "Car Models",
