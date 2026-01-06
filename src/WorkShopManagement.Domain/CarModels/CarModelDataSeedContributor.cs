@@ -56,7 +56,7 @@ public class CarModelDataSeedContributor : ITransientDependency
         {
             // FORD 150
             ("FORD 1500", "Raptor", "ford-raptor.jpg"),
-            ("FORD 1500", "Raptor R", "ford-raptor-r"),
+            ("FORD 1500", "Raptor R", "ford-raptor-r.jpg"),
 
             // FORD SUPER DUTY
             ("FORD SUPER DUTY", "Ford Superduty Pickup", "ford-super-duty-pickup.jpg"),
