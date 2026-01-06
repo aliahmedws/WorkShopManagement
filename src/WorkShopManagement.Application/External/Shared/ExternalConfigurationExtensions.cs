@@ -2,6 +2,7 @@
 using System;
 using Volo.Abp.Modularity;
 using WorkShopManagement.External.Nhtsa;
+using WorkShopManagement.External.Twilio;
 using WorkShopManagement.External.Vpic;
 
 namespace WorkShopManagement.External.Shared;
@@ -17,5 +18,6 @@ public static class ExternalConfigurationExtensions
     {
         context.Services.ConfigureOptions<ConfigureVpicApiOptions>();
         context.Services.ConfigureOptions<ConfigureNhtsaApiOptions>();
+        context.Services.ConfigureOptions<ConfigureTwilioApiOptions>();
     }
 }
