@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using Volo.Abp.Modularity;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
@@ -18,6 +19,7 @@ public static class ExternalConfigurationExtensions
     {
         context.Services.ConfigureOptions<ConfigureVpicApiOptions>();
         context.Services.ConfigureOptions<ConfigureNhtsaApiOptions>();
+        context.Services.ConfigureOptions<ConfigureBlobStorageOptions>();
         context.Services.ConfigureOptions<ConfigureCarsXeApiOptions>();
     }
 }
