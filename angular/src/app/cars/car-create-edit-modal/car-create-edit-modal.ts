@@ -6,6 +6,7 @@ import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { storageLocationOptions } from 'src/app/proxy/storage-locations';
+import { Stage, stageOptions } from 'src/app/proxy/stages';
 
 @Component({
   selector: 'app-car-create-edit-modal',
@@ -20,7 +21,6 @@ export class CarCreateEditModal {
   private readonly lookupService = inject(LookupService);
   private readonly toaster = inject(ToasterHelperService);
 
-  storageLocationOptions = storageLocationOptions;
   @Input() carId?: string;
   @Output() submit = new EventEmitter<CarDto>();
 
@@ -28,6 +28,8 @@ export class CarCreateEditModal {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   carModelOptions: GuidLookupDto[] = [];
+  stageOptions = stageOptions;
+  storageLocationOptions = storageLocationOptions;
 
   carOwnerOptions: GuidLookupDto[] = [];
 
@@ -95,6 +97,8 @@ export class CarCreateEditModal {
       bookingNumber: [dto?.bookingNumber ?? null, Validators.maxLength(64)],
       clearingAgent: [dto?.clearingAgent ?? null, Validators.maxLength(128)],
       storageLocation: [dto?.storageLocation ?? null, Validators.maxLength(128)],
+
+      stage: [dto?.stage ?? Stage.Incoming, Validators.maxLength(128)],
 
 
       // owner

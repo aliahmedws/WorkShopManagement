@@ -23,7 +23,8 @@ public class CreateCarDto
 
     [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
     public int ModelYear { get; set; }
-    //public Stage Stage { get; set; } = Stage.Incoming;
+    [Required]
+    public Stage Stage { get; set; } = Stage.Incoming;
 
     [StringLength(CarConsts.MaxCncLength)]
     public string? Cnc { get; set; }

@@ -60,7 +60,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.Color,
             input.ModelId,
             input.ModelYear,
-            Stage.Incoming,
+            input.Stage,
             input.Cnc,
             input.CncFirewall,
             input.CncColumn,

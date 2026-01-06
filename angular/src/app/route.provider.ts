@@ -18,10 +18,17 @@ function configureRoutes() {
       layout: eLayoutType.application,
     },
     {
+      path: '/production-manager',
+      name: '::Menu:ProductionManager',
+      iconClass: 'fas fa-gauge',
+      order: 2,
+      layout: eLayoutType.application,
+    },
+    {
       path: '/cars',
       name: '::Menu:Cars',
       iconClass: 'fas fa-car',
-      order: 2,
+      order: 3,
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Cars',
     },
@@ -29,17 +36,10 @@ function configureRoutes() {
       path: '/vehicles',
       name: '::Menu:Vehicles',
       iconClass: 'fas fa-car',
-      order: 3,
+      order: 4,
       layout: eLayoutType.application,
       // requiredPolicy: 'WorkShopManagement.CarModels',
     },
-    // {
-    //   path: '/check-lists',
-    //   name: '::Menu:CheckLists',
-    //   iconClass: 'fas fa-list-check',
-    //   order: 3,
-    //   layout: eLayoutType.application,
-    //   // requiredPolicy: 'WorkShopManagement.CheckLists',
-    // },
+    
   ]);
 }

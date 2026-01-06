@@ -131,11 +131,20 @@
     "ClearingAgent": "Clearing Agent",
     "StorageLocation": "Storage Location",
     // Warehouse Enum
-    "StorageLocation:K2": "K2",
-    "StorageLocation:MoviesLoan": "Loan - Movies",
-    "StorageLocation:OtherLoan": "Loan - Others",
-    "StorageLocation:ThirdPartyLoan": "Loan - 3rd Party Accessories",
-    "StorageLocation:EW": "EW - Walliam Farrior Place",
-    "StorageLocation:TerrenceRd": "24 Terrence Road"
+    "Enum:StorageLocation.K2": "K2",
+    "Enum:StorageLocation.MoviesLoan": "Loan - Movies",
+    "Enum:StorageLocation.OtherLoan": "Loan - Others",
+    "Enum:StorageLocation.ThirdPartyLoan": "Loan - 3rd Party Accessories",
+    "Enum:StorageLocation.EW": "EW - Walliam Farrior Place",
+    "Enum:StorageLocation.TerrenceRd": "24 Terrence Road",
+    "Menu:ProductionManager": "Production Manager",
+    "IncomingCars": "Incoming Cars",
+
+    "Enum:Stage.Incoming": "Incoming",
+    "Enum:Stage.ExternalWarehouse": "External Warehouse",
+    "Enum:Stage.Production": "Production",
+    "Enum:Stage.PostProduction": "Post Production",
+    "Enum:Stage.AwaitingTransport": "Awaiting Transport",
+    "Enum:Stage.Dispatched": "Dispatched"
   }
 }
