@@ -126,6 +126,8 @@
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
-    "Variants": "Variants"
+    "Variants": "Variants",
+
+    "Menu:checkInReports": "check In Reports"
   }
 }

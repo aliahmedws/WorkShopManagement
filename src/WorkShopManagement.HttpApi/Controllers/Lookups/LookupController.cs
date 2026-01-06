@@ -22,4 +22,10 @@ public class LookupController(ILookupAppService lookupAppService) : WorkShopMana
     {
         return lookupAppService.GetCarOwnersAsync();
     }
+
+    [HttpGet("cars")]
+    public Task<List<GuidLookupDto>> GetCarsAsync()
+    {
+        return lookupAppService.GetCarsAsync();
+    }
 }

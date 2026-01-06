@@ -20,14 +20,14 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
 
     }
 
-    public async Task<CheckInReport?> GetCheckInReportByIdAsync(Guid checkInReportId, CancellationToken cancellationToken = default)
+    public async Task<CheckInReport?> GetCheckInReportByIdAsync(Guid checkInReportId)
     {
         return await (await GetDbSetAsync())
             .Include(x => x.Car)
-            .FirstOrDefaultAsync(x => x.Id == checkInReportId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == checkInReportId);
     }
 
-    public async Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter, CancellationToken cancellationToken = default)
+    public async Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter)
     {
         var query = await GetFilteredQueryAsync(filter, asNoTracking: true);
 
@@ -36,7 +36,7 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
             .ToListAsync();
     }
 
-    public async Task<long> GetCountAsync(CheckInReportFiltersInput filter, CancellationToken cancellationToken = default)
+    public async Task<long> GetCountAsync(CheckInReportFiltersInput filter)
     {
         var query = await GetFilteredQueryAsync(filter,
             asNoTracking: true);
@@ -89,6 +89,6 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
        .WhereIf(filter.CompliancePlatePrinted.HasValue,
            x => x.CompliancePlatePrinted == filter.CompliancePlatePrinted);
 
-        return query.OrderBy(CheckInReportConsts.GetNormalizedSorting(filter.Sorting));
+        return query.OrderBy(filter.Sorting ?? CheckInReportConsts.CreationTimeDesc);
     }
 }

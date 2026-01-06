@@ -1,6 +1,7 @@
 import * as Bays from './bays';
 import * as CarModels from './car-models';
 import * as Cars from './cars';
+import * as CheckInReports from './check-in-reports';
 import * as CheckLists from './check-lists';
 import * as EntityAttachments from './entity-attachments';
 import * as External from './external';
@@ -10,4 +11,4 @@ import * as Microsoft from './microsoft';
 import * as ModelCategories from './model-categories';
 import * as RadioOptions from './radio-options';
 import * as TempFiles from './temp-files';
-export { Bays, CarModels, Cars, CheckLists, EntityAttachments, External, ListItems, Lookups, Microsoft, ModelCategories, RadioOptions, TempFiles };
+export { Bays, CarModels, Cars, CheckInReports, CheckLists, EntityAttachments, External, ListItems, Lookups, Microsoft, ModelCategories, RadioOptions, TempFiles };

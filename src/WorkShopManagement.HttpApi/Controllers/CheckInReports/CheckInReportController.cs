@@ -32,8 +32,14 @@ public class CheckInReportController : WorkShopManagementController, ICheckInRep
     }
 
     [HttpGet]
-    public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter, CancellationToken cancellationToken)
+    public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter)
     {
-        return await _checkInReportAppService.GetListAsync(filter, cancellationToken);
+        return await _checkInReportAppService.GetListAsync(filter);
+    }
+
+    [HttpPut]
+    public Task<CheckInReportDto> UpdateAsync(Guid id, CreateCheckInReportDto input)
+    {
+        return _checkInReportAppService.UpdateAsync(id, input);
     }
 }

@@ -120,3 +120,10 @@ public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInR
     public override partial void Map(CheckInReport source, CheckInReportDto destination);
 
 }
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportFiltersDtoToInputMapper : MapperBase<CheckInReportFiltersDto, CheckInReportFiltersInput>
+{
+    public override partial CheckInReportFiltersInput Map(CheckInReportFiltersDto source);
+    public override partial void Map(CheckInReportFiltersDto source, CheckInReportFiltersInput destination);
+}

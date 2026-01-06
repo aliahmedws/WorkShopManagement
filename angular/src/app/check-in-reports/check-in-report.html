@@ -1,0 +1,51 @@
+<abp-page *abpPermission="'WorkShopManagement.CheckInReports'">
+    <app-topbar-layout titleKey="CheckInReports" [(filters)]="filters" [list]="list">
+        <div topbarActions>
+            <ng-container *abpPermission="'WorkShopManagement.CheckInReports.Create'">
+                <button class="btn btn-sm btn-outline-primary" (click)="create()">
+                    <i class="fas fa-plus"></i>
+                    {{ '::AddNew' | abpLocalization }}
+                </button>
+            </ng-container>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <ngx-datatable [rows]="reports.items" [count]="reports.totalCount" [list]="list" default>
+                    <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div ngbDropdown container="body" class="d-inline-block">
+                                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true"
+                                    ngbDropdownToggle>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <button *abpPermission="'WorkShopManagement.CheckInReports.Edit'" ngbDropdownItem
+                                        (click)="edit(row.id)">
+                                        {{ '::Edit' | abpLocalization }}
+                                    </button>
+                                    <button *abpPermission="'WorkShopManagement.CheckInReports.Delete'" ngbDropdownItem
+                                        (click)="delete(row.id)">
+                                        {{ '::Delete' | abpLocalization }}
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vinNo"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::FrontMoterNumbr' | abpLocalization"
+                        prop="frontMoterNumbr"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::RearMotorNumber' | abpLocalization"
+                        prop="rearMotorNumber"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::RsvaImportApproval' | abpLocalization"
+                        prop="rsvaImportApproval"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="status"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+
+        <app-create-check-in-report-modal [(visible)]="isModalVisible" [checkInReportId]="selectedId"
+            (submit)="list?.get(); isModalVisible=false">
+        </app-create-check-in-report-modal>
+
+    </app-topbar-layout>
+</abp-page>

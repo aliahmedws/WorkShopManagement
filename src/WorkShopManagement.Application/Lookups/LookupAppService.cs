@@ -23,5 +23,11 @@ public class LookupAppService(ILookupRepository lookupRepository) : WorkShopMana
         return Map(owners);
     }
 
+    public async Task<List<GuidLookupDto>> GetCarsAsync()
+    {
+        var cars = await _lookupRepository.GetCarsAsync();
+        return Map(cars);
+    }
+
     List<GuidLookupDto> Map(List<GuidLookup> input) => ObjectMapper.Map<List<GuidLookup>, List<GuidLookupDto>>(input);
 }

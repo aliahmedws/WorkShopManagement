@@ -33,6 +33,13 @@ function configureRoutes() {
       layout: eLayoutType.application,
       // requiredPolicy: 'WorkShopManagement.CarModels',
     },
+    {
+      path: '/check-in-report',
+      name: '::Menu:checkInReports',
+      iconClass: 'fas fa-book',
+      order: 4,
+      layout: eLayoutType.application
+    },
     // {
     //   path: '/check-lists',
     //   name: '::Menu:CheckLists',

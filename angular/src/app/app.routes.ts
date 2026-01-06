@@ -47,4 +47,8 @@ export const APP_ROUTES: Routes = [
     path: 'list-items',
     loadComponent: () => import('./list-item/list-item').then(m => m.ListItem),
   },
+  {
+    path: 'check-in-report',
+    loadComponent: () => import('./check-in-reports/check-in-report').then(m => m.CheckInReport)
+  }
 ];

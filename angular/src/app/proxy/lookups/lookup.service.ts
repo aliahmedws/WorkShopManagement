@@ -24,4 +24,12 @@ export class LookupService {
       url: '/api/app/lookups/car-owners',
     },
     { apiName: this.apiName,...config });
+  
+
+  getCars = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, GuidLookupDto[]>({
+      method: 'GET',
+      url: '/api/app/lookups/cars',
+    },
+    { apiName: this.apiName,...config });
 }

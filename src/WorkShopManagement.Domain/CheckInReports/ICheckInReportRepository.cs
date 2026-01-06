@@ -11,12 +11,11 @@ namespace WorkShopManagement.CheckInReports
     public interface ICheckInReportRepository : IRepository<CheckInReport, Guid>
     {
         Task<CheckInReport?> GetCheckInReportByIdAsync(
-        Guid checkInReportId,
-        CancellationToken cancellationToken = default);
+        Guid checkInReportId);
 
-        Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter, CancellationToken cancellationToken = default);
+        Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter);
 
-        Task<long> GetCountAsync(CheckInReportFiltersInput filter, CancellationToken cancellationToken = default);
+        Task<long> GetCountAsync(CheckInReportFiltersInput filter);
 
         Task<IQueryable<CheckInReport>> GetQueryableWithDetailsAsync(bool asNoTracking = false);
     }

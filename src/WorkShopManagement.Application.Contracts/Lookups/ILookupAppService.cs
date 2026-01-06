@@ -8,4 +8,5 @@ public interface ILookupAppService : IApplicationService
 {
     Task<List<GuidLookupDto>> GetCarModelsAsync();
     Task<List<GuidLookupDto>> GetCarOwnersAsync();
+    Task<List<GuidLookupDto>> GetCarsAsync();
 }

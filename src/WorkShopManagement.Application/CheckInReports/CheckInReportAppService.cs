@@ -27,7 +27,7 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             _carRepository = carRepository;
     }
 
-    public async Task<CheckInReportDto> CreateAsync(CreateCheckInReportDto input)
+    public async Task<CheckInReportDto> CreateAsync(CreateCheckInReportDto  input)
     {
         if (input.CarId == Guid.Empty) 
         {
@@ -82,17 +82,77 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         return ObjectMapper.Map<CheckInReport, CheckInReportDto>(query);
     }
 
-    public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter, CancellationToken cancellationToken)
+    public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter)
     {
         var filterInput = ObjectMapper.Map<CheckInReportFiltersDto, CheckInReportFiltersInput>(filter);
-        var query = await _checkInReportRepository.GetListAsync(filterInput, cancellationToken);
-        var totalCount = await _checkInReportRepository.GetCountAsync(filterInput, cancellationToken);
+        var query = await _checkInReportRepository.GetListAsync(filterInput);
+        var totalCount = await _checkInReportRepository.GetCountAsync(filterInput);
 
         return new PagedResultDto<CheckInReportDto>
         {
             TotalCount = totalCount,
             Items = ObjectMapper.Map<List<CheckInReport>, List<CheckInReportDto>>(query)
         };
+    }
+
+    public async Task<CheckInReportDto> UpdateAsync(Guid id, CreateCheckInReportDto input)
+    {
+        if (input.CarId == Guid.Empty)
+        {
+            throw new UserFriendlyException("CheckInReport:CarIdIsRequired");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.VinNo))
+        {
+            throw new UserFriendlyException("CheckInReport:VinNoIsRequired");
+        }
+
+        var report = await _checkInReportRepository.GetAsync(id);
+
+        // If CarId can be changed, validate it 
+        //if (report.CarId != input.CarId)
+        //{
+        //    var carExists = await _carRepository.AnyAsync(x => x.Id == input.CarId);
+        //    if (!carExists)
+        //    {
+        //        throw new UserFriendlyException("CheckInReport:CarNotFound")
+        //            .WithData("CarId", input.CarId);
+        //    }
+
+        //    report.CarId = input.CarId;
+        //}
+
+        report.VinNo = input.VinNo.Trim();
+        report.BuildDate = input.BuildDate;
+        report.CheckInSumbitterUser = input.CheckInSumbitterUser;
+
+        report.AvcStickerCut = input.AvcStickerCut;
+        report.AvcStickerPrinted = input.AvcStickerPrinted;
+
+        report.ComplianceDate = input.ComplianceDate;
+        report.CompliancePlatePrinted = input.CompliancePlatePrinted;
+
+        report.Emission = input.Emission;
+        report.EngineNumber = input.EngineNumber;
+        report.EntryKms = input.EntryKms;
+
+        report.FrontGwar = input.FrontGwar;
+        report.FrontMoterNumbr = input.FrontMoterNumbr;
+        report.RearGwar = input.RearGwar;
+        report.RearMotorNumber = input.RearMotorNumber;
+
+        report.HsObjectId = input.HsObjectId;
+        report.MaxTowingCapacity = input.MaxTowingCapacity;
+        report.TyreLabel = input.TyreLabel;
+
+        report.RsvaImportApproval = input.RsvaImportApproval;
+        report.Status = input.Status;
+        report.Model = input.Model;
+        report.StorageLocation = input.StorageLocation;
+
+        await _checkInReportRepository.UpdateAsync(report, autoSave: true);
+
+        return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
     }
 
 }

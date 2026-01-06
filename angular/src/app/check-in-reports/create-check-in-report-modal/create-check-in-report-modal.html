@@ -1,0 +1,230 @@
+<abp-modal
+  [(visible)]="visible"
+  (visibleChange)="visibleChange.emit($event)"
+  (appear)="onAppear()"
+  [options]="modalOptions"
+>
+  <ng-template #abpHeader>
+    <h3 class="text-dark m-0">
+      {{
+        (isEditMode ? '::EditCheckInReport' : '::NewCheckInReport')
+          | abpLocalization
+      }}
+    </h3>
+  </ng-template>
+
+  <ng-template #abpBody>
+    @if (loading) {
+      <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="row g-3">
+
+        <!-- Car -->
+        <div class="col-12 col-md-6">
+          <label class="form-label required">{{ '::Car' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <!-- <select [disabled]="isEditMode" class="form-select" formControlName="carId">
+              <option [ngValue]="null">{{ '::Select' | abpLocalization }}</option>
+              <option *ngFor="let c of cars" [ngValue]="c.id">
+                {{ (c.vinNo ?? c.vin ?? c.name ?? c.id) }}
+              </option>
+            </select> -->
+             <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="carId">
+                @for (option of carOptions; track option) {
+                <nz-option [nzLabel]="option.displayName" [nzValue]="option.id"></nz-option>
+                }
+            </nz-select>
+          </div>
+        </div>
+
+        <!-- VIN -->
+        <div class="col-12 col-md-6">
+          <label class="form-label required">{{ '::Vin' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="vinNo" maxlength="17" />
+          </div>
+        </div>
+
+        <!-- Build Date -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::BuildDate' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="date" formControlName="buildDate" />
+          </div>
+        </div>
+
+        <!-- Check In Submitter User -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::CheckInSumbitterUser' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="checkInSumbitterUser" />
+          </div>
+        </div>
+
+        <!-- AVC Sticker Cut -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::AvcStickerCut' | abpLocalization }}</label>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" formControlName="avcStickerCut" />
+            <label class="form-check-label">{{ '::Yes' | abpLocalization }}</label>
+          </div>
+        </div>
+
+        <!-- AVC Sticker Printed -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::AvcStickerPrinted' | abpLocalization }}</label>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" formControlName="avcStickerPrinted" />
+            <label class="form-check-label">{{ '::Yes' | abpLocalization }}</label>
+          </div>
+        </div>
+
+        <!-- Compliance Date -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::ComplianceDate' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="date" formControlName="complianceDate" />
+          </div>
+        </div>
+
+        <!-- Compliance Plate Printed -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::CompliancePlatePrinted' | abpLocalization }}</label>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" formControlName="compliancePlatePrinted" />
+            <label class="form-check-label">{{ '::Yes' | abpLocalization }}</label>
+          </div>
+        </div>
+
+        <!-- Emission -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::Emission' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="emission" />
+          </div>
+        </div>
+
+        <!-- Engine Number -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::EngineNumber' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="engineNumber" />
+          </div>
+        </div>
+
+        <!-- Entry Kms -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::EntryKms' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="number" formControlName="entryKms" />
+          </div>
+        </div>
+
+        <!-- Front GWAR -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::FrontGwar' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="number" formControlName="frontGwar" />
+          </div>
+        </div>
+
+        <!-- Front Motor Number -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::FrontMoterNumbr' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="frontMoterNumbr" />
+          </div>
+        </div>
+
+        <!-- Rear GWAR -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::RearGwar' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="number" formControlName="rearGwar" />
+          </div>
+        </div>
+
+        <!-- Rear Motor Number -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::RearMotorNumber' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="rearMotorNumber" />
+          </div>
+        </div>
+
+        <!-- HS Object Id -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::HsObjectId' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="hsObjectId" />
+          </div>
+        </div>
+
+        <!-- Max Towing Capacity -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::MaxTowingCapacity' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" type="number" step="0.01" formControlName="maxTowingCapacity" />
+          </div>
+        </div>
+
+        <!-- Tyre Label -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::TyreLabel' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="tyreLabel" />
+          </div>
+        </div>
+
+        <!-- RSVA Import Approval -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::RsvaImportApproval' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="rsvaImportApproval" />
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::Status' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="status" />
+          </div>
+        </div>
+
+        <!-- Model -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::Model' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="model" />
+          </div>
+        </div>
+
+        <!-- Storage Location -->
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
+          <div class="input-group" validationTarget>
+            <input class="form-control" formControlName="storageLocation" />
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+      {{ '::Close' | abpLocalization }}
+    </button>
+    <button type="button" class="btn btn-primary px-3" [disabled]="form?.invalid" (click)="save()">
+      <i class="fas fa-save me-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>
