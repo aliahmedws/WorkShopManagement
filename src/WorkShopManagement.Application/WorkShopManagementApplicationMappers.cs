@@ -5,6 +5,7 @@ using WorkShopManagement.Cars;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.ListItems;

@@ -122,6 +122,20 @@
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
-    "Variants": "Variants"
+    "Variants": "Variants",
+    "TransitInformation": "Transit Information",
+    "LocationStatus": "Location Status",
+    "BookingNumber": "Booking Number",
+    "EtaBrisbane": "ETA - Brisbane",
+    "EtaScd": "ETA - SCD",
+    "ClearingAgent": "Clearing Agent",
+    "StorageLocation": "Storage Location",
+    // Warehouse Enum
+    "StorageLocation:K2": "K2",
+    "StorageLocation:MoviesLoan": "Loan - Movies",
+    "StorageLocation:OtherLoan": "Loan - Others",
+    "StorageLocation:ThirdPartyLoan": "Loan - 3rd Party Accessories",
+    "StorageLocation:EW": "EW - Walliam Farrior Place",
+    "StorageLocation:TerrenceRd": "24 Terrence Road"
   }
 }

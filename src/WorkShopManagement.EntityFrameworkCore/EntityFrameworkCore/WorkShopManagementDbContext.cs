@@ -241,6 +241,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.ModelId).IsRequired();
             b.Property(x => x.Color).IsRequired().HasMaxLength(CarConsts.MaxColorLength);
             b.Property(x => x.ModelYear).IsRequired();
+            b.Property(x => x.Stage).IsRequired();
             b.Property(x => x.Cnc).HasMaxLength(CarConsts.MaxCncLength);
             b.Property(x => x.CncFirewall).HasMaxLength(CarConsts.MaxCncFirewallLength);
             b.Property(x => x.CncColumn).HasMaxLength(CarConsts.MaxCncColumnLength);

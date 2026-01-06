@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Permissions;
+using WorkShopManagement.Stages;
 
 namespace WorkShopManagement.Cars;
 
@@ -18,16 +20,19 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     private readonly ICarRepository _carRepository;
     private readonly IRepository<CarOwner, Guid> _carOwnerRepository;
     private readonly IVpicService _vpicService;
+    private readonly IVinInfoService _vinInfoService;
 
     public CarAppService(
         ICarRepository carRepository,
         IRepository<CarOwner, Guid> carOwnerRepository,
-        IVpicService vpicService
+        IVpicService vpicService,
+        IVinInfoService vinInfoService
         )
     {
         _carRepository = carRepository;
         _carOwnerRepository = carOwnerRepository;
         _vpicService = vpicService;
+        _vinInfoService = vinInfoService;
     }
 
     public async Task<CarDto> GetAsync(Guid id)
@@ -55,6 +60,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.Color,
             input.ModelId,
             input.ModelYear,
+            Stage.Incoming,
             input.Cnc,
             input.CncFirewall,
             input.CncColumn,
@@ -62,7 +68,15 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.DeliverDate,
             input.StartDate,
             input.Notes,
-            input.MissingParts
+            input.MissingParts,
+
+            input.LocationStatus,
+            input.EtaBrisbane,
+            input.EtaScd,
+            input.BookingNumber,
+            input.ClearingAgent,
+            input.StorageLocation
+
         );
 
         await _carRepository.InsertAsync(car, autoSave: true);
@@ -82,9 +96,18 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         car.SetColor(input.Color);
         car.SetModel(input.ModelId);
         car.SetModelYear(input.ModelYear);
+        car.SetStage(input.Stage);
         car.SetCnc(input.Cnc, input.CncFirewall, input.CncColumn);
         car.SetSchedule(input.DueDate, input.DeliverDate, input.StartDate);
         car.SetNotes(input.Notes, input.MissingParts);
+        car.SetTransitData(
+            input.LocationStatus,
+            input.EtaBrisbane,
+            input.EtaScd,
+            input.BookingNumber,
+            input.ClearingAgent,
+            input.StorageLocation
+            );
 
         await _carRepository.UpdateAsync(car, autoSave: true);
 
@@ -131,6 +154,23 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         string? modelYear = null
         )
     {
+        // CarXe Api
+        var res = await _vinInfoService.GetVinAsync(vin);
+
+        if(res != null && res.Attributes != null && res.Success)
+        {
+            var dto = new ExternalCarDetailsDto
+            {
+                Model = res.Attributes.Model,
+                ModelYear = res.Attributes.Year,
+                Error = "",
+                Success = res.Success
+            };
+
+            return dto;
+        }
+
+        // govt api
         var externalCarDetails = await _vpicService.DecodeVinExtendedAsync(vin, modelYear);
         return ObjectMapper.Map<VpicVariableResultDto, ExternalCarDetailsDto>(externalCarDetails);
     }

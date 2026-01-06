@@ -1,4 +1,6 @@
 import type { AuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { Stage } from '../stages/stage.enum';
+import type { StorageLocation } from '../storage-locations/storage-location.enum';
 
 export interface CarDto extends AuditedEntityDto<string> {
   modelId?: string;
@@ -10,6 +12,7 @@ export interface CarDto extends AuditedEntityDto<string> {
   vin?: string;
   color?: string;
   modelYear: number;
+  stage?: Stage;
   cnc?: string;
   cncFirewall?: string;
   cncColumn?: string;
@@ -19,6 +22,12 @@ export interface CarDto extends AuditedEntityDto<string> {
   dueDateUpdated?: string;
   notes?: string;
   missingParts?: string;
+  locationStatus?: string;
+  etaBrisbane?: string;
+  etaScd?: string;
+  bookingNumber?: string;
+  clearingAgent?: string;
+  storageLocation?: StorageLocation;
 }
 
 export interface CreateCarDto {
@@ -36,6 +45,12 @@ export interface CreateCarDto {
   startDate?: string;
   notes?: string;
   missingParts?: string;
+  locationStatus?: string;
+  etaBrisbane?: string;
+  etaScd?: string;
+  bookingNumber?: string;
+  clearingAgent?: string;
+  storageLocation?: StorageLocation;
 }
 
 export interface CreateCarOwnerDto {
@@ -63,6 +78,7 @@ export interface UpdateCarDto {
   color: string;
   modelId: string;
   modelYear: number;
+  stage: Stage;
   cnc?: string;
   cncFirewall?: string;
   cncColumn?: string;
@@ -71,4 +87,10 @@ export interface UpdateCarDto {
   startDate?: string;
   notes?: string;
   missingParts?: string;
+  locationStatus?: string;
+  etaBrisbane?: string;
+  etaScd?: string;
+  bookingNumber?: string;
+  clearingAgent?: string;
+  storageLocation?: StorageLocation;
 }

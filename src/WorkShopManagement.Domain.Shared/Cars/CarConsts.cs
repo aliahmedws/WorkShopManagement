@@ -14,6 +14,9 @@ public static class CarConsts
 
     public const int MinModelYear = 1886;
     public const int MaxModelYear = 2100;
+    public const int MaxLocationStatusLength = 128;
+    public const int MaxBookingNumberLength = 64;
+    public const int MaxClearingAgentLength = 128;
 
     public const string DefaultSorting = "CreationTime DESC";
 

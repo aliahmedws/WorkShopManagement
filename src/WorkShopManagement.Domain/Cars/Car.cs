@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Scriban.Functions;
+using System;
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars.Exceptions;
+using WorkShopManagement.Stages;
+using WorkShopManagement.StorageLocations;
 
 namespace WorkShopManagement.Cars;
 
@@ -27,6 +30,15 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     public string? Notes { get; private set; }
     public string? MissingParts { get; private set; }
+    public Stage Stage { get; private set; } = Stage.Incoming;
+
+    // Incoming / Transit vehicle data
+    public string? LocationStatus { get; private set; } 
+    public DateTime? EtaBrisbane { get; private set; }
+    public DateTime? EtaScd { get; private set; }
+    public string? BookingNumber { get; private set; }
+    public string? ClearingAgent { get; private set; }
+    public StorageLocation? StorageLocation { get; private set; }
 
 
     public virtual CarModel? Model { get; private set; }
@@ -41,6 +53,9 @@ public class Car : FullAuditedAggregateRoot<Guid>
         string color,
         Guid modelId,
         int modelYear,
+
+        Stage stage = Stage.Incoming,
+
         string? cnc = null,
         string? cncFirewall = null,
         string? cncColumn = null,
@@ -48,7 +63,15 @@ public class Car : FullAuditedAggregateRoot<Guid>
         DateTime? deliverDate = null,
         DateTime? startDate = null,
         string? notes = null,
-        string? missingParts = null
+        string? missingParts = null,
+
+        string? locationStatus = null,
+        DateTime? etaBrisbane = null,
+        DateTime? etaScd = null,
+        string? bookingNumber = null,
+        string? clearingAgent = null,
+        StorageLocation? storageLocation = null
+
     ) : base(id)
     {
         SetOwner(ownerId);
@@ -56,9 +79,18 @@ public class Car : FullAuditedAggregateRoot<Guid>
         SetColor(color);
         SetModel(modelId);
         SetModelYear(modelYear);
+        SetStage(stage);
         SetCnc(cnc, cncFirewall, cncColumn);
         SetSchedule(dueDate, deliverDate, startDate);
         SetNotes(notes, missingParts);
+        SetTransitData(
+            locationStatus,
+            etaBrisbane,
+            etaScd,
+            bookingNumber,
+            clearingAgent,
+            storageLocation
+        );
     }
 
     public void SetOwner(Guid ownerId)
@@ -128,5 +160,26 @@ public class Car : FullAuditedAggregateRoot<Guid>
     {
         Notes = DomainCheck.TrimOptional(notes, nameof(notes), maxLength: CarConsts.MaxNotesLength);
         MissingParts = DomainCheck.TrimOptional(missingParts, nameof(missingParts), maxLength: CarConsts.MaxMissingPartsLength);
+    }
+
+    public void SetStage(Stage stage)
+    {
+        Stage = Check.NotNull(stage, nameof(stage));
+    }
+
+    public void SetTransitData(
+        string? statusLocation,
+        DateTime? etaBrisbane,
+        DateTime? etaScd,
+        string? bookingNumber,
+        string? clearingAgent,
+        StorageLocation? storageLocation)
+    {
+        LocationStatus = DomainCheck.TrimOptional(statusLocation, nameof(statusLocation), maxLength: CarConsts.MaxLocationStatusLength);
+        EtaBrisbane = etaBrisbane;
+        EtaScd = etaScd;
+        BookingNumber = DomainCheck.TrimOptional(bookingNumber, nameof(bookingNumber), maxLength: CarConsts.MaxBookingNumberLength);
+        ClearingAgent = DomainCheck.TrimOptional(clearingAgent, nameof(clearingAgent), maxLength: CarConsts.MaxClearingAgentLength);
+        StorageLocation = storageLocation;
     }
 }
