@@ -40,12 +40,6 @@ public class CarModelDataSeedContributor : ITransientDependency
     [UnitOfWork]
     public virtual async Task SeedAsync(DataSeedContext context)
     {
-        if (await _carModelRepository.AnyAsync())
-        {
-            _logger.LogInformation("CarModel data already exists. Skipping.");
-            return;
-        }
-
         var rootUrl = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
         if (string.IsNullOrWhiteSpace(rootUrl))
             throw new Exception("Missing configuration: OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl");
@@ -110,13 +104,20 @@ public class CarModelDataSeedContributor : ITransientDependency
             ("RAM HEAVY DUTY", "RAM Heavy Duty 4500 Cab Chassis TRADESMAN", "ram-heavy-duty-4500-cab-chassis-big-horn.png"),
             ("RAM HEAVY DUTY", "RAM Heavy Duty 4500 Cab Chassis BIG HORN", "ram-heavy-duty-4500-cab-chassis-big-horn.png"),
             ("RAM HEAVY DUTY", "RAM Heavy Duty 5500 Cab Chassis TRADESMAN", "ram-heavy-duty-5500-cab-chassis-big-horn.png"),
-            ("RAM HEAVY DUTY", "RAM Heavy Duty 5500 Cab Chassis BIG HORN", "ram-heavy-duty-5500-cab-chassis-tradesman.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 5500 Cab Chassis BIG HORN", "ram-heavy-duty-5500-cab-chassis-tradesman.png")
         };
 
         var categories = await _modelCategoryRepository.GetListAsync();
         var categoryByName = categories
             .Where(x => !string.IsNullOrWhiteSpace(x.Name))
             .ToDictionary(x => Normalize(x.Name), x => x);
+
+        // Incremental: track existing car models by (CategoryId + ModelName)
+        var existingCarModelKeys = (await _carModelRepository.GetListAsync())
+            .Select(x => $"{x.ModelCategoryId:N}|{Normalize(x.Name)}")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var inserted = 0;
 
         foreach (var (categoryName, name, fileName) in seeds)
         {
@@ -144,6 +145,12 @@ public class CarModelDataSeedContributor : ITransientDependency
                 _logger.LogInformation("Created missing ModelCategory: {CategoryName}", categoryName);
             }
 
+            var carModelKey = $"{category.Id:N}|{Normalize(name)}";
+            if (existingCarModelKeys.Contains(carModelKey))
+            {
+                continue;
+            }
+
             var filePath = Path.Combine(carModelsContentPath, fileName);
 
                 var attachment = new FileAttachment(
@@ -160,9 +167,11 @@ public class CarModelDataSeedContributor : ITransientDependency
             );
 
             await _carModelRepository.InsertAsync(carModel, autoSave: true);
+            existingCarModelKeys.Add(carModelKey);
+            inserted++;
         }
 
-        _logger.LogInformation("Added {Count} car model records", seeds.Count);
+        _logger.LogInformation("Added {Count} car model records", inserted);
     }
 
     private static string Normalize(string value)

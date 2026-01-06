@@ -23,6 +23,7 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
     private readonly ListItemDataSeedContributor _listItemSeeder;
     private readonly RadioOptionDataSeedContributor _radioOptionSeeder;
     private readonly ILogger<WorkShopManagementDataSeedContributor> _logger;
+    private readonly IUnitOfWorkManager _uowManager;
 
     public WorkShopManagementDataSeedContributor(
         ModelCategoryDataSeedContributor modelCategorySeeder,
@@ -31,7 +32,8 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         BayDataSeedContributor baySeeder,
         ListItemDataSeedContributor listItemSeeder,
         RadioOptionDataSeedContributor radioOptionSeeder,
-        ILogger<WorkShopManagementDataSeedContributor> logger)
+        ILogger<WorkShopManagementDataSeedContributor> logger,
+        IUnitOfWorkManager uowManager)
     {
         _modelCategorySeeder = modelCategorySeeder;
         _carModelSeeder = carModelSeeder;
@@ -40,6 +42,7 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         _radioOptionSeeder = radioOptionSeeder;
         _baySeeder = baySeeder;
         _logger = logger;
+        _uowManager = uowManager;
     }
 
     [UnitOfWork]
@@ -56,9 +59,15 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
             await RunStepAsync("Bays", () => _baySeeder.SeedAsync(context!));
             await RunStepAsync("ModelCategories", () => _modelCategorySeeder.SeedAsync(context!));
             await RunStepAsync("CarModels", () => _carModelSeeder.SeedAsync(context!));
+
             await RunStepAsync("CheckLists", () => _checkListSeeder.SeedAsync(context!));
+            await _uowManager.Current!.SaveChangesAsync();
+
             await RunStepAsync("ListItems", () => _listItemSeeder.SeedAsync(context!));
+            await _uowManager.Current.SaveChangesAsync();
+
             await RunStepAsync("RadioOptions", () => _radioOptionSeeder.SeedAsync(context!));
+            await _uowManager.Current.SaveChangesAsync();
 
             sw.Stop();
             _logger.LogInformation("Workshop seed finished successfully. ElapsedMs={ElapsedMs}", sw.ElapsedMilliseconds);

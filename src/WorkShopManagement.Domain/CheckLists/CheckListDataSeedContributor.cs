@@ -39,9 +39,8 @@ public class CheckListDataSeedContributor : ITransientDependency
     {
         var seeds = GetDefaultCheckLists();
 
-        // Get all existing car models
         var carModels = await _carModelRepository.GetListAsync();
-        if (!carModels.Any())
+        if (carModels == null || carModels.Count == 0)
         {
             _logger.LogInformation("No CarModels found. Skipping checklist seeding.");
             return;
@@ -76,9 +75,6 @@ public class CheckListDataSeedContributor : ITransientDependency
                     carModelId: carModel.Id
                 );
 
-                // If you later want to map enable flags:
-                // entity.EnableCheckList = s.IsEnabled;
-
                 await _checkListRepository.InsertAsync(entity, autoSave: false);
 
                 insertedForModel++;
@@ -94,8 +90,7 @@ public class CheckListDataSeedContributor : ITransientDependency
             }
         }
 
-        // Persist all inserts in this UoW
-        await _uowManager.Current.SaveChangesAsync();
+        await _uowManager.Current!.SaveChangesAsync();
 
         _logger.LogInformation("Done. Total inserted CheckLists: {TotalInserted}", totalInserted);
     }
@@ -124,7 +119,7 @@ public class CheckListDataSeedContributor : ITransientDependency
             new(19, "Procurement", true),
             new(20, "AVV Package", true),
             new(21, "Pre-Delivery Inspection", true),
-            new(22, "Quality", true),
+            new(22, "Quality", true)
         };
 
     private sealed record CheckListSeed(int Position, string Name, bool IsEnabled);

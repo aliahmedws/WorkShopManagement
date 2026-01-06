@@ -14,10 +14,12 @@ using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.RadioOptions;
 
-public class RadioOptionDataSeedContributor : IDataSeedContributor, ITransientDependency
+public class RadioOptionDataSeedContributor : ITransientDependency
 {
     private const string Station0Name = "Station 0 - Receiving Compliance Audit";
     private const string Station1AName = "Station 1A";
+    private const string Station1BName = "Station 1B";
+    private const string Station3AName = "Station 3A";
 
     private readonly IRepository<CarModel, Guid> _carModelRepository;
     private readonly IRepository<CheckList, Guid> _checkListRepository;
@@ -58,6 +60,8 @@ public class RadioOptionDataSeedContributor : IDataSeedContributor, ITransientDe
         {
             totalInserted += await SeedForCheckListAsync(carModel.Id, Station0Name, GetStation0_RadioSeeds());
             totalInserted += await SeedForCheckListAsync(carModel.Id, Station1AName, GetStation1A_RadioSeeds());
+            totalInserted += await SeedForCheckListAsync(carModel.Id, Station1BName, GetStation1B_RadioSeeds());
+            totalInserted += await SeedForCheckListAsync(carModel.Id, Station3AName, GetStation3A_RadioSeeds());
         }
 
         _logger.LogInformation("Done. Inserted RadioOptions: {Count}.", totalInserted);
@@ -81,7 +85,6 @@ public class RadioOptionDataSeedContributor : IDataSeedContributor, ITransientDe
             return 0;
         }
 
-        // IMPORTANT: Handle duplicate positions safely.
         var duplicates = listItems
             .GroupBy(x => x.Position)
             .Where(g => g.Count() > 1)
@@ -234,6 +237,43 @@ public class RadioOptionDataSeedContributor : IDataSeedContributor, ITransientDe
             new(26, "PASS", "FAIL"),
             new(27, "PASS", "FAIL"),
         };
+
+    private static IReadOnlyList<RadioSeed> GetStation1B_RadioSeeds()
+        => new List<RadioSeed>
+        {
+            new(1,  "Yes", "No", "N/A"),
+            new(2,  "Yes", "No", "N/A"),
+            new(3,  "Yes", "No", "N/A"),
+            new(4,  "Yes", "No", "N/A"),
+            new(5,  "Yes", "No", "N/A"),
+            new(6,  "Yes", "No", "N/A"),
+            new(7,  "Yes", "No", "N/A"),
+            new(8,  "Yes", "No", "N/A"),
+
+            new(10, "PASS", "FAIL"),
+            new(11, "PASS", "FAIL"),
+            new(12, "PASS", "FAIL"),
+            new(13, "PASS", "FAIL"),
+            new(14, "PASS", "FAIL")
+        };
+
+    private static IReadOnlyList<RadioSeed> GetStation3A_RadioSeeds()
+    => new List<RadioSeed>
+    {
+            new(1,  "Yes", "No", "N/A"),
+            new(2,  "Yes", "No", "N/A"),
+            new(3,  "Yes", "No", "N/A"),
+            new(4,  "Yes", "No", "N/A"),
+            new(5,  "Yes", "No", "N/A"),
+            new(6,  "Yes", "No", "N/A"),
+
+            new(8, "PASS", "FAIL"),
+            new(9, "PASS", "FAIL"),
+            new(10, "PASS", "FAIL"),
+            new(11, "PASS", "FAIL"),
+            new(12, "PASS", "FAIL"),
+            new(13, "PASS", "FAIL"),
+    };
 
     private sealed record RadioSeed(int ListItemPosition, params string[] Options);
 }
