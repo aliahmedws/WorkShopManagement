@@ -21,27 +21,23 @@ public class PriorityAppService : ApplicationService, IPriorityAppService
         _priorityRepository = priorityRepository;
         _priorityManager = priorityManager;
     }
-
     public async Task<PriorityDto> GetAsync(Guid id)
     {
         var priority = await _priorityRepository.GetAsync(id);
         return ObjectMapper.Map<Priority, PriorityDto>(priority);
     }
-
     public async Task<PagedResultDto<PriorityDto>> GetListAsync(GetPriorityListDto input)
     {
         if (input.Sorting.IsNullOrWhiteSpace())
         {
             input.Sorting = nameof(Priority.Number);
         }
-
         var priorities = await _priorityRepository.GetListAsync(
             input.SkipCount,
             input.MaxResultCount,
             input.Sorting,
             input.Filter
         );
-
         var totalCount = await _priorityRepository.GetCountAsync(
             input.Filter
         );
@@ -57,15 +53,16 @@ public class PriorityAppService : ApplicationService, IPriorityAppService
         try
         {
             var priority = await _priorityManager.CreateAsync(
-                input.Number,
-                input.Description
-            );
+            input.Number,
+            input.Description
+        );
+
             await _priorityRepository.InsertAsync(priority);
             return ObjectMapper.Map<Priority, PriorityDto>(priority);
         }
-        catch (Exception ex)
+        catch (PriorityAlreadyExistsException)
         {
-            throw;
+            throw new UserFriendlyException($"A priority with number {input.Number} already exists.");
         }
     }
 
@@ -73,8 +70,14 @@ public class PriorityAppService : ApplicationService, IPriorityAppService
     public async Task UpdateAsync(Guid id, UpdatePriorityDto input)
     {
         var priority = await _priorityRepository.GetAsync(id);
-        await _priorityManager.ChangeNumberAsync(priority, input.Number);
-
+        try
+        {
+            await _priorityManager.ChangeNumberAsync(priority, input.Number);
+        }
+        catch (PriorityAlreadyExistsException)
+        {
+            throw new UserFriendlyException("A priority with this number already exists.");
+        }
         priority.ChangeDescription(input.Description);
         await _priorityRepository.UpdateAsync(priority);
     }

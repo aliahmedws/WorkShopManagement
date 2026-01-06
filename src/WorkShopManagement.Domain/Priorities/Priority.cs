@@ -5,17 +5,13 @@ using Volo.Abp.Domain.Entities.Auditing;
 
 namespace WorkShopManagement.Priorities;
 
-public class Priority : FullAuditedAggregateRoot<Guid>
+public class Priority : FullAuditedEntity<Guid>
 {
     [Required]
-    [Range(0, 50000)]
+    [Range(0, 5000)]
     public int Number { get; set; }
     public string? Description { get; set; }
-
-    private Priority()
-    {
-    }
-
+    private Priority() { }
     internal Priority(
         Guid id,
         int number,
@@ -25,44 +21,43 @@ public class Priority : FullAuditedAggregateRoot<Guid>
         SetNumber(number);
         SetDescription(description);
     }
-
     internal Priority ChangeNumber(int number)
     {
         SetNumber(number);
         return this;
     }
-
     public Priority ChangeDescription(string? description)
     {
         SetDescription(description);
         return this;
     }
-
     private void SetNumber(int number)
     {
         Check.Range(
            number,
            nameof(number),
            PriorityConsts.MinNumber,
-           PriorityConsts.MaxNumberLength
+           PriorityConsts.MaxNumber
        );
-
         Number = number;
     }
-
     private void SetDescription(string? description)
     {
-        if (!description.IsNullOrWhiteSpace())
-        {
-            Description = Check.NotNullOrWhiteSpace(
-                description,
-                nameof(description),
-                maxLength: PriorityConsts.MaxDescriptionLength
-            );
-        }
-        else
-        {
-            Description = null;
-        }
+        //if (description.IsNullOrWhiteSpace())
+        //{
+        //    Description = null;
+        //    return;
+        //}
+        //if (description!.Length > PriorityConsts.MaxDescriptionLength)
+        //{
+        //    throw new UserFriendlyException(
+        //        $"Description length cannot be greater than {PriorityConsts.MaxDescriptionLength}");
+        //}
+
+        //Description = description;
+        Description = Check.Length(
+            description,
+            nameof(description),
+            maxLength:PriorityConsts.MaxDescriptionLength);
     }
 }

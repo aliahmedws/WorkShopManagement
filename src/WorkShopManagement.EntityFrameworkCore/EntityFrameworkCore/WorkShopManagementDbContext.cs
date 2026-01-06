@@ -188,7 +188,7 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
             b.Property(x => x.Number).IsRequired();
             b.Property(x => x.Description).HasMaxLength(PriorityConsts.MaxDescriptionLength).IsRequired(false);
-            b.HasIndex(x => x.Number).IsUnique();
+            b.HasIndex(x => x.Number);
         });
     }
 }

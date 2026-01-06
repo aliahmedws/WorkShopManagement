@@ -11,41 +11,33 @@ public class PriorityManager : DomainService
     {
         _priorityRepository = priorityRepository;
     }
-
     public async Task<Priority> CreateAsync(
        int number,
        string? description = null
        )
     {
-        Check.NotNull(number, nameof(number));
-
         var existingPriority = await _priorityRepository.FindByNumberAsync(number);
         if (existingPriority != null)
         {
             throw new PriorityAlreadyExistsException(number);
         }
-
         return new Priority(
             GuidGenerator.Create(),
             number,
             description
         );
     }
-
     public async Task ChangeNumberAsync(
        Priority priority,
-       int newNumber
+       int number
        )
     {
         Check.NotNull(priority, nameof(priority));
-
-        var existingPriority = await _priorityRepository.FindByNumberAsync(newNumber);
+        var existingPriority = await _priorityRepository.FindByNumberAsync(number);
         if (existingPriority != null && existingPriority.Id != priority.Id)
         {
-            throw new PriorityAlreadyExistsException(newNumber);
+            throw new PriorityAlreadyExistsException(number);
         }
-
-        priority.ChangeNumber(newNumber);
+        priority.ChangeNumber(number);
     }
-
 }

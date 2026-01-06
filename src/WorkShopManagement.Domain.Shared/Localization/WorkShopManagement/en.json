@@ -55,7 +55,7 @@
     "IsAttachmentRequired": "Is Attachment Required",
     "Menu:ListItems": "List Items",
 
-    "PriorityNumberExists:00001": "A priority with the same number already exists: {number}",
+    "PriorityNumberExists": "Priority with number {number} already exists.",
     "Permission:Priorities": "Priority Management",
     "Permission:Priorities.Create": "Create",
     "Permission:Priorities.Edit": "Edit",

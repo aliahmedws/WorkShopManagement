@@ -9,6 +9,8 @@ import { ThemeSharedModule } from '@abp/ng.theme.shared';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PermissionDirective } from '@abp/ng.core';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+
 
 
 @Component({
@@ -19,9 +21,10 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     PageModule,
+    NgxDatatableModule, 
     ThemeSharedModule,
     ReactiveFormsModule,
-     FormsModule,
+    FormsModule,
     LocalizationPipe,
     NgbDropdownModule,
     PermissionDirective
@@ -42,7 +45,7 @@ export class Priorities implements OnInit {
     private fb: FormBuilder,
     private confirmation: ConfirmationService,
     private toaster: ToasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const priorityStreamCreator = (query) => {
@@ -84,14 +87,14 @@ export class Priorities implements OnInit {
     }
 
     if (this.selectedPriority.id) {
-        this.priorityService.update(this.selectedPriority.id, this.form.value).subscribe(() => {
+      this.priorityService.update(this.selectedPriority.id, this.form.value).subscribe(() => {
         this.isModalOpen = false;
         this.form.reset();
         this.list.get();
         this.toaster.success('::PriorityUpdatedSuccessfully');
       });
     } else {
-        this.priorityService.create(this.form.value).subscribe(() => {
+      this.priorityService.create(this.form.value).subscribe(() => {
         this.isModalOpen = false;
         this.form.reset();
         this.list.get();
@@ -114,8 +117,8 @@ export class Priorities implements OnInit {
   clearFilters(): void {
     this.filters = {} as GetPriorityListDto;
     this.list.get();
-     if (this.form) {  
-       this.form.reset();
+    if (this.form) {
+      this.form.reset();
     }
-}
+  }
 }
