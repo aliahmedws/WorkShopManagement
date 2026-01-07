@@ -2981,6 +2981,291 @@
             }
           }
         },
+        "WorkShopManagement.QualityGates.QualityGateController": {
+          "controllerName": "QualityGate",
+          "controllerGroupName": "QualityGates",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.QualityGates.QualityGateController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.QualityGates.IQualityGateAppService",
+              "name": "IQualityGateAppService",
+              "methods": [
+                {
+                  "name": "GetAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                    "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+                  }
+                },
+                {
+                  "name": "CreateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.QualityGates.CreateQualityGateDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                      "typeSimple": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                    "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+                  }
+                },
+                {
+                  "name": "UpdateAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.QualityGates.UpdateQualityGateDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                      "typeSimple": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                    "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+                  }
+                },
+                {
+                  "name": "DeleteAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetListAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
+                    "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "CreateAsyncByInput": {
+              "uniqueName": "CreateAsyncByInput",
+              "name": "CreateAsync",
+              "httpMethod": "POST",
+              "url": "api/app/quality-gates",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.QualityGates.CreateQualityGateDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                  "typeSimple": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                  "typeSimple": "WorkShopManagement.QualityGates.CreateQualityGateDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            },
+            "DeleteAsyncById": {
+              "uniqueName": "DeleteAsyncById",
+              "name": "DeleteAsync",
+              "httpMethod": "DELETE",
+              "url": "api/app/quality-gates/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            },
+            "GetAsyncById": {
+              "uniqueName": "GetAsyncById",
+              "name": "GetAsync",
+              "httpMethod": "GET",
+              "url": "api/app/quality-gates/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            },
+            "GetListAsync": {
+              "uniqueName": "GetListAsync",
+              "name": "GetListAsync",
+              "httpMethod": "GET",
+              "url": "api/app/quality-gates",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
+                "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            },
+            "UpdateAsyncByInputAndId": {
+              "uniqueName": "UpdateAsyncByInputAndId",
+              "name": "UpdateAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/quality-gates/{id}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.QualityGates.UpdateQualityGateDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                  "typeSimple": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                  "typeSimple": "WorkShopManagement.QualityGates.UpdateQualityGateDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.QualityGates.QualityGateDto",
+                "typeSimple": "WorkShopManagement.QualityGates.QualityGateDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            }
+          }
+        },
         "WorkShopManagement.TempFiles.TempFileAppService": {
           "controllerName": "TempFile",
           "controllerGroupName": "TempFile",
@@ -15168,6 +15453,155 @@
           "type": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
           "typeSimple": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
           "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.QualityGates.CreateQualityGateDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "GateName",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.GateName",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.QualityGateStatus",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.QualityGates.GateName": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "PreProduction",
+        "QualityControl",
+        "QualityRelease",
+        "PreDelivery"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.QualityGates.QualityGateDto": {
+      "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "GateName",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.GateName",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.QualityGateStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.QualityGates.QualityGateStatus": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "PASSED",
+        "CONDITIONALPASSEDMAJOR",
+        "CONDITIONALPASSEDMINOR",
+        "OPEN",
+        "RESET"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.QualityGates.UpdateQualityGateDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "GateName",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.GateName",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "WorkShopManagement.QualityGates.QualityGateStatus",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
           "minLength": null,
           "maxLength": null,
           "minimum": null,

@@ -159,10 +159,8 @@
     "Enum:Stage.PostProduction": "Post Production",
     "Enum:Stage.AwaitingTransport": "Awaiting Transport",
     "Enum:Stage.Dispatched": "Dispatched",
-    "ExternalWarehouse": "External Warehouse"
-    "Menu:Vehicles": "Vehicle Models",
+    "ExternalWarehouse": "External Warehouse",
     "Menu:Vehicle": "Vehicles",
-    "Variants": "Variants",
     "Menu:Variants": "Variants"
   }
 }
