@@ -57,8 +57,13 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         try
         {
             await RunStepAsync("Bays", () => _baySeeder.SeedAsync(context!));
+            await _uowManager.Current!.SaveChangesAsync();
+
             await RunStepAsync("ModelCategories", () => _modelCategorySeeder.SeedAsync(context!));
+            await _uowManager.Current!.SaveChangesAsync();
+
             await RunStepAsync("CarModels", () => _carModelSeeder.SeedAsync(context!));
+            await _uowManager.Current!.SaveChangesAsync();
 
             await RunStepAsync("CheckLists", () => _checkListSeeder.SeedAsync(context!));
             await _uowManager.Current!.SaveChangesAsync();

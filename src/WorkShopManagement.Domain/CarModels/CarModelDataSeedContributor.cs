@@ -49,8 +49,8 @@ public class CarModelDataSeedContributor : ITransientDependency
         var seeds = new List<(string CategoryName, string Name, string FileName)>
         {
             // FORD 150
-            ("FORD 1500", "Raptor", "ford-raptor.jpg"),
-            ("FORD 1500", "Raptor R", "ford-raptor-r.jpg"),
+            ("FORD 150", "Raptor", "ford-raptor.jpg"),
+            ("FORD 150", "Raptor R", "ford-raptor-r.jpg"),
 
             // FORD SUPER DUTY
             ("FORD SUPER DUTY", "Ford Superduty Pickup", "ford-super-duty-pickup.jpg"),
@@ -125,24 +125,8 @@ public class CarModelDataSeedContributor : ITransientDependency
 
             if (!categoryByName.TryGetValue(normalizedCategoryName, out var category))
             {
-                var categoryFilePath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels", $"{categoryName}.png");
-
-                var catAttachment = new FileAttachment(
-                    name: Path.GetFileName(categoryFilePath),
-                    blobName: categoryFilePath,
-                    path: categoryFilePath
-                );
-
-                category = new ModelCategory(
-                    _guidGenerator.Create(),
-                    categoryName.Trim(),
-                    catAttachment
-                );
-
-                category = await _modelCategoryRepository.InsertAsync(category, autoSave: true);
-                categoryByName[normalizedCategoryName] = category;
-
-                _logger.LogInformation("Created missing ModelCategory: {CategoryName}", categoryName);
+                _logger.LogWarning("Missing ModelCategory '{CategoryName}'. Skipping car model '{CarModelName}'.", categoryName, name);
+                continue;
             }
 
             var carModelKey = $"{category.Id:N}|{Normalize(name)}";
