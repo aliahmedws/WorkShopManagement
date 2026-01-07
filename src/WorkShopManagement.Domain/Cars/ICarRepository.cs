@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
-using WorkShopManagement.Stages;
+using WorkShopManagement.Cars.Stages;
 
 namespace WorkShopManagement.Cars;
 

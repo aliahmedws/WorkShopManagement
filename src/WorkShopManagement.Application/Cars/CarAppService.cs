@@ -9,7 +9,6 @@ using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Permissions;
-using WorkShopManagement.Stages;
 
 namespace WorkShopManagement.Cars;
 

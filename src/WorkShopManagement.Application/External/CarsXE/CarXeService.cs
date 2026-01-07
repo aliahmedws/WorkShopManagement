@@ -14,6 +14,7 @@ using WorkShopManagement.External.Shared;
 
 namespace WorkShopManagement.External.CarsXE
 {
+    //[RemoteService(false)]
     public class CarXeService : ApplicationService, ICarXeService
     {
         private readonly IRepository<VinInfo, Guid> _vinInfoRepository;

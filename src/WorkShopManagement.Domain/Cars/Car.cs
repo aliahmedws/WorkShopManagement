@@ -1,12 +1,14 @@
 ﻿using Scriban.Functions;
 using System;
+using System.Collections.Generic;
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars.Exceptions;
-using WorkShopManagement.Stages;
-using WorkShopManagement.StorageLocations;
+using WorkShopManagement.Cars.Stages;
+using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.Recalls;
 
 namespace WorkShopManagement.Cars;
 
@@ -43,7 +45,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     public virtual CarModel? Model { get; private set; }
     public virtual CarOwner? Owner { get; private set; }
-
+    public virtual ICollection<Recall> Recalls { get; private set; } = default!;
     private Car() { }
 
     public Car(

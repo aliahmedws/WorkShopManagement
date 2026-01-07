@@ -161,6 +161,17 @@
     "Enum:Stage.Dispatched": "Dispatched",
     "ExternalWarehouse": "External Warehouse",
     "Menu:Vehicle": "Vehicles",
-    "Menu:Variants": "Variants"
+    "Menu:Variants": "Variants",
+    "Recalls": "Recalls",
+    "Enum:RecallType.Recalls": "Recalls",
+    "Enum:RecallType.Csps": "CSPs",
+    "Enum:RecallStatus.Pending": "Pending",
+    "Enum:RecallStatus.Completed": "Completed",
+    "RiskDescription": "Risk Description",
+    "Notes": "Notes",
+    "Title": "Title",
+    "Status": "Status",
+    "MarkAsCsp": "Mark CSP"
+
   }
 }

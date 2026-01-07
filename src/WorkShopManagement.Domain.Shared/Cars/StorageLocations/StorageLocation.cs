@@ -1,4 +1,4 @@
-﻿namespace WorkShopManagement.StorageLocations
+﻿namespace WorkShopManagement.Cars.StorageLocations
 {
     public enum StorageLocation
     {

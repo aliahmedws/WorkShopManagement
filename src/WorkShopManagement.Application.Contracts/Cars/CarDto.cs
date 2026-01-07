@@ -1,7 +1,7 @@
 ﻿using System;
 using Volo.Abp.Application.Dtos;
-using WorkShopManagement.Stages;
-using WorkShopManagement.StorageLocations;
+using WorkShopManagement.Cars.Stages;
+using WorkShopManagement.Cars.StorageLocations;
 
 namespace WorkShopManagement.Cars;
 
