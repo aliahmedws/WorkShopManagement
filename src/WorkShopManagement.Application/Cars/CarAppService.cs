@@ -20,19 +20,19 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     private readonly ICarRepository _carRepository;
     private readonly IRepository<CarOwner, Guid> _carOwnerRepository;
     private readonly IVpicService _vpicService;
-    private readonly IVinInfoService _vinInfoService;
+    private readonly ICarXeService _carXeService;
 
     public CarAppService(
         ICarRepository carRepository,
         IRepository<CarOwner, Guid> carOwnerRepository,
         IVpicService vpicService,
-        IVinInfoService vinInfoService
+        ICarXeService carXeService
         )
     {
         _carRepository = carRepository;
         _carOwnerRepository = carOwnerRepository;
         _vpicService = vpicService;
-        _vinInfoService = vinInfoService;
+        _carXeService = carXeService;
     }
 
     public async Task<CarDto> GetAsync(Guid id)
@@ -155,7 +155,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         )
     {
         // CarXe Api
-        var res = await _vinInfoService.GetVinAsync(vin);
+        var res = await _carXeService.GetVinAsync(vin);
 
         if(res != null && res.Attributes != null && res.Success)
         {

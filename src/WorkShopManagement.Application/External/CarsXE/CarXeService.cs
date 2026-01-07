@@ -1,22 +1,20 @@
 ﻿using Microsoft.Extensions.Options;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
-using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Timing;
 using WorkShopManagement.CarsEx;
 using WorkShopManagement.External.Shared;
 
+
 namespace WorkShopManagement.External.CarsXE
 {
-    public class VinInfoService : ApplicationService, IVinInfoService
+    public class CarXeService : ApplicationService, ICarXeService
     {
         private readonly IRepository<VinInfo, Guid> _vinInfoRepository;
         private readonly VinInfoManager _vinInfoManager;
@@ -29,7 +27,7 @@ namespace WorkShopManagement.External.CarsXE
             PropertyNameCaseInsensitive = true
         };
 
-        public VinInfoService(
+        public CarXeService(
             IRepository<VinInfo, Guid> vinInfoRepository,
             VinInfoManager vinInfoManager,
             IRestClientFactory restClientFactory,
