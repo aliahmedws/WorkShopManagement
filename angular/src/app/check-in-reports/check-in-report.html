@@ -1,5 +1,5 @@
 <abp-page *abpPermission="'WorkShopManagement.CheckInReports'">
-    <app-topbar-layout titleKey="CheckInReports" [(filters)]="filters" [list]="list">
+    <app-topbar-layout titleKey="CheckInReport" [(filters)]="filters" [list]="list">
         <div topbarActions>
             <ng-container *abpPermission="'WorkShopManagement.CheckInReports.Create'">
                 <button class="btn btn-sm btn-outline-primary" (click)="create()">
