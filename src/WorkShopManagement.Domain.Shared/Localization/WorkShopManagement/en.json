@@ -145,6 +145,7 @@
     "Enum:Stage.Production": "Production",
     "Enum:Stage.PostProduction": "Post Production",
     "Enum:Stage.AwaitingTransport": "Awaiting Transport",
-    "Enum:Stage.Dispatched": "Dispatched"
+    "Enum:Stage.Dispatched": "Dispatched",
+    "ExternalWarehouse": "External Warehouse"
   }
 }

@@ -43,8 +43,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
     public async Task<PagedResultDto<CarDto>> GetListAsync(GetCarListInput input)
     {
-        var totalCount = await _carRepository.GetLongCountAsync(input.Filter);
-        var items = await _carRepository.GetListAsync(input.SkipCount, input.MaxResultCount, input.Sorting, input.Filter);
+        var totalCount = await _carRepository.GetLongCountAsync(input.Filter,  input.Stage);
+        var items = await _carRepository.GetListAsync(input.SkipCount, input.MaxResultCount, input.Sorting, input.Filter, input.Stage);
         return new PagedResultDto<CarDto>(totalCount, ObjectMapper.Map<List<Car>, List<CarDto>>(items));
     }
 

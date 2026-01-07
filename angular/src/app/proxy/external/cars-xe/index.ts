@@ -1,2 +1,2 @@
+export * from './car-xe.service';
 export * from './models';
-export * from './vin-info.service';

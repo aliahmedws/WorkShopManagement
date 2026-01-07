@@ -206,7 +206,6 @@ export class CarCreateEditModal {
         this.resolveExternalCarResponse(response);
       });
 
-      debugger;
   }
 
   resolveExternalCarResponse(response: ExternalCarDetailsDto | null) {

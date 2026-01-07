@@ -1310,6 +1310,18 @@
                 },
                 {
                   "nameOnMethod": "input",
+                  "name": "Stage",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.Stages.Stage?",
+                  "typeSimple": "enum?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "input"
+                },
+                {
+                  "nameOnMethod": "input",
                   "name": "Sorting",
                   "jsonName": null,
                   "type": "System.String",
@@ -2654,17 +2666,17 @@
             }
           }
         },
-        "WorkShopManagement.External.CarsXE.VinInfoService": {
-          "controllerName": "VinInfo",
-          "controllerGroupName": "VinInfo",
+        "WorkShopManagement.External.CarsXE.CarXeService": {
+          "controllerName": "CarXe",
+          "controllerGroupName": "CarXe",
           "isRemoteService": true,
           "isIntegrationService": false,
           "apiVersion": null,
-          "type": "WorkShopManagement.External.CarsXE.VinInfoService",
+          "type": "WorkShopManagement.External.CarsXE.CarXeService",
           "interfaces": [
             {
-              "type": "WorkShopManagement.External.CarsXE.IVinInfoService",
-              "name": "IVinInfoService",
+              "type": "WorkShopManagement.External.CarsXE.ICarXeService",
+              "name": "ICarXeService",
               "methods": [
                 {
                   "name": "GetVinAsync",
@@ -2724,7 +2736,7 @@
               "uniqueName": "GetVinAsyncByVinNoAndCt",
               "name": "GetVinAsync",
               "httpMethod": "GET",
-              "url": "api/app/vin-info/vin",
+              "url": "api/app/car-xe/vin",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -2763,13 +2775,13 @@
                 "typeSimple": "WorkShopManagement.External.CarsXE.VinResponseDto"
               },
               "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.External.CarsXE.IVinInfoService"
+              "implementFrom": "WorkShopManagement.External.CarsXE.ICarXeService"
             },
             "GetRecallAsyncByVinNoAndCt": {
               "uniqueName": "GetRecallAsyncByVinNoAndCt",
               "name": "GetRecallAsync",
               "httpMethod": "GET",
-              "url": "api/app/vin-info/recall",
+              "url": "api/app/car-xe/recall",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -2808,7 +2820,7 @@
                 "typeSimple": "WorkShopManagement.External.CarsXE.RecallsResponseDto"
               },
               "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.External.CarsXE.IVinInfoService"
+              "implementFrom": "WorkShopManagement.External.CarsXE.ICarXeService"
             }
           }
         },
@@ -12293,6 +12305,18 @@
           "regex": null
         },
         {
+          "name": "Stage",
+          "jsonName": null,
+          "type": "WorkShopManagement.Stages.Stage",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Cnc",
           "jsonName": null,
           "type": "System.String",
@@ -12588,6 +12612,18 @@
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Stage",
+          "jsonName": null,
+          "type": "WorkShopManagement.Stages.Stage?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

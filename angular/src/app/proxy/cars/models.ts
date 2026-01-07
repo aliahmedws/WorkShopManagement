@@ -37,6 +37,7 @@ export interface CreateCarDto {
   color: string;
   modelId: string;
   modelYear: number;
+  stage: Stage;
   cnc?: string;
   cncFirewall?: string;
   cncColumn?: string;
@@ -69,6 +70,7 @@ export interface ExternalCarDetailsDto {
 
 export interface GetCarListInput extends PagedAndSortedResultRequestDto {
   filter?: string;
+  stage?: Stage;
 }
 
 export interface UpdateCarDto {
