@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.Stages;
+using WorkShopManagement.StorageLocations;
 
 namespace WorkShopManagement.Cars;
 
@@ -21,6 +23,8 @@ public class CreateCarDto
 
     [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
     public int ModelYear { get; set; }
+    [Required]
+    public Stage Stage { get; set; } = Stage.Incoming;
 
     [StringLength(CarConsts.MaxCncLength)]
     public string? Cnc { get; set; }
@@ -40,4 +44,14 @@ public class CreateCarDto
 
     [StringLength(CarConsts.MaxMissingPartsLength)]
     public string? MissingParts { get; set; }
+    // Transit vehicle data
+    [StringLength(CarConsts.MaxLocationStatusLength)]
+    public string? LocationStatus { get; set; }
+    public DateTime? EtaBrisbane { get; set; }
+    public DateTime? EtaScd { get; set; }
+    [StringLength(CarConsts.MaxBookingNumberLength)]
+    public string? BookingNumber { get; set; }
+    [StringLength(CarConsts.MaxClearingAgentLength)]
+    public string? ClearingAgent { get; set; }
+    public StorageLocation? StorageLocation { get; set; }
 }

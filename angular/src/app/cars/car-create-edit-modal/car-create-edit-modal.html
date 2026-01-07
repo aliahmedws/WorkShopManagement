@@ -13,7 +13,8 @@
         @if (form && !loading) {
         <div id="top"></div>
         @if (external) {
-        <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'" role="alert">
+        <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'"
+            role="alert">
             <h4 class="alert-heading">
                 {{ (external.success ? '::Car.VinQuery.SuccessTitle' : '::Car.VinQuery.FailedTitle') | abpLocalization
                 }}
@@ -226,8 +227,87 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <hr>
+                </div>
             </div>
             <!-- Additional Information -->
+
+            <!-- Transit Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::TransitInformation' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::LocationStatus' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="locationStatus" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::BookingNumber' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="bookingNumber" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::EtaBrisbane' | abpLocalization }}</label>
+                            <input #etaBrisbanePicker="ngbDatepicker" class="form-control" name="etaBrisbane"
+                                formControlName="etaBrisbane" ngbDatepicker (click)="etaBrisbanePicker.toggle()" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::EtaScd' | abpLocalization }}</label>
+                            <input #etaScdPicker="ngbDatepicker" class="form-control" name="etaScd"
+                                formControlName="etaScd" ngbDatepicker (click)="etaScdPicker.toggle()" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::ClearingAgent' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="clearingAgent" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
+                            <!-- <input class="form-control" formControlName="storageLocation" /> -->
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
+                                @for (option of storageLocationOptions; track option) {
+                                <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.key) | abpLocalization"
+                                    [nzValue]="option.value"></nz-option>
+                                }
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Transit Data -->
+
+            <!-- Stage -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::Stage' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <div class="col-12 form-group">
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage">
+                                @for (option of stageOptions; track option) {
+                                <nz-option [nzLabel]="('::Enum:Stage.' + option.key) | abpLocalization"
+                                    [nzValue]="option.value"></nz-option>
+                                }
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Stage -->
+
         </form>
         }
 

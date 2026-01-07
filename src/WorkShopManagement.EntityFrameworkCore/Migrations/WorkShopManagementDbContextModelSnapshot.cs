@@ -2013,6 +2013,12 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("BookingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClearingAgent")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Cnc")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -2062,6 +2068,12 @@ namespace WorkShopManagement.Migrations
                     b.Property<DateTime?>("DueDateUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("EtaBrisbane")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EtaScd")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -2081,6 +2093,9 @@ namespace WorkShopManagement.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
+                    b.Property<string>("LocationStatus")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MissingParts")
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
@@ -2098,8 +2113,14 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Stage")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("StorageLocation")
+                        .HasColumnType("int");
 
                     b.Property<string>("Vin")
                         .IsRequired()
@@ -2183,6 +2204,35 @@ namespace WorkShopManagement.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("AppCarOwners", (string)null);
+                });
+
+            modelBuilder.Entity("WorkShopManagement.CarsEx.VinInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RecallLastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecallResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("VinLastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VinNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VinResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VinNo")
+                        .IsUnique();
+
+                    b.ToTable("AppVinInfos", (string)null);
                 });
 
             modelBuilder.Entity("WorkShopManagement.CheckLists.CheckList", b =>

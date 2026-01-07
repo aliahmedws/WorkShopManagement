@@ -8,6 +8,7 @@ using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
+using WorkShopManagement.Stages;
 
 namespace WorkShopManagement.Cars;
 
@@ -17,23 +18,27 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
     {
     }
 
-    public async Task<List<Car>> GetListAsync(int skipCount = 0, int maxResultCount = 10, string? sorting = null, string? filter = null)
+    public async Task<List<Car>> GetListAsync(int skipCount = 0, int maxResultCount = 10, string? sorting = null, string? filter = null, Stage? stage = null)
     {
-        var query = await GetAllAsync(filter, sorting, asNoTracking: true);
+        var query = await GetAllAsync(filter, stage, sorting, asNoTracking: true);
         return await query
             .PageBy(skipCount, maxResultCount)
             .ToListAsync();
     }
 
-    public async Task<long> GetLongCountAsync(string? filter = null)
+    public async Task<long> GetLongCountAsync(string? filter = null, Stage? stage = null)
     {
         var query = await GetAllAsync(filter, asNoTracking: true);
         return await query.LongCountAsync();
     }
 
-    public async Task<IQueryable<Car>> GetAllAsync(string? filter = null, string ? sorting = null, bool asNoTracking = false)
+    public async Task<IQueryable<Car>> GetAllAsync(string? filter = null, Stage? stage = null, string ? sorting = null, bool asNoTracking = false)
     {
         var query = await GetQueryableAsync();
+        if(stage.HasValue)
+        {
+            query = query.Where(q => q.Stage == stage.Value);
+        }
 
         if (!string.IsNullOrWhiteSpace(filter = filter?.Trim()))
         {
