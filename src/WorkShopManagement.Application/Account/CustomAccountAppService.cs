@@ -56,18 +56,11 @@ public class CustomAccountAppService : AccountAppService, ICustomAccountAppServi
         CheckPhoneNumber(user);
 
         (await UserManager.ChangePhoneNumberAsync(user, user.PhoneNumber, input.Token)).CheckErrors();
-        (await UserManager.SetTwoFactorEnabledAsync(user, enabled: true)).CheckErrors();
 
         await IdentitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext
         {
             Identity = IdentitySecurityLogIdentityConsts.Identity,
             Action = IdentitySecurityLogActionConsts.ChangePhoneNumber
-        });
-
-        await IdentitySecurityLogManager.SaveAsync(new IdentitySecurityLogContext
-        {
-            Identity = IdentitySecurityLogIdentityConsts.Identity,
-            Action = IdentitySecurityLogActionConsts.TwoFactorEnabled
         });
     }
 
