@@ -48,7 +48,7 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
         _logger.LogInformation("Seeding car model data");
         var seeds = new List<(string Name, string FileName)>
             {
-                ("FORD 1500", "Ford-1500.png"),
+                ("FORD 150", "Ford-1500.png"),
                 ("FORD SUPER DUTY", "Ford-Super-duty.png"),
                 ("RAM 1500", "RAM-1500.png"),
                 ("RAM HEAVY DUTY", "Ram-heavy-duty.png"),
@@ -66,8 +66,8 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
 
         foreach (var (name, fileName) in seeds)
         {
-            var normalizedName = name.Trim();
-            if (existingName.Contains(normalizedName))
+            var exists = await _modelCategoryRepository.AnyAsync(x => x.Name == name);
+            if (exists)
                 continue;
 
             var filePath = Path.Combine(contentPath, fileName);
@@ -80,12 +80,12 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
 
             var model = new ModelCategory(
                 _guidGenerator.Create(),
-                normalizedName,
+                name,
                 attachment
             );
 
             await _modelCategoryRepository.InsertAsync(model);
-            existingName.Add(normalizedName);
+            existingName.Add(name);
             inserted++;
         }
 
