@@ -29,6 +29,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.Identity;
@@ -45,6 +46,7 @@ using WorkShopManagement.EntityFrameworkCore;
 using WorkShopManagement.HealthChecks;
 using WorkShopManagement.MultiTenancy;
 using WorkShopManagement.Pages.Account;
+using WorkShopManagement.Workers;
 
 namespace WorkShopManagement;
 
@@ -295,6 +297,8 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+    
+        context.AddBackgroundWorkerAsync<TempFileCleanupWorker>();
     }
 
 }

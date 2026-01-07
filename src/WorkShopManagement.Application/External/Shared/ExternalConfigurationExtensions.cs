@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using Volo.Abp.Modularity;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Twilio;
 using WorkShopManagement.External.Vpic;
@@ -19,5 +20,6 @@ public static class ExternalConfigurationExtensions
         context.Services.ConfigureOptions<ConfigureVpicApiOptions>();
         context.Services.ConfigureOptions<ConfigureNhtsaApiOptions>();
         context.Services.ConfigureOptions<ConfigureTwilioApiOptions>();
+        context.Services.ConfigureOptions<ConfigureBlobStorageOptions>();
     }
 }
