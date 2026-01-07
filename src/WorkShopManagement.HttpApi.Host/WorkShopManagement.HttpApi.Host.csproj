@@ -57,12 +57,24 @@
 
   <ItemGroup>
     <None Remove="authserver.pfx" />
+    <None Remove="Pages\Account\ConfirmUser.js" />
+    <None Remove="Pages\Account\SendSecurityCode.js" />
+    <None Remove="Pages\Account\VerifySecurityCode.js" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="authserver.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Pages\Account\ConfirmUser.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Account\SendSecurityCode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Account\VerifySecurityCode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

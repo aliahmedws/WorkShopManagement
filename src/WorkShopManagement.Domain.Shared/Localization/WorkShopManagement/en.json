@@ -171,7 +171,17 @@
     "Notes": "Notes",
     "Title": "Title",
     "Status": "Status",
-    "MarkAsCsp": "Mark CSP"
-
+    "MarkAsCsp": "Mark CSP",
+    "PhoneConfirmationSms": "Hello {0}! Here is your account confirmation code: {1}. If you didn't request this code, you can ignore this message. Please do not share this code with anyone.",
+    "EmailSecurityCodeBody": "Hello! \nHere is your Two Factor login OTP: {0}. \n\nIf you didn't request this code, please change your password immediately. \n\nPlease do not share this code with anyone.",
+    "TwoFactorVerification": "Two Factor Verification",
+    "SendSecurityCode_Information": "Your account is protected by Two Factor Authentication. Please click Submit to receive a One Time Password.",
+    "VerifySecurityCode_Information": "Please submit the One Time Password received on your selected provider to login.",
+    "ConfirmationTokenSentMessage": "A message containing One Time Password has been sent to registered phone number.",
+    "PhoneConfirmationToken": "One Time Password",
+    "SelectedProvider": "Selected Provider",
+    "DisplayName:RememberBrowser": "Remember Browser",
+    "PhoneNumberEmptyHelpText": "A valid phone number is required to confirm your account.",
+    "EnforceTwoFactor": "Enforce Two Factor"
   }
 }

@@ -24,6 +24,7 @@
     --bs-danger: var(--accent-danger);
     --text-primary: var(--bs-body-color, #686b6e);
 }
+
     :root .abp-account-layout .lpx-brand-logo {
         width: 280px;
     }
@@ -96,6 +97,23 @@
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: #05354c;
     --bs-gradient: none;
+}
+
+.btn-warning {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--accent-warning);
+    --bs-btn-border-color: var(--accent-warning);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #f39633;
+    --bs-btn-hover-border-color: #f39633;
+    --bs-btn-focus-shadow-rgb: #f39633;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #e38e33;
+    --bs-btn-active-border-color: #e38e33;
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--accent-warning);
+    --bs-btn-disabled-border-color: var(--accent-warning);
 }
 
 .abp-account-layout a:not(.btn),
