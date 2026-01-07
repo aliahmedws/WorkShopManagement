@@ -9,6 +9,7 @@ export interface CarModelDto {
 }
 
 export interface GetCarModelListDto extends PagedAndSortedResultRequestDto {
-  filters?: string;
+  filter?: string;
   modelCategoryId?: string;
+  carModelId?: string;
 }

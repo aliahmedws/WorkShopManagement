@@ -18,11 +18,13 @@ using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
 using WorkShopManagement.CheckInReports;
+using WorkShopManagement.CarsEx;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
+using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -72,7 +74,9 @@ public class WorkShopManagementDbContext :
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
     public DbSet<RadioOption> RadioOptions { get; set; }
+    public DbSet<QualityGate> QualityGates { get; set; }
     public DbSet<EntityAttachment> EntityAttachments { get; set; }
+    public DbSet<VinInfo> VinInfos { get; set; }
 
 
 
@@ -164,6 +168,15 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.Name);
         });
 
+        builder.Entity<QualityGate>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "QualityGates", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.GateName).IsRequired();
+        });
+
         builder.Entity<CheckList>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckLists", WorkShopManagementConsts.DbSchema);
@@ -240,6 +253,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.ModelId).IsRequired();
             b.Property(x => x.Color).IsRequired().HasMaxLength(CarConsts.MaxColorLength);
             b.Property(x => x.ModelYear).IsRequired();
+            b.Property(x => x.Stage).IsRequired();
             b.Property(x => x.Cnc).HasMaxLength(CarConsts.MaxCncLength);
             b.Property(x => x.CncFirewall).HasMaxLength(CarConsts.MaxCncFirewallLength);
             b.Property(x => x.CncColumn).HasMaxLength(CarConsts.MaxCncColumnLength);
@@ -296,6 +310,14 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.BuildDate);
             b.HasOne(x => x.Car).WithMany().HasForeignKey(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
 
+        });
+        builder.Entity<VinInfo>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "VinInfos", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.VinNo).IsRequired();
+            b.HasIndex(x => x.VinNo).IsUnique();
         });
     }
 }

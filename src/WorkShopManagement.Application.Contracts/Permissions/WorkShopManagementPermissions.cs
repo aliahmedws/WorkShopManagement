@@ -54,4 +54,12 @@ public static class WorkShopManagementPermissions
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
     }
+    public static class QualityGates
+    {
+        public const string Default = GroupName + ".QualityGates";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
+
 }

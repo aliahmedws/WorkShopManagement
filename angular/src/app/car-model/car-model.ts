@@ -34,21 +34,29 @@ export class CarModel implements OnInit {
 
   ngOnInit(): void {
     this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
-    this.filters.modelCategoryId = this.modelCategoryId;
 
-    const streamCreator = (query: GetModelCategoryListDto) => this.carModelService.getList({ ...query, ...this.filters });
+    this.filters.modelCategoryId = this.modelCategoryId ?? undefined;
 
-    this.list.hookToQuery(streamCreator).subscribe((response: PagedResultDto<ModelCategoryDto>) => {
+    const streamCreator = (query: GetCarModelListDto) =>
+      this.carModelService.getList({ ...query, ...this.filters });
+
+    this.list.hookToQuery(streamCreator).subscribe((response: PagedResultDto<CarModelDto>) => {
       this.carModels = response;
     });
+
     this.list.get();
   }
 
+
   addCheckList(carModelId: string): void {
-    this.router.navigate(['check-lists'], { queryParams: { carModelId } });
+    this.router.navigate(['check-lists'], { queryParams: { carModelId, modelCategoryId: this.modelCategoryId } });
   }
 
    goBack(): void {
     this.router.navigate(['/vehicles']);
+  }
+
+   normilzeUrl(url?: string) {
+    return (url ?? '').replace(/\\/g, '/');
   }
 }

@@ -15,7 +15,7 @@ export class ModelCategoryService {
     this.restService.request<any, PagedResultDto<ModelCategoryDto>>({
       method: 'GET',
       url: '/api/app/model-category',
-      params: { filters: input.filters, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+      params: { filter: input.filter, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
 }

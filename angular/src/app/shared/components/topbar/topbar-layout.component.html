@@ -1,18 +1,22 @@
 <div class="app-topbar">
     <div class="d-flex align-items-center justify-content-between">
-        <h4 class="m-0">{{ titleKey | abpLocalization }}</h4>
+        <div class="d-flex align-items-center gap-2">
+            <ng-content select="[topbarLeft]"></ng-content>
+            <h4 class="m-0">{{ titleKey | abpLocalization }}</h4>
+        </div>
         <div class="d-flex align-items-center justify-content-between gap-2">
             <!-- Default search (keep it common across pages) -->
             @if (showSearch) {
             <div class="app-search-container">
-                <input type="search" class="form-control form-control-sm" id="topbar-search-input" name="topbar-search-input" [(ngModel)]="filters.filter" [placeholder]="searchPlaceholder | abpLocalization" (keydown.enter)="filter()" />
+                <input type="search" class="form-control form-control-sm" id="topbar-search-input"
+                    name="topbar-search-input" [(ngModel)]="filters.filter"
+                    [placeholder]="searchPlaceholder | abpLocalization" (keydown.enter)="filter()" />
                 <i role="button" class="fas fa-search" (click)="filter()"></i>
             </div>
             }
 
             @if (showFiltersToggle) {
-            <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button"
-                (click)="toggleFilters()">
+            <button class="btn btn-sm btn-outline-secondary text-nowrap" type="button" (click)="toggleFilters()">
                 <i class="fas fa-filter"></i>
             </button>
             }
@@ -30,16 +34,16 @@
             <ng-content select="[topbarFilters]"></ng-content>
             <div class="col d-flex align-items-end gap-2">
                 @if(showResetFilters){
-                    <button (click)="reset()" type="reset" class="btn btn-sm btn-outline-primary">
-                        <i class="fas fa-refresh"></i>
-                        {{ '::Button:Reset' | abpLocalization }}
-                    </button>
+                <button (click)="reset()" type="reset" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-refresh"></i>
+                    {{ '::Button:Reset' | abpLocalization }}
+                </button>
                 }
                 @if(showApplyFilters){
-                    <button (click)="filter()" class="btn btn-sm btn-primary">
-                        <i class="fas fa-filter"></i>
-                        {{ '::Button:Filter' | abpLocalization }}
-                    </button>
+                <button (click)="filter()" class="btn btn-sm btn-primary">
+                    <i class="fas fa-filter"></i>
+                    {{ '::Button:Filter' | abpLocalization }}
+                </button>
                 }
             </div>
         </div>

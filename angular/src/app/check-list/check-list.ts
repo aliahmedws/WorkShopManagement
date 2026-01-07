@@ -1,9 +1,4 @@
-import { PagedResultDto, ListService, LocalizationPipe } from '@abp/ng.core';
-import {
-  ConfirmationService,
-  Confirmation,
-  ToasterService,
-} from '@abp/ng.theme.shared';
+import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +7,8 @@ import { CheckListDto, GetCheckListListDto, CheckListService, UpdateCheckListDto
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 import { EntityAttachmentDto } from '../proxy/entity-attachments';
+import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
+import { ToasterHelperService } from '../shared/services/toaster-helper.service';
 @Component({
   standalone: true,
   selector: 'app-check-list',
@@ -20,11 +17,13 @@ import { EntityAttachmentDto } from '../proxy/entity-attachments';
   styleUrl: './check-list.scss',
   providers: [ListService],
 })
+
 export class CheckList implements OnInit {
   checkLists = { items: [], totalCount: 0 } as PagedResultDto<CheckListDto>;
   form!: FormGroup;
   selected = {} as CheckListDto;
   carModelId: string | null = null;
+  modelCategoryId:string | null = null;
   carModelName: string | null = null;
   isModalOpen = false;
   filters = {} as GetCheckListListDto;
@@ -35,15 +34,16 @@ export class CheckList implements OnInit {
   public readonly list = inject(ListService);
   private readonly service = inject(CheckListService);
   private readonly fb = inject(FormBuilder);
-  private readonly confirmation = inject(ConfirmationService);
+  private readonly confirmation = inject(ConfirmationHelperService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly carModelService = inject(CarModelService);
-  private readonly toaster = inject(ToasterService);
+  private readonly toaster = inject(ToasterHelperService);
 
   ngOnInit(): void {
     this.buildForm();
     this.carModelId = this.route.snapshot.queryParamMap.get('carModelId');
+    this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
     this.loadCarModelName();
     this.filters.carModelId = this.carModelId;
     const streamCreator = (query: GetCheckListListDto) => this.service.getList({ ...query, ...this.filters });
@@ -118,6 +118,7 @@ export class CheckList implements OnInit {
     const raw = this.form.getRawValue();
     const name = (raw.name || '').trim();
     if (this.selected.id) {
+
       const input: UpdateCheckListDto = {
         carModelId: this.carModelId,
         name,
@@ -126,10 +127,12 @@ export class CheckList implements OnInit {
         tempFiles: this.tempFiles,
         entityAttachments: this.existingFiles,
       };
+      
       this.service.update(this.selected.id, input).subscribe(() => {
         this.resetForm();
         this.list.get();
         this.isModalOpen = false;
+        this.toaster.updated();
       });
       return;
     }
@@ -143,18 +146,16 @@ export class CheckList implements OnInit {
       this.resetForm();
       this.list.get();
       this.isModalOpen = false;
-      this.toaster.success('::SuccessfullyCreated.');
+      this.toaster.created();
     });
   }
+
   delete(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
-      if (status === Confirmation.Status.confirm) {
-        this.service.delete(id).subscribe(() => {
-          this.toaster.success('::SuccessfullyDeleted.');
-          this.list.get();
-        });
-      }
-    });
+    this.confirmation.confirmDelete().subscribe((status) => {
+      if(status !== 'confirm') return;
+
+      this.service.delete(id).subscribe(() => this.list.get());
+    })
   }
   closeModal() {
     this.isModalOpen = false;
@@ -163,14 +164,17 @@ export class CheckList implements OnInit {
   get isEditMode(): boolean {
     return !!this.selected?.id;
   }
+
   goBack(): void {
-    this.router.navigate(['/car-models']);
-  }
+  this.router.navigate(['/car-models'], {
+    queryParams: { modelCategoryId: this.modelCategoryId }
+  });
+}
+
   addListItem(checkListId: string): void {
-    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId } });
+    this.router.navigate(['list-items'], { queryParams: { checkListId, carModelId: this.carModelId , modelCategoryId: this.modelCategoryId } });
   }
 
-  // -----File Attachment helpers
   resetAttachment() {
     this.tempFiles = [];
     this.existingFiles = [];
@@ -179,7 +183,5 @@ export class CheckList implements OnInit {
   getExisitingAttachments(dto:CheckListDto): void {
     this.existingFiles = [...(dto.entityAttachments ?? [])];
   }
-  // ----------- File Attachment helpers Ends
-
 
 }

@@ -9,7 +9,7 @@ using WorkShopManagement.ModelCategories;
 namespace WorkShopManagement.CarModels;
 
 [Audited]
-public class CarModel : FullAuditedAggregateRoot<Guid>
+public class CarModel : FullAuditedAggregateRoot<Guid> //Variants
 {
     public string Name { get; set; }
     public Guid ModelCategoryId { get; set; }

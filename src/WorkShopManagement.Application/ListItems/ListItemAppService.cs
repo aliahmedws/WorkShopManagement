@@ -32,6 +32,12 @@ public class ListItemAppService : ApplicationService, IListItemAppService
     {
         var queryable = await _repository.GetQueryableAsync();
 
+        if(!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter.Trim().ToLower();
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(input.Filter));
+        }
+
         if (input.CheckListId.HasValue)
         {
             queryable = queryable.Where(x => x.CheckListId == input.CheckListId.Value);
@@ -101,7 +107,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder.Trim();
 
-        if (input.IsSeparator.HasValue)
+        if (input.IsSeparator == true)
         {
             input.IsAttachmentRequired = false;
 
@@ -169,7 +175,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
             ? name
             : input.CommentPlaceholder!.Trim();
 
-        if (input.IsSeparator.HasValue)
+        if (input.IsSeparator == true)
         {
             input.IsAttachmentRequired = false;
 

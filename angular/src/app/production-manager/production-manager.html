@@ -1,0 +1,51 @@
+<abp-page>
+    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
+
+        <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true" (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;" >
+
+            <nz-tab [nzTitle]="'::Enum:Stage.Incoming' | abpLocalization">
+                <div class="p-3">
+                    <app-incoming [filters]="filters"></app-incoming>
+                </div>
+            </nz-tab>
+
+            <nz-tab [nzTitle]="'::Enum:Stage.ExternalWarehouse' | abpLocalization">
+                <div class="p-3">
+                    <app-external-warehouse [filters]="filters"></app-external-warehouse>
+                </div>
+            </nz-tab>
+
+            <nz-tab [nzTitle]="'::Enum:Stage.Production' | abpLocalization">
+                <div class="p-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Production content goes here...</p>
+                        </div>
+                    </div>
+                </div>
+            </nz-tab>
+
+            <nz-tab [nzTitle]="'::Enum:Stage.PostProduction' | abpLocalization">
+                <div class="p-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Post Production content goes here...</p>
+                        </div>
+                    </div>
+                </div>
+            </nz-tab>
+
+            <nz-tab [nzTitle]="'::Enum:Stage.AwaitingTransport' | abpLocalization">
+                <div class="p-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Awaiting Transport content goes here...</p>
+                        </div>
+                    </div>
+                </div>
+            </nz-tab>
+
+        </nz-tabs>
+
+    </app-topbar-layout>
+</abp-page>

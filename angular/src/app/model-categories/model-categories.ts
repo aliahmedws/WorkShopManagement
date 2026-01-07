@@ -18,22 +18,25 @@ export class ModelCategories implements OnInit {
   private readonly modelCategoryService = inject(ModelCategoryService);
   private readonly router = inject(Router);
 
+  filters = {} as GetModelCategoryListDto;
+
   ngOnInit(): void {
-    const streamCreator = (query) => {
-      const input: GetModelCategoryListDto = {
-        skipCount: query.skipCount,
-        maxResultCount: query.maxResultCount,
-        sorting: query.sorting
-      };
-      return this.modelCategoryService.getList(input);
+    const streamCreator = (query) => { 
+      return this.modelCategoryService.getList({...query, ...this.filters});
     };
 
     this.list.hookToQuery(streamCreator).subscribe((response) => {
       this.carModels = response;
     });
+
+    this.list.get();
   }
 
   carModel(modelCategoryId: string): void {
     this.router.navigate(['car-models'], { queryParams: { modelCategoryId }});
+  }
+
+  normilzeUrl(url?: string) {
+    return (url ?? '').replace(/\\/g, '/');
   }
 }

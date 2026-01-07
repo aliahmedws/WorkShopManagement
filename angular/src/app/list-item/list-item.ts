@@ -1,25 +1,8 @@
-// list-item.ts
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { LocalizationPipe, ListService, PagedResultDto, PermissionDirective } from '@abp/ng.core';
-import {
-  Confirmation,
-  ConfirmationService,
-  ThemeSharedModule,
-  ToasterService,
-} from '@abp/ng.theme.shared';
-import { PageModule } from '@abp/ng.components/page';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { ListService, PagedResultDto } from '@abp/ng.core';
 import { CheckListService } from '../proxy/check-lists';
 import {
   commentTypeOptions,
@@ -29,11 +12,13 @@ import {
   ListItemService,
   UpdateListItemDto,
 } from '../proxy/list-items';
-import { CreateRadioOptionDto, RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
-import { UploadFileService } from '../shared/components/file-upload/upload-files.service';
+import { RadioOptionDto, RadioOptionService } from '../proxy/radio-options';
 import { FileAttachmentDto } from '../proxy/entity-attachments/file-attachments';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { EntityAttachmentDto } from '../proxy/entity-attachments';
+import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
+import { ToasterHelperService } from '../shared/services/toaster-helper.service';
+import { ToasterService } from '@abp/ng.theme.shared';
 
 type ListItemFormModel = {
   name: string;
@@ -48,9 +33,7 @@ type ListItemFormModel = {
 @Component({
   standalone: true,
   selector: 'app-list-item',
-  imports: [
-    ...SHARED_IMPORTS
-  ],
+  imports: [...SHARED_IMPORTS],
   templateUrl: './list-item.html',
   styleUrl: './list-item.scss',
   providers: [ListService],
@@ -58,36 +41,43 @@ type ListItemFormModel = {
 export class ListItem implements OnInit {
   listItems = { items: [], totalCount: 0 } as PagedResultDto<ListItemDto>;
 
+  tagInputVisible = false;
+  tagInputValue = '';
+  @ViewChild('tagInputEl', { static: false }) tagInputEl?: ElementRef<HTMLInputElement>;
+
   form!: FormGroup;
   isModalOpen = false;
   selected = {} as ListItemDto;
+  filters = {} as GetListItemListDto;
 
   checkListId: string | null = null;
+  modelCategoryId: string | null = null;
   checkListName: string | null = null;
 
   commentTypes = commentTypeOptions;
 
   radioOptions: RadioOptionDto[] = [];
   pendingRadioNames: string[] = [];
-  radioOptionName = '';
   isRadioBusy = false;
 
-  tempFiles: FileAttachmentDto[] = [];  // for file attachments
+  tempFiles: FileAttachmentDto[] = []; // for file attachments
   existingFiles: EntityAttachmentDto[] = []; // for existing attachments
 
   public readonly list = inject(ListService);
   private readonly listItemService = inject(ListItemService);
   private readonly fb = inject(FormBuilder);
-  private readonly confirmation = inject(ConfirmationService);
+  private readonly confirmation = inject(ConfirmationHelperService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly toaster = inject(ToasterService);
+  private readonly  customToaster = inject(ToasterHelperService);
   private readonly checkListService = inject(CheckListService);
   private readonly radioOptionService = inject(RadioOptionService);
-  private readonly uploadService = inject(UploadFileService);
+  private readonly toaster = inject(ToasterService)
 
   ngOnInit(): void {
     this.checkListId = this.route.snapshot.queryParamMap.get('checkListId');
+    this.filters.checkListId = this.checkListId;
+    this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
     this.loadCheckListName();
 
     this.buildForm();
@@ -99,6 +89,7 @@ export class ListItem implements OnInit {
         maxResultCount: query.maxResultCount,
         sorting: query.sorting || 'position asc, name asc',
         checkListId: this.checkListId ?? undefined,
+        filter: this.filters.filter,
       };
 
       return this.listItemService.getList(input);
@@ -122,7 +113,6 @@ export class ListItem implements OnInit {
   }
 
   edit(id: string): void {
-    // this.resetAttachment();
     this.listItemService.get(id).subscribe(dto => {
       this.selected = dto;
 
@@ -135,14 +125,13 @@ export class ListItem implements OnInit {
         isSeparator: dto.isSeparator ?? false,
         concurrencyStamp: dto.concurrencyStamp ?? null,
       });
-      
+
       this.applySeparatorState(!!dto.isSeparator);
       this.getExisitingAttachments(dto);
 
       this.isModalOpen = true;
 
       this.pendingRadioNames = [];
-      this.radioOptionName = '';
       this.loadRadioOptions();
     });
   }
@@ -206,7 +195,7 @@ export class ListItem implements OnInit {
     };
 
     this.listItemService.create(input).subscribe(created => {
-      this.toaster.success('::SuccessfullyCreated.');
+      this.customToaster.created();
       this.selected = created;
 
       this.resetAttachment();
@@ -218,18 +207,14 @@ export class ListItem implements OnInit {
   }
 
   delete(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
-      if (status !== Confirmation.Status.confirm) return;
+    this.confirmation.confirmDelete().subscribe(status => {
+      if (status !== 'confirm') return;
 
-      this.listItemService.delete(id).subscribe(() => {
-        this.toaster.success('::SuccessfullyDeleted.');
-        this.list.get();
-
-        if (this.selected?.id === id) {
-          this.closeModal();
-        }
-      });
+      this.listItemService.delete(id).subscribe(() => this.list.get());
     });
+    if (this.selected?.id === id) {
+      this.closeModal();
+    }
   }
 
   loadRadioOptions(): void {
@@ -245,28 +230,6 @@ export class ListItem implements OnInit {
       error: () => (this.isRadioBusy = false),
       complete: () => (this.isRadioBusy = false),
     });
-  }
-
-  addRadioOption(): void {
-    const name = (this.radioOptionName || '').trim();
-    if (!name) return;
-
-    const lower = name.toLowerCase();
-
-    const existsInDb = this.radioOptions.some(x => (x.name || '').trim().toLowerCase() === lower);
-    const existsPending = this.pendingRadioNames.some(x => x.toLowerCase() === lower);
-
-    if (existsInDb || existsPending) {
-      this.toaster.warn('::AlreadyExists');
-      return;
-    }
-
-    this.pendingRadioNames = [...this.pendingRadioNames, name];
-    this.radioOptionName = '';
-  }
-
-  removePendingRadio(name: string): void {
-    this.pendingRadioNames = this.pendingRadioNames.filter(x => x !== name);
   }
 
   private savePendingRadioOptions(listItemId: string): void {
@@ -288,30 +251,12 @@ export class ListItem implements OnInit {
         this.radioOptions = Array.from(existingById.values());
 
         this.pendingRadioNames = [];
-        this.toaster.success('::SuccessfullyCreated.');
+        this.customToaster.created();
       },
       error: () => (this.isRadioBusy = false),
       complete: () => (this.isRadioBusy = false),
     });
   }
-
-  deleteRadioOption(id: string): void {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe(status => {
-      if (status !== Confirmation.Status.confirm) return;
-
-      this.isRadioBusy = true;
-      this.radioOptionService.delete(id).subscribe({
-        next: () => {
-          this.radioOptions = this.radioOptions.filter(x => x.id !== id);
-          this.toaster.success('::SuccessfullyDeleted.');
-        },
-        error: () => (this.isRadioBusy = false),
-        complete: () => (this.isRadioBusy = false),
-      });
-    });
-  }
-
-  // Separator behavior
 
   private buildForm(): void {
     this.form = this.fb.group({
@@ -392,26 +337,86 @@ export class ListItem implements OnInit {
   private clearRadioUi(): void {
     this.radioOptions = [];
     this.pendingRadioNames = [];
-    this.radioOptionName = '';
     this.isRadioBusy = false;
   }
 
-
   goBack() {
     this.router.navigate(['/check-lists'], {
-      queryParams: { carModelId: this.route.snapshot.queryParamMap.get('carModelId') },
+      queryParams: {
+        carModelId: this.route.snapshot.queryParamMap.get('carModelId'),
+        modelCategoryId: this.modelCategoryId,
+      },
       queryParamsHandling: 'merge',
     });
   }
 
-  // -----File Attachment helpers
-    resetAttachment() {
-      this.tempFiles = [];
-      this.existingFiles = [];
+  resetAttachment() {
+    this.tempFiles = [];
+    this.existingFiles = [];
+  }
+
+  getExisitingAttachments(dto: ListItemDto): void {
+    this.existingFiles = [...(dto.entityAttachments ?? [])];
+  }
+
+  private normalizeName(v: string): string {
+    return (v || '').trim();
+  }
+
+  private normalizeKey(v: string): string {
+    return this.normalizeName(v).toLowerCase();
+  }
+
+  showTagInput(): void {
+    this.tagInputVisible = true;
+    setTimeout(() => this.tagInputEl?.nativeElement?.focus(), 10);
+  }
+
+  confirmTagInput(): void {
+    const name = this.normalizeName(this.tagInputValue);
+    if (!name) {
+      this.tagInputValue = '';
+      this.tagInputVisible = false;
+      return;
     }
-  
-    getExisitingAttachments(dto:ListItemDto): void {
-      this.existingFiles = [...(dto.entityAttachments ?? [])];
+
+    const key = this.normalizeKey(name);
+
+    const existsInDb = (this.radioOptions ?? []).some(x => this.normalizeKey(x.name || '') === key);
+    const existsPending = (this.pendingRadioNames ?? []).some(x => this.normalizeKey(x) === key);
+
+    if (existsInDb || existsPending) {
+      this.toaster.warn('::AlreadyExists');
+    } else {
+      this.pendingRadioNames = [...this.pendingRadioNames, name];
     }
-    // ----------- File Attachment helpers Ends
+
+    this.tagInputValue = '';
+    this.tagInputVisible = false;
+  }
+
+  removePendingTag(name: string): void {
+    const key = this.normalizeKey(name);
+    this.pendingRadioNames = (this.pendingRadioNames ?? []).filter(
+      x => this.normalizeKey(x) !== key
+    );
+  }
+
+  removeDbTag(option: RadioOptionDto): void {
+    if (!option?.id) return;
+
+     this.confirmation.confirmDelete().subscribe(status => {
+      if (status !== 'confirm') return;
+
+      this.isRadioBusy = true;
+      this.radioOptionService.delete(option.id).subscribe({
+        next: () => {
+          this.radioOptions = (this.radioOptions ?? []).filter(x => x.id !== option.id);
+          this.customToaster.deleted();
+        },
+        error: () => (this.isRadioBusy = false),
+        complete: () => (this.isRadioBusy = false),
+      });
+    });
+  }
 }

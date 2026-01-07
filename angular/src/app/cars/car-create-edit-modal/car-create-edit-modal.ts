@@ -5,6 +5,8 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
+import { storageLocationOptions } from 'src/app/proxy/storage-locations';
+import { Stage, stageOptions } from 'src/app/proxy/stages';
 
 @Component({
   selector: 'app-car-create-edit-modal',
@@ -26,6 +28,8 @@ export class CarCreateEditModal {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   carModelOptions: GuidLookupDto[] = [];
+  stageOptions = stageOptions;
+  storageLocationOptions = storageLocationOptions;
 
   carOwnerOptions: GuidLookupDto[] = [];
 
@@ -86,6 +90,16 @@ export class CarCreateEditModal {
 
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],
+
+      locationStatus: [dto?.locationStatus ?? null, Validators.maxLength(128)],
+      etaBrisbane: [dto?.etaBrisbane ? new Date(dto?.etaBrisbane) : null],
+      etaScd: [dto?.etaScd ? new Date(dto?.etaScd) : null],
+      bookingNumber: [dto?.bookingNumber ?? null, Validators.maxLength(64)],
+      clearingAgent: [dto?.clearingAgent ?? null, Validators.maxLength(128)],
+      storageLocation: [dto?.storageLocation ?? null, Validators.maxLength(128)],
+
+      stage: [dto?.stage ?? Stage.Incoming, Validators.maxLength(128)],
+
 
       // owner
       ownerId: [dto?.ownerId ?? null, Validators.required],
@@ -191,6 +205,7 @@ export class CarCreateEditModal {
         this.external = response;
         this.resolveExternalCarResponse(response);
       });
+
   }
 
   resolveExternalCarResponse(response: ExternalCarDetailsDto | null) {

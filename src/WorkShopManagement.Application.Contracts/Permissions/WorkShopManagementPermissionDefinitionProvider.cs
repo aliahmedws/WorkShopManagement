@@ -39,6 +39,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Edit, L("Permission:CheckInReports.Edit"));
         checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Delete, L("Permission:CheckInReports.Delete"));
 
+        var qualityGatesPermission = myGroup.AddPermission(WorkShopManagementPermissions.QualityGates.Default, L("Permission:QualityGates"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Create, L("Permission:QualityGates.Create"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Edit, L("Permission:QualityGates.Edit"));
+        qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Delete, L("Permission:QualityGates.Delete"));
+
     }
 
     private static LocalizableString L(string name)

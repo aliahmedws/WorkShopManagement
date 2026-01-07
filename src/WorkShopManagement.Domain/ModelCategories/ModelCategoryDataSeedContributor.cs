@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
@@ -36,12 +37,6 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
     [UnitOfWork]
     public virtual async Task SeedAsync(DataSeedContext context)
     {
-        if (await _modelCategoryRepository.AnyAsync())
-        {
-            _logger.LogInformation("Model data is already added. Skipping.");
-            return;
-        }
-
         var configuredDir = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
         if (string.IsNullOrWhiteSpace(configuredDir))
         {
@@ -53,15 +48,28 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
         _logger.LogInformation("Seeding car model data");
         var seeds = new List<(string Name, string FileName)>
             {
-                ("FORD 1500", "Ford-1500.png"),
+                ("FORD 150", "Ford-1500.png"),
                 ("FORD SUPER DUTY", "Ford-Super-duty.png"),
                 ("RAM 1500", "RAM-1500.png"),
                 ("RAM HEAVY DUTY", "Ram-heavy-duty.png"),
 
             };
 
+        var existingName = (await _modelCategoryRepository.GetListAsync())
+            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+            .Select(x => x.Name.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var inserted = 0;
+
+        _logger.LogInformation("Started.");
+
         foreach (var (name, fileName) in seeds)
         {
+            var exists = await _modelCategoryRepository.AnyAsync(x => x.Name == name);
+            if (exists)
+                continue;
+
             var filePath = Path.Combine(contentPath, fileName);
 
             var attachment = new FileAttachment(
@@ -76,10 +84,11 @@ public class ModelCategoryDataSeedContributor : ITransientDependency
                 attachment
             );
 
-            await _modelCategoryRepository.InsertAsync(model, autoSave: true);
-
+            await _modelCategoryRepository.InsertAsync(model);
+            existingName.Add(name);
+            inserted++;
         }
 
-        _logger.LogInformation("Added {0} model records", seeds.Count);
+        _logger.LogInformation("Added {Count} new model records", inserted);
     }
 }

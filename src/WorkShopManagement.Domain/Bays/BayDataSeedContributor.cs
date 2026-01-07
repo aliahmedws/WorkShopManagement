@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
@@ -13,22 +15,24 @@ public class BayDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<Bay, Guid> _bayRepository;
     private readonly IGuidGenerator _guidGenerator;
+    private readonly ILogger<BayDataSeedContributor> _logger;
 
-    public BayDataSeedContributor(IRepository<Bay, Guid> bayRepository, IGuidGenerator guidGenerator)
+    public BayDataSeedContributor(
+        ILogger<BayDataSeedContributor> logger,
+        IRepository<Bay, Guid> bayRepository,
+        IGuidGenerator guidGenerator)
     {
         _bayRepository = bayRepository;
         _guidGenerator = guidGenerator;
+        _logger = logger;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        if (await _bayRepository.AnyAsync())
-        {
-            return;
-        }
+        _logger.LogInformation("Started.");
 
-        var bays = new List<Bay>
+        var desiredBays = new List<Bay>
         {
             new(_guidGenerator.Create(), "Bay 1", false),
             new(_guidGenerator.Create(), "Bay 2", false),
@@ -52,9 +56,26 @@ public class BayDataSeedContributor : ITransientDependency
             new(_guidGenerator.Create(), "Bay 20", false),
         };
 
-        foreach (var bay in bays)
+        var existing = await _bayRepository.GetListAsync();
+        var existingNames = new HashSet<string>(
+            existing.Select(x => x.Name.Trim()),
+            StringComparer.OrdinalIgnoreCase
+        );
+
+        var inserted = 0;
+
+        foreach (var bay in desiredBays)
         {
-            await _bayRepository.InsertAsync(bay, autoSave: true);
+            if (existingNames.Contains(bay.Name.Trim()))
+            {
+                continue;
+            }
+
+            await _bayRepository.InsertAsync(bay, autoSave: false);
+            existingNames.Add(bay.Name.Trim());
+            inserted++;
         }
+
+        _logger.LogInformation("Added {Count} new bays records", inserted);
     }
 }

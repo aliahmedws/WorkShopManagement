@@ -33,6 +33,12 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
     {
         var queryable = await _checkListRepository.GetQueryableAsync();
 
+        if(!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter.Trim().ToLower();
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(f));
+        }
+
         if (input.CarModelId.HasValue)
         {
             queryable = queryable.Where(x => x.CarModelId == input.CarModelId.Value);

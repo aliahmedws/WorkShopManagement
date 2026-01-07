@@ -40,46 +40,84 @@ public class CarModelDataSeedContributor : ITransientDependency
     [UnitOfWork]
     public virtual async Task SeedAsync(DataSeedContext context)
     {
-        if (await _carModelRepository.AnyAsync())
-        {
-            _logger.LogInformation("CarModel data already exists. Skipping.");
-            return;
-        }
-
         var rootUrl = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
         if (string.IsNullOrWhiteSpace(rootUrl))
             throw new Exception("Missing configuration: OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl");
 
         var carModelsContentPath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels");
 
-        // CategoryName, CarModelName, FileName
         var seeds = new List<(string CategoryName, string Name, string FileName)>
         {
             // FORD 150
-            ("FORD 1500", "Ford F-1500", "Ford F-150.jpg"),
-            ("FORD 1500", "Ford F-150 Lightning", "Ford F-150 Lightning.jpg"),
-            ("FORD 1500", "F-150 Lightning Pro EXT", "F-150 Lightning Pro EXT.jpg"),
-            ("FORD 1500", "F-150 Lightning Pro STD", "F-150 Lightning Pro STD.jpg"),
-            ("FORD 1500", "F-150LightningLariatExt", "F-150LightningLariatExt.avif"),
+            ("FORD 150", "Raptor", "ford-raptor.jpg"),
+            ("FORD 150", "Raptor R", "ford-raptor-r.jpg"),
 
             // FORD SUPER DUTY
-            ("FORD SUPER DUTY", "Ford Super Duty", "Ford Super Duty.jpg"),
+            ("FORD SUPER DUTY", "Ford Superduty Pickup", "ford-super-duty-pickup.jpg"),
+            ("FORD SUPER DUTY", "Ford Super Duty Cab Chassis", "ford-super-duty-cab-chassis.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-250® XL", "super-duty-f-250-xl.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-350® XL", "super-duty-f-250-xl.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-450® XL", "super-duty-f-450-xl.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-250® XLT", "super-duty-f-250-xlt.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-350® XLT", "super-duty-f-250-xlt.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-450® XLT", "super-duty-f-450-xlt.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-250® LARIAT", "super-duty-f-250-lariat.jpg"),
+            ("FORD SUPER DUTY", "2025 Super Duty® F-350® LARIAT", "super-duty-f-250-lariat.jpg"),
+            ("FORD SUPER DUTY", "2025 Super Duty® F-450® LARIAT", "super-duty-f-450-lariat.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-250® King Ranch", "super-duty-f-250-king-ranch.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-350® King Ranch", "super-duty-f-250-king-ranch.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-450® King Ranch", "super-duty-f-450-king-ranch.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-250® Platinum", "super-duty-f-250-platinum.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-350® Platinum", "super-duty-f-250-platinum.jpg"),
+            ("FORD SUPER DUTY", "Super Duty® F-450® Platinum", "super-duty-f-450-king-ranch.jpg"),
+
+            ("FORD SUPER DUTY", "Chassis Cab F-350® XL", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-350® XLT", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-350® LARIAT®", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-450® XL", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-450® XLT", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-450® LARIAT®", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-550® XL", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-550® XLT", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-550® LARIAT®", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-600® XL", "chassis-cab-f-350-xl.jpg"),
+            ("FORD SUPER DUTY", "Chassis Cab F-600® XLT", "chassis-cab-f-350-xl.jpg"),
+
 
             // RAM 150
-            ("RAM 1500", "DT RAM", "DT RAM.jpg"),
-            ("RAM 1500", "Ram 1500 DEPRECATED", "Ram 1500 DEPRECATED.jpg"),
+            ("RAM 1500", "RAM 1500 RHO", "ram-1500-rho.jpg"),
+            ("RAM 1500", "RAM 1500 Tungsten", "ram-1500-tungsten.jpg"),
 
             // RAM HEAVY DUTY
-            ("RAM HEAVY DUTY", "HD RAM", "HD RAM.jpg"),
-            ("RAM HEAVY DUTY", "Ram 2500 DEPRECATED", "Ram 2500 DEPRECATED.jpg"),
-            ("RAM HEAVY DUTY", "Ram 3500 DEPRECATED", "Ram 3500 DEPRECATED.jpg"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty Pickup", "ram-heavy-duty-pickup.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 2500 REBEL", "ram-heavy-duty-2500-rebel.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 2500 LIMITED LONGHORN", "ram-heavy-duty-2500-limited-longhorn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 2500 LIMITED", "ram-heavy-duty-2500-limited.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 LIMITED", "ram-heavy-duty-3500-limited.png"),
+            ("RAM HEAVY DUTY", "RAM heavy Duty 3500 LARAMIE", "ram-heavy-duty-3500-laramie.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 TRADESMAN", "ram-heavy-duty-35000tradesman.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 LARAMIE", "ram-heavy-duty-3500-laramie.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 LIMITED LONGHORN", "ram-heavy-duty-3500-limited-longhorn.png"),
+
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 Cab Chassis TRADESMAN", "ram-heavy-duty-3500-cab-chassis-big-horn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 3500 Cab Chassis BIG HORN", "ram-heavy-duty-3500-cab-chassis-big-horn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 4500 Cab Chassis TRADESMAN", "ram-heavy-duty-4500-cab-chassis-big-horn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 4500 Cab Chassis BIG HORN", "ram-heavy-duty-4500-cab-chassis-big-horn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 5500 Cab Chassis TRADESMAN", "ram-heavy-duty-5500-cab-chassis-big-horn.png"),
+            ("RAM HEAVY DUTY", "RAM Heavy Duty 5500 Cab Chassis BIG HORN", "ram-heavy-duty-5500-cab-chassis-tradesman.png")
         };
 
-        // Load categories once (fast, avoids N queries)
         var categories = await _modelCategoryRepository.GetListAsync();
         var categoryByName = categories
             .Where(x => !string.IsNullOrWhiteSpace(x.Name))
             .ToDictionary(x => Normalize(x.Name), x => x);
+
+        // Incremental: track existing car models by (CategoryId + ModelName)
+        var existingCarModelKeys = (await _carModelRepository.GetListAsync())
+            .Select(x => $"{x.ModelCategoryId:N}|{Normalize(x.Name)}")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var inserted = 0;
 
         foreach (var (categoryName, name, fileName) in seeds)
         {
@@ -87,26 +125,14 @@ public class CarModelDataSeedContributor : ITransientDependency
 
             if (!categoryByName.TryGetValue(normalizedCategoryName, out var category))
             {
-                // Option A (recommended for seeding): auto-create missing category
-                // If you DON'T want auto-create, replace this block with "throw new BusinessException(...)".
-                var categoryFilePath = Path.Combine(rootUrl, "images", "ModelCategories", "CarModels", $"{categoryName}.png");
+                _logger.LogWarning("Missing ModelCategory '{CategoryName}'. Skipping car model '{CarModelName}'.", categoryName, name);
+                continue;
+            }
 
-                var catAttachment = new FileAttachment(
-                    name: Path.GetFileName(categoryFilePath),
-                    blobName: categoryFilePath,
-                    path: categoryFilePath
-                );
-
-                category = new ModelCategory(
-                    _guidGenerator.Create(),
-                    categoryName.Trim(),
-                    catAttachment
-                );
-
-                category = await _modelCategoryRepository.InsertAsync(category, autoSave: true);
-                categoryByName[normalizedCategoryName] = category;
-
-                _logger.LogInformation("Created missing ModelCategory: {CategoryName}", categoryName);
+            var carModelKey = $"{category.Id:N}|{Normalize(name)}";
+            if (existingCarModelKeys.Contains(carModelKey))
+            {
+                continue;
             }
 
             var filePath = Path.Combine(carModelsContentPath, fileName);
@@ -125,9 +151,11 @@ public class CarModelDataSeedContributor : ITransientDependency
             );
 
             await _carModelRepository.InsertAsync(carModel, autoSave: true);
+            existingCarModelKeys.Add(carModelKey);
+            inserted++;
         }
 
-        _logger.LogInformation("Added {Count} car model records", seeds.Count);
+        _logger.LogInformation("Added {Count} car model records", inserted);
     }
 
     private static string Normalize(string value)

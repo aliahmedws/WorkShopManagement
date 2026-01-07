@@ -15,6 +15,10 @@
     "Permission:Create": "Create",
     "Permission:Edit": "Edit",
     "Permission:Delete": "Delete",
+    "Permission:QualityGates": "Quality Gate Management",
+    "Permission:QualityGates.Create": "Create",
+    "Permission:QualityGates.Edit": "Edit",
+    "Permission:QualityGates.Delete": "Delete",
 
     "Permission:CarModels": "Car Model Management",
     "Permission:Vehicles": "Vehicles Model Management",
@@ -42,6 +46,15 @@
     "Enum:CommentType.1": "String",
     "Enum:CommentType.2": "Date",
     "Enum:CommentType.3": "Number",
+    "Enum:GateName.1": "Pre Production",
+    "Enum:GateName.2": "Quality Control",
+    "Enum:GateName.3": "Quality Release",
+    "Enum:GateName.4": "Pre-Delivery",
+    "Enum:QualityGateStatus.1": "PASSED",
+    "Enum:QualityGateStatus.2": "CONDITIONAL PASSED - MAJOR",
+    "Enum:QualityGateStatus.3": "CONDITIONAL PASSED - MINOR",
+    "Enum:QualityGateStatus.4": "OPEN",
+    "Enum:QualityGateStatus.5": "RESET",
 
 
     "Menu:CarModels": "Car Models",
@@ -158,6 +171,33 @@
     "Save": "Save",
     "CheckInReport": "Check In Report",
     "Edit": "Edit",
-    "Delete": "Delete"
+    "Delete": "Delete",
+
+    "TransitInformation": "Transit Information",
+    "LocationStatus": "Location Status",
+    "BookingNumber": "Booking Number",
+    "EtaBrisbane": "ETA - Brisbane",
+    "EtaScd": "ETA - SCD",
+    "ClearingAgent": "Clearing Agent",
+    "StorageLocation": "Storage Location",
+    // Warehouse Enum
+    "Enum:StorageLocation.K2": "K2",
+    "Enum:StorageLocation.MoviesLoan": "Loan - Movies",
+    "Enum:StorageLocation.OtherLoan": "Loan - Others",
+    "Enum:StorageLocation.ThirdPartyLoan": "Loan - 3rd Party Accessories",
+    "Enum:StorageLocation.EW": "EW - Walliam Farrior Place",
+    "Enum:StorageLocation.TerrenceRd": "24 Terrence Road",
+    "Menu:ProductionManager": "Production Manager",
+    "IncomingCars": "Incoming Cars",
+
+    "Enum:Stage.Incoming": "Incoming",
+    "Enum:Stage.ExternalWarehouse": "External Warehouse",
+    "Enum:Stage.Production": "Production",
+    "Enum:Stage.PostProduction": "Post Production",
+    "Enum:Stage.AwaitingTransport": "Awaiting Transport",
+    "Enum:Stage.Dispatched": "Dispatched",
+    "ExternalWarehouse": "External Warehouse",
+    "Menu:Vehicle": "Vehicles",
+    "Menu:Variants": "Variants"
   }
 }
