@@ -13,5 +13,6 @@ public static class WorkShopManagementDomainErrorCodes
     public const string DuplicateRecordWithValue = "DuplicateRecord:00003";
     public const string MissingConfigurations = "MissingConfiguration:00001";
     public const string MissingConfigurationsWithPropertyNames = "MissingConfiguration:00002";
+    public const string PriorityAlreadyExists = "PriorityNumberExists";
 
 }

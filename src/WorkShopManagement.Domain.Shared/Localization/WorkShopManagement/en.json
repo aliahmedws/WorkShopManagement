@@ -186,7 +186,7 @@
     "AreYouSure": "Are you sure?",
     "FilterByNumber": "Filter by Number",
     "FilterByDescription": "Filter by Description",
-    "NoChangesDetected": "No changes detected"
+    "NoChangesDetected": "No changes detected",
     "Enum:Stage.Incoming": "Incoming",
     "Enum:Stage.ExternalWarehouse": "External Warehouse",
     "Enum:Stage.Production": "Production",

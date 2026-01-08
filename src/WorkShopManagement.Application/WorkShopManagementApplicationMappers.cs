@@ -132,7 +132,7 @@ public partial class RecallMapper : MapperBase<Recall, RecallDto>
     [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
     public override partial void Map(Recall source, RecallDto destination);
 }
-}
+
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class PriorityMapper : MapperBase<Priority, PriorityDto>

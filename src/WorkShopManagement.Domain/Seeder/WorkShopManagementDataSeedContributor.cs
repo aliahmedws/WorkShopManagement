@@ -8,9 +8,9 @@ using Volo.Abp.Uow;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.CheckLists;
-using WorkShopManagement.Priorities;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
+using WorkShopManagement.Priorities;
 using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.Seeder;
@@ -35,8 +35,8 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         ListItemDataSeedContributor listItemSeeder,
         RadioOptionDataSeedContributor radioOptionSeeder,
         ILogger<WorkShopManagementDataSeedContributor> logger,
-        IUnitOfWorkManager uowManager)
-        CheckListDataSeedContributor checkListSeeder,
+        IUnitOfWorkManager uowManager,
+
         PriorityDataSeedContributor priorityDataSeedContributor)
     {
         _modelCategorySeeder = modelCategorySeeder;
@@ -61,22 +61,22 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
 
         try
         {
-            await RunStepAsync("Bays", () => _baySeeder.SeedAsync(context!));
+            await RunStepAsync("Bays", context!, () => _baySeeder.SeedAsync(context!));
             await _uowManager.Current!.SaveChangesAsync();
 
-            await RunStepAsync("ModelCategories", () => _modelCategorySeeder.SeedAsync(context!));
+            await RunStepAsync("ModelCategories", context!, () => _modelCategorySeeder.SeedAsync(context!));
             await _uowManager.Current!.SaveChangesAsync();
 
-            await RunStepAsync("CarModels", () => _carModelSeeder.SeedAsync(context!));
+            await RunStepAsync("CarModels", context!, () => _carModelSeeder.SeedAsync(context!));
             await _uowManager.Current!.SaveChangesAsync();
 
-            await RunStepAsync("CheckLists", () => _checkListSeeder.SeedAsync(context!));
+            await RunStepAsync("CheckLists", context!, () => _checkListSeeder.SeedAsync(context!));
             await _uowManager.Current!.SaveChangesAsync();
 
-            await RunStepAsync("ListItems", () => _listItemSeeder.SeedAsync(context!));
+            await RunStepAsync("ListItems", context!, () => _listItemSeeder.SeedAsync(context!));
             await _uowManager.Current.SaveChangesAsync();
 
-            await RunStepAsync("RadioOptions", () => _radioOptionSeeder.SeedAsync(context!));
+            await RunStepAsync("RadioOptions", context!, () => _radioOptionSeeder.SeedAsync(context!));
             await _uowManager.Current.SaveChangesAsync();
 
             sw.Stop();
@@ -90,7 +90,7 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
         }
     }
 
-    private async Task RunStepAsync(string stepName, Func<Task> action)
+    private async Task RunStepAsync(string stepName, DataSeedContext context, Func<Task> action)
     {
         _logger.LogInformation("Seeding {Step} started.", stepName);
 
