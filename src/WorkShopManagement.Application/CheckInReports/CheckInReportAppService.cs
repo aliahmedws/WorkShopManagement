@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CheckInReports;
@@ -33,21 +33,16 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         {
             throw new UserFriendlyException("CheckInReport:CarIdIsRequired");
         }
-        if(string.IsNullOrWhiteSpace(input.VinNo))
-        {
-            throw new UserFriendlyException("CheckInReport:VinNoIsRequired");
-        }
 
-        var carExists = await _carRepository.AnyAsync(x => x.Id == input.CarId);
-        if (!carExists)
+        var car = await _carRepository.GetAsync(input.CarId);
+        if (car == null)
             throw new UserFriendlyException("CheckInReport:CarNotFound").WithData("CarId", input.CarId);
 
         var report = new CheckInReport(
             id: GuidGenerator.Create(),
             carId: input.CarId,
-            vinNo: input.VinNo.Trim(),
-            buildDate: input.BuildDate,
-            checkInSubmitterUser: input.CheckInSumbitterUser,
+            buildYear: input.BuildYear,
+            buildMonth: input.BuildMonth,
             avcStickerCut: input.AvcStickerCut,
             avcStickerPrinted: input.AvcStickerPrinted,
             complianceDate: input.ComplianceDate,
@@ -56,30 +51,43 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             engineNumber: input.EngineNumber,
             entryKms: input.EntryKms,
             frontGwar: input.FrontGwar,
-            frontMotorNumber: input.FrontMoterNumbr,
+            frontMotorNumber: input.FrontMoterNumber,
             rearGwar: input.RearGwar,
             rearMotorNumber: input.RearMotorNumber,
-            hsObjectId: input.HsObjectId,
             maxTowingCapacity: input.MaxTowingCapacity,
             tyreLabel: input.TyreLabel,
             rsvaImportApproval: input.RsvaImportApproval,
-            status: input.Status,
-            model: input.Model,
-            storageLocation: input.StorageLocation
+            status: input.ReportStatus
+
         );
 
-         await _checkInReportRepository.InsertAsync(report, autoSave: true);
+        if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
+        {
+            car.SetStorageLocation(input.StorageLocation.Value);
+            if (car.Stage == Stage.Incoming)
+            {
+                car.SetStage(Stage.ExternalWarehouse);
+            }
+            await _carRepository.UpdateAsync(car, autoSave: true);
+        }
+
+        report = await _checkInReportRepository.InsertAsync(report, autoSave: true);
 
         return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
 
     }
 
+    public async Task<CheckInReportDto?> GetByCarIdAsync(Guid carId)
+    {
+        var report = await _checkInReportRepository.GetByCarIdAsync(carId);
+        return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
+    }
+
     public async Task<CheckInReportDto> GetAsync(Guid checkInReportId)
     {
-        var query = await _checkInReportRepository.GetCheckInReportByIdAsync(checkInReportId);
-        if (query == null) throw new EntityNotFoundException(typeof(CheckInReport), checkInReportId);
+        var report = await _checkInReportRepository.GetAsync(x => x.Id == checkInReportId);
 
-        return ObjectMapper.Map<CheckInReport, CheckInReportDto>(query);
+        return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
     }
 
     public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter)
@@ -95,36 +103,13 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         };
     }
 
-    public async Task<CheckInReportDto> UpdateAsync(Guid id, CreateCheckInReportDto input)
+    public async Task<CheckInReportDto> UpdateAsync(Guid id, UpdateCheckInReportDto input)
     {
-        if (input.CarId == Guid.Empty)
-        {
-            throw new UserFriendlyException("CheckInReport:CarIdIsRequired");
-        }
-
-        if (string.IsNullOrWhiteSpace(input.VinNo))
-        {
-            throw new UserFriendlyException("CheckInReport:VinNoIsRequired");
-        }
-
         var report = await _checkInReportRepository.GetAsync(id);
 
-        // If CarId can be changed, validate it 
-        //if (report.CarId != input.CarId)
-        //{
-        //    var carExists = await _carRepository.AnyAsync(x => x.Id == input.CarId);
-        //    if (!carExists)
-        //    {
-        //        throw new UserFriendlyException("CheckInReport:CarNotFound")
-        //            .WithData("CarId", input.CarId);
-        //    }
-
-        //    report.CarId = input.CarId;
-        //}
-
-        report.VinNo = input.VinNo.Trim();
-        report.BuildDate = input.BuildDate;
-        report.CheckInSumbitterUser = input.CheckInSumbitterUser;
+        var car = await _carRepository.GetAsync(report.CarId);
+        if (car == null)
+            throw new UserFriendlyException("CheckInReport:CarNotFound").WithData("CarId", report.CarId);
 
         report.AvcStickerCut = input.AvcStickerCut;
         report.AvcStickerPrinted = input.AvcStickerPrinted;
@@ -137,18 +122,26 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         report.EntryKms = input.EntryKms;
 
         report.FrontGwar = input.FrontGwar;
-        report.FrontMoterNumbr = input.FrontMoterNumbr;
+        report.FrontMoterNumber = input.FrontMoterNumber;
         report.RearGwar = input.RearGwar;
         report.RearMotorNumber = input.RearMotorNumber;
 
-        report.HsObjectId = input.HsObjectId;
         report.MaxTowingCapacity = input.MaxTowingCapacity;
         report.TyreLabel = input.TyreLabel;
 
         report.RsvaImportApproval = input.RsvaImportApproval;
-        report.Status = input.Status;
-        report.Model = input.Model;
-        report.StorageLocation = input.StorageLocation;
+        report.ReportStatus = input.ReportStatus;
+
+
+        if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
+        {
+            car.SetStorageLocation(input.StorageLocation.Value);
+            if (car.Stage == Stage.Incoming)
+            {
+                car.SetStage(Stage.ExternalWarehouse);
+            }
+            await _carRepository.UpdateAsync(car, autoSave: true);
+        }
 
         await _checkInReportRepository.UpdateAsync(report, autoSave: true);
 

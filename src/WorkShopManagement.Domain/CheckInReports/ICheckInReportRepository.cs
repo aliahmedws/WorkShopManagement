@@ -10,8 +10,8 @@ namespace WorkShopManagement.CheckInReports
 {
     public interface ICheckInReportRepository : IRepository<CheckInReport, Guid>
     {
-        Task<CheckInReport?> GetCheckInReportByIdAsync(
-        Guid checkInReportId);
+        Task<CheckInReport?> GetByCarIdAsync(
+        Guid carId);
 
         Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter);
 

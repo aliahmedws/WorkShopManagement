@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.Utils.Enums;
 
 namespace WorkShopManagement.CheckInReports
 {
@@ -10,17 +10,18 @@ namespace WorkShopManagement.CheckInReports
         public int SkipCount { get; set; } = 0;
         public int MaxResultCount { get; set; } = 10;
         public string? Filter { get; set; }
-        public string? VinNo { get; set; }
-        public string? Status { get; set; }
-        public string? Model { get; set; }
-        public string? StorageLocation { get; set; }
-        public DateTime? BuildDateMin { get; set; }
-        public DateTime? BuildDateMax { get; set; }
+        public int? BuildYear { get; set; }
         public DateTime? ComplianceDateMin { get; set; }
         public DateTime? ComplianceDateMax { get; set; }
         public int? EntryKmsMin { get; set; }
         public int? EntryKmsMax { get; set; }
-        public bool? AvcStickerCut { get; set; }
-        public bool? CompliancePlatePrinted { get; set; }
+        public ChoiceOptions? AvcStickerCut { get; set; }
+        public ChoiceOptions? CompliancePlatePrinted { get; set; }
+        public string? ReportStatus { get; set; }
+        public Guid? CreatorId { get; set; }            // From Audit
+        // Car Filters
+        public string? Vin { get; set; }
+        public string? Model { get; set; }
+        public StorageLocation? StorageLocation { get; set; }
     }
 }

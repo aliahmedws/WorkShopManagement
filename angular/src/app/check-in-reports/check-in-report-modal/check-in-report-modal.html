@@ -1,0 +1,62 @@
+<abp-modal [visible]="visible" (visibleChange)="close()" [busy]="isBusy" [options]="{ size: 'lg' }">
+    <ng-template #abpHeader>
+        <h3>{{ (existingReportId ? '::EditCheckInReport' : '::NewCheckInReport') | abpLocalization }}</h3>
+    </ng-template>
+
+    <ng-template #abpBody>
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ '::BuildYear' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="buildYear" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ '::BuildMonth' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="buildMonth" />
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ '::ComplianceDate' | abpLocalization }}</label>
+                    <input type="date" class="form-control" formControlName="complianceDate" />
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">{{ '::EntryKms' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="entryKms" />
+                </div>
+
+                <div class="w-100"><hr class="my-2"></div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ '::AVCStickerCut' | abpLocalization }}</label>
+                    <select class="form-select" formControlName="avcStickerCut">
+                        <option [ngValue]="null">Select...</option>
+                        <option *ngFor="let opt of choiceOptions" [ngValue]="opt">
+                            {{ '::Enum:ChoiceOptions.' + opt | abpLocalization }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
+                    <select class="form-select" formControlName="storageLocation">
+                        <option [ngValue]="null">Select...</option>
+                        <option *ngFor="let loc of storageLocationOptions" [ngValue]="loc">
+                            {{ '::Enum:StorageLocation.' + loc | abpLocalization }}
+                        </option>
+                    </select>
+                </div>
+
+                </div>
+        </form>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <button type="button" class="btn btn-secondary" (click)="close()">
+            {{ '::Cancel' | abpLocalization }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || isBusy">
+            <i class="fa fa-save me-1"></i> {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

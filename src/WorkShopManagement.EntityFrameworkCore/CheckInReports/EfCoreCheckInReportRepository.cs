@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
 
 namespace WorkShopManagement.CheckInReports;
 
@@ -20,11 +18,11 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
 
     }
 
-    public async Task<CheckInReport?> GetCheckInReportByIdAsync(Guid checkInReportId)
+    public async Task<CheckInReport?> GetByCarIdAsync(Guid carId)
     {
         return await (await GetDbSetAsync())
             .Include(x => x.Car)
-            .FirstOrDefaultAsync(x => x.Id == checkInReportId);
+            .FirstOrDefaultAsync(x => x.CarId == carId);
     }
 
     public async Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter)
@@ -59,23 +57,17 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
 
         query = query
             .WhereIf(!string.IsNullOrWhiteSpace(filter.Filter), x =>
-            (x.VinNo != null && x.VinNo.Contains(filter.Filter!)) ||
-            (x.CheckInSumbitterUser != null && x.CheckInSumbitterUser.Contains(filter.Filter!)) ||
+            (x.Car!.Vin != null && x.Car.Vin.Contains(filter.Filter!)) ||
+            (x.CreatorId != null && x.CreatorId == filter.CreatorId) ||
             (x.Emission != null && x.Emission.Contains(filter.Filter!)) ||
             (x.EngineNumber != null && x.EngineNumber.Contains(filter.Filter!)) ||
-            (x.FrontMoterNumbr != null && x.FrontMoterNumbr.Contains(filter.Filter!)))
-       .WhereIf(!string.IsNullOrWhiteSpace(filter.VinNo),
-           x => x.VinNo.Contains(filter.VinNo!))
-       .WhereIf(!string.IsNullOrWhiteSpace(filter.Status),
-           x => x.Status == filter.Status)
-       .WhereIf(!string.IsNullOrWhiteSpace(filter.Model),
-           x => x.Model != null && x.Model.Contains(filter.Model!))
-       .WhereIf(!string.IsNullOrWhiteSpace(filter.StorageLocation),
-           x => x.StorageLocation == filter.StorageLocation)
-       .WhereIf(filter.BuildDateMin.HasValue,
-           x => x.BuildDate >= filter.BuildDateMin)
-       .WhereIf(filter.BuildDateMax.HasValue,
-           x => x.BuildDate <= filter.BuildDateMax)
+            (x.FrontMoterNumber != null && x.FrontMoterNumber.Contains(filter.Filter!)))
+      
+       .WhereIf(!string.IsNullOrWhiteSpace(filter.ReportStatus),
+           x => x.ReportStatus == filter.ReportStatus)
+      
+       .WhereIf(filter.BuildYear.HasValue,
+           x => x.BuildYear == filter.BuildYear)
        .WhereIf(filter.ComplianceDateMin.HasValue,
            x => x.ComplianceDate >= filter.ComplianceDateMin)
        .WhereIf(filter.ComplianceDateMax.HasValue,
@@ -87,7 +79,16 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
        .WhereIf(filter.AvcStickerCut.HasValue,
            x => x.AvcStickerCut == filter.AvcStickerCut)
        .WhereIf(filter.CompliancePlatePrinted.HasValue,
-           x => x.CompliancePlatePrinted == filter.CompliancePlatePrinted);
+           x => x.CompliancePlatePrinted == filter.CompliancePlatePrinted)
+
+        //Car Filters
+        .WhereIf(!string.IsNullOrWhiteSpace(filter.Vin),
+           x => x.Car!.Vin.Contains(filter.Vin!))
+         .WhereIf(!string.IsNullOrWhiteSpace(filter.Model),
+           x => x.Car!.Model != null && x.Car.Model.Name.Contains(filter.Model!))
+        .WhereIf(filter.StorageLocation.HasValue,
+           x => x.Car!.StorageLocation == filter.StorageLocation)
+       ;
 
         return query.OrderBy(filter.Sorting ?? CheckInReportConsts.CreationTimeDesc);
     }

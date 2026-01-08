@@ -184,4 +184,9 @@ public class Car : FullAuditedAggregateRoot<Guid>
         ClearingAgent = DomainCheck.TrimOptional(clearingAgent, nameof(clearingAgent), maxLength: CarConsts.MaxClearingAgentLength);
         StorageLocation = storageLocation;
     }
+
+    public void SetStorageLocation(StorageLocation? storageLocation)
+    {
+        StorageLocation = storageLocation;
+    }
 }

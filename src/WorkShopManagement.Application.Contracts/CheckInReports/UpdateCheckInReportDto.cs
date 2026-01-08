@@ -5,13 +5,12 @@ using WorkShopManagement.Utils.Enums;
 
 namespace WorkShopManagement.CheckInReports
 {
-    public class CheckInReportDto : FullAuditedEntityDto<Guid>
+    public class UpdateCheckInReportDto : EntityDto<Guid>
     {
-
         public ChoiceOptions? AvcStickerCut { get; set; }
         public ChoiceOptions? AvcStickerPrinted { get; set; }
-        public int? BuildYear { get; set; }     
-        public int? BuildMonth { get; set; }
+        public int? BuildYear { get; set; }                 // from Car
+        public int? BuildMonth { get; set; }                // from Car?
         public DateTime? ComplianceDate { get; set; }
         public ChoiceOptions? CompliancePlatePrinted { get; set; }
         public string? Emission { get; set; }
@@ -21,20 +20,11 @@ namespace WorkShopManagement.CheckInReports
         public string? FrontMoterNumber { get; set; }
         public double? RearGwar { get; set; }
         public string? RearMotorNumber { get; set; }
-        public double MaxTowingCapacity { get; set; }
+        public double? MaxTowingCapacity { get; set; }
         public string? TyreLabel { get; set; }
         public string? RsvaImportApproval { get; set; }
         public string? ReportStatus { get; set; }
-        public Guid CarId { get; set; }
 
-        public string? CreatorName { get; set; }            // From Audit
-        // Car Details
-        public string VinNo { get; set; } = default!;
         public StorageLocation? StorageLocation { get; set; }
-
-        // Car - CarModel Details
-        public string ModelName { get; set; } = default!;
-
-
     }
 }

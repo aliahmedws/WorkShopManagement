@@ -4,11 +4,10 @@ import { CheckInReportDto, CheckInReportFiltersDto, CheckInReportService } from 
 import { ListService, PagedResultDto } from '@abp/ng.core';
 import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { CarDto, CarService } from '../proxy/cars';
-import { CreateCheckInReportModal } from './create-check-in-report-modal/create-check-in-report-modal';
 
 @Component({
   selector: 'app-check-in-report',
-  imports: [...SHARED_IMPORTS, CreateCheckInReportModal],
+  imports: [...SHARED_IMPORTS],
   templateUrl: './check-in-report.html',
   styleUrl: './check-in-report.scss',
   providers: [ListService],

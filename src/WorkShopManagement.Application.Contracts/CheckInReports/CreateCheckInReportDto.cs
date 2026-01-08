@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
+using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.Utils.Enums;
 
 namespace WorkShopManagement.CheckInReports
 {
     public class CreateCheckInReportDto
     {
-        public string VinNo { get; set; } = default!;
-        public bool? AvcStickerCut { get; set; }
-        public bool? AvcStickerPrinted { get; set; }
-        public DateTime? BuildDate { get; set; }
-        public string? CheckInSumbitterUser { get; set; }
+        public ChoiceOptions? AvcStickerCut { get; set; }
+        public ChoiceOptions? AvcStickerPrinted { get; set; }
+        public int? BuildYear { get; set; }                 // from Car
+        public int? BuildMonth { get; set; }                // from Car?
         public DateTime? ComplianceDate { get; set; }
-        public bool? CompliancePlatePrinted { get; set; }
+        public ChoiceOptions? CompliancePlatePrinted { get; set; }
         public string? Emission { get; set; }
         public string? EngineNumber { get; set; }
         public int? EntryKms { get; set; }
-        public int? FrontGwar { get; set; }
-        public string? FrontMoterNumbr { get; set; }
-        public int? RearGwar { get; set; }
+        public double? FrontGwar { get; set; }
+        public string? FrontMoterNumber { get; set; }
+        public double? RearGwar { get; set; }
         public string? RearMotorNumber { get; set; }
-        public string? HsObjectId { get; set; }
-        public float MaxTowingCapacity { get; set; }
+        public double? MaxTowingCapacity { get; set; }
         public string? TyreLabel { get; set; }
         public string? RsvaImportApproval { get; set; }
-        public string? Status { get; set; }
-        public string? Model { get; set; }
-        public string? StorageLocation { get; set; }
+        public string? ReportStatus { get; set; }
+
+        [Required]
         public Guid CarId { get; set; }
+        public StorageLocation? StorageLocation { get; set; }
     }
 }

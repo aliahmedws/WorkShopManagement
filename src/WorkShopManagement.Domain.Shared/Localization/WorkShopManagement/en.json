@@ -179,7 +179,6 @@
     "EtaBrisbane": "ETA - Brisbane",
     "EtaScd": "ETA - SCD",
     "ClearingAgent": "Clearing Agent",
-    "StorageLocation": "Storage Location",
     // Warehouse Enum
     "Enum:StorageLocation.K2": "K2",
     "Enum:StorageLocation.MoviesLoan": "Loan - Movies",
@@ -187,6 +186,12 @@
     "Enum:StorageLocation.ThirdPartyLoan": "Loan - 3rd Party Accessories",
     "Enum:StorageLocation.EW": "EW - Walliam Farrior Place",
     "Enum:StorageLocation.TerrenceRd": "24 Terrence Road",
+    "Enum:StorageLocation.1": "K2",
+    "Enum:StorageLocation.2": "Loan - Movies",
+    "Enum:StorageLocation.3": "Loan - Others",
+    "Enum:StorageLocation.4": "Loan - 3rd Party Accessories",
+    "Enum:StorageLocation.5": "EW - Walliam Farrior Place",
+    "Enum:StorageLocation.6": "24 Terrence Road",
     "Menu:ProductionManager": "Production Manager",
     "IncomingCars": "Incoming Cars",
 
@@ -207,7 +212,6 @@
     "RiskDescription": "Risk Description",
     "Notes": "Notes",
     "Title": "Title",
-    "Status": "Status",
     "MarkAsCsp": "Mark CSP",
     "PhoneConfirmationSms": "Hello {0}! Here is your account confirmation code: {1}. If you didn't request this code, you can ignore this message. Please do not share this code with anyone.",
     "EmailSecurityCodeBody": "Hello! \nHere is your Two Factor login OTP: {0}. \n\nIf you didn't request this code, please change your password immediately. \n\nPlease do not share this code with anyone.",
@@ -219,6 +223,14 @@
     "SelectedProvider": "Selected Provider",
     "DisplayName:RememberBrowser": "Remember Browser",
     "PhoneNumberEmptyHelpText": "A valid phone number is required to confirm your account.",
-    "EnforceTwoFactor": "Enforce Two Factor"
+    "EnforceTwoFactor": "Enforce Two Factor",
+    "CheckInReport:InvalidBuildMonth": "Build month \"{BuildMonth}\" is incorrect. Build month must be between 1 and 12.",
+    "CheckInReport:InvalidBuildYear": "Build year \"{BuildYear}\" is incorrect. Build year must be between 1800 and next year.",
+    "CheckInReport:InvalidEntryKms": "Entry KMs \"{EntryKms}\" is incorrect. Entry KMs cannot be negative.",
+    "CheckInReport:InvalidFrontGwar": "Front GWAR \"{FrontGwar}\" is incorrect. Front GWAR cannot be negative.",
+    "CheckInReport:InvalidRearGwar": "Rear GWAR \"{RearGwar}\" is incorrect. Rear GWAR cannot be negative.",
+    "CheckInReport:InvalidMaxTowingCapacity": "Max towing capacity \"{MaxTowingCapacity}\" is incorrect. Max towing capacity cannot be negative.",
+    "Enum:ChoiceOptions.1": "Yes",
+    "Enum:ChoiceOptions.2": "No"
   }
 }

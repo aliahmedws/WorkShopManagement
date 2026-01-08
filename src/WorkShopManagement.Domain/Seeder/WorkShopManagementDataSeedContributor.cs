@@ -71,8 +71,8 @@ public class WorkShopManagementDataSeedContributor : IDataSeedContributor, ITran
             await RunStepAsync("ListItems", () => _listItemSeeder.SeedAsync(context!));
             await _uowManager.Current.SaveChangesAsync();
 
-            await RunStepAsync("RadioOptions", () => _radioOptionSeeder.SeedAsync(context!));
-            await _uowManager.Current.SaveChangesAsync();
+            //await RunStepAsync("RadioOptions", () => _radioOptionSeeder.SeedAsync(context!));
+            //await _uowManager.Current.SaveChangesAsync();
 
             sw.Stop();
             _logger.LogInformation("Workshop seed finished successfully. ElapsedMs={ElapsedMs}", sw.ElapsedMilliseconds);

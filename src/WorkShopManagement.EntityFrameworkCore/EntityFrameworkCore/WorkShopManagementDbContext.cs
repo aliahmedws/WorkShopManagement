@@ -78,6 +78,7 @@ public class WorkShopManagementDbContext :
     public DbSet<QualityGate> QualityGates { get; set; }
     public DbSet<EntityAttachment> EntityAttachments { get; set; }
     public DbSet<VinInfo> VinInfos { get; set; }
+    public DbSet<CheckInReport> CheckInReports { get; set; }
 
 
 
@@ -297,20 +298,15 @@ public class WorkShopManagementDbContext :
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckInReports", WorkShopManagementConsts.DbSchema);
             b.ConfigureByConvention();
-
-            b.Property(x => x.VinNo).IsRequired().HasMaxLength(CheckInReportConsts.VINMaxLength);
-            b.Property(x => x.CheckInSumbitterUser).HasMaxLength(CheckInReportConsts.MaxLength);
+ 
             b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.FrontMoterNumbr).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMoterNumber).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.HsObjectId).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.Status).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.Model).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.StorageLocation).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.BuildDate);
+            b.Property(x => x.ReportStatus).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.CarId).IsRequired();
             b.HasOne(x => x.Car).WithMany().HasForeignKey(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
 
         });

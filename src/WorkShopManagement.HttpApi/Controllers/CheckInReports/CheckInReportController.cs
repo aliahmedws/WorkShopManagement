@@ -30,6 +30,11 @@ public class CheckInReportController : WorkShopManagementController, ICheckInRep
     {
         return await _checkInReportAppService.GetAsync(checkInReportId);
     }
+    [HttpGet("by-car/{checkInReportId}")]
+    public async Task<CheckInReportDto?> GetByCarIdAsync(Guid checkInReportId)
+    {
+        return await _checkInReportAppService.GetByCarIdAsync(checkInReportId);
+    }
 
     [HttpGet]
     public async Task<PagedResultDto<CheckInReportDto>> GetListAsync(CheckInReportFiltersDto filter)
@@ -38,7 +43,7 @@ public class CheckInReportController : WorkShopManagementController, ICheckInRep
     }
 
     [HttpPut]
-    public Task<CheckInReportDto> UpdateAsync(Guid id, CreateCheckInReportDto input)
+    public Task<CheckInReportDto> UpdateAsync(Guid id, UpdateCheckInReportDto input)
     {
         return _checkInReportAppService.UpdateAsync(id, input);
     }

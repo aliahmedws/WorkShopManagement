@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateCheckInReportModal } from './create-check-in-report-modal';
+import { CheckInReportModal } from './check-in-report-modal';
 
-describe('CreateCheckInReportModal', () => {
-  let component: CreateCheckInReportModal;
-  let fixture: ComponentFixture<CreateCheckInReportModal>;
+describe('CheckInReportModal', () => {
+  let component: CheckInReportModal;
+  let fixture: ComponentFixture<CheckInReportModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateCheckInReportModal]
+      imports: [CheckInReportModal]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CreateCheckInReportModal);
+    fixture = TestBed.createComponent(CheckInReportModal);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

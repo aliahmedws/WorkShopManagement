@@ -31,7 +31,7 @@
                             </div>
                         </ng-template>
                     </ngx-datatable-column>
-                    <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vinNo"></ngx-datatable-column>
+                    <!-- <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vinNo"></ngx-datatable-column> -->
                     <ngx-datatable-column [name]="'::FrontMoterNumbr' | abpLocalization"
                         prop="frontMoterNumbr"></ngx-datatable-column>
                     <ngx-datatable-column [name]="'::RearMotorNumber' | abpLocalization"
@@ -43,9 +43,7 @@
             </div>
         </div>
 
-        <app-create-check-in-report-modal [(visible)]="isModalVisible" [checkInReportId]="selectedId"
-            (submit)="list?.get(); isModalVisible=false">
-        </app-create-check-in-report-modal>
+        
 
     </app-topbar-layout>
 </abp-page>

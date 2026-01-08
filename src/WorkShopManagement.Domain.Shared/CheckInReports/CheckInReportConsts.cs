@@ -6,8 +6,7 @@ namespace WorkShopManagement.CheckInReports;
 
 public static class CheckInReportConsts
 {
-    public const int VINMaxLength = 64; 
-    public const int MaxLength = 128;
+    public const int MaxLength = 256;
     public const string CreationTimeDesc = "CreationTime desc";
 
     public static string GetNormalizedSorting(string? sorting)
