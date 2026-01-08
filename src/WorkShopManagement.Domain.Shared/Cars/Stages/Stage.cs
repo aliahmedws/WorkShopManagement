@@ -1,4 +1,4 @@
-﻿namespace WorkShopManagement.Stages
+﻿namespace WorkShopManagement.Cars.Stages
 {
     public enum Stage
     {

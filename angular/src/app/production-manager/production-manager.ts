@@ -6,7 +6,7 @@ import { CarDto, CarService, GetCarListInput } from '../proxy/cars';
 import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { Incoming } from "./incoming/incoming";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
-import { Stage } from '../proxy/stages';
+import { Stage } from '../proxy/cars/stages';
 import { ExternalWarehouse } from './external-warehouse/external-warehouse';
 
 @Component({

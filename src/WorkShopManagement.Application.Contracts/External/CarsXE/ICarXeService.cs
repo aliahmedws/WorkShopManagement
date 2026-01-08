@@ -4,7 +4,7 @@ using Volo.Abp.Application.Services;
 
 namespace WorkShopManagement.External.CarsXE
 {
-    public interface ICarXeService:IApplicationService
+    public interface ICarXeService : IApplicationService
     {
         Task<VinResponseDto> GetVinAsync(
         string vinNo,

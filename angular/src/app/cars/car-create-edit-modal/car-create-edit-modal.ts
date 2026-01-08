@@ -5,8 +5,8 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
-import { storageLocationOptions } from 'src/app/proxy/storage-locations';
-import { Stage, stageOptions } from 'src/app/proxy/stages';
+import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
+import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-car-create-edit-modal',

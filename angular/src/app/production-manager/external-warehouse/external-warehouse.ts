@@ -1,7 +1,7 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
-import { StorageLocation } from 'src/app/proxy/storage-locations/storage-location.enum';
+import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 

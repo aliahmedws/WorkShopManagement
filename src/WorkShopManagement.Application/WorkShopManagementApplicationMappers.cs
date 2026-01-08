@@ -14,6 +14,7 @@ using WorkShopManagement.Lookups;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
+using WorkShopManagement.Recalls;
 
 namespace WorkShopManagement;
 
@@ -119,6 +120,17 @@ public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttac
 {
     public override partial FileAttachmentDto Map(FileAttachment source);
     public override partial void Map(FileAttachment source, FileAttachmentDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class RecallMapper : MapperBase<Recall, RecallDto>
+{
+    [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
+    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    public override partial RecallDto Map(Recall source);
+    [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
+    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    public override partial void Map(Recall source, RecallDto destination);
 }
 
 

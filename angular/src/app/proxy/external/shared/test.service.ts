@@ -1,6 +1,7 @@
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
 import type { NhtsaRecallByVehicleResultDto } from '../nhtsa/models';
+import type { TwilioSmsResponseEto } from '../twilio/models';
 import type { VpicVariableResultDto } from '../vpic/models';
 
 @Injectable({
@@ -25,6 +26,15 @@ export class TestService {
       method: 'GET',
       url: '/api/app/test/recall-by-vehicle',
       params: { make, model, modelYear },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  sendSms = (to: string, body: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, TwilioSmsResponseEto>({
+      method: 'POST',
+      url: '/api/app/test/send-sms',
+      params: { to, body },
     },
     { apiName: this.apiName,...config });
 }

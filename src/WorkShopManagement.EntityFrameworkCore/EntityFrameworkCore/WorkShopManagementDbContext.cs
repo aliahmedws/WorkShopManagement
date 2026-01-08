@@ -26,6 +26,7 @@ using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
+using WorkShopManagement.Recalls;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -82,6 +83,7 @@ public class WorkShopManagementDbContext :
 
     public DbSet<Car> Cars { get; set; }
     public DbSet<CarOwner> CarOwners { get; set; }
+    public DbSet<Recall> Recalls { get; set; }
 
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
@@ -276,6 +278,7 @@ public class WorkShopManagementDbContext :
                 .WithMany()
                 .HasForeignKey(x => x.ModelId)
                 .OnDelete(DeleteBehavior.Restrict);
+
         });
 
         builder.Entity<CarOwner>(b =>
@@ -318,6 +321,24 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.VinNo).IsRequired();
             b.HasIndex(x => x.VinNo).IsUnique();
+        });
+        builder.Entity<Recall>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Recalls", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Title).IsRequired().HasMaxLength(RecallConsts.MaxTitleLength);
+            b.Property(x => x.RiskDescription).HasMaxLength(RecallConsts.MaxRiskDescriptionLength);
+            b.Property(x => x.Notes).HasMaxLength(RecallConsts.MaxNotesLength);
+            b.Property(x => x.ManufactureId).HasMaxLength(RecallConsts.MaxManufactureIdLength);
+            b.Property(x => x.Make).HasMaxLength(RecallConsts.MaxMakeLength);
+
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.Type).IsRequired();
+            b.HasOne(x => x.Car)
+                .WithMany(x => x.Recalls)
+                .HasForeignKey(x => x.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
