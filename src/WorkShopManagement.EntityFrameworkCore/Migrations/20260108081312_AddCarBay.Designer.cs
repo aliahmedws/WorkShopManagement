@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260108081312_AddCarBay")]
+    partial class AddCarBay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2058,9 +2061,6 @@ namespace WorkShopManagement.Migrations
                     b.Property<string>("PulseNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("QualityGateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("ReWorkDate")
                         .HasColumnType("datetime2");
 
@@ -2081,8 +2081,6 @@ namespace WorkShopManagement.Migrations
                     b.HasIndex("BayId");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("QualityGateId");
 
                     b.ToTable("AppCarBays", (string)null);
                 });
@@ -3027,16 +3025,9 @@ namespace WorkShopManagement.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WorkShopManagement.QualityGates.QualityGate", "QualityGate")
-                        .WithMany("CarBays")
-                        .HasForeignKey("QualityGateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Bay");
 
                     b.Navigation("Car");
-
-                    b.Navigation("QualityGate");
                 });
 
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
@@ -3284,11 +3275,6 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
                 {
                     b.Navigation("CarModels");
-                });
-
-            modelBuilder.Entity("WorkShopManagement.QualityGates.QualityGate", b =>
-                {
-                    b.Navigation("CarBays");
                 });
 #pragma warning restore 612, 618
         }

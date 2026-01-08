@@ -32,17 +32,17 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
         return await query.LongCountAsync();
     }
 
-    public async Task<IQueryable<Car>> GetAllAsync(string? filter = null, Stage? stage = null, string ? sorting = null, bool asNoTracking = false)
+    public async Task<IQueryable<Car>> GetAllAsync(string? filter = null, Stage? stage = null, string? sorting = null, bool asNoTracking = false)
     {
         var query = await GetQueryableAsync();
-        if(stage.HasValue)
+        if (stage.HasValue)
         {
             query = query.Where(q => q.Stage == stage.Value);
         }
 
         if (!string.IsNullOrWhiteSpace(filter = filter?.Trim()))
         {
-            query = query.Where(q => 
+            query = query.Where(q =>
             q.Vin.Contains(filter) ||
             q.Color.Contains(filter) ||
             q.ModelYear.ToString().Contains(filter) ||

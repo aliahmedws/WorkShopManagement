@@ -1,11 +1,11 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
-using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.ListItems;
@@ -45,6 +45,13 @@ public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 {
     public override partial CheckListDto Map(CheckList source);
     public override partial void Map(CheckList source, CheckListDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CarBayMapper : MapperBase<CarBay, CarBayDto>
+{
+    public override partial CarBayDto Map(CarBay source);
+    public override partial void Map(CarBay source, CarBayDto destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]

@@ -34,6 +34,10 @@
     "Permission:RadioOptions.Create": "Create",
     "Permission:RadioOptions.Edit": "Edit",
     "Permission:RadioOptions.Delete": "Delete",
+    "Permission:CarBays": "Car Bay Management",
+    "Permission:CarBays.Create": "Create",
+    "Permission:CarBays.Edit": "Edit",
+    "Permission:CarBays.Delete": "Delete",
 
 
     "Enum:CheckListType.1": "Production",
@@ -51,6 +55,12 @@
     "Enum:QualityGateStatus.3": "CONDITIONAL PASSED - MINOR",
     "Enum:QualityGateStatus.4": "OPEN",
     "Enum:QualityGateStatus.5": "RESET",
+    "Enum:AvvStatus.1": "Required",
+    "Enum:AvvStatus.2": "Inspected",
+    "Enum:AvvStatus.3": "Uploaded",
+    "Enum:AvvStatus.4": "NA_Export",
+    "Enum:AvvStatus.5": "NA_NRI",
+    "Enum:AvvStatus.6": "NA_MVSA",
 
 
     "Menu:CarModels": "Car Models",

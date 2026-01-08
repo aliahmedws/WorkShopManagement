@@ -1,9 +1,9 @@
-﻿using Scriban.Functions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars.Exceptions;
 using WorkShopManagement.Cars.Stages;
@@ -35,7 +35,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
     public Stage Stage { get; private set; } = Stage.Incoming;
 
     // Incoming / Transit vehicle data
-    public string? LocationStatus { get; private set; } 
+    public string? LocationStatus { get; private set; }
     public DateTime? EtaBrisbane { get; private set; }
     public DateTime? EtaScd { get; private set; }
     public string? BookingNumber { get; private set; }
@@ -45,6 +45,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     public virtual CarModel? Model { get; private set; }
     public virtual CarOwner? Owner { get; private set; }
+    public virtual ICollection<CarBay> CarBays { get; set; } = default!;
     public virtual ICollection<Recall> Recalls { get; private set; } = default!;
     private Car() { }
 

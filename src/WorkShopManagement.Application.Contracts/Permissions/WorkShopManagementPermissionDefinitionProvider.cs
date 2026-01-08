@@ -39,6 +39,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Edit, L("Permission:QualityGates.Edit"));
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Delete, L("Permission:QualityGates.Delete"));
 
+        var carBaysPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarBays.Default, L("Permission:CarBays"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Create, L("Permission:CarBays.Create"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Edit, L("Permission:CarBays.Edit"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Delete, L("Permission:CarBays.Delete"));
+
     }
 
     private static LocalizableString L(string name)
