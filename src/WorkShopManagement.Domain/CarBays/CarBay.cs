@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.Bays;
+using WorkShopManagement.CarBayItems;
 using WorkShopManagement.Cars;
 using WorkShopManagement.QualityGates;
 
@@ -64,6 +66,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public bool? CanProgress { get; private set; }
     public bool? JobCardCompleted { get; private set; }
+    public virtual ICollection<CarBayItem> CarBayItems { get; private set; } = new List<CarBayItem>();
 
     private CarBay() { }
 

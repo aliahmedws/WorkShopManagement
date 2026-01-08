@@ -1,5 +1,7 @@
 import * as Account from './account';
 import * as Bays from './bays';
+import * as CarBayItems from './car-bay-items';
+import * as CarBays from './car-bays';
 import * as CarModels from './car-models';
 import * as Cars from './cars';
 import * as CheckLists from './check-lists';
@@ -16,4 +18,4 @@ import * as Recalls from './recalls';
 import * as System from './system';
 import * as TempFiles from './temp-files';
 import * as Volo from './volo';
-export { Account, Bays, CarModels, Cars, CheckLists, EntityAttachments, External, Identity, ListItems, Lookups, Microsoft, ModelCategories, QualityGates, RadioOptions, Recalls, System, TempFiles, Volo };
+export { Account, Bays, CarBayItems, CarBays, CarModels, Cars, CheckLists, EntityAttachments, External, Identity, ListItems, Lookups, Microsoft, ModelCategories, QualityGates, RadioOptions, Recalls, System, TempFiles, Volo };

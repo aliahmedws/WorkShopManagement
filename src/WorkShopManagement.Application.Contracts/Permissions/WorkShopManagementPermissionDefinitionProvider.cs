@@ -43,6 +43,11 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Create, L("Permission:CarBays.Create"));
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Edit, L("Permission:CarBays.Edit"));
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Delete, L("Permission:CarBays.Delete"));
+        
+        var carBayItemsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarBayItems.Default, L("Permission:CarBayItems"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Create, L("Permission:CarBayItems.Create"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Edit, L("Permission:CarBayItems.Edit"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Delete, L("Permission:CarBayItems.Delete"));
 
     }
 

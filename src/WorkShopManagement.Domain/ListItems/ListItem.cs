@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
+using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.RadioOptions;
@@ -28,10 +29,12 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
 
     public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
     public virtual ICollection<RadioOption> RadioOptions { get; set; }
+    public virtual ICollection<CarBayItem> CarBayItems { get; set; }
 
     private ListItem()
     {
         RadioOptions = new List<RadioOption>();
+        CarBayItems = new List<CarBayItem>();
     }
 
     public ListItem(

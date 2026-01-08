@@ -48,4 +48,7 @@ public class UpdateCarBayDto
 
     public bool? CanProgress { get; set; }
     public bool? JobCardCompleted { get; set; }
+
+    [Required]
+    public string ConcurrencyStamp { get; set; } = default!;
 }

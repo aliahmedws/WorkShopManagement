@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Data;
+using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CarBays;
 
 [RemoteService(isEnabled: false)]
+[Authorize(WorkShopManagementPermissions.CarBays.Default)]
 public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
@@ -50,6 +54,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         return new PagedResultDto<CarBayDto>(totalCount, dtoItems);
     }
 
+    [Authorize(WorkShopManagementPermissions.CarBays.Create)]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
         var entity = await _manager.CreateAsync(
@@ -86,6 +91,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
+    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
     public async Task<CarBayDto> UpdateAsync(Guid id, UpdateCarBayDto input)
     {
         var entity = await _manager.UpdateAsync(
@@ -118,9 +124,15 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
+        if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
+        {
+            entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+        }
+
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
+    [Authorize(WorkShopManagementPermissions.CarBays.Delete)]
     public async Task DeleteAsync(Guid id)
     {
         await _repository.DeleteAsync(id);

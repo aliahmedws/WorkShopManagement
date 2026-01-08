@@ -38,6 +38,10 @@
     "Permission:CarBays.Create": "Create",
     "Permission:CarBays.Edit": "Edit",
     "Permission:CarBays.Delete": "Delete",
+    "Permission:CarBayItems": "Car Bay Item Management",
+    "Permission:CarBayItems.Create": "Create",
+    "Permission:CarBayItems.Edit": "Edit",
+    "Permission:CarBayItems.Delete": "Delete",
 
 
     "Enum:CheckListType.1": "Production",

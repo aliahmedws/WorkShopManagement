@@ -1,5 +1,6 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
@@ -52,6 +53,13 @@ public partial class CarBayMapper : MapperBase<CarBay, CarBayDto>
 {
     public override partial CarBayDto Map(CarBay source);
     public override partial void Map(CarBay source, CarBayDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CarBayItemMapper : MapperBase<CarBayItem, CarBayItemDto>
+{
+    public override partial CarBayItemDto Map(CarBayItem source);
+    public override partial void Map(CarBayItem source, CarBayItemDto destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]

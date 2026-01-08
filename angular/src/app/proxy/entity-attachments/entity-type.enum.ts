@@ -6,6 +6,7 @@ export enum EntityType {
   ListItem = 3,
   Car = 4,
   Recall = 5,
+  CarBayItem = 6,
 }
 
 export const entityTypeOptions = mapEnumToOptions(EntityType);
