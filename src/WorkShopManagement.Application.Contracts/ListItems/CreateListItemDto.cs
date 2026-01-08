@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.TempFiles;
 
 namespace WorkShopManagement.ListItems;
 
@@ -17,9 +20,11 @@ public class CreateListItemDto
     [StringLength(256)]
     public string? CommentPlaceholder { get; set; }
 
-    public CommentType CommentType { get; set; } = CommentType.String;
+    public CommentType? CommentType { get; set; } 
 
-    public bool IsAttachmentRequired { get; set; }
+    public bool? IsAttachmentRequired { get; set; }
 
-    public bool IsSeparator { get; set; }
+    public bool? IsSeparator { get; set; }
+
+    public List<FileAttachmentDto> TempFiles { get; set; } = [];
 }

@@ -265,7 +265,7 @@ src/WorkShopManagement.HttpApi.Host/Logs/*
 src/WorkShopManagement.DbMigrator/Logs/*
 src/WorkShopManagement.Blazor.Server/Logs/*
 src/WorkShopManagement.Blazor.Server.Tiered/Logs/*
-
+**/wwwroot/storage/*
 # Use abp install-libs to restore.
 # **/wwwroot/libs/*
 

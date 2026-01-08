@@ -16,9 +16,16 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.Cars;
+using WorkShopManagement.CarsEx;
 using WorkShopManagement.CheckLists;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.ModelCategories;
+using WorkShopManagement.QualityGates;
+using WorkShopManagement.RadioOptions;
+using WorkShopManagement.Recalls;
 using WorkShopManagement.Priorities;
 
 namespace WorkShopManagement.EntityFrameworkCore;
@@ -62,10 +69,22 @@ public class WorkShopManagementDbContext :
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
 
     #endregion
+    public DbSet<ModelCategory> ModelCategories { get; set; }
     public DbSet<CarModel> CarModels { get; set; }
     public DbSet<Bay> Bays { get; set; }
     public DbSet<CheckList> CheckLists { get; set; }
     public DbSet<ListItem> ListItems { get; set; }
+    public DbSet<RadioOption> RadioOptions { get; set; }
+    public DbSet<QualityGate> QualityGates { get; set; }
+    public DbSet<EntityAttachment> EntityAttachments { get; set; }
+    public DbSet<VinInfo> VinInfos { get; set; }
+
+
+
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<CarOwner> CarOwners { get; set; }
+    public DbSet<Recall> Recalls { get; set; }
+
     public DbSet<Priority> Priorities { get; set; }
 
 
@@ -92,6 +111,42 @@ public class WorkShopManagementDbContext :
         builder.ConfigureBlobStoring();
 
         /* Configure your own tables/entities inside here */
+        builder.Entity<EntityAttachment>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "EntityAttachments", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.EntityId).IsRequired();
+            b.Property(x => x.EntityType).IsRequired();
+            b.OwnsOne(x => x.Attachment, fa =>
+            {
+                fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.BlobName).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+                fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+            });
+        });
+
+        builder.Entity<ModelCategory>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ModelCategories", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired();
+
+            b.HasMany(x => x.CarModels)
+               .WithOne(x => x.ModelCategory)
+               .HasForeignKey(x => x.ModelCategoryId)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            b.OwnsOne(x => x.FileAttachments, fa =>
+            {
+                fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
+                fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
+            });
+
+            b.HasIndex(x => x.Name);
+        });
 
         builder.Entity<CarModel>(b =>
         {
@@ -99,15 +154,11 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
 
             b.OwnsOne(x => x.FileAttachments, fa =>
             {
                 fa.Property(f => f.Name).IsRequired().HasMaxLength(FileAttachmentConsts.MaxNameLength);
                 fa.Property(f => f.Path).IsRequired().HasMaxLength(FileAttachmentConsts.MaxPathLength);
-                fa.Property(f => f.FileExtension).IsRequired();
             });
 
             b.HasIndex(x => x.Name);
@@ -119,10 +170,16 @@ public class WorkShopManagementDbContext :
             b.ConfigureByConvention();
 
             b.Property(x => x.Name).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
             b.HasIndex(x => x.Name);
+        });
+
+        builder.Entity<QualityGate>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "QualityGates", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.GateName).IsRequired();
         });
 
         builder.Entity<CheckList>(b =>
@@ -132,10 +189,9 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.Name).IsRequired();
             b.Property(x => x.Position).IsRequired();
-            b.Property(x => x.CheckListType).IsRequired();
-            b.Property(x => x.TenantId)
-                .HasColumnName(nameof(CarModel.TenantId))
-                .IsRequired(false);
+            b.Property(x => x.EnableCheckInReport).IsRequired(false);
+            b.Property(x => x.EnableIssueItems).IsRequired(false);
+            b.Property(x => x.EnableTags).IsRequired(false);
 
             b.HasOne(x => x.CarModels)
                 .WithMany(x => x.CheckLists)
@@ -146,6 +202,26 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.Name);
         });
 
+        builder.Entity<RadioOption>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "RadioOptions", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.ListItemId).IsRequired();
+
+            b.Property(x => x.Name)
+                .IsRequired()
+                .HasMaxLength(RadioOptionConsts.MaxNameLength);
+
+            b.HasOne(x => x.ListItems)
+                .WithMany(x => x.RadioOptions)
+                .HasForeignKey(x => x.ListItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasIndex(x => x.ListItemId);
+        });
+
+
         builder.Entity<ListItem>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ListItems", WorkShopManagementConsts.DbSchema);
@@ -155,32 +231,88 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.Name).IsRequired().HasMaxLength(256);
 
-            b.Property(x => x.CommentPlaceholder).IsRequired().HasMaxLength(512);
+            b.Property(x => x.CommentPlaceholder).IsRequired(false).HasMaxLength(512);
 
-            b.Property(x => x.CommentType).IsRequired();
+            b.Property(x => x.CommentType).IsRequired(false);
 
-            b.Property(x => x.IsAttachmentRequired).IsRequired();
+            b.Property(x => x.IsAttachmentRequired).IsRequired(false);
 
-            b.Property(x => x.IsSeparator).IsRequired();
+            b.Property(x => x.IsSeparator).IsRequired(false);
 
-            b.Property(x => x.TenantId).HasColumnName(nameof(ListItem.TenantId)).IsRequired(false);
 
             b.HasOne(x => x.CheckLists)
                 .WithMany(x => x.ListItems)
                 .HasForeignKey(x => x.CheckListId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            b.OwnsOne(x => x.Attachment, fa =>
-            {
-                fa.Property(f => f.Name).HasMaxLength(FileAttachmentConsts.MaxNameLength);
-                fa.Property(f => f.Path).HasMaxLength(FileAttachmentConsts.MaxPathLength);
-                fa.Property(f => f.FileExtension);
-                fa.Property(f => f.BlobName);
-            });
-
             b.HasIndex(x => x.CheckListId);
             b.HasIndex(x => new { x.CheckListId, x.Position });
         });
+
+        builder.Entity<Car>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Cars", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.OwnerId).IsRequired();
+            b.Property(x => x.ModelId).IsRequired();
+            b.Property(x => x.Color).IsRequired().HasMaxLength(CarConsts.MaxColorLength);
+            b.Property(x => x.ModelYear).IsRequired();
+            b.Property(x => x.Stage).IsRequired();
+            b.Property(x => x.Cnc).HasMaxLength(CarConsts.MaxCncLength);
+            b.Property(x => x.CncFirewall).HasMaxLength(CarConsts.MaxCncFirewallLength);
+            b.Property(x => x.CncColumn).HasMaxLength(CarConsts.MaxCncColumnLength);
+            b.Property(x => x.Notes).HasMaxLength(CarConsts.MaxNotesLength);
+            b.Property(x => x.MissingParts).HasMaxLength(CarConsts.MaxMissingPartsLength);
+
+            b.Property(x => x.Vin)
+                .IsRequired()
+                .HasMaxLength(CarConsts.VinLength)
+                .IsUnicode(false);
+
+            b.HasIndex(x => x.Vin);
+
+            b.HasOne(x => x.Owner)
+                .WithMany()
+                .HasForeignKey(x => x.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Model)
+                .WithMany()
+                .HasForeignKey(x => x.ModelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+        });
+
+        builder.Entity<CarOwner>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CarOwners", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Name).IsRequired().HasMaxLength(CarOwnerConsts.MaxNameLength);
+            b.Property(x => x.Email).HasMaxLength(CarOwnerConsts.MaxEmailLength);
+            b.Property(x => x.ContactId).HasMaxLength(CarOwnerConsts.MaxContactIdLength);
+
+            b.HasIndex(x => x.Name);
+        });
+        builder.Entity<VinInfo>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "VinInfos", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.VinNo).IsRequired();
+            b.HasIndex(x => x.VinNo).IsUnique();
+        });
+        builder.Entity<Recall>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Recalls", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Title).IsRequired().HasMaxLength(RecallConsts.MaxTitleLength);
+            b.Property(x => x.RiskDescription).HasMaxLength(RecallConsts.MaxRiskDescriptionLength);
+            b.Property(x => x.Notes).HasMaxLength(RecallConsts.MaxNotesLength);
+            b.Property(x => x.ManufactureId).HasMaxLength(RecallConsts.MaxManufactureIdLength);
+            b.Property(x => x.Make).HasMaxLength(RecallConsts.MaxMakeLength);
 
         builder.Entity<Priority>(b =>
         {
@@ -189,6 +321,13 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.Number).IsRequired();
             b.Property(x => x.Description).HasMaxLength(PriorityConsts.MaxDescriptionLength).IsRequired(false);
             b.HasIndex(x => x.Number);
+        });
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.Type).IsRequired();
+            b.HasOne(x => x.Car)
+                .WithMany(x => x.Recalls)
+                .HasForeignKey(x => x.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

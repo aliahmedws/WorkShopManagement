@@ -4211,6 +4211,24 @@ negotiator@^1.0.0:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-1.0.0.tgz#b6c91bb47172d69f93cfd7c357bbb529019b5f6a"
   integrity sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==
 
+ng-http-loader@^19.0.0:
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/ng-http-loader/-/ng-http-loader-19.0.0.tgz#30443b346b5c9c89cf3f7f2524e3f7e91069917e"
+  integrity sha512-l+0tUcQrK2bCitQeNORfAGRXWpReVMIDaaJUyg2rHsIEuso/iz3ip332OLvdGOmP/ioaB6DgcX2QguhgudOKNA==
+  dependencies:
+    tslib "^2.3.0"
+
+ng-zorro-antd@^20.4.4:
+  version "20.4.4"
+  resolved "https://registry.yarnpkg.com/ng-zorro-antd/-/ng-zorro-antd-20.4.4.tgz#acf2c8f6de8f04087bfd9c95df495f7c5bb7d0ff"
+  integrity sha512-/O9yMBU0gdD9hw4ZzSOgq2MwlE4bCArY7jkeW4wFfwtDRvVCuzYOwdiO1bEUukaLCBx7NyU4bpNdd8SH9BxgxQ==
+  dependencies:
+    "@angular/cdk" "^20.0.0"
+    "@ant-design/icons-angular" "^20.0.0"
+    "@ctrl/tinycolor" "^3.6.0"
+    date-fns "^2.16.1"
+    tslib "^2.3.0"
+
 ng-zorro-antd@~20.0.0:
   version "20.0.0"
   resolved "https://registry.yarnpkg.com/ng-zorro-antd/-/ng-zorro-antd-20.0.0.tgz#d0093f1499ca5dedb9f3893575afe723cf2f8f49"

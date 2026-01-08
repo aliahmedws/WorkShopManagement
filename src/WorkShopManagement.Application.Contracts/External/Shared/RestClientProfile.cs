@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
 
 namespace WorkShopManagement.External.Shared;
@@ -10,4 +11,5 @@ public sealed class RestClientProfile
     // Optional defaults (keep minimal)
     public IDictionary<string, string> DefaultQueryParams { get; init; } = new Dictionary<string, string>();
     public IDictionary<string, string> DefaultHeaders { get; init; } = new Dictionary<string, string>();
+    public IAuthenticator? Authenticator { get; init; }
 }

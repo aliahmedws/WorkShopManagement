@@ -1,0 +1,325 @@
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
+    <ng-template #abpHeader>
+        <h3 class="text-dark m-0">{{ (carId? '::EditCar' : '::NewCar') | abpLocalization }}</h3>
+    </ng-template>
+    <ng-template #abpBody>
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        }
+        @if (form && !loading) {
+        <div id="top"></div>
+        @if (external) {
+        <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'"
+            role="alert">
+            <h4 class="alert-heading">
+                {{ (external.success ? '::Car.VinQuery.SuccessTitle' : '::Car.VinQuery.FailedTitle') | abpLocalization
+                }}
+            </h4>
+
+            <p class="mb-1">
+                {{ (external.success ? '::Car.VinQuery.SuccessMessage' : '::Car.VinQuery.FailedMessage') |
+                abpLocalization }}
+            </p>
+
+            @if (external.success) {
+            <p class="mb-1">
+                <span class="d-block">{{ '::Model' | abpLocalization }}: {{ external.model }}</span>
+                <span class="d-block">{{ '::ModelYear' | abpLocalization }}: {{ external.modelYear }}</span>
+            </p>
+            }
+            @if (external.error) {
+            <p class="mb-0">
+                {{ '::Car.VinQuery.ErrorDetails' | abpLocalization }}: {{ external.error }}
+            </p>
+            }
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                [attr.aria-label]="'::Close' | abpLocalization" (click)="external = null"></button>
+        </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <!-- Car Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::BasicInformation' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <!-- VIN -->
+                        <div class="col-12 form-group">
+                            <label class="form-label required">{{ '::Vin' | abpLocalization }}</label>
+                            <div class="input-group" validationTarget>
+                                <input class="form-control" formControlName="vin" maxlength="17" />
+                                @if (canFetchVinDetails){
+                                <button type="button" class="btn btn-outline-info" (click)="getExternalCarDetails()">
+                                    {{ '::Fetch Details' | abpLocalization }}
+                                </button>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- COLOR -->
+                        <div class="col-12 form-group">
+                            <label class="form-label required">{{ '::Color' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="color" />
+                        </div>
+
+                        <!-- CAR MODEL -->
+                        <div class="col-12 form-group">
+                            <label class="form-label required">{{ '::CarModel' | abpLocalization }}</label>
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="modelId">
+                                @for (option of carModelOptions; track option) {
+                                <nz-option [nzLabel]="option.displayName" [nzValue]="option.id"></nz-option>
+                                }
+                            </nz-select>
+                        </div>
+
+                        <!-- CAR MODEL YEAR -->
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label required">{{ '::ModelYear' | abpLocalization }}</label>
+                            <input type="number" class="form-control" formControlName="modelYear" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Car Information -->
+
+            <!-- Owner Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::Owner' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <!-- OWNER -->
+                        <div class="col-12 form-group">
+                            <label class="form-label required">{{ '::Owner' | abpLocalization }}</label>
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="ownerId">
+                                @for (option of carOwnerOptions; track option) {
+                                <nz-option [nzLabel]="option.displayName" [nzValue]="option.id"></nz-option>
+                                }
+                                <nz-option [nzLabel]="`::${NOT_FOUND}` | abpLocalization"
+                                    [nzValue]="NOT_FOUND"></nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div class="row g-2 p-1 mt-1" formGroupName="owner"
+                        [class.d-none]="form.get('ownerId')?.value !== NOT_FOUND">
+                        <div class="col-12 border p-2 px-3">
+                            <div class="row g-2">
+                                <!-- OWNER NAME -->
+                                <div class="form-group col-12">
+                                    <label class="form-label required">{{ '::Name' | abpLocalization }}</label>
+                                    <input class="form-control" formControlName="name" />
+                                </div>
+
+                                <!-- OWNER EMAIL -->
+                                <div class="form-group col-12 col-md-6">
+                                    <label class="form-label">{{ '::Email' | abpLocalization }}</label>
+                                    <input class="form-control" formControlName="email" />
+                                </div>
+
+                                <!-- OWNER CONTACT ID -->
+                                <div class="form-group col-12 col-md-6">
+                                    <label class="form-label">{{ '::ContactId' | abpLocalization }}</label>
+                                    <input class="form-control" formControlName="contactId" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Owner Information -->
+
+            <!-- CNC Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::CncInformation' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <!-- CNC -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::Cnc' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="cnc" />
+                        </div>
+                        <!-- CNC Firewall -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::CncFirewall' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="cncFirewall" />
+                        </div>
+                        <!-- CNC Column -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::CncColumn' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="cncColumn" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- CNC Information -->
+
+            <!-- Delivery Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::Delivery' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <!-- START DATE -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::StartDate' | abpLocalization }}</label>
+                            <input #startDatepicker="ngbDatepicker" class="form-control" name="startDate"
+                                formControlName="startDate" ngbDatepicker (click)="startDatepicker.toggle()" />
+                        </div>
+
+                        <!-- Deliver DATE -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::DeliverDate' | abpLocalization }}</label>
+                            <input #deliverDatepicker="ngbDatepicker" class="form-control" name="deliverDate"
+                                formControlName="deliverDate" ngbDatepicker (click)="deliverDatepicker.toggle()" />
+                        </div>
+
+                        <!-- DUE DATE -->
+                        <div class="col-12 col-md-4 form-group">
+                            <label class="form-label">{{ '::DueDate' | abpLocalization }}</label>
+                            <input #dueDatepicker="ngbDatepicker" class="form-control" name="dueDate"
+                                formControlName="dueDate" ngbDatepicker (click)="dueDatepicker.toggle()" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Delivery Information -->
+
+            <!-- Additional Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::AdditionalInformation' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <!-- NOTES -->
+                        <div class="col-12 form-group">
+                            <label class="form-label">{{ '::Notes' | abpLocalization }}</label>
+                            <textarea class="form-control" rows="4" formControlName="notes"></textarea>
+                        </div>
+
+                        <!-- MISSING PARTS -->
+                        <div class="col-12 form-group">
+                            <label class="form-label">{{ '::MissingParts' | abpLocalization }}</label>
+                            <textarea class="form-control" rows="4" formControlName="missingParts"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Additional Information -->
+
+            <!-- Transit Information -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::TransitInformation' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::LocationStatus' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="locationStatus" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::BookingNumber' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="bookingNumber" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::EtaBrisbane' | abpLocalization }}</label>
+                            <input #etaBrisbanePicker="ngbDatepicker" class="form-control" name="etaBrisbane"
+                                formControlName="etaBrisbane" ngbDatepicker (click)="etaBrisbanePicker.toggle()" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::EtaScd' | abpLocalization }}</label>
+                            <input #etaScdPicker="ngbDatepicker" class="form-control" name="etaScd"
+                                formControlName="etaScd" ngbDatepicker (click)="etaScdPicker.toggle()" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::ClearingAgent' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="clearingAgent" />
+                        </div>
+
+                        <div class="col-12 col-md-6 form-group">
+                            <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
+                            <!-- <input class="form-control" formControlName="storageLocation" /> -->
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
+                                @for (option of storageLocationOptions; track option) {
+                                <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.key) | abpLocalization"
+                                    [nzValue]="option.value"></nz-option>
+                                }
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Transit Data -->
+
+            <!-- Stage -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::Stage' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="row g-2">
+                        <div class="col-12 form-group">
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage">
+                                @for (option of stageOptions; track option) {
+                                <nz-option [nzLabel]="('::Enum:Stage.' + option.key) | abpLocalization"
+                                    [nzValue]="option.value"></nz-option>
+                                }
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+            </div>
+            <!-- Stage -->
+
+        </form>
+        }
+
+    </ng-template>
+    <ng-template #abpFooter>
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+
+</abp-modal>

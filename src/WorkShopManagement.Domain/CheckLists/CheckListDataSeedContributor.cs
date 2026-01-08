@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Guids;
 using Volo.Abp.Uow;
 using WorkShopManagement.CarModels;
 
@@ -14,151 +16,111 @@ public class CheckListDataSeedContributor : ITransientDependency
 {
     private readonly IRepository<CheckList, Guid> _checkListRepository;
     private readonly IRepository<CarModel, Guid> _carModelRepository;
+    private readonly ILogger<CheckListDataSeedContributor> _logger;
+    private readonly IGuidGenerator _guidGenerator;
+    private readonly IUnitOfWorkManager _uowManager;
 
     public CheckListDataSeedContributor(
         IRepository<CheckList, Guid> checkListRepository,
-        IRepository<CarModel, Guid> carModelRepository)
+        IRepository<CarModel, Guid> carModelRepository,
+        ILogger<CheckListDataSeedContributor> logger,
+        IGuidGenerator guidGenerator,
+        IUnitOfWorkManager uowManager)
     {
         _checkListRepository = checkListRepository;
         _carModelRepository = carModelRepository;
+        _guidGenerator = guidGenerator;
+        _logger = logger;
+        _uowManager = uowManager;
     }
 
     [UnitOfWork]
     public async Task SeedAsync(DataSeedContext context)
     {
-        var templates = GetModelTemplates();
+        var seeds = GetDefaultCheckLists();
 
         var carModels = await _carModelRepository.GetListAsync();
-        var modelByName = carModels
-            .Where(m => !string.IsNullOrWhiteSpace(m.Name))
-            .ToDictionary(m => Normalize(m.Name), m => m);
-
-        foreach (var template in templates)
+        if (carModels == null || carModels.Count == 0)
         {
-            if (!modelByName.TryGetValue(Normalize(template.ModelName), out var model))
-            {
-                throw new Exception($"CarModel not found for checklist seeding: '{template.ModelName}'.");
-            }
-
-            foreach (var set in template.Sets)
-            {
-                if (set.Steps == null || set.Steps.Count == 0)
-                {
-                    throw new Exception(
-                        $"Checklist steps are empty. Model='{template.ModelName}', Type='{set.CheckListType}'.");
-                }
-
-                await SeedForModelAndTypeIfMissingAsync(model.Id, set.CheckListType, set.Steps);
-            }
-        }
-    }
-
-    private static string Normalize(string value)
-        => value.Trim().ToUpperInvariant();
-
-    private async Task SeedForModelAndTypeIfMissingAsync(
-        Guid modelId,
-        CheckListType checkListType,
-        List<(int Position, string Name)> steps)
-    {
-        var exists = await _checkListRepository.AnyAsync(x =>
-            x.CarModelId == modelId &&
-            x.CheckListType == checkListType);
-
-        if (exists)
-        {
+            _logger.LogInformation("No CarModels found. Skipping checklist seeding.");
             return;
         }
 
-        foreach (var (position, name) in steps.OrderBy(x => x.Position))
-        {
-            var entity = new CheckList(
-                id: Guid.NewGuid(),
-                name: name,
-                position: position,
-                carModelId: modelId,
-                checkListType: checkListType
-            );
+        _logger.LogInformation("Seeding default CheckLists for {Count} CarModels...", carModels.Count);
 
-            await _checkListRepository.InsertAsync(entity, autoSave: true);
+        var totalInserted = 0;
+
+        foreach (var carModel in carModels)
+        {
+            var existing = await _checkListRepository.GetListAsync(x => x.CarModelId == carModel.Id);
+
+            var existingNames = existing
+                .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+                .Select(x => x.Name.Trim())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var insertedForModel = 0;
+
+            foreach (var s in seeds.OrderBy(x => x.Position))
+            {
+                if (existingNames.Contains(s.Name))
+                {
+                    continue;
+                }
+
+                var entity = new CheckList(
+                    id: _guidGenerator.Create(),
+                    name: s.Name,
+                    position: s.Position,
+                    carModelId: carModel.Id
+                );
+
+                await _checkListRepository.InsertAsync(entity, autoSave: false);
+
+                insertedForModel++;
+                totalInserted++;
+            }
+
+            if (insertedForModel > 0)
+            {
+                _logger.LogInformation(
+                    "Inserted {Inserted} CheckLists for CarModel: {Name} ({Id})",
+                    insertedForModel, carModel.Name, carModel.Id
+                );
+            }
         }
+
+        await _uowManager.Current!.SaveChangesAsync();
+
+        _logger.LogInformation("Done. Total inserted CheckLists: {TotalInserted}", totalInserted);
     }
 
-
-    private static List<ModelTemplate> GetModelTemplates()
+    private static List<CheckListSeed> GetDefaultCheckLists()
         => new()
         {
-            new ModelTemplate(
-                ModelName: "Ford F-150 Lightning",
-                Sets: new List<CheckListTypeSet>
-                {
-                    new(CheckListType.Production,    GetFordLightning_Production()),
-                    new(CheckListType.SubProduction, GetFordLightning_SubProduction()),
-                    new(CheckListType.AncillaryTask, GetFordLightning_Ancillary()),
-                }
-            ),
-
-            new ModelTemplate(
-                ModelName: "F-150 Lightning Pro EXT",
-                Sets: new List<CheckListTypeSet>
-                {
-                    new(CheckListType.Production,    GetLightningProExt_Production()),
-                    new(CheckListType.SubProduction, GetLightningProExt_SubProduction()),
-                    new(CheckListType.AncillaryTask, GetLightningProExt_Ancillary()),
-                }
-            ),
+            new(1,  "Station 0 - Receiving Compliance Audit", true),
+            new(2,  "Station 1A", true),
+            new(3,  "Station 1B", true),
+            new(4,  "Station 2", true),
+            new(5,  "Station 3A", true),
+            new(6,  "Station 3B", true),
+            new(7,  "Station 4", true),
+            new(8,  "Station 5 (QC)", true),
+            new(9,  "Wheel Alignment", true),
+            new(10, "Quality Control", true),
+            new(11, "Quality Release", true),
+            new(12, "Dash Remanufacture", true),
+            new(13, "HVAC", true),
+            new(14, "Centre Console", true),
+            new(15, "Seats Conversion", true),
+            new(16, "Leather Seat Kit", true),
+            new(17, "Sub Assembly Electrical", true),
+            new(18, "Invoice", true),
+            new(19, "Procurement", true),
+            new(20, "AVV Package", true),
+            new(21, "Pre-Delivery Inspection", true),
+            new(22, "Quality", true)
         };
 
-    // Ford F-150 Lightning (CURRENT)
-
-    private static List<(int Position, string Name)> GetFordLightning_Production()
-        => new()
-        {
-            (1,  "Station 0 - Receiving Compliance Audit"),
-            (2,  "Station 1A"),
-            (3,  "Station 1B"),
-            (4,  "Station 2"),
-            (5,  "Station 3A"),
-            (6,  "Station 3B"),
-            (7,  "Station 4"),
-            (8,  "Station 5 (QC)"),
-            (9,  "Wheel Alignment"),
-            (10, "Quality Control"),
-            (11, "Quality Release"),
-        };
-
-    private static List<(int Position, string Name)> GetFordLightning_SubProduction()
-        => new()
-        {
-            (1, "Dash Remanufacture"),
-            (2, "HVAC"),
-            (3, "Centre Console"),
-            (4, "Seats Conversion"),
-            (5, "Leather Seat Kit"),
-            (6, "Sub Assembly Electrical"),
-        };
-
-    private static List<(int Position, string Name)> GetFordLightning_Ancillary()
-        => new()
-        {
-            (1, "Invoice"),
-            (2, "Procurement"),
-            (3, "AVV Package"),
-            (4, "Pre-Delivery Inspection"),
-            (5, "Quality"),
-        };
-
-    private static List<(int Position, string Name)> GetLightningProExt_Production()
-        => GetFordLightning_Production();
-
-    private static List<(int Position, string Name)> GetLightningProExt_SubProduction()
-        => GetFordLightning_SubProduction();
-
-    private static List<(int Position, string Name)> GetLightningProExt_Ancillary()
-        => GetFordLightning_Ancillary();
-
-    // Helper records
-    private sealed record ModelTemplate(string ModelName, List<CheckListTypeSet> Sets);
-
-    private sealed record CheckListTypeSet(CheckListType CheckListType, List<(int Position, string Name)> Steps);
+    private sealed record CheckListSeed(int Position, string Name, bool IsEnabled);
 }

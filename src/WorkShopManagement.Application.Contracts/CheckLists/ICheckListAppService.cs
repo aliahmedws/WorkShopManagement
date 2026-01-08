@@ -7,7 +7,7 @@ namespace WorkShopManagement.CheckLists;
 
 public interface ICheckListAppService : IApplicationService
 {
-    Task<PagedResultDto<CheckListDto>> GetListAsync(GetCheckListListDto input);
+    Task<PagedResultDto<CheckListDto?>> GetListAsync(GetCheckListListDto input);
 
     Task<CheckListDto> GetAsync(Guid id);
 

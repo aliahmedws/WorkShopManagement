@@ -9,6 +9,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CheckLists;
@@ -18,15 +19,25 @@ namespace WorkShopManagement.CheckLists;
 public class CheckListAppService : ApplicationService, ICheckListAppService
 {
     private readonly IRepository<CheckList, Guid> _checkListRepository;
+    private readonly IEntityAttachmentService _entityAttachmentAppService;
 
-    public CheckListAppService(IRepository<CheckList, Guid> checkListRepository)
+    public CheckListAppService(IRepository<CheckList, Guid> checkListRepository
+        , IEntityAttachmentService entityAttachmentAppService
+        )
     {
         _checkListRepository = checkListRepository;
+        _entityAttachmentAppService = entityAttachmentAppService;
     }
 
-    public async Task<PagedResultDto<CheckListDto>> GetListAsync(GetCheckListListDto input)
+    public async Task<PagedResultDto<CheckListDto?>> GetListAsync(GetCheckListListDto input)
     {
         var queryable = await _checkListRepository.GetQueryableAsync();
+
+        if(!input.Filter.IsNullOrWhiteSpace())
+        {
+            var f = input.Filter.Trim().ToLower();
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(f));
+        }
 
         if (input.CarModelId.HasValue)
         {
@@ -48,13 +59,32 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
         );
 
         var dtos = ObjectMapper.Map<List<CheckList>, List<CheckListDto>>(items);
-        return new PagedResultDto<CheckListDto>(totalCount, dtos);
+        foreach (var dto in dtos)
+        {
+            var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+            {
+                EntityId = dto.Id,
+                EntityType = EntityType.CheckList
+            });
+            dto.EntityAttachments = attachments!;
+        }
+        return new PagedResultDto<CheckListDto?>(totalCount, dtos);
     }
 
     public async Task<CheckListDto> GetAsync(Guid id)
     {
         var entity = await _checkListRepository.GetAsync(id);
-        return ObjectMapper.Map<CheckList, CheckListDto>(entity);
+        var dtos = ObjectMapper.Map<CheckList, CheckListDto>(entity);
+
+        var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+        {
+            EntityId = id,
+            EntityType = EntityType.CheckList
+        });
+
+        dtos.EntityAttachments = attachments!;
+
+        return dtos;
     }
 
 
@@ -62,6 +92,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
     public async Task<CheckListDto> CreateAsync(CreateCheckListDto input)
     {
         var name = input.Name?.Trim();
+
 
         var exists = await _checkListRepository.AnyAsync(x =>
             x.CarModelId == input.CarModelId &&
@@ -85,11 +116,19 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             GuidGenerator.Create(),
             name!,
             input.Position,
-            input.CarModelId,
-            input.CheckListType
+            input.CarModelId
         );
 
-        await _checkListRepository.InsertAsync(entity, autoSave: true);
+        entity = await _checkListRepository.InsertAsync(entity, autoSave: true);
+
+        // --- CREATE EntityAttachment 
+        await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
+        {
+            EntityType = EntityType.CheckList,
+            EntityId = entity.Id,
+            TempFiles = input.TempFiles
+        });
+        // --- create end
 
         return ObjectMapper.Map<CheckList, CheckListDto>(entity);
     }
@@ -123,24 +162,33 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
             throw new UserFriendlyException($"Position '{input.Position}' already exists for this car model.");
         }
 
+        entity.CarModelId = input.CarModelId;
+        entity.ChangeName(name!);
+        entity.ChangePosition(input.Position);
 
         if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
         {
             entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
         }
 
-        entity.CarModelId = input.CarModelId;
-        entity.CheckListType = input.CheckListType;
-        entity.ChangeName(name!);
-        entity.ChangePosition(input.Position);
-
         await _checkListRepository.UpdateAsync(entity, autoSave: true);
+
+        // --- UPDATE EntityAttachment 
+        await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+        {
+            EntityId = entity.Id,
+            EntityType = EntityType.CheckList,
+            TempFiles = input.TempFiles,
+            EntityAttachments = input.EntityAttachments
+        });
+        // --- update end
         return ObjectMapper.Map<CheckList, CheckListDto>(entity);
     }
 
     [Authorize(WorkShopManagementPermissions.CheckLists.Delete)]
     public async Task DeleteAsync(Guid id)
     {
+        await _entityAttachmentAppService.DeleteAsync(id, EntityType.CheckList);
         await _checkListRepository.DeleteAsync(id);
     }
 }

@@ -7,6 +7,11 @@ public static class WorkShopManagementDomainErrorCodes
     public const string NullField = "NullField:00006";
     public const string CarModelAlreadyExists = "CarModelAlreadyExists";
     public const string CarModelNotFound = "CarModelNotFound";
-    public const string PriorityAlreadyExists = "PriorityNumberExists";
+    public const string InvalidVinLength = "Error:InvalidVinLength";
+    public const string DuplicateRecord = "DuplicateRecord:00001";
+    public const string DuplicateRecordWithPropertyName = "DuplicateRecord:00002";
+    public const string DuplicateRecordWithValue = "DuplicateRecord:00003";
+    public const string MissingConfigurations = "MissingConfiguration:00001";
+    public const string MissingConfigurationsWithPropertyNames = "MissingConfiguration:00002";
 
 }

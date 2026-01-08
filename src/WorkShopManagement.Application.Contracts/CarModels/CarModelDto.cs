@@ -1,11 +1,12 @@
 ﻿using System;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.CarModels;
 
 public class CarModelDto
 {
     public Guid Id { get; set; }
+    public Guid ModelCategoryId { get; set; }
     public string Name { get; set; } = default!;
     public FileAttachmentDto FileAttachments { get; set; } = default!;
 }

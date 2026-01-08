@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
@@ -12,7 +13,6 @@ using Volo.Abp.Caching;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
-using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.OpenIddict;
@@ -20,8 +20,8 @@ using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.OpenIddict;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
-using WorkShopManagement.Localization;
 using WorkShopManagement.MultiTenancy;
+using WorkShopManagement.Utils.Exceptions;
 
 namespace WorkShopManagement;
 
@@ -38,8 +38,8 @@ namespace WorkShopManagement;
     typeof(AbpIdentityDomainModule),
     typeof(AbpOpenIddictDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(BlobStoringDatabaseDomainModule)
-    //typeof(AbpBlobStoringFileSystemModule)
+    typeof(BlobStoringDatabaseDomainModule),
+    typeof(AbpBlobStoringFileSystemModule)
     )]
 public class WorkShopManagementDomainModule : AbpModule
 {
@@ -50,34 +50,39 @@ public class WorkShopManagementDomainModule : AbpModule
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
        
-        //ConfigureBlobStoringOptions(context.Services.GetConfiguration());
+        ConfigureBlobStoringOptions(context.Services.GetConfiguration());
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
     }
 
-    //private void ConfigureBlobStoringOptions(IConfiguration configuration)
-    //{
-    //    Configure<AbpBlobStoringOptions>(options =>
-    //    {
-    //        options.Containers.ConfigureDefault(container =>
-    //        {
-    //            container.UseFileSystem(fileSystem =>
-    //            {
-    //                var storagePath = configuration["LocalStorageSetting:StoragePath"] ?? "images/files";
+    private void ConfigureBlobStoringOptions(IConfiguration configuration)
+    {
+        Configure<AbpBlobStoringOptions>(options =>
+        {
+            options.Containers.ConfigureDefault(container =>
+            {
+                container.UseFileSystem(fileSystem =>
+                {
+                    var baseDir = configuration["BlobStorageSettings:BaseDir"];
+                    var baseUrl = configuration["BlobStorageSettings:BaseUrl"];
 
-    //                var absolutePath = Path.Combine(
-    //                    Environment.CurrentDirectory, "wwwroot", storagePath);
+                    List<string> missingFields = [];
+                    if (string.IsNullOrWhiteSpace(baseDir))
+                        missingFields.Add("BlobStorageSettings:BaseDir");
+                    if (string.IsNullOrWhiteSpace(baseUrl))
+                        missingFields.Add("BlobStorageSettings:BaseUrl");
+                    if (missingFields.Count > 0)
+                    {
+                        throw new MissingConfigurationsException(missingFields.ToArray());
 
-    //                if (!Directory.Exists(absolutePath))
-    //                {
-    //                    Directory.CreateDirectory(absolutePath);
-    //                }
+                    }
 
-    //                fileSystem.BasePath = absolutePath;
-    //            });
-    //        });
-    //    });
-    //}
+                    //fileSystem.BasePath = Path.Combine(baseUrl!, "wwwroot", baseDir!);
+                    fileSystem.BasePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", baseDir!);
+                });
+            });
+        });
+    }
 }

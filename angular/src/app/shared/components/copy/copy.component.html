@@ -1,0 +1,13 @@
+<span class="copy-component" title="Copy" (click)="copy()">
+    @if (textPosition === 'start') {
+        <span [class]="_textClass">{{ text }}</span>
+    }
+    
+    @if (!hideIcon) {
+        <i class="fas fa-copy"></i>
+    }
+
+    @if (textPosition === 'end') {
+        <span [class]="_textClass">{{ text }}</span>
+    }
+</span>

@@ -1,34 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using Volo.Abp;
+using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.MultiTenancy;
 using WorkShopManagement.CarModels;
+using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.CheckLists;
 
-public class CheckList : FullAuditedAggregateRoot<Guid>, IMultiTenant
+[Audited]
+public class CheckList : FullAuditedAggregateRoot<Guid>
 {
-    public Guid? TenantId { get; set; }
     public Guid CarModelId { get; set; }
-    public virtual CarModel CarModels { get; set; }
+    public virtual CarModel CarModels { get; set; } = default!;
     public string Name { get; set; } = default!;
     public int Position { get; set; }
-    public CheckListType CheckListType { get; set; }
-    public virtual ICollection<ListItem> ListItems { get; set; }
+    public bool? EnableIssueItems { get; set; } = false;
+    public bool? EnableTags { get; set; } = false;
+    public bool? EnableCheckInReport { get; set; } = false;
 
-    private CheckList() 
+    public virtual ICollection<ListItem> ListItems { get; set; } = new List<ListItem>();
+    public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
+
+    private CheckList()
     {
         ListItems = new List<ListItem>();
     }
 
-    public CheckList(Guid id, string name, int position, Guid carModelId, CheckListType checkListType) : base(id)
+    public CheckList(Guid id, string name, int position, Guid carModelId) : base(id)
     {
         CarModelId = carModelId;
         SetName(name);
         SetPosition(position);
-        CheckListType = checkListType;
     }
 
     public CheckList ChangeName(string name)

@@ -1,92 +1,51 @@
-<div class="card">
-  <div class="card-header">
-    <div class="row">
-      <div class="col col-md-6">
-        <h5 class="card-title" >
-          {{ '::Menu:CarModels' | abpLocalization }}
-        </h5>
-      </div>
+<abp-page *abpPermission="'WorkShopManagement.CarModels'">
+  <app-topbar-layout titleKey="Menu:Variants" [(filters)]="filters" [list]="list">
+    <div topbarLeft>
+      <button type="button" class="btn btn-link p-0" (click)="goBack()" title="Back">
+        <i class="fa fa-arrow-left"></i>
+      </button>
     </div>
-  </div>
+    <div class="card">
+      <div class="card-body">
+        <ngx-datatable [rows]="carModels.items" [count]="carModels.totalCount" [list]="list" default>
+          <!-- Add CheckList button -->
+          <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div ngbDropdown container="body" class="d-inline-block">
+                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true" ngbDropdownToggle>
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                <div ngbDropdownMenu>
+                  <button *abpPermission="'WorkShopManagement.CheckLists.Create'" ngbDropdownItem
+                    (click)="addCheckList(row.id)">
+                    {{ '::CheckList' | abpLocalization }}
+                  </button>
 
-  <div class="card-body">
-    <ngx-datatable
-      [rows]="carModels.items"
-      [count]="carModels.totalCount"
-      [list]="list"
-      default
-    >
-      <!-- Name -->
-      <ngx-datatable-column
-        [name]="'::Name' | abpLocalization"
-        prop="name"
-      ></ngx-datatable-column>
-
-      <ngx-datatable-column
-        [name]="'::Image' | abpLocalization"
-        prop=""
-      >
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        @if (row.fileAttachments.path) {
-          <img [src]="row.fileAttachments.path" alt="car-model-image" class="img-fluid" style="max-height: 50px;">
-        }
-      </ng-template>
-    </ngx-datatable-column>
-      <!-- <ngx-datatable-column
-        [name]="'::Image' | abpLocalization"
-        [sortable]="false"
-        [maxWidth]="160"
-      >
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <div class="d-flex align-items-center gap-2">
-            <img
-              *ngIf="row.fileAttachments?.path; else noImg"
-              [src]="row.fileAttachments.path"
-              alt="car"
-              style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid #e9ecef;"
-            />
-
-            <ng-template #noImg>
-              <div
-                class="d-flex align-items-center justify-content-center"
-                style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #e9ecef; background: #f8f9fa;"
-              >
-                <i class="fa fa-image text-muted"></i>
+                </div>
               </div>
             </ng-template>
-
-            <a
-              *ngIf="row.fileAttachments?.path"
-              class="btn btn-link btn-sm p-0"
-              [href]="row.fileAttachments.path"
-              target="_blank"
-              rel="noopener"
-            >
-              {{ '::View' | abpLocalization }}
-            </a>
-          </div>
-        </ng-template>
-      </ngx-datatable-column> -->
-
-      <!-- Add CheckList button -->
-      <ngx-datatable-column
-        [name]="'::Actions' | abpLocalization"
-        [sortable]="false"
-        [maxWidth]="170"
-        *abpPermission="'WorkShopManagement.CheckLists.Create'"
-      >
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            (click)="addCheckList(row.id)"
-          >
-            <i class="fa fa-list-check me-1"></i>
-            {{ '::CheckList' | abpLocalization }}
-          </button>
-        </ng-template>
-      </ngx-datatable-column>
-
-    </ngx-datatable>
-  </div>
-</div>
+          </ngx-datatable-column>
+          <!-- Name -->
+          <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
+           <ngx-datatable-column [name]="'::Image' | abpLocalization" [sortable]="false" [width]="160">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="d-flex gap-2 flex-wrap">
+                <ng-container>
+                 <img
+                  *ngIf="row?.fileAttachments?.path"
+                  nz-image
+                  width="105"
+                  height="60"
+                  [nzSrc]="normilzeUrl(row.fileAttachments.path)"
+                  [alt]="row?.fileAttachments?.name || 'attachment'"
+                  style="object-fit: cover; border-radius: 6px;"
+                />
+                </ng-container>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+  </app-topbar-layout>
+</abp-page>

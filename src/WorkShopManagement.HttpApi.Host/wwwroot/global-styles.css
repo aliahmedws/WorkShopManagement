@@ -1,8 +1,205 @@
 :root {
-    --lpx-logo: url('/images/logo/leptonxlite/logo-light-thumbnail.png');
-    --lpx-logo-icon: url('/images/logo/leptonxlite/logo-light-thumbnail.png');
+    --lpx-logo: url('/images/logo/logo.png');
+    --lpx-logo-icon: url('/images/logo/logo.png');
 }
-:root .abp-account-layout .lpx-brand-logo{
-    --lpx-logo: url('/images/logo/leptonxlite/logo-dark-thumbnail.png');
-    background-position: left;
+
+.abp-account-layout .lpx-brand-name {
+    display: none !important;
+}
+
+:root {
+    --brand-primary: #05354c;
+    --brand-primary-dark: #001d29;
+    --brand-primary-light: #285369;
+    --brand-secondary: #535D8E;
+    --brand-secondary-dark: #35027B;
+    --brand-secondary-light: #5979D9;
+    --brand-tertiary: #72D0FF;
+    --brand-tertiary-light: #D0EFFF;
+    --brand-tertiary-dark: #2EB9FF;
+    --accent-success: #008F45;
+    --accent-warning: #ff9f38;
+    --accent-danger: #af0000;
+    --accent-info: #65A4A4;
+    --bs-danger: var(--accent-danger);
+    --text-primary: var(--bs-body-color, #686b6e);
+}
+
+    :root .abp-account-layout .lpx-brand-logo {
+        width: 280px;
+    }
+
+/* Primary button: "Login" */
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #05354c;
+    --bs-btn-border-color: #05354c;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: rgb(4, 42.4, 60.8);
+    --bs-btn-hover-border-color: rgb(3.6, 38.16, 54.72);
+    --bs-btn-focus-shadow-rgb: 7.6481481481, 81.0703703704, 116.2518518519;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgb(3.25, 34.45, 49.4);
+    --bs-btn-active-border-color: rgb(2.925, 31.005, 44.46);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.6);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #05354c;
+    --bs-btn-disabled-border-color: #05354c;
+}
+
+/* Outline button: language selector */
+.btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #05354c;
+    --bs-btn-border-color: #05354c;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: rgb(4, 42.4, 60.8);
+    --bs-btn-hover-border-color: rgb(3.6, 38.16, 54.72);
+    --bs-btn-focus-shadow-rgb: 7.6481481481, 81.0703703704, 116.2518518519;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgb(3.25, 34.45, 49.4);
+    --bs-btn-active-border-color: rgb(2.925, 31.005, 44.46);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.6);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #05354c;
+    --bs-btn-disabled-border-color: #05354c;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #05354c;
+    --bs-btn-border-color: #05354c;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: #05354c;
+    --bs-btn-hover-border-color: #05354c;
+    --bs-btn-focus-shadow-rgb: #05354c;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgb(4.25, 45.05, 64.6);
+    --bs-btn-active-border-color: rgb(4.25, 45.05, 64.6);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #05354c;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #05354c;
+    --bs-gradient: none;
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: #05354c;
+    --bs-btn-border-color: #05354c;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: #05354c;
+    --bs-btn-hover-border-color: #05354c;
+    --bs-btn-focus-shadow-rgb: #05354c;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: rgb(4.25, 45.05, 64.6);
+    --bs-btn-active-border-color: rgb(4.25, 45.05, 64.6);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #05354c;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #05354c;
+    --bs-gradient: none;
+}
+
+.btn-warning {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--accent-warning);
+    --bs-btn-border-color: var(--accent-warning);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #f39633;
+    --bs-btn-hover-border-color: #f39633;
+    --bs-btn-focus-shadow-rgb: #f39633;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #e38e33;
+    --bs-btn-active-border-color: #e38e33;
+    --bs-btn-active-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--accent-warning);
+    --bs-btn-disabled-border-color: var(--accent-warning);
+}
+
+.abp-account-layout a:not(.btn),
+.abp-account-layout .abp-link {
+    color: var(--brand-primary);
+}
+
+.form-control,
+.form-select,
+.btn {
+    border-radius: 0.25rem;
+}
+
+.text-danger {
+    color: var(--accent-danger) !important;
+}
+
+.has-validation .input-group-text {
+    border-color: var(--accent-danger);
+}
+
+.form-check-input:checked {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+
+.form-check-input:focus {
+    border-color: #e7e9ec;
+    box-shadow: 0 0 0 0.15rem #535D8E40;
+}
+
+select.form-select option:checked,
+select.form-select option:focus,
+select.form-select option:active {
+    background: var(--brand-primary-light) !important;
+}
+
+select.form-select option:hover {
+    background: var(--brand-primary-light) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.15rem rgba(var(--brand-primary-rgb), 0.25);
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-primary);
+}
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: rgba(var(--brand-primary-rgb), 0.06);
+        color: var(--text-primary);
+    }
+
+    .dropdown-menu .dropdown-item.active,
+    .dropdown-menu .dropdown-item:active {
+        background-color: var(--brand-primary);
+        color: #ffffff;
+    }
+
+
+div:where(.swal2-icon).swal2-error {
+    border-color: var(--accent-danger) !important;
+    color: var(--accent-danger) !important;
+}
+
+    div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line] {
+        background-color: var(--accent-danger) !important;
+    }
+
+div:where(.swal2-icon).swal2-warning {
+    border-color: var(--accent-warning) !important;
+    color: var(--accent-warning) !important;
+}
+
+.abp-account-layout {
+    background-color: #036;
+}
+
+.lpx-content-container {
+    background: transparent;
+}
+
+.card .card-body {
+    border-radius: var(--bs-border-radius) !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }

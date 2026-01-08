@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +29,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
 using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
+using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.Identity;
@@ -41,6 +45,8 @@ using Volo.Abp.VirtualFileSystem;
 using WorkShopManagement.EntityFrameworkCore;
 using WorkShopManagement.HealthChecks;
 using WorkShopManagement.MultiTenancy;
+using WorkShopManagement.Pages.Account;
+using WorkShopManagement.Workers;
 
 namespace WorkShopManagement;
 
@@ -94,7 +100,6 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
 
-        ConfigureBlobStoringOptions(context);
 
         if (!configuration.GetValue<bool>("App:DisablePII"))
         {
@@ -127,6 +132,15 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
+        context.Services.AddAuthentication().AddCookie(ConfirmUserModel.ConfirmUserScheme, options =>
+        {
+            options.LoginPath = new PathString("/Account/Login");
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+            options.Events = new CookieAuthenticationEvents
+            {
+                OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync
+            };
+        });
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
@@ -283,28 +297,8 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseConfiguredEndpoints();
+    
+        context.AddBackgroundWorkerAsync<TempFileCleanupWorker>();
     }
 
-    private void ConfigureBlobStoringOptions(ServiceConfigurationContext context)
-    {
-        var configuration = context.Services.GetConfiguration();
-        var env = context.Services.GetHostingEnvironment(); // IWebHostEnvironment in host
-
-        Configure<AbpBlobStoringOptions>(options =>
-        {
-            options.Containers.ConfigureDefault(container =>
-            {
-                container.UseFileSystem(fileSystem =>
-                {
-                    var storagePath = configuration["LocalStorageSetting:StoragePath"] ?? "images";
-                    var webRootPath = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
-
-                    var absolutePath = Path.Combine(webRootPath, storagePath);
-                    Directory.CreateDirectory(absolutePath);
-
-                    fileSystem.BasePath = absolutePath; // => wwwroot/images
-                });
-            });
-        });
-    }
 }

@@ -10,20 +10,35 @@ export const APP_ROUTE_PROVIDER = [
 function configureRoutes() {
   const routes = inject(RoutesService);
   routes.add([
-      {
-        path: '/',
-        name: '::Menu:Home',
-        iconClass: 'fas fa-home',
-        order: 1,
-        layout: eLayoutType.application,
-      },
-       {
-      path: '/car-models',
-      name: '::Menu:CarModels',
-      iconClass: 'fas fa-car',
+    {
+      path: '/',
+      name: '::Menu:Home',
+      iconClass: 'fas fa-home',
+      order: 1,
+      layout: eLayoutType.application,
+    },
+    {
+      path: '/production-manager',
+      name: '::Menu:ProductionManager',
+      iconClass: 'fas fa-gauge',
       order: 2,
       layout: eLayoutType.application,
-      requiredPolicy: 'WorkShopManagement.CarModels',
+    },
+    {
+      path: '/cars',
+      name: '::Menu:Cars',
+      iconClass: 'fas fa-car',
+      order: 3,
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Cars',
+    },
+    {
+      path: '/vehicles',
+      name: '::Menu:Vehicles',
+      iconClass: 'fas fa-car',
+      order: 4,
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Vehicles',
     },
     // {
     //   path: '/check-lists',

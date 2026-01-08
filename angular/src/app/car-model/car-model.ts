@@ -5,11 +5,17 @@ import { CommonModule } from '@angular/common';
 import { PageModule } from '@abp/ng.components/page';
 
 import { CarModelDto, CarModelService, GetCarModelListDto } from '../proxy/car-models';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import {
+  GetModelCategoryListDto,
+  ModelCategoryDto,
+  ModelCategoryService,
+} from '../proxy/model-categories';
 
 @Component({
   selector: 'app-car-model',
-  imports: [CommonModule, PageModule, ThemeSharedModule, LocalizationPipe, PermissionDirective],
+  imports: [...SHARED_IMPORTS],
   templateUrl: './car-model.html',
   styleUrl: './car-model.scss',
   providers: [ListService],
@@ -20,24 +26,37 @@ export class CarModel implements OnInit {
   public readonly list = inject(ListService);
   private readonly carModelService = inject(CarModelService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  modelCategoryId: string | null = null;
+
+  filters = {} as GetCarModelListDto;
 
   ngOnInit(): void {
-    const streamCreator = (query) => {
-      const input: GetCarModelListDto = {
-        skipCount: query.skipCount,
-        maxResultCount: query.maxResultCount,
-        sorting: query.sorting
-      };
+    this.modelCategoryId = this.route.snapshot.queryParamMap.get('modelCategoryId');
 
-      return this.carModelService.getList(input);
-    };
+    this.filters.modelCategoryId = this.modelCategoryId ?? undefined;
 
-    this.list.hookToQuery(streamCreator).subscribe((response) => {
+    const streamCreator = (query: GetCarModelListDto) =>
+      this.carModelService.getList({ ...query, ...this.filters });
+
+    this.list.hookToQuery(streamCreator).subscribe((response: PagedResultDto<CarModelDto>) => {
       this.carModels = response;
     });
+
+    this.list.get();
   }
 
+
   addCheckList(carModelId: string): void {
-    this.router.navigate(['check-lists'], { queryParams: { carModelId }});
+    this.router.navigate(['check-lists'], { queryParams: { carModelId, modelCategoryId: this.modelCategoryId } });
+  }
+
+   goBack(): void {
+    this.router.navigate(['/vehicles']);
+  }
+
+   normilzeUrl(url?: string) {
+    return (url ?? '').replace(/\\/g, '/');
   }
 }

@@ -16,7 +16,8 @@ public sealed class RestClientFactory : IRestClientFactory, ITransientDependency
         var options = new RestClientOptions(baseUrl.TrimEnd('/'))
         {
             Timeout = timeout,
-            ThrowOnAnyError = false
+            ThrowOnAnyError = false,
+            Authenticator = profile.Authenticator
         };
 
         var client = new RestClient(options);

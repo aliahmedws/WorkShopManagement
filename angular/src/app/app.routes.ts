@@ -24,6 +24,18 @@ export const APP_ROUTES: Routes = [
     loadChildren: () => import('@abp/ng.setting-management').then(c => c.createRoutes()),
   },
   {
+    path: 'cars',
+    loadComponent: () => import('./cars/cars').then(m => m.Cars),
+  },
+  {
+    path: 'new-car',
+    loadComponent: () => import('./cars/car-create-edit-modal/car-create-edit-modal').then(m => m.CarCreateEditModal),
+  },
+  {
+    path: 'vehicles',
+    loadComponent: () => import('./model-categories/model-categories').then(m => m.ModelCategories),
+  },
+  {
     path: 'car-models',
     loadComponent: () => import('./car-model/car-model').then(m => m.CarModel),
   },
@@ -31,12 +43,16 @@ export const APP_ROUTES: Routes = [
     path: 'check-lists',
     loadComponent: () => import('./check-list/check-list').then(m => m.CheckList),
   },
-   {
+  {
     path: 'list-items',
     loadComponent: () => import('./list-item/list-item').then(m => m.ListItem),
   },
   {
     path: 'priorities',
     loadComponent: () => import('./priorities/priorities').then(m => m.Priorities),
+  }
+  {
+    path: 'production-manager',
+    loadComponent: () => import('./production-manager/production-manager').then(m => m.ProductionManager),
   }
 ];

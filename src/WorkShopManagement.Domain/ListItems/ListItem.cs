@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.MultiTenancy;
 using WorkShopManagement.CheckLists;
-using WorkShopManagement.FileAttachments;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.ListItems;
 
-public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
+[Audited]
+public class ListItem : FullAuditedAggregateRoot<Guid>
 {
-    public Guid? TenantId { get; set; }
-
     public Guid CheckListId { get; set; }
     public virtual CheckList CheckLists { get; set; }
 
@@ -17,18 +18,20 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
 
     public string Name { get; set; } = default!;
 
-    public string CommentPlaceholder { get; set; } = default!;
+    public string? CommentPlaceholder { get; set; } = default!;
 
-    public CommentType CommentType { get; set; }
+    public CommentType? CommentType { get; set; }
 
-    public bool IsAttachmentRequired { get; set; }
+    public bool? IsAttachmentRequired { get; set; }
 
-    public bool IsSeparator { get; set; }
+    public bool? IsSeparator { get; set; }
 
-    public FileAttachment Attachment { get; set; }
+    public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
+    public virtual ICollection<RadioOption> RadioOptions { get; set; }
 
     private ListItem()
     {
+        RadioOptions = new List<RadioOption>();
     }
 
     public ListItem(
@@ -36,10 +39,10 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
         Guid checkListId,
         int position,
         string name,
-        string commentPlaceholder,
-        CommentType commentType,
-        bool isAttachmentRequired,
-        bool isSeparator) : base(id)
+        string? commentPlaceholder,
+        CommentType? commentType,
+        bool? isAttachmentRequired,
+        bool? isSeparator) : base(id)
     {
         CheckListId = checkListId;
         Position = position;
@@ -53,10 +56,10 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
     public void Update(
         int position,
         string name,
-        string commentPlaceholder,
-        CommentType commentType,
-        bool isAttachmentRequired,
-        bool isSeparator)
+        string? commentPlaceholder,
+        CommentType? commentType,
+        bool? isAttachmentRequired,
+        bool? isSeparator)
     {
         Position = position;
         Name = name;
@@ -64,15 +67,5 @@ public class ListItem : FullAuditedAggregateRoot<Guid>, IMultiTenant
         CommentType = commentType;
         IsAttachmentRequired = isAttachmentRequired;
         IsSeparator = isSeparator;
-    }
-
-    public void SetAttachment(FileAttachment attachment)
-    {
-        Attachment = attachment;
-    }
-
-    public void ClearAttachment()
-    {
-        Attachment = null;
     }
 }
