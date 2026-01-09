@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarService, CarDto, ExternalCarDetailsDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-// import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
@@ -13,7 +13,7 @@ import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
   imports: [...SHARED_IMPORTS],
   templateUrl: './car-create-edit-modal.html',
   styleUrl: './car-create-edit-modal.scss',
-  // providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
+  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
 export class CarCreateEditModal {
   private readonly fb = inject(FormBuilder);
