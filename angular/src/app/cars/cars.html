@@ -27,6 +27,10 @@
                                         (click)="delete(row.id)">
                                         {{ '::Delete' | abpLocalization }}
                                     </button>
+                                    <button *abpPermission="'WorkShopManagement.Issues'" ngbDropdownItem
+                                        (click)="showIssues(row)">
+                                        {{ '::Issues' | abpLocalization }}
+                                    </button>
                                 </div>
                             </div>
                         </ng-template>
@@ -41,5 +45,6 @@
         </div>
 
         <app-car-create-edit-modal [(visible)]="isModalVisible" [carId]="selectedId" (submit)="list?.get()" />
+        <app-issue-modal [(visible)]="isIssueModalVisible" [car]="selectedCar"></app-issue-modal>
     </app-topbar-layout>
 </abp-page>

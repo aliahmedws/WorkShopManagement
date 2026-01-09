@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { stageOptions } from 'src/app/proxy/cars/stages';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
@@ -24,6 +24,8 @@ export class DamageMarkerDetails {
   @Input() issue = {} as IssueDto;
 
   @Output() submit = new EventEmitter<UpsertIssueDto>();
+
+  @Input() canUpsert: boolean = false;
 
   loading = false;
 
@@ -63,6 +65,10 @@ export class DamageMarkerDetails {
     });
     this.tempFiles = this.filesState.get({ ...issue });
     this.existingFiles = issue.entityAttachments || [];
+
+    if (!this.canUpsert) {
+      this.form.disable();
+    }
   }
 
   save() {

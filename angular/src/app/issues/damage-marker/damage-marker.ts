@@ -21,6 +21,8 @@ export class DamageMarker {
 
   @Input() vin: string | null;
 
+  @Input() canUpsert: boolean = false;
+
   isModalOpen = false;
 
   selectedIssue = {} as IssueDto;

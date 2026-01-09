@@ -4,10 +4,11 @@ import { CarService, CarDto, GetCarListInput } from '../proxy/cars';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { CarCreateEditModal } from './car-create-edit-modal/car-create-edit-modal';
 import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
+import { IssueModal } from '../issues/issue-modal/issue-modal';
 
 @Component({
   selector: 'app-cars',
-  imports: [...SHARED_IMPORTS, CarCreateEditModal],
+  imports: [...SHARED_IMPORTS, CarCreateEditModal, IssueModal],
   templateUrl: './cars.html',
   styleUrl: './cars.scss',
   providers: [ListService],
@@ -23,7 +24,10 @@ export class Cars implements OnInit {
 
   isModalVisible = false;
   selectedId?: string;
+  selectedCar: CarDto;
 
+  isIssueModalVisible = false;
+  
   ngOnInit(): void {
     const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
@@ -45,5 +49,10 @@ export class Cars implements OnInit {
 
       this.carService.delete(id).subscribe(() => this.list.get());
     });
+  }
+
+  showIssues(car: CarDto): void {
+    this.selectedCar = car;
+    this.isIssueModalVisible = true;
   }
 }

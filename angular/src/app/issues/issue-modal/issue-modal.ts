@@ -6,6 +6,7 @@ import { CarDto } from 'src/app/proxy/cars';
 import { IssueStatusBadge } from "../issue-status-badge/issue-status-badge";
 import { IssueFilesState } from '../utils/issue-files-state.service';
 import { mapToUpsertIssueDto } from '../utils/issues.utils';
+import { PermissionService } from '@abp/ng.core';
 
 @Component({
   selector: 'app-issue-modal',
@@ -16,6 +17,7 @@ import { mapToUpsertIssueDto } from '../utils/issues.utils';
 export class IssueModal {
   private issueService = inject(IssueService);
   private filesState = inject(IssueFilesState);
+  private permission = inject(PermissionService);
 
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -23,6 +25,8 @@ export class IssueModal {
   @Input() car: CarDto | null = null;
 
   loading: boolean = false;
+
+  canUpsert: boolean = false;
 
   modalOptions = {
     size: 'xl',
@@ -38,6 +42,7 @@ export class IssueModal {
   };
 
   appear() {
+    this.canUpsert = this.permission.getGrantedPolicy('WorkShopManagement.Issues.Upsert');
     this.issues = [];
     this.filesState.clearAll();
 

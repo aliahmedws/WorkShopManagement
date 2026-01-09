@@ -19,7 +19,7 @@
             : '::Issue:UnresolvedBrokenOrMissingPartCountIsNone')
             | abpLocalization:missingOrBrokenItemsCount }}
         </h5>
-        <app-damage-marker [(issues)]="issues" [vin]="car?.vin" (submit)="onIssuesSubmit()"></app-damage-marker>
+        <app-damage-marker [(issues)]="issues" [vin]="car?.vin" (submit)="onIssuesSubmit()" [canUpsert]="canUpsert"></app-damage-marker>
         <hr>
         <h5>{{ '::IssueList' | abpLocalization }}</h5>
         @if (issues?.length) {
@@ -59,9 +59,11 @@
         <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
+        @if (canUpsert) {
         <button type="submit" class="btn btn-primary px-3" (click)="save()">
             <i class="fas fa-save me-1"></i>
             {{ '::Save' | abpLocalization }}
         </button>
+        }
     </ng-template>
 </abp-modal>
