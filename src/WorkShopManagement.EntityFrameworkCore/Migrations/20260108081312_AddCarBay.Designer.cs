@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260108081312_AddCarBay")]
+    partial class AddCarBay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1945,76 +1948,6 @@ namespace WorkShopManagement.Migrations
                     b.ToTable("AppBays", (string)null);
                 });
 
-            modelBuilder.Entity("WorkShopManagement.CarBayItems.CarBayItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CarBayId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CheckListItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CheckRadioOption")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<string>("Comments")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CarBayId");
-
-                    b.HasIndex("CheckListItemId");
-
-                    b.ToTable("AppCarBayItems", (string)null);
-                });
-
             modelBuilder.Entity("WorkShopManagement.CarBays.CarBay", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2128,9 +2061,6 @@ namespace WorkShopManagement.Migrations
                     b.Property<string>("PulseNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("QualityGateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("ReWorkDate")
                         .HasColumnType("datetime2");
 
@@ -2151,8 +2081,6 @@ namespace WorkShopManagement.Migrations
                     b.HasIndex("BayId");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("QualityGateId");
 
                     b.ToTable("AppCarBays", (string)null);
                 });
@@ -2445,118 +2373,6 @@ namespace WorkShopManagement.Migrations
                         .IsUnique();
 
                     b.ToTable("AppVinInfos", (string)null);
-                });
-
-            modelBuilder.Entity("WorkShopManagement.CheckInReports.CheckInReport", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("AvcStickerCut")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AvcStickerPrinted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BuildMonth")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BuildYear")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("CarId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ComplianceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CompliancePlatePrinted")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasColumnName("ConcurrencyStamp");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreationTime");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatorId");
-
-                    b.Property<Guid?>("DeleterId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("DeleterId");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletionTime");
-
-                    b.Property<string>("Emission")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("EngineNumber")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int?>("EntryKms")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ExtraProperties")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ExtraProperties");
-
-                    b.Property<double?>("FrontGwar")
-                        .HasColumnType("float");
-
-                    b.Property<string>("FrontMoterNumber")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false)
-                        .HasColumnName("IsDeleted");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("LastModificationTime");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LastModifierId");
-
-                    b.Property<double?>("MaxTowingCapacity")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("RearGwar")
-                        .HasColumnType("float");
-
-                    b.Property<string>("RearMotorNumber")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("ReportStatus")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("TyreLabel")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CarId")
-                        .IsUnique();
-
-                    b.ToTable("AppCheckInReports", (string)null);
                 });
 
             modelBuilder.Entity("WorkShopManagement.CheckLists.CheckList", b =>
@@ -3195,25 +3011,6 @@ namespace WorkShopManagement.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WorkShopManagement.CarBayItems.CarBayItem", b =>
-                {
-                    b.HasOne("WorkShopManagement.CarBays.CarBay", "CarBay")
-                        .WithMany("CarBayItems")
-                        .HasForeignKey("CarBayId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WorkShopManagement.ListItems.ListItem", "ListItem")
-                        .WithMany("CarBayItems")
-                        .HasForeignKey("CarBayId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CarBay");
-
-                    b.Navigation("ListItem");
-                });
-
             modelBuilder.Entity("WorkShopManagement.CarBays.CarBay", b =>
                 {
                     b.HasOne("WorkShopManagement.Bays.Bay", "Bay")
@@ -3228,16 +3025,9 @@ namespace WorkShopManagement.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WorkShopManagement.QualityGates.QualityGate", "QualityGate")
-                        .WithMany("CarBays")
-                        .HasForeignKey("QualityGateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Bay");
 
                     b.Navigation("Car");
-
-                    b.Navigation("QualityGate");
                 });
 
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
@@ -3294,17 +3084,6 @@ namespace WorkShopManagement.Migrations
                     b.Navigation("Model");
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("WorkShopManagement.CheckInReports.CheckInReport", b =>
-                {
-                    b.HasOne("WorkShopManagement.Cars.Car", "Car")
-                        .WithOne()
-                        .HasForeignKey("WorkShopManagement.CheckInReports.CheckInReport", "CarId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("WorkShopManagement.CheckLists.CheckList", b =>
@@ -3467,11 +3246,6 @@ namespace WorkShopManagement.Migrations
                     b.Navigation("CarBays");
                 });
 
-            modelBuilder.Entity("WorkShopManagement.CarBays.CarBay", b =>
-                {
-                    b.Navigation("CarBayItems");
-                });
-
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
                 {
                     b.Navigation("CheckLists");
@@ -3495,19 +3269,12 @@ namespace WorkShopManagement.Migrations
                 {
                     b.Navigation("Attachments");
 
-                    b.Navigation("CarBayItems");
-
                     b.Navigation("RadioOptions");
                 });
 
             modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
                 {
                     b.Navigation("CarModels");
-                });
-
-            modelBuilder.Entity("WorkShopManagement.QualityGates.QualityGate", b =>
-                {
-                    b.Navigation("CarBays");
                 });
 #pragma warning restore 612, 618
         }
