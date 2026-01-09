@@ -31,8 +31,8 @@ export class CheckInReportModal {
   existingReport = {} as CheckInReportDto;
 
   // Enums for Select Lists
-  // choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
-  // storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
+  choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
+  storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
 
   modalOptions = {
     size: 'lg',
