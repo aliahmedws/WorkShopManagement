@@ -10,7 +10,7 @@
     "NullField:00006": "A required field is missing or empty. Please complete all required fields and try again.",
     "CarModelAlreadyExists": "A car model with the same name : {name} already exists. Please use a different name.",
     "CarModelNotFound": "Car model was not found.",
-
+    "Permission:ProductionManager": "Production Manager",
     "Permission:Cars": "Cars",
     "Permission:Create": "Create",
     "Permission:Edit": "Edit",
@@ -148,6 +148,8 @@
     "Car": "Car",
     "Select": "Select",
     "BuildDate": "Build Date",
+    "BuildMonth": "Build Month",
+    "BuildYear": "Build Year",
     "CheckInSumbitterUser": "Check-In Submitter User",
     "AvcStickerCut": "AVC Sticker Cut",
     "AvcStickerPrinted": "AVC Sticker Printed",
@@ -156,11 +158,10 @@
     "Emission": "Emission",
     "EngineNumber": "Engine Number",
     "EntryKms": "Entry (KMs)",
-    "FrontGwar": "Front GWAR",
-    "FrontMoterNumbr": "Front Motor Number",
-    "RearGwar": "Rear GWAR",
+    "FrontGwar": "Front GWAR (KG)",
+    "FrontMotorNumber": "Front Motor Number",
+    "RearGwar": "Rear GWAR (KG)",
     "RearMotorNumber": "Rear Motor Number",
-    "HsObjectId": "HS Object ID",
     "MaxTowingCapacity": "Max Towing Capacity",
     "TyreLabel": "Tyre Label",
     "RsvaImportApproval": "RSVA Import Approval",
@@ -231,6 +232,8 @@
     "CheckInReport:InvalidRearGwar": "Rear GWAR \"{RearGwar}\" is incorrect. Rear GWAR cannot be negative.",
     "CheckInReport:InvalidMaxTowingCapacity": "Max towing capacity \"{MaxTowingCapacity}\" is incorrect. Max towing capacity cannot be negative.",
     "Enum:ChoiceOptions.1": "Yes",
-    "Enum:ChoiceOptions.2": "No"
+    "Enum:ChoiceOptions.2": "No",
+    "AvcStickers": "AVC Stickers",
+    "AvcStickersNew": "AVC Stickers New"
   }
 }

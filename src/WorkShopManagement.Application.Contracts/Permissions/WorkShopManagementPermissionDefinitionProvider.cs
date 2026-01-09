@@ -44,6 +44,9 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Edit, L("Permission:QualityGates.Edit"));
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Delete, L("Permission:QualityGates.Delete"));
 
+    
+        var productionManagerPermissions = myGroup.AddPermission(WorkShopManagementPermissions.ProductionManager.Default, L("Permission:ProductionManager"));
+
     }
 
     private static LocalizableString L(string name)

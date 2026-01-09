@@ -28,7 +28,6 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
     public async Task<List<CheckInReport>> GetListAsync(CheckInReportFiltersInput filter)
     {
         var query = await GetFilteredQueryAsync(filter, asNoTracking: true);
-
         return await query
             .PageBy(filter.SkipCount, filter.MaxResultCount)
             .ToListAsync();

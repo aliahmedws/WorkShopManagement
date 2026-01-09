@@ -1,6 +1,6 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="modal-title">{{ '::Recalls' | abpLocalization }}</h3>
+        <h3 class="modal-title">{{ '::Recalls' | abpLocalization }} <span>{{ " - " + car.vin }} </span></h3>
     </ng-template>
 
     <ng-template #abpBody>
@@ -216,12 +216,12 @@
     </ng-template>
 
     <ng-template #abpFooter>
-        <button abpClose type="button" class="btn btn-light me-2" [disabled]="saving">
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="loading || saving">
+        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">
             <i class="fas fa-save me-1"></i>
-            {{ saving ? ('::Saving' | abpLocalization) : ('::Save' | abpLocalization) }}
+            {{ '::Save' | abpLocalization }}
         </button>
     </ng-template>
 </abp-modal>

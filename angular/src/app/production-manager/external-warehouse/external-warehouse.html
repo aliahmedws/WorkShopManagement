@@ -52,7 +52,11 @@
                     </ngx-datatable-column>
                     <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [maxWidth]="80" [sortable]="false"></ngx-datatable-column>
                     <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100" [sortable]="false"></ngx-datatable-column>
-                    <ngx-datatable-column [name]="'::Est. Release' | abpLocalization"prop="deliverDate" [maxWidth]="120"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Est. Release' | abpLocalization"prop="deliverDate" [maxWidth]="120">
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{ value | date:'shortDate' }}
+                        </ng-template>
+                    </ngx-datatable-column>
                     <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization"
                         prop="bookingNumber" [maxWidth]="150"></ngx-datatable-column>
                     <ngx-datatable-column [name]="'::ClearingAgent' | abpLocalization" prop="clearingAgent"

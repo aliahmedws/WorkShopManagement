@@ -62,4 +62,10 @@ public static class WorkShopManagementPermissions
         public const string Delete = Default + ".Delete";
     }
 
+    public static class ProductionManager
+    {
+        public const string Default = GroupName + ".ProductionManager";
+    }
+
+
 }

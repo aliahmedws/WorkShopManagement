@@ -50,6 +50,7 @@ import { RecallService, RecallDto, ExternalRecallDetailDto, CreateRecallDto, Upd
 import { RecallStatus } from '../proxy/recalls/recall-status.enum';
 import { RecallType } from '../proxy/recalls/recall-type.enum';
 import { ToasterHelperService } from '../shared/services/toaster-helper.service';
+import { CarDto } from '../proxy/cars';
 
 @Component({
   selector: 'app-recalls',
@@ -62,7 +63,7 @@ export class Recalls {
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService);
 
-  @Input() carId?: string;
+  @Input() car: CarDto;
   @Output() submit = new EventEmitter<boolean>();
 
   @Input() visible: boolean = false;
@@ -119,12 +120,12 @@ export class Recalls {
     this.dbRows.clear();
     this.externalRows.clear();
 
-    if (!this.carId) {
+    if (!this.car.id) {
       this.loading = false;
       return;
     }
 
-    this.recallService.getListByCar(this.carId).subscribe((recalls) => {
+    this.recallService.getListByCar(this.car.id).subscribe((recalls) => {
       this.recalls = recalls ?? [];
 
       if (this.recalls.length > 0) {
@@ -136,7 +137,7 @@ export class Recalls {
 
       // No DB recalls => load external
       this.mode = 'external';
-      this.recallService.getRecallsFromExternalService(this.carId!).subscribe((external) => {
+      this.recallService.getRecallsFromExternalService(this.car.id!).subscribe((external) => {
         this.externalRecalls = external ?? [];
         this.buildExternalRows(this.externalRecalls);
         this.loading = false;
@@ -253,13 +254,13 @@ export class Recalls {
     // External mode
     this.externalRows.markAllAsTouched();
     if (this.externalRows.invalid) return;
-    if (!this.carId) return;
+    if (!this.car.id) return;
 
     const requests = this.externalRows.controls.map((fg) => {
       const v = fg.value;
 
       const payload: CreateRecallDto = {
-        carId: this.carId!,
+        carId: this.car.id!,
         title: v.title,
         make: v.make ?? undefined,
         manufactureId: v.manufacturerId ?? undefined,

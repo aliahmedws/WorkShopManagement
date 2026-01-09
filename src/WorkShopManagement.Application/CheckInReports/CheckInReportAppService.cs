@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
@@ -45,19 +44,19 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             buildMonth: input.BuildMonth,
             avcStickerCut: input.AvcStickerCut,
             avcStickerPrinted: input.AvcStickerPrinted,
-            complianceDate: input.ComplianceDate,
             compliancePlatePrinted: input.CompliancePlatePrinted,
-            emission: input.Emission,
-            engineNumber: input.EngineNumber,
+            complianceDate: input.ComplianceDate,
             entryKms: input.EntryKms,
+            engineNumber: input.EngineNumber,
             frontGwar: input.FrontGwar,
-            frontMotorNumber: input.FrontMoterNumber,
             rearGwar: input.RearGwar,
+            frontMotorNumber: input.FrontMoterNumber,
             rearMotorNumber: input.RearMotorNumber,
             maxTowingCapacity: input.MaxTowingCapacity,
+            emission: input.Emission,
             tyreLabel: input.TyreLabel,
-            rsvaImportApproval: input.RsvaImportApproval,
-            status: input.ReportStatus
+            //rsvaImportApproval: input.RsvaImportApproval,
+            reportStatus: input.ReportStatus
 
         );
 
@@ -80,13 +79,20 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
     public async Task<CheckInReportDto?> GetByCarIdAsync(Guid carId)
     {
         var report = await _checkInReportRepository.GetByCarIdAsync(carId);
-        return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
+        //await _checkInReportRepository.EnsurePropertyLoadedAsync(report, x => x.Car);
+
+        if (report != null)
+        {
+            var dto = ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
+            return dto;
+        }
+        
+        return null;
     }
 
     public async Task<CheckInReportDto> GetAsync(Guid checkInReportId)
     {
-        var report = await _checkInReportRepository.GetAsync(x => x.Id == checkInReportId);
-
+        var report = await _checkInReportRepository.GetAsync(checkInReportId);
         return ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
     }
 
@@ -111,27 +117,15 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         if (car == null)
             throw new UserFriendlyException("CheckInReport:CarNotFound").WithData("CarId", report.CarId);
 
-        report.AvcStickerCut = input.AvcStickerCut;
-        report.AvcStickerPrinted = input.AvcStickerPrinted;
-
-        report.ComplianceDate = input.ComplianceDate;
-        report.CompliancePlatePrinted = input.CompliancePlatePrinted;
-
-        report.Emission = input.Emission;
-        report.EngineNumber = input.EngineNumber;
-        report.EntryKms = input.EntryKms;
-
-        report.FrontGwar = input.FrontGwar;
-        report.FrontMoterNumber = input.FrontMoterNumber;
-        report.RearGwar = input.RearGwar;
-        report.RearMotorNumber = input.RearMotorNumber;
-
-        report.MaxTowingCapacity = input.MaxTowingCapacity;
-        report.TyreLabel = input.TyreLabel;
-
-        report.RsvaImportApproval = input.RsvaImportApproval;
-        report.ReportStatus = input.ReportStatus;
-
+        report.SetBuildDate(input.BuildYear, input.BuildMonth);
+        report.SetAvcSticker(input.AvcStickerCut, input.AvcStickerPrinted);
+        report.SetCompliance(input.CompliancePlatePrinted, input.ComplianceDate);
+        report.SetEntryKms(input.EntryKms);
+        report.SetEngineNumber(input.EngineNumber);
+        report.SetGwars(input.FrontGwar, input.RearGwar);
+        report.SetMotorNumbers(input.FrontMoterNumber, input.RearMotorNumber);
+        report.SetSpecs(input.MaxTowingCapacity, input.Emission, input.TyreLabel);
+        report.SetStatus(input.ReportStatus);
 
         if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
         {

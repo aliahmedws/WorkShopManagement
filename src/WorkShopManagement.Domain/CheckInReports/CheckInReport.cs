@@ -10,12 +10,13 @@ namespace WorkShopManagement.CheckInReports;
 [Audited]
 public class CheckInReport : FullAuditedAggregateRoot<Guid>
 {
-    public ChoiceOptions? AvcStickerCut { get; set; }
-    public ChoiceOptions? AvcStickerPrinted { get; set; }
+
     public int? BuildYear { get; set; }                 // from Car
     public int? BuildMonth { get; set; }                // from Car?
-    public DateTime? ComplianceDate { get; set; }
+    public ChoiceOptions? AvcStickerCut { get; set; }
+    public ChoiceOptions? AvcStickerPrinted { get; set; }
     public ChoiceOptions? CompliancePlatePrinted { get; set; }
+    public DateTime? ComplianceDate { get; set; }
     public string? Emission { get; set; }
     public string? EngineNumber { get; set; }
     public int? EntryKms { get; set; }
@@ -23,10 +24,9 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
     public string? FrontMoterNumber { get; set; }
     public double? RearGwar { get; set; }
     public string? RearMotorNumber { get; set; }
-    //public string? HsObjectId { get; set; }
     public double? MaxTowingCapacity { get; set; }
     public string? TyreLabel { get; set; }
-    public string? RsvaImportApproval { get; set; }
+    //public string? RsvaImportApproval { get; set; }         //TODO: move it to car
     public string? ReportStatus { get; set; }
 
     public Guid CarId { get; set; }
@@ -42,35 +42,34 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         Guid carId,
         int? buildYear = null,
         int? buildMonth = null,
-        string? checkInSubmitterUser = null,
         ChoiceOptions? avcStickerCut = null,
         ChoiceOptions? avcStickerPrinted = null,
-        DateTime? complianceDate = null,
         ChoiceOptions? compliancePlatePrinted = null,
-        string? emission = null,
-        string? engineNumber = null,
+        DateTime? complianceDate = null,
         int? entryKms = null,
+        string? engineNumber = null,
         double? frontGwar = null,
-        string? frontMotorNumber = null,
         double? rearGwar = null,
+        string? frontMotorNumber = null,
         string? rearMotorNumber = null,
-        //string? hsObjectId = null,
         double? maxTowingCapacity = null,
+        string? emission = null,
         string? tyreLabel = null,
-        string? rsvaImportApproval = null,
-        string? status = null
+        //string? rsvaImportApproval = null,
+        string? reportStatus = null
     ) : base(id)
     {
         CarId = carId;
         SetBuildDate(buildYear, buildMonth);
         SetAvcSticker(avcStickerCut, avcStickerPrinted);
-        SetCompliance(complianceDate, compliancePlatePrinted);
-        SetMechanicalInfo(engineNumber, emission, entryKms);
-        SetMotors(frontGwar, frontMotorNumber, rearGwar, rearMotorNumber);
-        //SetHsInfo(hsObjectId);
-        SetSpecs(maxTowingCapacity, tyreLabel);
-        SetRsva(rsvaImportApproval);
-        SetStatus(status);
+        SetCompliance(compliancePlatePrinted, complianceDate);
+        SetEntryKms(entryKms);
+        SetEngineNumber(engineNumber);
+        SetGwars(frontGwar, rearGwar);
+        SetMotorNumbers(frontMotorNumber,rearMotorNumber);
+        SetSpecs(maxTowingCapacity, emission, tyreLabel);
+        //SetRsva(rsvaImportApproval);
+        SetStatus(reportStatus);
 
     }
 
@@ -114,31 +113,31 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         AvcStickerPrinted = printed;
     }
 
-    public void SetCompliance(DateTime? complianceDate, ChoiceOptions? platePrinted)
+    public void SetCompliance(ChoiceOptions? platePrinted, DateTime? complianceDate)
     {
 
         ComplianceDate = complianceDate;
         CompliancePlatePrinted = platePrinted;
     }
 
-    public void SetMechanicalInfo(string? engineNumber, string? emission, int? entryKms)
+    public void SetEntryKms(int? entryKms)
     {
-        EngineNumber = DomainCheck.TrimOptional(engineNumber, nameof(EngineNumber), CheckInReportConsts.MaxLength);
-        Emission = DomainCheck.TrimOptional(emission, nameof(Emission), CheckInReportConsts.MaxLength);
-
         if (entryKms.HasValue && entryKms.Value < 0)
         {
             throw new BusinessException("CheckInReport:InvalidEntryKms")
                 .WithData("EntryKms", entryKms.Value);
         }
-
         EntryKms = entryKms;
     }
 
-    public void SetMotors(double? frontGwar, string? frontMotorNumber, double? rearGwar, string? rearMotorNumber)
+    public void SetEngineNumber(string? engineNumber)
     {
+        EngineNumber = DomainCheck.TrimOptional(engineNumber, nameof(EngineNumber), CheckInReportConsts.MaxLength);
+    }
 
-        if(frontGwar.HasValue)
+    public void SetGwars(double? frontGwar, double? rearGwar)
+    {
+        if (frontGwar.HasValue)
         {
             if (frontGwar < 0)
             {
@@ -153,7 +152,7 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         }
 
 
-        if(rearGwar.HasValue)
+        if (rearGwar.HasValue)
         {
             if (rearGwar < 0)
             {
@@ -166,14 +165,15 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         {
             RearGwar = null;
         }
-
-
+    }
+    public void SetMotorNumbers(string? frontMotorNumber, string? rearMotorNumber)
+    {
         FrontMoterNumber = DomainCheck.TrimOptional(frontMotorNumber, nameof(FrontMoterNumber), CheckInReportConsts.MaxLength);
         RearMotorNumber = DomainCheck.TrimOptional(rearMotorNumber, nameof(RearMotorNumber), CheckInReportConsts.MaxLength);
     }
 
 
-    public void SetSpecs(double? maxTowingCapacity, string? tyreLabel)
+    public void SetSpecs(double? maxTowingCapacity, string? emission, string? tyreLabel)
     {
         if (maxTowingCapacity.HasValue && maxTowingCapacity < 0)
         {
@@ -182,13 +182,14 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         }
 
         MaxTowingCapacity = maxTowingCapacity;
+        Emission = DomainCheck.TrimOptional(emission, nameof(Emission), CheckInReportConsts.MaxLength);
         TyreLabel = DomainCheck.TrimOptional(tyreLabel, nameof(TyreLabel), CheckInReportConsts.MaxLength);
     }
 
-    public void SetRsva(string? rsvaImportApproval)
-    {
-        RsvaImportApproval = DomainCheck.TrimOptional(rsvaImportApproval, nameof(RsvaImportApproval), CheckInReportConsts.MaxLength);
-    }
+    //public void SetRsva(string? rsvaImportApproval)
+    //{
+    //    RsvaImportApproval = DomainCheck.TrimOptional(rsvaImportApproval, nameof(RsvaImportApproval), CheckInReportConsts.MaxLength);
+    //}
 
     public void SetStatus(string? status)
     {
@@ -197,33 +198,34 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
 
 
     public void UpdateCore(
-        ChoiceOptions? avcStickerCut,
-        ChoiceOptions? avcStickerPrinted,
         int? buildYear = null,
         int? buildMonth = null,
-        string? checkInSubmitterUser = null,
+        ChoiceOptions? avcStickerCut = null,
+        ChoiceOptions? avcStickerPrinted = null,
         DateTime? complianceDate = null,
         ChoiceOptions? compliancePlatePrinted = null,
-        string? emission = null,
-        string? engineNumber = null,
         int? entryKms = null,
-        int? frontGwar = null,
+        string? engineNumber = null,
+        double? frontGwar = null,
+        double? rearGwar = null,
         string? frontMotorNumber = null,
-        int? rearGwar = null,
         string? rearMotorNumber = null,
-        float maxTowingCapacity = 0,
+        double? maxTowingCapacity = null,
+        string? emission = null,
         string? tyreLabel = null,
-        string? rsvaImportApproval = null,
-        string? status = null
+        //string? rsvaImportApproval = null,
+        string? reportStatus = null
     )
     {
-        SetAvcSticker(avcStickerCut, avcStickerPrinted);
         SetBuildDate(buildYear, buildMonth);
-        SetCompliance(complianceDate, compliancePlatePrinted);
-        SetMechanicalInfo(engineNumber, emission, entryKms);
-        SetMotors(frontGwar, frontMotorNumber, rearGwar, rearMotorNumber);
-        SetSpecs(maxTowingCapacity, tyreLabel);
-        SetRsva(rsvaImportApproval);
-        SetStatus(status);
+        SetAvcSticker(avcStickerCut, avcStickerPrinted);
+        SetCompliance(compliancePlatePrinted, complianceDate);
+        SetEntryKms(entryKms);
+        SetEngineNumber(engineNumber);
+        SetGwars(frontGwar, rearGwar);
+        SetMotorNumbers(frontMotorNumber, rearMotorNumber);
+        SetSpecs(maxTowingCapacity, emission, tyreLabel);
+        //SetRsva(rsvaImportApproval);
+        SetStatus(reportStatus);
     }
 }

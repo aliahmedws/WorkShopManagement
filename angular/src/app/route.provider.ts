@@ -23,6 +23,7 @@ function configureRoutes() {
       iconClass: 'fas fa-gauge',
       order: 2,
       layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.ProductionManager',
     },
     {
       path: '/cars',

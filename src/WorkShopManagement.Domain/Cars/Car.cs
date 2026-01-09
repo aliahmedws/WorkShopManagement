@@ -15,7 +15,7 @@ namespace WorkShopManagement.Cars;
 [Audited]
 public class Car : FullAuditedAggregateRoot<Guid>
 {
-    public string Vin { get; private set; } = default!;
+    public string Vin { get; private set; } = default!;         // TODO: unique index
     public string Color { get; private set; } = default!;
     public Guid OwnerId { get; private set; }
     public Guid ModelId { get; private set; }

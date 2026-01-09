@@ -1,62 +1,164 @@
-<abp-modal [visible]="visible" (visibleChange)="close()" [busy]="isBusy" [options]="{ size: 'lg' }">
+<abp-modal [visible]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3>{{ (existingReportId ? '::EditCheckInReport' : '::NewCheckInReport') | abpLocalization }}</h3>
+        <h3> {{ '::CheckInReport' | abpLocalization }} <span>{{ " - " + car.vin }} </span> </h3>
     </ng-template>
 
     <ng-template #abpBody>
         <form [formGroup]="form" (ngSubmit)="save()">
-            <div class="row">
-                <div class="col-md-4 mb-3">
+            <div class="row g-2 mb-2">
+                <div class="form-group col-6">
                     <label class="form-label">{{ '::BuildYear' | abpLocalization }}</label>
                     <input type="number" class="form-control" formControlName="buildYear" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="form-group col-6">
                     <label class="form-label">{{ '::BuildMonth' | abpLocalization }}</label>
                     <input type="number" class="form-control" formControlName="buildMonth" />
                 </div>
-                
-                <div class="col-md-4 mb-3">
+
+                <!-- <div class="col-md-4 mb-3">
                     <label class="form-label">{{ '::ComplianceDate' | abpLocalization }}</label>
                     <input type="date" class="form-control" formControlName="complianceDate" />
-                </div>
-
-                <div class="col-md-4 mb-3">
+                </div> -->
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="form-group col-6">
                     <label class="form-label">{{ '::EntryKms' | abpLocalization }}</label>
                     <input type="number" class="form-control" formControlName="entryKms" />
                 </div>
 
-                <div class="w-100"><hr class="my-2"></div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">{{ '::AVCStickerCut' | abpLocalization }}</label>
-                    <select class="form-select" formControlName="avcStickerCut">
-                        <option [ngValue]="null">Select...</option>
-                        <option *ngFor="let opt of choiceOptions" [ngValue]="opt">
-                            {{ '::Enum:ChoiceOptions.' + opt | abpLocalization }}
-                        </option>
-                    </select>
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::EngineNumber' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="engineNumber" />
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
-                    <select class="form-select" formControlName="storageLocation">
-                        <option [ngValue]="null">Select...</option>
-                        <option *ngFor="let loc of storageLocationOptions" [ngValue]="loc">
-                            {{ '::Enum:StorageLocation.' + loc | abpLocalization }}
-                        </option>
-                    </select>
+            </div>
+            <div class="row g-2 mb-2">
+
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::FrontGwar' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="frontGwar" />
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::RearGwar' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="rearGwar" />
+                </div>
+            </div>
+            <div class="row g-2 mb-2">
+
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::FrontMotorNumber' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="frontMoterNumber" />
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::RearMotorNumber' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="rearMoterNumber" />
+                </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::MaxTowingCapacity' | abpLocalization }}</label>
+                    <input type="number" class="form-control" formControlName="maxTowingCapacity" />
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label">{{ '::TyreLabel' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="tyreLabel" />
+                </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+
+                <div class="form-group col-12">
+                    <label class="form-label">{{ '::Emission' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="emission" />
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="w-100">
+                    <hr class="my-2">
+
+                    <div class="form-group col-12 mb-3">
+                        <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
+                        <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
+                            @for (option of storageLocationOptions; track option) {
+                            <nz-option [nzLabel]="('::Enum:StorageLocation.' + option) | abpLocalization"
+                                [nzValue]="option"></nz-option>
+                            }
+                        </nz-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+
+                <div class="w-100">
+                    <hr class="my-2">
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">{{ '::AvcStickerCut' | abpLocalization }}</label>
+                    <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="avcStickerCut">
+                        @for (option of choiceOptions; track option) {
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
+                            [nzValue]="option"></nz-option>
+                        }
+                    </nz-select>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ '::AvcStickerPrinted' | abpLocalization }}</label>
+                    <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="avcStickerPrinted">
+                        @for (option of choiceOptions; track option) {
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
+                            [nzValue]="option"></nz-option>
+                        }
+                    </nz-select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ '::CompliancePlatePrinted' | abpLocalization }}</label>
+                    <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="compliancePlatePrinted">
+                        @for (option of choiceOptions; track option) {
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
+                            [nzValue]="option"></nz-option>
+                        }
+                    </nz-select>
+                </div>
+
+
+            </div>
+
+            <!-- <div class="row g-2">
+                <div class="col-6">
+                    <button type="button" class="btn btn-outline-primary me-2">
+                        {{ '::AvcStickers' | abpLocalization }}
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button type="button" class="btn btn-outline-primary">
+                        {{ '::AvcStickersNew' | abpLocalization }}
+                    </button>
+                </div>
+
+            </div> -->
         </form>
     </ng-template>
 
     <ng-template #abpFooter>
-        <button type="button" class="btn btn-secondary" (click)="close()">
-            {{ '::Cancel' | abpLocalization }}
+        <button type="button" class="btn btn-outline-primary me-2">
+            {{ '::AvcStickers' | abpLocalization }}
         </button>
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || isBusy">
-            <i class="fa fa-save me-1"></i> {{ '::Save' | abpLocalization }}
+        <button type="button" class="btn btn-outline-primary me-4">
+            {{ '::AvcStickersNew' | abpLocalization }}
+        </button>
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
         </button>
     </ng-template>
 </abp-modal>

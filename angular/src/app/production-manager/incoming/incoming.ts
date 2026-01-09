@@ -22,10 +22,9 @@ export class Incoming implements OnInit {
   @Input() filters = {} as GetCarListInput;
 
   // isModalVisible = false;
-  selectedId?: string;
+  selectedCar = {} as CarDto;
   isRecallModalVisible = false;
 
-  checkInCarId?: string;
   isCheckInModalVisible = false;
 
   ngOnInit(): void {
@@ -33,13 +32,13 @@ export class Incoming implements OnInit {
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
   }
 
-  openRecallModal(id: string): void {
-    this.selectedId = id;
+  openRecallModal(car: CarDto): void {
+    this.selectedCar = car;
     this.isRecallModalVisible = true;
   }
 
-  openCheckInModal(id: string): void {
-    this.checkInCarId = id;
+  openCheckInModal(car: CarDto  ): void {
+    this.selectedCar = car;
     this.isCheckInModalVisible = true;
   }
 
