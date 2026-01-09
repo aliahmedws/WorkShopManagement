@@ -2868,9 +2868,26 @@
                     },
                     {
                       "name": "input",
-                      "typeAsString": "WorkShopManagement.CheckInReports.CreateCheckInReportDto, WorkShopManagement.Application.Contracts",
-                      "type": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
-                      "typeSimple": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
+                      "typeAsString": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
+                      "typeSimple": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.CheckInReports.CheckInReportDto",
+                    "typeSimple": "WorkShopManagement.CheckInReports.CheckInReportDto"
+                  }
+                },
+                {
+                  "name": "GetByCarIdAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
                       "isOptional": false,
                       "defaultValue": null
                     }
@@ -2926,6 +2943,43 @@
               "name": "GetAsync",
               "httpMethod": "GET",
               "url": "api/app/check-in-reports/{checkInReportId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "checkInReportId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "checkInReportId",
+                  "name": "checkInReportId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.CheckInReports.CheckInReportDto",
+                "typeSimple": "WorkShopManagement.CheckInReports.CheckInReportDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.CheckInReports.ICheckInReportAppService"
+            },
+            "GetByCarIdAsyncByCheckInReportId": {
+              "uniqueName": "GetByCarIdAsyncByCheckInReportId",
+              "name": "GetByCarIdAsync",
+              "httpMethod": "GET",
+              "url": "api/app/check-in-reports/by-car/{checkInReportId}",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -3025,70 +3079,10 @@
                 },
                 {
                   "nameOnMethod": "filter",
-                  "name": "VinNo",
+                  "name": "BuildYear",
                   "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "filter"
-                },
-                {
-                  "nameOnMethod": "filter",
-                  "name": "Status",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "filter"
-                },
-                {
-                  "nameOnMethod": "filter",
-                  "name": "Model",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "filter"
-                },
-                {
-                  "nameOnMethod": "filter",
-                  "name": "StorageLocation",
-                  "jsonName": null,
-                  "type": "System.String",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "filter"
-                },
-                {
-                  "nameOnMethod": "filter",
-                  "name": "BuildDateMin",
-                  "jsonName": null,
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": "filter"
-                },
-                {
-                  "nameOnMethod": "filter",
-                  "name": "BuildDateMax",
-                  "jsonName": null,
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
+                  "type": "System.Int32?",
+                  "typeSimple": "number?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -3147,8 +3141,8 @@
                   "nameOnMethod": "filter",
                   "name": "AvcStickerCut",
                   "jsonName": null,
-                  "type": "System.Boolean?",
-                  "typeSimple": "boolean?",
+                  "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+                  "typeSimple": "enum?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -3159,8 +3153,68 @@
                   "nameOnMethod": "filter",
                   "name": "CompliancePlatePrinted",
                   "jsonName": null,
-                  "type": "System.Boolean?",
-                  "typeSimple": "boolean?",
+                  "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+                  "typeSimple": "enum?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "filter"
+                },
+                {
+                  "nameOnMethod": "filter",
+                  "name": "ReportStatus",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "filter"
+                },
+                {
+                  "nameOnMethod": "filter",
+                  "name": "CreatorId",
+                  "jsonName": null,
+                  "type": "System.Guid?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "filter"
+                },
+                {
+                  "nameOnMethod": "filter",
+                  "name": "Vin",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "filter"
+                },
+                {
+                  "nameOnMethod": "filter",
+                  "name": "Model",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": "filter"
+                },
+                {
+                  "nameOnMethod": "filter",
+                  "name": "StorageLocation",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
+                  "typeSimple": "enum?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -3192,9 +3246,9 @@
                 },
                 {
                   "name": "input",
-                  "typeAsString": "WorkShopManagement.CheckInReports.CreateCheckInReportDto, WorkShopManagement.Application.Contracts",
-                  "type": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
-                  "typeSimple": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
+                  "typeAsString": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
+                  "typeSimple": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -3216,8 +3270,8 @@
                   "nameOnMethod": "input",
                   "name": "input",
                   "jsonName": null,
-                  "type": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
-                  "typeSimple": "WorkShopManagement.CheckInReports.CreateCheckInReportDto",
+                  "type": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
+                  "typeSimple": "WorkShopManagement.CheckInReports.UpdateCheckInReportDto",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -3652,6 +3706,23 @@
                   }
                 },
                 {
+                  "name": "GetByCheckListWithDetailsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "checkListId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.ListItems.ListItemDto>",
+                    "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]"
+                  }
+                },
+                {
                   "name": "GetAsync",
                   "parametersOnMethod": [
                     {
@@ -3983,6 +4054,43 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.ListItems.IListItemAppService"
+            },
+            "GetByCheckListWithDetailsAsyncByCheckListId": {
+              "uniqueName": "GetByCheckListWithDetailsAsyncByCheckListId",
+              "name": "GetByCheckListWithDetailsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/list-items/by-checklist/{checkListId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "checkListId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "checkListId",
+                  "name": "checkListId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.ListItems.ListItemDto>",
+                "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.ListItems.IListItemAppService"
             }
           }
         },
@@ -4021,11 +4129,42 @@
                     "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
                     "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
                   }
+                },
+                {
+                  "name": "GetBaysAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
+                    "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+                  }
+                },
+                {
+                  "name": "GetPriorityAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.IntLookupDto>",
+                    "typeSimple": "[WorkShopManagement.Lookups.IntLookupDto]"
+                  }
                 }
               ]
             }
           ],
           "actions": {
+            "GetBaysAsync": {
+              "uniqueName": "GetBaysAsync",
+              "name": "GetBaysAsync",
+              "httpMethod": "GET",
+              "url": "api/app/lookups/bays",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
+                "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
+            },
             "GetCarModelsAsync": {
               "uniqueName": "GetCarModelsAsync",
               "name": "GetCarModelsAsync",
@@ -4067,6 +4206,21 @@
               "returnValue": {
                 "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
                 "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
+            },
+            "GetPriorityAsync": {
+              "uniqueName": "GetPriorityAsync",
+              "name": "GetPriorityAsync",
+              "httpMethod": "GET",
+              "url": "api/app/lookups/priorities",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.IntLookupDto>",
+                "typeSimple": "[WorkShopManagement.Lookups.IntLookupDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
@@ -15420,6 +15574,18 @@
           "regex": null
         },
         {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "BuildMaterialNumber",
           "jsonName": null,
           "type": "System.String",
@@ -15730,6 +15896,102 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "BayName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BayNumber",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarVin",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OwnerName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelCategoryName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelImagePath",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CheckLists",
+          "jsonName": null,
+          "type": "[WorkShopManagement.CheckLists.CheckListDto]",
+          "typeSimple": "[WorkShopManagement.CheckLists.CheckListDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -15758,6 +16020,18 @@
           "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -16135,6 +16409,24 @@
         }
       ]
     },
+    "WorkShopManagement.CarBays.Priority": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
     "WorkShopManagement.CarBays.UpdateCarBayDto": {
       "baseType": null,
       "isEnum": false,
@@ -16160,6 +16452,18 @@
           "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -17617,17 +17921,29 @@
       ]
     },
     "WorkShopManagement.CheckInReports.CheckInReportDto": {
-      "baseType": "Volo.Abp.Application.Dtos.AuditedEntityDto<System.Guid>",
+      "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
       "isEnum": false,
       "enumNames": null,
       "enumValues": null,
       "genericArguments": null,
       "properties": [
         {
-          "name": "VinNo",
+          "name": "BuildYear",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BuildMonth",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17638,8 +17954,8 @@
         {
           "name": "AvcStickerCut",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17650,8 +17966,8 @@
         {
           "name": "AvcStickerPrinted",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17660,22 +17976,10 @@
           "regex": null
         },
         {
-          "name": "BuildDate",
+          "name": "CompliancePlatePrinted",
           "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "CheckInSumbitterUser",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17696,22 +18000,10 @@
           "regex": null
         },
         {
-          "name": "CompliancePlatePrinted",
+          "name": "EntryKms",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Emission",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17732,34 +18024,10 @@
           "regex": null
         },
         {
-          "name": "EntryKms",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "FrontGwar",
           "jsonName": null,
-          "type": "System.Int32?",
+          "type": "System.Double?",
           "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "FrontMoterNumbr",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17770,8 +18038,20 @@
         {
           "name": "RearGwar",
           "jsonName": null,
-          "type": "System.Int32?",
+          "type": "System.Double?",
           "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontMoterNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17792,10 +18072,10 @@
           "regex": null
         },
         {
-          "name": "HsObjectId",
+          "name": "MaxTowingCapacity",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "System.Double",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17804,10 +18084,10 @@
           "regex": null
         },
         {
-          "name": "MaxTowingCapacity",
+          "name": "Emission",
           "jsonName": null,
-          "type": "System.Single",
-          "typeSimple": "number",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17828,7 +18108,7 @@
           "regex": null
         },
         {
-          "name": "RsvaImportApproval",
+          "name": "ReportStatus",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -17840,7 +18120,7 @@
           "regex": null
         },
         {
-          "name": "Status",
+          "name": "ConcurrencyStamp",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -17852,19 +18132,7 @@
           "regex": null
         },
         {
-          "name": "Model",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "StorageLocation",
+          "name": "CreatorName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -17880,6 +18148,18 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "StorageLocation",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -17945,70 +18225,10 @@
           "regex": null
         },
         {
-          "name": "VinNo",
+          "name": "BuildYear",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Status",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Model",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "StorageLocation",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BuildDateMin",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BuildDateMax",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -18067,8 +18287,8 @@
         {
           "name": "AvcStickerCut",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -18079,26 +18299,17 @@
         {
           "name": "CompliancePlatePrinted",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
           "maximum": null,
           "regex": null
-        }
-      ]
-    },
-    "WorkShopManagement.CheckInReports.CreateCheckInReportDto": {
-      "baseType": null,
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
+        },
         {
-          "name": "VinNo",
+          "name": "ReportStatus",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -18110,33 +18321,9 @@
           "regex": null
         },
         {
-          "name": "AvcStickerCut",
+          "name": "CreatorId",
           "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "AvcStickerPrinted",
-          "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "BuildDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
+          "type": "System.Guid?",
           "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
@@ -18146,175 +18333,7 @@
           "regex": null
         },
         {
-          "name": "CheckInSumbitterUser",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ComplianceDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "CompliancePlatePrinted",
-          "jsonName": null,
-          "type": "System.Boolean?",
-          "typeSimple": "boolean?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Emission",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "EngineNumber",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "EntryKms",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "FrontGwar",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "FrontMoterNumbr",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RearGwar",
-          "jsonName": null,
-          "type": "System.Int32?",
-          "typeSimple": "number?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RearMotorNumber",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "HsObjectId",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "MaxTowingCapacity",
-          "jsonName": null,
-          "type": "System.Single",
-          "typeSimple": "number",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "TyreLabel",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RsvaImportApproval",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Status",
+          "name": "Vin",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -18340,6 +18359,207 @@
         {
           "name": "StorageLocation",
           "jsonName": null,
+          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.CheckInReports.CreateCheckInReportDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "BuildYear",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BuildMonth",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AvcStickerCut",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AvcStickerPrinted",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CompliancePlatePrinted",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ComplianceDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntryKms",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EngineNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontGwar",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearGwar",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontMoterNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearMotorNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaxTowingCapacity",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Emission",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TyreLabel",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReportStatus",
+          "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
           "isRequired": false,
@@ -18354,7 +18574,244 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "StorageLocation",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
+          "typeSimple": "enum?",
           "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.CheckInReports.UpdateCheckInReportDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "BuildYear",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BuildMonth",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AvcStickerCut",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AvcStickerPrinted",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CompliancePlatePrinted",
+          "jsonName": null,
+          "type": "WorkShopManagement.Utils.Enums.ChoiceOptions?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ComplianceDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntryKms",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EngineNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontGwar",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearGwar",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontMoterNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearMotorNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaxTowingCapacity",
+          "jsonName": null,
+          "type": "System.Double?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Emission",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TyreLabel",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ReportStatus",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "StorageLocation",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -18459,6 +18916,18 @@
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ListItems",
+          "jsonName": null,
+          "type": "[WorkShopManagement.ListItems.ListItemDto]",
+          "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20702,6 +21171,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "RadioOptions",
+          "jsonName": null,
+          "type": "[WorkShopManagement.RadioOptions.RadioOptionDto]",
+          "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -20846,6 +21327,39 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DisplayName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.Lookups.IntLookupDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Value",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -21649,6 +22163,20 @@
           "regex": null
         }
       ]
+    },
+    "WorkShopManagement.Utils.Enums.ChoiceOptions": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Yes",
+        "No"
+      ],
+      "enumValues": [
+        1,
+        2
+      ],
+      "genericArguments": null,
+      "properties": null
     }
   }
 }

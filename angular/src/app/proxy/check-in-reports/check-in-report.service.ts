@@ -1,4 +1,4 @@
-import type { CheckInReportDto, CheckInReportFiltersDto, CreateCheckInReportDto } from './models';
+import type { CheckInReportDto, CheckInReportFiltersDto, CreateCheckInReportDto, UpdateCheckInReportDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
@@ -28,16 +28,24 @@ export class CheckInReportService {
     { apiName: this.apiName,...config });
   
 
-  getList = (filter: CheckInReportFiltersDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, PagedResultDto<CheckInReportDto>>({
+  getByCarId = (checkInReportId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CheckInReportDto>({
       method: 'GET',
-      url: '/api/app/check-in-reports',
-      params: { sorting: filter.sorting, skipCount: filter.skipCount, maxResultCount: filter.maxResultCount, filter: filter.filter, vinNo: filter.vinNo, status: filter.status, model: filter.model, storageLocation: filter.storageLocation, buildDateMin: filter.buildDateMin, buildDateMax: filter.buildDateMax, complianceDateMin: filter.complianceDateMin, complianceDateMax: filter.complianceDateMax, entryKmsMin: filter.entryKmsMin, entryKmsMax: filter.entryKmsMax, avcStickerCut: filter.avcStickerCut, compliancePlatePrinted: filter.compliancePlatePrinted },
+      url: `/api/app/check-in-reports/by-car/${checkInReportId}`,
     },
     { apiName: this.apiName,...config });
   
 
-  update = (id: string, input: CreateCheckInReportDto, config?: Partial<Rest.Config>) =>
+  getList = (filter: CheckInReportFiltersDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<CheckInReportDto>>({
+      method: 'GET',
+      url: '/api/app/check-in-reports',
+      params: { sorting: filter.sorting, skipCount: filter.skipCount, maxResultCount: filter.maxResultCount, filter: filter.filter, buildYear: filter.buildYear, complianceDateMin: filter.complianceDateMin, complianceDateMax: filter.complianceDateMax, entryKmsMin: filter.entryKmsMin, entryKmsMax: filter.entryKmsMax, avcStickerCut: filter.avcStickerCut, compliancePlatePrinted: filter.compliancePlatePrinted, reportStatus: filter.reportStatus, creatorId: filter.creatorId, vin: filter.vin, model: filter.model, storageLocation: filter.storageLocation },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  update = (id: string, input: UpdateCheckInReportDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, CheckInReportDto>({
       method: 'PUT',
       url: '/api/app/check-in-reports',
