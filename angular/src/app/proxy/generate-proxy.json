@@ -4575,6 +4575,106 @@
             }
           }
         },
+        "WorkShopManagement.Issues.IssueAppService": {
+          "controllerName": "Issue",
+          "controllerGroupName": "Issue",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Issues.IssueAppService",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.Issues.IIssueAppService",
+              "name": "IIssueAppService",
+              "methods": [
+                {
+                  "name": "UpsertAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                      "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "UpsertAsyncByCarIdAndInput": {
+              "uniqueName": "UpsertAsyncByCarIdAndInput",
+              "name": "UpsertAsync",
+              "httpMethod": "POST",
+              "url": "api/app/issue/upsert/{carId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Issues.IIssueAppService"
+            }
+          }
+        },
         "WorkShopManagement.QualityGates.QualityGateController": {
           "controllerName": "QualityGate",
           "controllerGroupName": "QualityGates",
@@ -17045,6 +17145,262 @@
           "jsonName": null,
           "type": "System.Boolean",
           "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.Issues.IssueDeteriorationType": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "NotApplicable",
+        "Airbags",
+        "AirbagWarningLamp",
+        "BrakeFluid",
+        "BrakeHoses",
+        "BrakePads",
+        "BrakeRotors",
+        "CatalyticConverterExhaust",
+        "ExhaustMuffler",
+        "ExhaustTailpipe",
+        "Windshield",
+        "Windows",
+        "CHMSL",
+        "HeadLamp",
+        "RegistrationPlateLamp",
+        "RearRetroReflectors",
+        "SideIndicatorLamp",
+        "TailLamp",
+        "FrontLeftSeatbelt",
+        "FrontRightSeatbelt",
+        "RearLeftSeatbelt",
+        "RearRightSeatbelt",
+        "TyresFrontAndRear",
+        "TyresSpare"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.Issues.IssueOriginStage": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Logistics",
+        "Production"
+      ],
+      "enumValues": [
+        1,
+        2
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.Issues.IssueStatus": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Pending",
+        "Deferred",
+        "InProgress",
+        "NoActionRequired",
+        "Complete"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.Issues.IssueType": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "ScratchOrDent",
+        "UpholsteryOrTrim",
+        "ExternalPlastics",
+        "MissingOrBrokenPart",
+        "Compliance",
+        "DTC",
+        "Functional",
+        "Other"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "WorkShopManagement.Issues.UpsertIssueDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Id",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "XPercent",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": "0",
+          "maximum": "100",
+          "regex": null
+        },
+        {
+          "name": "YPercent",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": "0",
+          "maximum": "100",
+          "regex": null
+        },
+        {
+          "name": "Type",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueType",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OriginStage",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueOriginStage",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeteriorationType",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueDeteriorationType",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RectificationAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.Issues.UpsertIssuesRequestDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Items",
+          "jsonName": null,
+          "type": "[WorkShopManagement.Issues.UpsertIssueDto]",
+          "typeSimple": "[WorkShopManagement.Issues.UpsertIssueDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

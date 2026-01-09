@@ -19,6 +19,12 @@ public class EntityAttachmentService(
     private readonly IEntityAttachmentRepository _repository = repository;
     private readonly FileManager _fileManager = fileManager;
 
+    public async Task<List<EntityAttachmentDto>> GetListAsync(EntityType entityType, List<Guid> entityIds)
+    {
+        var items = await _repository.GetListAsync(entityType, entityIds);
+        return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
+    }
+
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
         
@@ -29,6 +35,7 @@ public class EntityAttachmentService(
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
+
     public async Task<List<EntityAttachmentDto>> GetListAsync(Guid entityId, EntityType entityType)
     {
 
@@ -123,4 +130,18 @@ public class EntityAttachmentService(
         });
     }
 
+    public async Task DeleteManyAsync(EntityType entityType, List<Guid> entityIds)
+    {
+        var items = await _repository.GetListAsync(entityType, entityIds);
+
+        if (items != null && items.Count != 0)
+        {
+            foreach (var item in items)
+            {
+                await _fileManager.DeleteAsync(item.Attachment);
+            }
+
+            await _repository.DeleteManyAsync(items);
+        }
+    }
 }

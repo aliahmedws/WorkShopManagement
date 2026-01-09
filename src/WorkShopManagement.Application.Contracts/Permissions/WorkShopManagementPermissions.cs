@@ -54,4 +54,9 @@ public static class WorkShopManagementPermissions
         public const string Delete = Default + ".Delete";
     }
 
+    public static class Issues
+    {
+        public const string Default = GroupName + ".Issues";
+        public const string Upsert = Default + ".Upsert";
+    }
 }

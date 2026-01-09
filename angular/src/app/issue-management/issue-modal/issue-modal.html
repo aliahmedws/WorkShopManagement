@@ -1,0 +1,56 @@
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
+    [options]="modalOptions">
+    <ng-template #abpHeader>
+        <h3 class="text-dark m-0">{{ '::IssuesModalHeading' | abpLocalization:car.vin }}</h3>
+    </ng-template>
+    <ng-template #abpBody>
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        } @else {
+        <h5>Unresolved, Damage/Missing Parts: 1 item(s)</h5>
+        <app-damage-marker [(markers)]="issues" [vin]="car?.vin"></app-damage-marker>
+        <!-- <div class="border border-primary">
+            <img src="../../../assets/images/damage_report.png" alt="damage report image" style="height: 400px; width: 1075px;" />
+        </div> -->
+        <hr>
+        <h5>Issue List</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sr#</th>
+                        <th>Remarks</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of issues; track item.sr) {
+                    <tr>
+                        <td>{{ item.sr }}</td>
+                        <td>{{ item.remarks }}</td>
+                        <td>{{ item.status }}</td>
+                        <td>
+                            <textarea name="" id="" class="form-control" value="{{ item.description }}"></textarea>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+    </ng-template>
+    <ng-template #abpFooter>
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button type="submit" class="btn btn-primary px-3" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

@@ -1,0 +1,127 @@
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
+    [options]="{ size: 'lg' }">
+    <ng-template #abpHeader>
+        <h3 class="text-dark m-0">{{ '::IssueDetailModalHeading' | abpLocalization:[vin, issue?.sr] }}</h3>
+    </ng-template>
+    <ng-template #abpBody>
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        } @else {
+        <form>
+            <!-- Status -->
+            <div class="form-group">
+                <label class="form-label required">{{ '::Status' | abpLocalization }}</label>
+                <nz-select nzSize="large" nzAllowClear>
+                    @for (option of issueStatusOptions; track option.value) {
+                    <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueStatus.' + option.value) | abpLocalization"></nz-option>
+                    }
+                </nz-select>
+            </div>
+            <hr>
+
+            <!-- Tabs -->
+            <nz-tabs [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="selectedIndex = $event">
+                <nz-tab [nzTitle]="'::IssueDetails' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="issueDetails"></ng-container>
+                </nz-tab>
+                <nz-tab [nzTitle]="'::RectificationAction' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="rectificationAction"></ng-container>
+                </nz-tab>
+                <nz-tab [nzTitle]="'::QualityControl' | abpLocalization"></nz-tab>
+                <nz-tab [nzTitle]="'::RepairerDetails' | abpLocalization"></nz-tab>
+            </nz-tabs>
+
+            <!-- Issue Details Template -->
+            <ng-template #issueDetails>
+                <div class="pt-2">
+                    <div class="form-group">
+                        <label class="form-label required">{{ '::IssueDetails' | abpLocalization }}</label>
+                        <textarea name="" id="" class="form-control" [rows]="3"></textarea>
+                    </div>
+                    <div class="row row-cols-1 row-cols-lg-3">
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::IssueType' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear>
+                                    @for (option of issueTypeOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueType.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::OriginStage' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear>
+                                    @for (option of issueOriginStageOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value"
+                                        [nzLabel]="('::Enum:IssueOriginStage.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::DeteriorationType' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear nzShowSearch>
+                                    @for (option of issueDeteriorationTypeOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value"
+                                        [nzLabel]="('::Enum:IssueDeteriorationType.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
+                        <app-file-upload [acceptedTypes]="['image/*']"></app-file-upload>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Rectification Action Template -->
+            <ng-template #rectificationAction>
+                <div class="pt-2">
+                    <div class="form-group">
+                        <label class="form-label required">{{ '::RectificationAction' | abpLocalization }}</label>
+                        <textarea name="" id="" class="form-control" [rows]="3"></textarea>
+                    </div>
+                </div>
+            </ng-template>
+
+            <div class="form-group mt-2">
+                <label for="" class="form-label">{{ '::ApplyIssueToVehicles' | abpLocalization }}</label>
+                <nz-select nzAllowClear nzSize="large" nzMode="multiple" nzShowSearch="false">
+                    @for (option of stageOptions; track option.value) {
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"></nz-option>
+                    }
+                </nz-select>
+            </div>
+        </form>
+        }
+    </ng-template>
+    <ng-template #abpFooter>
+        <div class="d-flex align-items-end justify-content-between w-100">
+            <div>
+                <div class="issue-changed-by">Created: <span class="emphasize">some&#64;one.com</span> at <span
+                        class="emphasize">Oct 1, 25</span></div>
+                <div class="issue-changed-by">Updated: <span class="emphasize">some&#64;one.com</span> at <span
+                        class="emphasize">Oct 1, 25</span></div>
+            </div>
+            <div>
+                <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+                    {{ '::Close' | abpLocalization }}
+                </button>
+                <button type="submit" class="btn btn-primary px-3" (click)="save()">
+                    <i class="fas fa-save me-1"></i>
+                    {{ '::Save' | abpLocalization }}
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</abp-modal>

@@ -3,10 +3,11 @@ import { booleanAttribute, Component, EventEmitter, inject, Input, Output } from
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { UploadFileService } from './upload-files.service';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
+import { NzImageModule } from 'ng-zorro-antd/image';
 
 @Component({
   selector: 'app-file-upload',
-  imports: [CommonModule],
+  imports: [CommonModule, NzImageModule],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.scss'
 })
@@ -19,6 +20,8 @@ export class FileUploadComponent {
 
   @Input() existingFiles: EntityAttachmentDto[] = [];
   @Output() existingFilesChange = new EventEmitter<EntityAttachmentDto[]>();
+
+  @Input() size: null | undefined | 'small' | 'large' = null;
 
   private readonly uploadService = inject(UploadFileService);
 
@@ -120,7 +123,7 @@ export class FileUploadComponent {
 
   isImage(name?: string): boolean {
     if (!name) return false;
-    return /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(name);
+    return /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(name);
   }
 
   onRemoveTemp(i: number): void {

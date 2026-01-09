@@ -12,6 +12,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
+import { NzTabsModule } from "ng-zorro-antd/tabs";
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -29,7 +31,9 @@ export const SHARED_IMPORTS = [
     NzIconModule,
     NzInputModule,
     NzTagModule,
-    NzImageModule
+    NzImageModule,
+    NzTooltipModule,
+    NzTabsModule
 ];
 
 export { 

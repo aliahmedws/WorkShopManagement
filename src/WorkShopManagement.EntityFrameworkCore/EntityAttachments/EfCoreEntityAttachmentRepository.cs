@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -16,6 +17,13 @@ namespace WorkShopManagement.EntityAttachments
         public EfCoreEntityAttachmentRepository(IDbContextProvider<WorkShopManagementDbContext> dbContextProvider) : base(dbContextProvider)
         {
 
+        }
+
+        public async Task<List<EntityAttachment>> GetListAsync(EntityType entityType, List<Guid> entityIds)
+        {
+            return await (await GetQueryableAsync())
+                .Where(x => x.EntityType.Equals(entityType) && entityIds.Contains(x.EntityId))
+                .ToListAsync();
         }
 
         public async Task<List<EntityAttachment>> GetListByEntityAsync(

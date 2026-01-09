@@ -1,0 +1,50 @@
+.damage-marker-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    cursor: crosshair;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blueprint-image {
+    display: block;
+    height: 400px;
+    width: 1075px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.damage-marker {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-color: var(--accent-danger);
+    border: 2px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.damage-marker:hover {
+    transform: translate(-50%, -50%) scale(1.02);
+    box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.4);
+}
+
+.marker-number {
+    color: white;
+    font-weight: 500;
+    font-size: 13px;
+    user-select: none;
+}

@@ -1,4 +1,4 @@
-<div class="file-upload-container">
+<div class="file-upload-container" [class.app-upload-sm]="size === 'small'">
     <div class="upload-area" [class.dragging]="isDragging" (dragover)="onDragOver($event)"
         (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
 
@@ -38,8 +38,8 @@
         <div class="d-flex flex-wrap gap-3">
             @for (item of tempFiles; track item.blobName; let i = $index) {
             <div class="position-relative">
-                <img *ngIf="isImage(item.name)" [src]="item.path" class="border rounded"
-                    style="width: 100px; height: 100px; object-fit: cover;" [title]="item.name" />
+                <img *ngIf="isImage(item.name)" nz-image [nzSrc]="item.path" class="border rounded"
+                    style="width: 100px; height: 100px; object-fit: cover; cursor: zoom-in;" [title]="item.name" />
 
                 <div *ngIf="!isImage(item.name)"
                     class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"
@@ -69,8 +69,8 @@
         <div class="d-flex flex-wrap gap-3">
             @for (item of existingFiles; track item.id; let i = $index) {
             <div class="position-relative">
-                <img *ngIf="isImage(item.attachment.name)" [src]="item.attachment.path" class="border rounded"
-                    style="width: 100px; height: 100px; object-fit: cover;" [title]="item.attachment.name" />
+                <img *ngIf="isImage(item.attachment.name)" nz-image [nzSrc]="item.attachment.path" class="border rounded"
+                    style="width: 100px; height: 100px; object-fit: cover; cursor: zoom-in;" [title]="item.attachment.name" />
 
                 <div *ngIf="!isImage(item.attachment.name)"
                     class="border rounded bg-light d-flex flex-column align-items-center justify-content-center"

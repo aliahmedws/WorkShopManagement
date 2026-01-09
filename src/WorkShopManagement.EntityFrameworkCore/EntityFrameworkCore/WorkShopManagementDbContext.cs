@@ -21,6 +21,7 @@ using WorkShopManagement.CarsEx;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.Issues;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
@@ -83,6 +84,7 @@ public class WorkShopManagementDbContext :
     public DbSet<Car> Cars { get; set; }
     public DbSet<CarOwner> CarOwners { get; set; }
     public DbSet<Recall> Recalls { get; set; }
+    public DbSet<Issue> Issues { get; set; }
 
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
@@ -314,6 +316,32 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.Type).IsRequired();
             b.HasOne(x => x.Car)
                 .WithMany(x => x.Recalls)
+                .HasForeignKey(x => x.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<Issue>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Issues", WorkShopManagementConsts.DbSchema, tb =>
+            {
+                tb.HasCheckConstraint("CK_Issues_XPercent_Range", "[XPercent] >= 0 AND [XPercent] <= 100");
+                tb.HasCheckConstraint("CK_Issues_YPercent_Range", "[YPercent] >= 0 AND [YPercent] <= 100");
+            });
+
+            b.ConfigureByConvention();
+
+            b.Property(x => x.Description).IsRequired().HasMaxLength(IssueConsts.MaxDescriptionLength);
+            b.Property(x => x.RectificationAction).HasMaxLength(IssueConsts.MaxRectificationActionLength);
+
+            b.Property(x => x.XPercent).IsRequired().HasPrecision(6, 3);
+            b.Property(x => x.YPercent).IsRequired().HasPrecision(6, 3);
+
+            b.Property(x => x.Status).IsRequired();
+            b.Property(x => x.OriginStage).IsRequired();
+            b.Property(x => x.DeteriorationType).IsRequired();
+
+            b.HasOne(x => x.Car)
+                .WithMany()
                 .HasForeignKey(x => x.CarId)
                 .OnDelete(DeleteBehavior.Restrict);
         });

@@ -117,3 +117,68 @@
     color: var(--accent-danger);
   }
 }
+
+.file-upload-container.app-upload-sm {
+  .upload-area {
+    padding: 14px;
+    border-width: 1px;
+    border-radius: 6px;
+
+    &.dragging {
+      transform: scale(1.01);
+    }
+  }
+
+  .upload-icon {
+    font-size: 28px;
+    margin: 0 auto 10px;
+  }
+
+  .upload-text {
+    font-size: 13px;
+
+    .highlight {
+      font-weight: 600; // keep as-is
+    }
+  }
+
+  .upload-hint {
+    font-size: 11px;
+  }
+
+  .error-message {
+    font-size: 12px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left-width: 3px;
+  }
+
+  .files-list {
+    margin-top: 10px;
+  }
+
+  .file-item {
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+
+  .file-info {
+    gap: 2px;
+  }
+
+  .file-name {
+    font-size: 12px;
+  }
+
+  .file-size {
+    font-size: 10px;
+  }
+
+  .remove-btn {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}

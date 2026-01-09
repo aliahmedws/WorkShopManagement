@@ -8,6 +8,7 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
+using WorkShopManagement.Issues;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.Lookups;
 using WorkShopManagement.ModelCategories;
@@ -40,7 +41,7 @@ public partial class CarModelMapper : MapperBase<CarModel, CarModelDto>
 
 
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
 public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 {
     public override partial CheckListDto Map(CheckList source);
@@ -55,7 +56,7 @@ public partial class QualityGateMapper : MapperBase<QualityGate, QualityGateDto>
 }
 
 
-[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.None)]
 public partial class ListItemMapper : MapperBase<ListItem, ListItemDto>
 {
     public override partial ListItemDto Map(ListItem source);
@@ -130,4 +131,11 @@ public partial class RecallMapper : MapperBase<Recall, RecallDto>
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
     [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
     public override partial void Map(Recall source, RecallDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class IssueToIssueDtoMapper : MapperBase<Issue, IssueDto>
+{
+    public override partial IssueDto Map(Issue source);
+    public override partial void Map(Issue source, IssueDto destination);
 }

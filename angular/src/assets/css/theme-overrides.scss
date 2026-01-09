@@ -864,8 +864,13 @@ nz-select {
     width: 100%;
 }
 
-.ant-select.ant-select-lg {
+.ant-select.ant-select-lg:not(.ant-select-multiple) {
     height: 44px;
+    font-size: .875rem;
+}
+
+.ant-select.ant-select-lg.ant-select-multiple {
+    min-height: 44px;
     font-size: .875rem;
 }
 
@@ -1190,7 +1195,7 @@ label[required]::after {
     border-color: var(--brand-primary);
 }
 
-.anticon {
+.anticon:not(.ant-image-preview-operations-icon) {
     color: var(--brand-primary);
 }
 
