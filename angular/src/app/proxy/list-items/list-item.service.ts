@@ -36,6 +36,14 @@ export class ListItemService {
     { apiName: this.apiName,...config });
   
 
+  getByCheckListWithDetails = (checkListId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListItemDto[]>({
+      method: 'GET',
+      url: `/api/app/list-items/by-checklist/${checkListId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: GetListItemListDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<ListItemDto>>({
       method: 'GET',

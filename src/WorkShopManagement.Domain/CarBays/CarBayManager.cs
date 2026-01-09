@@ -42,7 +42,7 @@ public class CarBayManager : DomainService
         string? row = null,
         string? columns = null,
         DateTime? reWorkDate = null,
-        DateTime? manufactureStartDate = null,
+        DateTime? manufactureStartDate = null, //assembly date
         string? pulseNumber = null,
         bool? canProgress = null,
         bool? jobCardCompleted = null)

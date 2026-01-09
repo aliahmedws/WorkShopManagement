@@ -62,7 +62,7 @@
             <div class="card-body checklist-body">
               <ng-container *ngIf="(details.checkLists?.length ?? 0) > 0; else noLists">
                 <div class="checklist-group" *ngFor="let cl of (details.checkLists || [])">
-                  <div class="checklist-title">
+                  <div class="checklist-title" (click)="openListItem(cl)">
                     {{ cl.name }}
                   </div>
                   <ng-template #noItems>
@@ -120,3 +120,5 @@
     </div>
   </ng-template>
 </abp-modal>
+
+<app-checklist-items-modal #checkListItemsModal></app-checklist-items-modal>

@@ -3210,6 +3210,23 @@
                   }
                 },
                 {
+                  "name": "GetByCheckListWithDetailsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "checkListId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.ListItems.ListItemDto>",
+                    "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]"
+                  }
+                },
+                {
                   "name": "GetAsync",
                   "parametersOnMethod": [
                     {
@@ -3538,6 +3555,43 @@
               "returnValue": {
                 "type": "System.Void",
                 "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.ListItems.IListItemAppService"
+            },
+            "GetByCheckListWithDetailsAsyncByCheckListId": {
+              "uniqueName": "GetByCheckListWithDetailsAsyncByCheckListId",
+              "name": "GetByCheckListWithDetailsAsync",
+              "httpMethod": "GET",
+              "url": "api/app/list-items/by-checklist/{checkListId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "checkListId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "checkListId",
+                  "name": "checkListId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.ListItems.ListItemDto>",
+                "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.ListItems.IListItemAppService"

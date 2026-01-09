@@ -43,7 +43,7 @@ public class ListItemController : WorkShopManagementController, IListItemAppServ
     public Task DeleteAsync(Guid id)
         => _appService.DeleteAsync(id);
 
-    [HttpGet("{checkListId}")]
+    [HttpGet("by-checklist/{checkListId}")]
     public async Task<List<ListItemDto>> GetByCheckListWithDetailsAsync(Guid checkListId)
       => await _appService.GetByCheckListWithDetailsAsync(checkListId);
 }
