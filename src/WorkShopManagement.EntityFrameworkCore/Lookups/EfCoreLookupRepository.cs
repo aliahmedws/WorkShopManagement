@@ -50,6 +50,18 @@ public class EfCoreLookupRepository : ILookupRepository
             .ToListAsync();
     }
 
+    public async Task<List<GuidLookup>> GetCarsAsync()
+    {
+        var ctx = await GetDbContextAsync();
+
+        return await ctx.Cars
+            .Include(x => x.Model)
+            .AsNoTracking()
+            .OrderBy(x => x.Model)
+            .Select(x => new GuidLookup(x.Id, x.Model.Name))
+            .ToListAsync();
+    }
+
     public async Task<List<GuidLookup>> GetBaysAsync()
     {
         var ctx = await GetDbContextAsync();

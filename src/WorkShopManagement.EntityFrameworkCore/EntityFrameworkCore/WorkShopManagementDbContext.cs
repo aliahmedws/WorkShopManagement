@@ -19,6 +19,7 @@ using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CarsEx;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
@@ -81,6 +82,7 @@ public class WorkShopManagementDbContext :
     public DbSet<VinInfo> VinInfos { get; set; }
     public DbSet<CarBay> CarBays { get; set; }
     public DbSet<CarBayItem> CarBayItems { get; set; }
+    public DbSet<CheckInReport> CheckInReports { get; set; }
 
     public DbSet<Car> Cars { get; set; }
     public DbSet<CarOwner> CarOwners { get; set; }
@@ -293,6 +295,22 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.Name);
         });
 
+        builder.Entity<CheckInReport>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckInReports", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+ 
+            b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMoterNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
+            //b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.ReportStatus).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.CarId).IsRequired();
+            b.HasOne(x => x.Car).WithOne().HasForeignKey<CheckInReport>(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
+
+        });
         builder.Entity<VinInfo>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "VinInfos", WorkShopManagementConsts.DbSchema);

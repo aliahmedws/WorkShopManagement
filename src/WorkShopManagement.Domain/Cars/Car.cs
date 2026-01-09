@@ -15,7 +15,7 @@ namespace WorkShopManagement.Cars;
 [Audited]
 public class Car : FullAuditedAggregateRoot<Guid>
 {
-    public string Vin { get; private set; } = default!;
+    public string Vin { get; private set; } = default!;         // TODO: unique index
     public string Color { get; private set; } = default!;
     public Guid OwnerId { get; private set; }
     public Guid ModelId { get; private set; }
@@ -183,6 +183,11 @@ public class Car : FullAuditedAggregateRoot<Guid>
         EtaScd = etaScd;
         BookingNumber = DomainCheck.TrimOptional(bookingNumber, nameof(bookingNumber), maxLength: CarConsts.MaxBookingNumberLength);
         ClearingAgent = DomainCheck.TrimOptional(clearingAgent, nameof(clearingAgent), maxLength: CarConsts.MaxClearingAgentLength);
+        StorageLocation = storageLocation;
+    }
+
+    public void SetStorageLocation(StorageLocation? storageLocation)
+    {
         StorageLocation = storageLocation;
     }
 }

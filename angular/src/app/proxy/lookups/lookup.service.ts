@@ -1,4 +1,4 @@
-import type { GuidLookupDto, IntLookupDto } from './models';
+import type { GuidLookupDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
 
@@ -8,14 +8,6 @@ import { Injectable, inject } from '@angular/core';
 export class LookupService {
   private restService = inject(RestService);
   apiName = 'Default';
-  
-
-  getBays = (config?: Partial<Rest.Config>) =>
-    this.restService.request<any, GuidLookupDto[]>({
-      method: 'GET',
-      url: '/api/app/lookups/bays',
-    },
-    { apiName: this.apiName,...config });
   
 
   getCarModels = (config?: Partial<Rest.Config>) =>
@@ -34,10 +26,10 @@ export class LookupService {
     { apiName: this.apiName,...config });
   
 
-  getPriority = (config?: Partial<Rest.Config>) =>
-    this.restService.request<any, IntLookupDto[]>({
+  getCars = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, GuidLookupDto[]>({
       method: 'GET',
-      url: '/api/app/lookups/priorities',
+      url: '/api/app/lookups/cars',
     },
     { apiName: this.apiName,...config });
 }

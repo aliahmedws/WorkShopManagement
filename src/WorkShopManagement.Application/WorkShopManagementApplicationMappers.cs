@@ -4,6 +4,7 @@ using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
@@ -172,4 +173,20 @@ public partial class RecallMapper : MapperBase<Recall, RecallDto>
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
     [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
     public override partial void Map(Recall source, RecallDto destination);
+}
+
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInReport, CheckInReportDto>
+{
+    public override partial CheckInReportDto Map(CheckInReport source);
+    public override partial void Map(CheckInReport source, CheckInReportDto destination);
+
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportFiltersDtoToInputMapper : MapperBase<CheckInReportFiltersDto, CheckInReportFiltersInput>
+{
+    public override partial CheckInReportFiltersInput Map(CheckInReportFiltersDto source);
+    public override partial void Map(CheckInReportFiltersDto source, CheckInReportFiltersInput destination);
 }

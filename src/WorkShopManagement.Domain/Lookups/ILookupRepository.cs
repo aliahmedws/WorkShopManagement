@@ -8,6 +8,7 @@ public interface ILookupRepository : IRepository
 {
     Task<List<GuidLookup>> GetCarModelsAsync();
     Task<List<GuidLookup>> GetCarOwnersAsync();
+    Task<List<GuidLookup>> GetCarsAsync();
     Task<List<GuidLookup>> GetBaysAsync();
     Task<List<IntLookup>> GetPrioritiesAsync();
 }

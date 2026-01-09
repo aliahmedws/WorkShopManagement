@@ -23,6 +23,12 @@ public class LookupAppService(ILookupRepository lookupRepository) : WorkShopMana
         return Map(owners);
     }
 
+    public async Task<List<GuidLookupDto>> GetCarsAsync()
+    {
+        var cars = await _lookupRepository.GetCarsAsync();
+        return Map(cars);
+    }
+
     public async Task<List<GuidLookupDto>> GetBaysAsync()
     {
         var bays = await _lookupRepository.GetBaysAsync();
