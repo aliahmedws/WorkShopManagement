@@ -19650,8 +19650,8 @@
         {
           "name": "LaborHoursMin",
           "jsonName": "labor_hours_min",
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -19662,8 +19662,8 @@
         {
           "name": "LaborHoursMax",
           "jsonName": "labor_hours_max",
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "System.Int32?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
