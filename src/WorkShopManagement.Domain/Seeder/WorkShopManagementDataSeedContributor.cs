@@ -1,12 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 using Volo.Abp.Linq;
@@ -18,8 +21,6 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.RadioOptions;
-using Microsoft.EntityFrameworkCore;
-using Volo.Abp.Domain.Entities;
 
 
 namespace WorkShopManagement.Seeder;
@@ -42,6 +43,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
     // Batch sizes (tune if needed)
     private const int ListItemBatchSize = 2000;
     private const int RadioOptionBatchSize = 5000;
+    private const int TransactionBatchSize = 10000;
 
     // Checklist names
     private const string Station0Name = "Station 0 - Receiving Compliance Audit";
@@ -94,67 +96,394 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         _radioOptionRepo = radioOptionRepo;
     }
 
-    [UnitOfWork]
+    private async Task<T> TimedAsync<T>(string stage, Func<Task<T>> action)
+    {
+        var sw = Stopwatch.StartNew();
+        _logger.LogInformation("[SEED][START] {Stage}", stage);
+
+        try
+        {
+            var result = await action();
+            sw.Stop();
+            _logger.LogInformation("[SEED][END] {Stage} in {ElapsedMs} ms", stage, sw.ElapsedMilliseconds);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            _logger.LogError(ex, "[SEED][FAIL] {Stage} after {ElapsedMs} ms", stage, sw.ElapsedMilliseconds);
+            throw;
+        }
+    }
+
+    private async Task TimedAsync(string stage, Func<Task> action)
+    {
+        await TimedAsync(stage, async () => { await action(); return true; });
+    }
+
     public async Task SeedAsync(DataSeedContext context)
     {
-        _logger.LogInformation("WorkShopManagementDataSeedContributor started.");
-
-        var rootUrl = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
-        if (string.IsNullOrWhiteSpace(rootUrl))
-            throw new Exception("Missing configuration: OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl");
-
-        var modelCategoriesPath = Path.Combine(rootUrl, "images", "ModelCategories");
-        var carModelsPath = Path.Combine(modelCategoriesPath, "CarModels");
-
-        var totalInserted = 0;
-
-        // Bays are small: always safe to run idempotently.
-        totalInserted += await SeedBaysAsync();
-        await _uowManager.Current!.SaveChangesAsync();
-
-        // One-time heavy stages: skip if already seeded.
-        if (await AnyAsync(_checkListRepo))
+        try
         {
-            _logger.LogInformation("Seed skip: CheckLists already exist -> skipping CheckLists/ListItems/RadioOptions seeding.");
+            _logger.LogInformation("WorkShopManagementDataSeedContributor started.");
+
+            var totalInserted = 0;
+
+            var rootUrl = _configuration["OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl"];
+            if (string.IsNullOrWhiteSpace(rootUrl))
+                throw new Exception("Missing configuration: OpenIddict:Applications:WorkShopManagement_Swagger:RootUrl");
+
+            var modelCategoriesPath = Path.Combine(rootUrl, "images", "ModelCategories");
+            var carModelsPath = Path.Combine(modelCategoriesPath, "CarModels");
+
+            // ----------------------------
+            // TRANSACTION 1: Basic Setup (Bays, ModelCategories, CarModels)
+            // These need to be committed together before CheckLists can reference them
+            // ----------------------------
+            using (var uow = _uowManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                // Bays
+                totalInserted += await TimedAsync("Bays", SeedBaysAsync);
+
+                // Model Categories
+                if (!await AnyAsync(_categoryRepo))
+                {
+                    totalInserted += await TimedAsync("ModelCategories", () => SeedModelCategoriesAsync(modelCategoriesPath));
+                    // Must save changes here so CarModels can see them
+                    await TimedAsync("ModelCategories: SaveChanges", () => _uowManager.Current!.SaveChangesAsync());
+                }
+                else
+                {
+                    _logger.LogInformation("Seed skip: ModelCategories already exist.");
+                }
+
+                // Car Models
+                if (!await AnyAsync(_carModelRepo))
+                {
+                    totalInserted += await TimedAsync("CarModels", () => SeedCarModelsAsync(carModelsPath));
+                    await TimedAsync("CarModels: SaveChanges", () => _uowManager.Current!.SaveChangesAsync());
+                }
+                else
+                {
+                    _logger.LogInformation("Seed skip: CarModels already exist.");
+                }
+
+                await TimedAsync("Transaction 1: CompleteAsync", () => uow.CompleteAsync());
+            }
+
+            // Check if we should continue
+            if (await AnyAsync(_checkListRepo))
+            {
+                _logger.LogInformation("Seed skip: CheckLists already exist -> skipping CheckLists/ListItems/RadioOptions seeding.");
+                _logger.LogInformation("WorkShopManagementDataSeedContributor done. Inserted {Count} records.", totalInserted);
+                return;
+            }
+
+            // ----------------------------
+            // TRANSACTION 2: CheckLists
+            // ----------------------------
+            using (var uow = _uowManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                totalInserted += await TimedAsync("CheckLists", SeedCheckListsAsync);
+                await TimedAsync("Transaction 2: CompleteAsync", () => uow.CompleteAsync());
+            }
+
+            // ----------------------------
+            // TRANSACTION 3: ListItems (in batches)
+            // ----------------------------
+            totalInserted += await TimedAsync("ListItems (Batched)", SeedListItemsBatched);
+
+            // ----------------------------
+            // TRANSACTION 4: RadioOptions (in batches)
+            // ----------------------------
+            totalInserted += await TimedAsync("RadioOptions (Batched)", SeedRadioOptionsBatched);
+
             _logger.LogInformation("WorkShopManagementDataSeedContributor done. Inserted {Count} records.", totalInserted);
-            return;
         }
-
-        // Categories / CarModels are also “one-time” static in your scenario
-        if (!await AnyAsync(_categoryRepo))
+        catch (Exception ex)
         {
-            totalInserted += await SeedModelCategoriesAsync(modelCategoriesPath);
-            await _uowManager.Current!.SaveChangesAsync();
+            _logger.LogError(ex, "Seeding failed");
+            throw;
         }
-        else
+    }
+
+    private async Task<int> SeedListItemsBatched()
+    {
+        var clQ = await _checkListRepo.GetQueryableAsync();
+        var checkLists = await clQ
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.CarModelId, x.Name })
+            .ToListAsync();
+
+        if (checkLists.Count == 0)
         {
-            _logger.LogInformation("Seed skip: ModelCategories already exist.");
+            _logger.LogInformation("ListItems: no CheckLists found. Skipping.");
+            return 0;
         }
 
-        if (!await AnyAsync(_carModelRepo))
+        var checkListByCarAndName = checkLists
+            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+            .ToDictionary(
+                x => $"{x.CarModelId:N}|{Normalize(x.Name!)}",
+                x => x.Id,
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        var carModelIds = checkLists.Select(x => x.CarModelId).Distinct().ToList();
+
+        // Build all items first
+        var toInsert = new List<ListItem>(capacity: 20000);
+
+        // Pre-sort seed lists
+        var station0 = GetStation0_ListItems().OrderBy(x => x.Position).ToList();
+        var station1a = GetStation1A_ListItems().OrderBy(x => x.Position).ToList();
+        var station1b = GetStation1B_ListItems().OrderBy(x => x.Position).ToList();
+        var station2 = Station2_ListItems().OrderBy(x => x.Position).ToList();
+        var station3a = Station3A_ListItems().OrderBy(x => x.Position).ToList();
+        var station3b = Station3B_ListItems().OrderBy(x => x.Position).ToList();
+        var station4 = Station4_ListItems().OrderBy(x => x.Position).ToList();
+        var station5qc = Station5QC_ListItems().OrderBy(x => x.Position).ToList();
+        var wheel = WheelAlignment_ListItems().OrderBy(x => x.Position).ToList();
+        var qc = QualityControl_ListItems().OrderBy(x => x.Position).ToList();
+        var qr = QualityRelease_ListItems().OrderBy(x => x.Position).ToList();
+        var dash = DashRemanufacture_ListItems().OrderBy(x => x.Position).ToList();
+        var hvac = HVAC_ListItems().OrderBy(x => x.Position).ToList();
+        var console = CentreConsole_ListItems().OrderBy(x => x.Position).ToList();
+        var seats = SeatsConversion_ListItems().OrderBy(x => x.Position).ToList();
+        var leather = LeatherSeatKit_ListItems().OrderBy(x => x.Position).ToList();
+        var subElec = SubAssemblyElectrical_ListItems().OrderBy(x => x.Position).ToList();
+        var invoice = Invoice_ListItems().OrderBy(x => x.Position).ToList();
+        var pdi = GetPreDeliveryInspection_ListItems().OrderBy(x => x.Position).ToList();
+        var procurement = Procurement_ListItems().OrderBy(x => x.Position).ToList();
+        var avv = AVVPackage_ListItems().OrderBy(x => x.Position).ToList();
+        var quality = Quality_ListItems().OrderBy(x => x.Position).ToList();
+
+        foreach (var carModelId in carModelIds)
         {
-            totalInserted += await SeedCarModelsAsync(carModelsPath);
-            await _uowManager.Current!.SaveChangesAsync();
+            AddListItemsForChecklist(carModelId, Station0Name, station0);
+            AddListItemsForChecklist(carModelId, Station1AName, station1a);
+            AddListItemsForChecklist(carModelId, Station1BName, station1b);
+            AddListItemsForChecklist(carModelId, Station2Name, station2);
+            AddListItemsForChecklist(carModelId, Station3AName, station3a);
+            AddListItemsForChecklist(carModelId, Station3BName, station3b);
+            AddListItemsForChecklist(carModelId, Station4Name, station4);
+            AddListItemsForChecklist(carModelId, Station5QCName, station5qc);
+            AddListItemsForChecklist(carModelId, WheelAlignmentName, wheel);
+            AddListItemsForChecklist(carModelId, QualityControlName, qc);
+            AddListItemsForChecklist(carModelId, QualityReleaseName, qr);
+            AddListItemsForChecklist(carModelId, DashRemanufactureName, dash);
+            AddListItemsForChecklist(carModelId, HVACName, hvac);
+            AddListItemsForChecklist(carModelId, CentreConsoleName, console);
+            AddListItemsForChecklist(carModelId, SeatsConversionName, seats);
+            AddListItemsForChecklist(carModelId, LeatherSeatKitName, leather);
+            AddListItemsForChecklist(carModelId, SubAssemblyElectricalName, subElec);
+            AddListItemsForChecklist(carModelId, InvoiceName, invoice);
+            AddListItemsForChecklist(carModelId, PreDeliveryInspectionName, pdi);
+            AddListItemsForChecklist(carModelId, ProcurementName, procurement);
+            AddListItemsForChecklist(carModelId, AVVPackageName, avv);
+            AddListItemsForChecklist(carModelId, QualityName, quality);
         }
-        else
+
+        void AddListItemsForChecklist(Guid carModelId, string checkListName, IReadOnlyList<ListItemSeed> seeds)
         {
-            _logger.LogInformation("Seed skip: CarModels already exist.");
+            var key = $"{carModelId:N}|{Normalize(checkListName)}";
+            if (!checkListByCarAndName.TryGetValue(key, out var checkListId))
+            {
+                _logger.LogWarning(
+                    "ListItems: checklist missing. CarModelId={CarModelId}, CheckList={CheckList}",
+                    carModelId, checkListName);
+                return;
+            }
+
+            foreach (var s in seeds)
+            {
+                var isSeparator = s.IsSeparator;
+
+                toInsert.Add(new ListItem(
+                    id: _guid.Create(),
+                    checkListId: checkListId,
+                    position: s.Position,
+                    name: s.Name,
+                    commentPlaceholder: isSeparator ? null : s.CommentPlaceholder,
+                    commentType: isSeparator ? null : s.CommentType,
+                    isAttachmentRequired: isSeparator ? false : s.IsAttachmentRequired,
+                    isSeparator: isSeparator
+                ));
+            }
         }
 
-        totalInserted += await SeedCheckListsAsync();
-        await _uowManager.Current!.SaveChangesAsync();
+        if (toInsert.Count == 0)
+        {
+            _logger.LogInformation("ListItems: nothing to insert.");
+            return 0;
+        }
 
-        totalInserted += await SeedListItemsAsync();
-        await _uowManager.Current!.SaveChangesAsync();
+        // Insert in transaction batches
+        var inserted = 0;
+        var batchNo = 0;
 
-        totalInserted += await SeedRadioOptionsAsync();
-        await _uowManager.Current!.SaveChangesAsync();
+        foreach (var batch in Batch(toInsert, TransactionBatchSize))
+        {
+            batchNo++;
+            using (var uow = _uowManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                var sw = Stopwatch.StartNew();
 
-        _logger.LogInformation("WorkShopManagementDataSeedContributor done. Inserted {Count} records.", totalInserted);
+                // Insert in smaller chunks within the transaction
+                foreach (var chunk in Batch(batch, ListItemBatchSize))
+                {
+                    await _listItemRepo.InsertManyAsync(chunk, autoSave: false);
+                }
+
+                await uow.CompleteAsync();
+                inserted += batch.Count;
+
+                sw.Stop();
+                _logger.LogInformation(
+                    "ListItems: transaction batch {BatchNo} committed {BatchCount} in {ElapsedMs} ms",
+                    batchNo, batch.Count, sw.ElapsedMilliseconds);
+            }
+        }
+
+        _logger.LogInformation("ListItems: inserted total {Count}.", inserted);
+        return inserted;
+    }
+
+    private async Task<int> SeedRadioOptionsBatched()
+    {
+        var liQ = await _listItemRepo.GetQueryableAsync();
+        var listItems = await liQ
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.CheckListId, x.Position, x.IsSeparator })
+            .ToListAsync();
+
+        if (listItems.Count == 0)
+        {
+            _logger.LogInformation("RadioOptions: no ListItems found. Skipping.");
+            return 0;
+        }
+
+        var clQ = await _checkListRepo.GetQueryableAsync();
+        var checkLists = await clQ
+            .AsNoTracking()
+            .Select(x => new { x.Id, x.CarModelId, x.Name })
+            .ToListAsync();
+
+        var checkListByCarAndName = checkLists
+            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+            .ToDictionary(
+                x => $"{x.CarModelId:N}|{Normalize(x.Name!)}",
+                x => x.Id,
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        var listItemByCheckListAndPos = listItems
+            .Where(x => x.IsSeparator != true)
+            .GroupBy(x => new { x.CheckListId, x.Position })
+            .ToDictionary(
+                g => $"{g.Key.CheckListId:N}|{g.Key.Position}",
+                g => g.First().Id,
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        var carQ = await _carModelRepo.GetQueryableAsync();
+        var carModels = await carQ
+            .AsNoTracking()
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        // Build all radio options
+        var toInsert = new List<RadioOption>(capacity: 50000);
+
+        foreach (var carModelId in carModels)
+        {
+            AddRadioSeeds(carModelId, Station0Name, GetStation0_RadioSeeds());
+            AddRadioSeeds(carModelId, Station1AName, GetStation1A_RadioSeeds());
+            AddRadioSeeds(carModelId, Station1BName, GetStation1B_RadioSeeds());
+            AddRadioSeeds(carModelId, Station2Name, GetStation2_RadioSeeds());
+            AddRadioSeeds(carModelId, Station3AName, GetStation3A_RadioSeeds());
+            AddRadioSeeds(carModelId, Station3BName, GetStation3B_RadioSeeds());
+            AddRadioSeeds(carModelId, Station4Name, GetStation4_RadioSeeds());
+            AddRadioSeeds(carModelId, Station5QCName, GetStation5QC_RadioSeeds());
+            AddRadioSeeds(carModelId, WheelAlignmentName, GetWheelAlignment_RadioSeeds());
+            AddRadioSeeds(carModelId, QualityControlName, GetQualityControl_RadioSeeds());
+            AddRadioSeeds(carModelId, QualityReleaseName, GetQualityRelease_RadioSeeds());
+            AddRadioSeeds(carModelId, DashRemanufactureName, GetDashRemanufacture_RadioSeeds());
+            AddRadioSeeds(carModelId, HVACName, GetHVAC_RadioSeeds());
+            AddRadioSeeds(carModelId, CentreConsoleName, GetCentreConsole_RadioSeeds());
+            AddRadioSeeds(carModelId, SeatsConversionName, GetSeatsConversion_RadioSeeds());
+            AddRadioSeeds(carModelId, LeatherSeatKitName, GetLeatherSeatKit_RadioSeeds());
+            AddRadioSeeds(carModelId, SubAssemblyElectricalName, GetSubAssemblyElectrical_RadioSeeds());
+            AddRadioSeeds(carModelId, QualityName, GetQuality_RadioSeeds());
+            AddRadioSeeds(carModelId, AVVPackageName, GetAVVPackage_RadioSeeds());
+            AddRadioSeeds(carModelId, ProcurementName, GetProcurement_RadioSeeds());
+            AddRadioSeeds(carModelId, InvoiceName, GetInvoice_RadioSeeds());
+            AddRadioSeeds(carModelId, PreDeliveryInspectionName, GetPreDeliveryInspection_RadioSeeds());
+        }
+
+        void AddRadioSeeds(Guid carModelId, string checkListName, IReadOnlyList<RadioSeed> seeds)
+        {
+            var clKey = $"{carModelId:N}|{Normalize(checkListName)}";
+            if (!checkListByCarAndName.TryGetValue(clKey, out var checkListId))
+            {
+                _logger.LogWarning(
+                    "RadioOptions: checklist missing. CarModelId={CarModelId}, CheckList={CheckList}",
+                    carModelId, checkListName);
+                return;
+            }
+
+            foreach (var seed in seeds)
+            {
+                var liKey = $"{checkListId:N}|{seed.ListItemPosition}";
+                if (!listItemByCheckListAndPos.TryGetValue(liKey, out var listItemId))
+                    continue;
+
+                foreach (var opt in seed.Options.Select(x => (x ?? string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    toInsert.Add(new RadioOption(_guid.Create(), listItemId, opt));
+                }
+            }
+        }
+
+        if (toInsert.Count == 0)
+        {
+            _logger.LogInformation("RadioOptions: nothing to insert.");
+            return 0;
+        }
+
+        // Insert in transaction batches
+        var inserted = 0;
+        var batchNo = 0;
+
+        foreach (var batch in Batch(toInsert, TransactionBatchSize * 2)) // Larger batches for RadioOptions
+        {
+            batchNo++;
+            using (var uow = _uowManager.Begin(requiresNew: true, isTransactional: true))
+            {
+                var sw = Stopwatch.StartNew();
+
+                // Insert in chunks within the transaction
+                foreach (var chunk in Batch(batch, RadioOptionBatchSize))
+                {
+                    await _radioOptionRepo.InsertManyAsync(chunk, autoSave: false);
+                }
+
+                await uow.CompleteAsync();
+                inserted += batch.Count;
+
+                sw.Stop();
+                _logger.LogInformation(
+                    "RadioOptions: transaction batch {BatchNo} committed {BatchCount} in {ElapsedMs} ms",
+                    batchNo, batch.Count, sw.ElapsedMilliseconds);
+            }
+        }
+
+        _logger.LogInformation("RadioOptions: inserted total {Count}.", inserted);
+        return inserted;
     }
 
     private async Task<bool> AnyAsync<TEntity>(IRepository<TEntity, Guid> repo)
-    where TEntity : class, IEntity<Guid>
+        where TEntity : class, IEntity<Guid>
     {
         var q = await repo.GetQueryableAsync();
         return await _asyncExecuter.AnyAsync(q);
@@ -191,9 +520,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         return toInsert.Count;
     }
 
-    // -----------------------------
     // Model Categories
-    // -----------------------------
     private async Task<int> SeedModelCategoriesAsync(string modelCategoriesPath)
     {
         var seeds = new List<(string Name, string FileName)>
@@ -243,9 +570,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         return toInsert.Count;
     }
 
-    // -----------------------------
     // Car Models
-    // -----------------------------
     private async Task<int> SeedCarModelsAsync(string carModelsPath)
     {
         var seeds = GetCarModelSeeds();
@@ -310,9 +635,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         return toInsert.Count;
     }
 
-    // -----------------------------
     // CheckLists
-    // -----------------------------
     private async Task<int> SeedCheckListsAsync()
     {
         var defaultCheckLists = GetDefaultCheckLists();
@@ -366,261 +689,19 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         return toInsert.Count;
     }
 
-    // -----------------------------
-    // ListItems (batched inserts)
-    // -----------------------------
-    private async Task<int> SeedListItemsAsync()
-    {
-        var clQ = await _checkListRepo.GetQueryableAsync();
-        var checkLists = await clQ.Select(x => new { x.Id, x.CarModelId, x.Name }).ToListAsync();
-
-        if (checkLists.Count == 0)
-        {
-            _logger.LogInformation("ListItems: no CheckLists found. Skipping.");
-            return 0;
-        }
-
-        // Map checklist by (CarModelId + Name)
-        var checkListByCarAndName = checkLists
-            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-            .ToDictionary(
-                x => $"{x.CarModelId:N}|{Normalize(x.Name!)}",
-                x => x.Id,
-                StringComparer.OrdinalIgnoreCase
-            );
-
-        // Existing list items (you can skip this entirely because we skip whole stage via CheckLists guard;
-        // still keep it to be safe if someone deletes some ListItems only)
-        var liQ = await _listItemRepo.GetQueryableAsync();
-        var existing = await liQ.Select(x => new { x.CheckListId, x.Position, x.Name }).ToListAsync();
-
-        var existingPosKeys = existing
-            .Select(x => $"{x.CheckListId:N}|POS|{x.Position}")
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-        var existingNameKeys = existing
-            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-            .Select(x => $"{x.CheckListId:N}|NAME|{Normalize(x.Name!)}")
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-        var carQ = await _carModelRepo.GetQueryableAsync();
-        var carModels = await carQ.Select(x => x.Id).ToListAsync();
-
-        var toInsert = new List<ListItem>(capacity: 20000);
-
-        foreach (var carModelId in carModels)
-        {
-            AddListItemsForChecklist(carModelId, Station0Name, GetStation0_ListItems());
-            AddListItemsForChecklist(carModelId, Station1AName, GetStation1A_ListItems());
-            AddListItemsForChecklist(carModelId, Station1BName, GetStation1B_ListItems());
-            AddListItemsForChecklist(carModelId, Station2Name, Station2_ListItems());
-            AddListItemsForChecklist(carModelId, Station3AName, Station3A_ListItems());
-            AddListItemsForChecklist(carModelId, Station3BName, Station3B_ListItems());
-            AddListItemsForChecklist(carModelId, Station4Name, Station4_ListItems());
-            AddListItemsForChecklist(carModelId, Station5QCName, Station5QC_ListItems());
-            AddListItemsForChecklist(carModelId, WheelAlignmentName, WheelAlignment_ListItems());
-            AddListItemsForChecklist(carModelId, QualityControlName, QualityControl_ListItems());
-            AddListItemsForChecklist(carModelId, QualityReleaseName, QualityRelease_ListItems());
-            AddListItemsForChecklist(carModelId, DashRemanufactureName, DashRemanufacture_ListItems());
-            AddListItemsForChecklist(carModelId, HVACName, HVAC_ListItems());
-            AddListItemsForChecklist(carModelId, CentreConsoleName, CentreConsole_ListItems());
-            AddListItemsForChecklist(carModelId, SeatsConversionName, SeatsConversion_ListItems());
-            AddListItemsForChecklist(carModelId, LeatherSeatKitName, LeatherSeatKit_ListItems());
-            AddListItemsForChecklist(carModelId, SubAssemblyElectricalName, SubAssemblyElectrical_ListItems());
-            AddListItemsForChecklist(carModelId, InvoiceName, Invoice_ListItems());
-            AddListItemsForChecklist(carModelId, PreDeliveryInspectionName, GetPreDeliveryInspection_ListItems());
-            AddListItemsForChecklist(carModelId, ProcurementName, Procurement_ListItems());
-            AddListItemsForChecklist(carModelId, AVVPackageName, AVVPackage_ListItems());
-            AddListItemsForChecklist(carModelId, QualityName, Quality_ListItems());
-        }
-
-        if (toInsert.Count == 0)
-        {
-            _logger.LogInformation("ListItems: nothing to insert.");
-            return 0;
-        }
-
-        // Batched insert to reduce EF tracking + memory spikes
-        var inserted = 0;
-        foreach (var batch in Batch(toInsert, ListItemBatchSize))
-        {
-            await _listItemRepo.InsertManyAsync(batch, autoSave: true);
-            inserted += batch.Count;
-        }
-
-        _logger.LogInformation("ListItems: inserted {Count}.", inserted);
-        return inserted;
-
-        void AddListItemsForChecklist(Guid carModelId, string checkListName, IReadOnlyList<ListItemSeed> seeds)
-        {
-            var key = $"{carModelId:N}|{Normalize(checkListName)}";
-            if (!checkListByCarAndName.TryGetValue(key, out var checkListId))
-            {
-                _logger.LogWarning("ListItems: checklist missing. CarModelId={CarModelId}, CheckList={CheckList}", carModelId, checkListName);
-                return;
-            }
-
-            foreach (var s in seeds.OrderBy(x => x.Position))
-            {
-                var posKey = $"{checkListId:N}|POS|{s.Position}";
-                var nameKey = $"{checkListId:N}|NAME|{Normalize(s.Name)}";
-
-                if (existingPosKeys.Contains(posKey) || existingNameKeys.Contains(nameKey))
-                    continue;
-
-                // Enforce separator invariants
-                var isSeparator = s.IsSeparator;
-
-                var entity = new ListItem(
-                    id: _guid.Create(),
-                    checkListId: checkListId,
-                    position: s.Position,
-                    name: s.Name,
-                    commentPlaceholder: isSeparator ? null : s.CommentPlaceholder,
-                    commentType: isSeparator ? null : s.CommentType,
-                    isAttachmentRequired: isSeparator ? false : s.IsAttachmentRequired,
-                    isSeparator: isSeparator
-                );
-
-                toInsert.Add(entity);
-                existingPosKeys.Add(posKey);
-                existingNameKeys.Add(nameKey);
-            }
-        }
-    }
-
-    // -----------------------------
-    // RadioOptions (batched inserts)
-    // -----------------------------
-    private async Task<int> SeedRadioOptionsAsync()
-    {
-        var liQ = await _listItemRepo.GetQueryableAsync();
-        var listItems = await liQ
-            .Select(x => new { x.Id, x.CheckListId, x.Position, x.IsSeparator })
-            .ToListAsync();
-
-        if (listItems.Count == 0)
-        {
-            _logger.LogInformation("RadioOptions: no ListItems found. Skipping.");
-            return 0;
-        }
-
-        var clQ = await _checkListRepo.GetQueryableAsync();
-        var checkLists = await clQ.Select(x => new { x.Id, x.CarModelId, x.Name }).ToListAsync();
-
-        var checkListByCarAndName = checkLists
-            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-            .ToDictionary(
-                x => $"{x.CarModelId:N}|{Normalize(x.Name!)}",
-                x => x.Id,
-                StringComparer.OrdinalIgnoreCase
-            );
-
-        // ListItem lookup by (CheckListId + Position) -> ListItemId (first), exclude separators
-        var listItemByCheckListAndPos = listItems
-            .Where(x => x.IsSeparator != true) // excludes true; keeps false + null
-            .GroupBy(x => new { x.CheckListId, x.Position })
-            .ToDictionary(
-                g => $"{g.Key.CheckListId:N}|{g.Key.Position}",
-                g => g.First().Id,
-                StringComparer.OrdinalIgnoreCase
-            );
-
-        // Existing radio options (safe-guard)
-        var roQ = await _radioOptionRepo.GetQueryableAsync();
-        var existing = await roQ.Select(x => new { x.ListItemId, x.Name }).ToListAsync();
-        var existingKeys = existing
-            .Where(x => !string.IsNullOrWhiteSpace(x.Name))
-            .Select(x => $"{x.ListItemId:N}|{Normalize(x.Name!)}")
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-        var carQ = await _carModelRepo.GetQueryableAsync();
-        var carModels = await carQ.Select(x => x.Id).ToListAsync();
-
-        var toInsert = new List<RadioOption>(capacity: 30000);
-
-        foreach (var carModelId in carModels)
-        {
-            AddRadioSeeds(carModelId, Station0Name, GetStation0_RadioSeeds());
-            AddRadioSeeds(carModelId, Station1AName, GetStation1A_RadioSeeds());
-            AddRadioSeeds(carModelId, Station1BName, GetStation1B_RadioSeeds());
-            AddRadioSeeds(carModelId, Station2Name, GetStation2_RadioSeeds());
-            AddRadioSeeds(carModelId, Station3AName, GetStation3A_RadioSeeds());
-            AddRadioSeeds(carModelId, Station3BName, GetStation3B_RadioSeeds());
-            AddRadioSeeds(carModelId, Station4Name, GetStation4_RadioSeeds());
-            AddRadioSeeds(carModelId, Station5QCName, GetStation5QC_RadioSeeds());
-            AddRadioSeeds(carModelId, WheelAlignmentName, GetWheelAlignment_RadioSeeds());
-            AddRadioSeeds(carModelId, QualityControlName, GetQualityControl_RadioSeeds());
-            AddRadioSeeds(carModelId, QualityReleaseName, GetQualityRelease_RadioSeeds());
-            AddRadioSeeds(carModelId, DashRemanufactureName, GetDashRemanufacture_RadioSeeds());
-            AddRadioSeeds(carModelId, HVACName, GetHVAC_RadioSeeds());
-            AddRadioSeeds(carModelId, CentreConsoleName, GetCentreConsole_RadioSeeds());
-            AddRadioSeeds(carModelId, SeatsConversionName, GetSeatsConversion_RadioSeeds());
-            AddRadioSeeds(carModelId, LeatherSeatKitName, GetLeatherSeatKit_RadioSeeds());
-            AddRadioSeeds(carModelId, SubAssemblyElectricalName, GetSubAssemblyElectrical_RadioSeeds());
-            AddRadioSeeds(carModelId, QualityName, GetQuality_RadioSeeds());
-            AddRadioSeeds(carModelId, AVVPackageName, GetAVVPackage_RadioSeeds());
-            AddRadioSeeds(carModelId, ProcurementName, GetProcurement_RadioSeeds());
-            AddRadioSeeds(carModelId, InvoiceName, GetInvoice_RadioSeeds());
-            AddRadioSeeds(carModelId, PreDeliveryInspectionName, GetPreDeliveryInspection_RadioSeeds());
-        }
-
-        if (toInsert.Count == 0)
-        {
-            _logger.LogInformation("RadioOptions: nothing to insert.");
-            return 0;
-        }
-
-        var inserted = 0;
-        foreach (var batch in Batch(toInsert, RadioOptionBatchSize))
-        {
-            await _radioOptionRepo.InsertManyAsync(batch, autoSave: true);
-            inserted += batch.Count;
-        }
-
-        _logger.LogInformation("RadioOptions: inserted {Count}.", inserted);
-        return inserted;
-
-        void AddRadioSeeds(Guid carModelId, string checkListName, IReadOnlyList<RadioSeed> seeds)
-        {
-            var clKey = $"{carModelId:N}|{Normalize(checkListName)}";
-            if (!checkListByCarAndName.TryGetValue(clKey, out var checkListId))
-            {
-                _logger.LogWarning("RadioOptions: checklist missing. CarModelId={CarModelId}, CheckList={CheckList}", carModelId, checkListName);
-                return;
-            }
-
-            foreach (var seed in seeds)
-            {
-                var liKey = $"{checkListId:N}|{seed.ListItemPosition}";
-                if (!listItemByCheckListAndPos.TryGetValue(liKey, out var listItemId))
-                {
-                    // Often because seed points to a separator position or missing item
-                    continue;
-                }
-
-                foreach (var opt in seed.Options.Select(x => (x ?? string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)))
-                {
-                    var key = $"{listItemId:N}|{Normalize(opt)}";
-                    if (existingKeys.Contains(key))
-                        continue;
-
-                    toInsert.Add(new RadioOption(_guid.Create(), listItemId, opt));
-                    existingKeys.Add(key);
-                }
-            }
-        }
-    }
-
     // Helpers
     private static string Normalize(string value)
         => (value ?? string.Empty).Trim().ToUpperInvariant();
 
-    private static IEnumerable<List<T>> Batch<T>(IReadOnlyList<T> source, int size)
+    private static IEnumerable<List<T>> Batch<T>(List<T> source, int size)
     {
         if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));
-        for (var i = 0; i < source.Count; i += size)
-            yield return source.Skip(i).Take(size).ToList();
+
+        for (int i = 0; i < source.Count; i += size)
+        {
+            var count = Math.Min(size, source.Count - i);
+            yield return source.GetRange(i, count);
+        }
     }
 
 
