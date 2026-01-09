@@ -23,5 +23,17 @@ public class LookupAppService(ILookupRepository lookupRepository) : WorkShopMana
         return Map(owners);
     }
 
+    public async Task<List<GuidLookupDto>> GetBaysAsync()
+    {
+        var bays = await _lookupRepository.GetBaysAsync();
+        return Map(bays);
+    }
+
     List<GuidLookupDto> Map(List<GuidLookup> input) => ObjectMapper.Map<List<GuidLookup>, List<GuidLookupDto>>(input);
+
+    public async Task<List<IntLookupDto>> GetPriorityAsync()
+    {
+       var Priorities = await _lookupRepository.GetPrioritiesAsync();
+        return ObjectMapper.Map<List<IntLookup>, List<IntLookupDto>>(Priorities);
+    }
 }

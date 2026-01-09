@@ -3571,11 +3571,42 @@
                     "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
                     "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
                   }
+                },
+                {
+                  "name": "GetBaysAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
+                    "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+                  }
+                },
+                {
+                  "name": "GetPriorityAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.IntLookupDto>",
+                    "typeSimple": "[WorkShopManagement.Lookups.IntLookupDto]"
+                  }
                 }
               ]
             }
           ],
           "actions": {
+            "GetBaysAsync": {
+              "uniqueName": "GetBaysAsync",
+              "name": "GetBaysAsync",
+              "httpMethod": "GET",
+              "url": "api/app/lookups/bays",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
+                "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
+            },
             "GetCarModelsAsync": {
               "uniqueName": "GetCarModelsAsync",
               "name": "GetCarModelsAsync",
@@ -3602,6 +3633,21 @@
               "returnValue": {
                 "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.GuidLookupDto>",
                 "typeSimple": "[WorkShopManagement.Lookups.GuidLookupDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
+            },
+            "GetPriorityAsync": {
+              "uniqueName": "GetPriorityAsync",
+              "name": "GetPriorityAsync",
+              "httpMethod": "GET",
+              "url": "api/app/lookups/priorities",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.Lookups.IntLookupDto>",
+                "typeSimple": "[WorkShopManagement.Lookups.IntLookupDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.Lookups.ILookupAppService"
@@ -14955,6 +15001,18 @@
           "regex": null
         },
         {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "BuildMaterialNumber",
           "jsonName": null,
           "type": "System.String",
@@ -15265,6 +15323,102 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "BayName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "BayNumber",
+          "jsonName": null,
+          "type": "System.Int32?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarVin",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OwnerName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelCategoryName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ModelImagePath",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CheckLists",
+          "jsonName": null,
+          "type": "[WorkShopManagement.CheckLists.CheckListDto]",
+          "typeSimple": "[WorkShopManagement.CheckLists.CheckListDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -15293,6 +15447,18 @@
           "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -15670,6 +15836,24 @@
         }
       ]
     },
+    "WorkShopManagement.CarBays.Priority": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
     "WorkShopManagement.CarBays.UpdateCarBayDto": {
       "baseType": null,
       "isEnum": false,
@@ -15695,6 +15879,18 @@
           "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority",
+          "typeSimple": "enum",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -17247,6 +17443,18 @@
           "jsonName": null,
           "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ListItems",
+          "jsonName": null,
+          "type": "[WorkShopManagement.ListItems.ListItemDto]",
+          "typeSimple": "[WorkShopManagement.ListItems.ListItemDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -19490,6 +19698,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "RadioOptions",
+          "jsonName": null,
+          "type": "[WorkShopManagement.RadioOptions.RadioOptionDto]",
+          "typeSimple": "[WorkShopManagement.RadioOptions.RadioOptionDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -19634,6 +19854,39 @@
           "jsonName": null,
           "type": "System.Guid",
           "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DisplayName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.Lookups.IntLookupDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "Value",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

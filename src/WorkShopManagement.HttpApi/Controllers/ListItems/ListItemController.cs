@@ -1,10 +1,10 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.AspNetCore.Mvc;
 using WorkShopManagement.ListItems;
 
 
@@ -42,4 +42,8 @@ public class ListItemController : WorkShopManagementController, IListItemAppServ
     [HttpDelete("{id}")]
     public Task DeleteAsync(Guid id)
         => _appService.DeleteAsync(id);
+
+    [HttpGet("{checkListId}")]
+    public async Task<List<ListItemDto>> GetByCheckListWithDetailsAsync(Guid checkListId)
+      => await _appService.GetByCheckListWithDetailsAsync(checkListId);
 }

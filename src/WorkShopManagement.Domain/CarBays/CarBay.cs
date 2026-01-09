@@ -19,8 +19,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     public Guid BayId { get; private set; }
     public virtual Bay? Bay { get; set; }
 
-    //public Guid? PriorityId { get; private set; }
-    //public virtual Priority? Priority { get; set; }
+    public virtual Priority? Priority { get; set; }
 
     public string? BuildMaterialNumber { get; private set; }
 
@@ -76,7 +75,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
         BayId = Check.NotNull(bayId, nameof(bayId));
     }
 
-    //public void SetPriorityId(Guid? priorityId) => PriorityId = priorityId;
+    public void SetPriority(Priority? priority) => Priority = priority;
     public void SetBuildMaterialNumber(string? buildMaterialNumber) => BuildMaterialNumber = buildMaterialNumber?.Trim();
     public void SetUserId(Guid? userId) => UserId = userId;
     public void SetQualityGateId(Guid? qualityGateId) => QualityGateId = qualityGateId;

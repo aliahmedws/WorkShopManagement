@@ -11,6 +11,12 @@ namespace WorkShopManagement.Controllers.Lookups;
 [Route("api/app/lookups")]
 public class LookupController(ILookupAppService lookupAppService) : WorkShopManagementController, ILookupAppService
 {
+    [HttpGet("bays")]
+    public Task<List<GuidLookupDto>> GetBaysAsync()
+    {
+        return lookupAppService.GetBaysAsync();
+    }
+
     [HttpGet("car-models")]
     public Task<List<GuidLookupDto>> GetCarModelsAsync()
     {
@@ -21,5 +27,11 @@ public class LookupController(ILookupAppService lookupAppService) : WorkShopMana
     public Task<List<GuidLookupDto>> GetCarOwnersAsync()
     {
         return lookupAppService.GetCarOwnersAsync();
+    }
+
+    [HttpGet("priorities")]
+    public Task<List<IntLookupDto>> GetPriorityAsync()
+    {
+        return lookupAppService.GetPriorityAsync();
     }
 }

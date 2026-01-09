@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
+using WorkShopManagement.CheckLists;
 
 namespace WorkShopManagement.CarBays;
 
@@ -7,6 +9,7 @@ public class CarBayDto : EntityDto<Guid>
 {
     public Guid CarId { get; set; }
     public Guid BayId { get; set; }
+    public Priority Priority { get; set; }
 
     public string? BuildMaterialNumber { get; set; }
     public Guid? UserId { get; set; }
@@ -44,4 +47,17 @@ public class CarBayDto : EntityDto<Guid>
 
     public bool? CanProgress { get; set; }
     public bool? JobCardCompleted { get; set; }
+
+
+    public string? BayName { get; set; }
+    public int? BayNumber { get; set; }
+    public string? CarVin { get; set; }
+    public string? OwnerName { get; set; }
+    public string? ModelName { get; set; }
+    public string? ModelCategoryName { get; set; }
+
+    public string? ModelImagePath { get; set; }
+
+    public List<CheckListDto> CheckLists { get; set; } = new();
+
 }

@@ -1,9 +1,12 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
+import type { Priority } from './priority.enum';
 import type { AvvStatus } from './avv-status.enum';
+import type { CheckListDto } from '../check-lists/models';
 
 export interface CarBayDto extends EntityDto<string> {
   carId?: string;
   bayId?: string;
+  priority?: Priority;
   buildMaterialNumber?: string;
   userId?: string;
   qualityGateId?: string;
@@ -30,11 +33,20 @@ export interface CarBayDto extends EntityDto<string> {
   pulseNumber?: string;
   canProgress?: boolean;
   jobCardCompleted?: boolean;
+  bayName?: string;
+  bayNumber?: number;
+  carVin?: string;
+  ownerName?: string;
+  modelName?: string;
+  modelCategoryName?: string;
+  modelImagePath?: string;
+  checkLists: CheckListDto[];
 }
 
 export interface CreateCarBayDto {
   carId: string;
   bayId: string;
+  priority?: Priority;
   buildMaterialNumber?: string;
   userId?: string;
   qualityGateId?: string;
@@ -73,6 +85,7 @@ export interface GetCarBayListDto extends PagedAndSortedResultRequestDto {
 export interface UpdateCarBayDto {
   carId: string;
   bayId: string;
+  priority?: Priority;
   buildMaterialNumber?: string;
   userId?: string;
   qualityGateId?: string;

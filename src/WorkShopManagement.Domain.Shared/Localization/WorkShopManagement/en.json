@@ -44,6 +44,10 @@
     "Permission:CarBayItems.Delete": "Delete",
 
 
+    "Enum:Priority.1": "Low",
+    "Enum:Priority.2": "Medium",
+    "Enum:Priority.3": "High",
+    "Enum:Priority.4": "Critical",
     "Enum:CheckListType.1": "Production",
     "Enum:CheckListType.2": "Sub Production",
     "Enum:CheckListType.3": "Ancillary Tasks",
@@ -196,6 +200,22 @@
     "SelectedProvider": "Selected Provider",
     "DisplayName:RememberBrowser": "Remember Browser",
     "PhoneNumberEmptyHelpText": "A valid phone number is required to confirm your account.",
-    "EnforceTwoFactor": "Enforce Two Factor"
+    "EnforceTwoFactor": "Enforce Two Factor",
+    "AMQ-RAMRemanufactureLine": "AMQ - RAM Remanufacture Line",
+    "Unassigned": "Unassigned",
+    "AssignToBay": "Assign To Bay",
+    "AssemblyDate": "Assembly Date",
+    "BayNumber": "Bay Number",
+    "ManufactureStartDate": "Manufacture Start Date",
+    "AssignSuccessfully": "Assign Successfully",
+    "ProductionDetails": "Production Details",
+    "ManufactureDate": "Manufacture Date",
+    "Loading...": "Loading...",
+    "Noimageavailable": "No image available",
+    "Image": "Image",
+    "Nochecklistsfound": "No checklists found",
+    "Noitems": "No items",
+    "lists": "lists",
+    "CheckLists": "Check Lists"
   }
 }

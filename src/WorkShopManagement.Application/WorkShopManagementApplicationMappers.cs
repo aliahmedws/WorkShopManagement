@@ -51,8 +51,28 @@ public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class CarBayMapper : MapperBase<CarBay, CarBayDto>
 {
+    [MapProperty("Bay.Name", nameof(CarBayDto.BayName))]
+    [MapProperty("Car.Vin", nameof(CarBayDto.CarVin))]
+    [MapProperty("Car.Owner.Name", nameof(CarBayDto.OwnerName))]
+    [MapProperty("Car.Model.Name", nameof(CarBayDto.ModelName))]
+    [MapProperty("Car.Model.ModelCategory.Name", nameof(CarBayDto.ModelCategoryName))]
+    [MapProperty("Car.Model.FileAttachments.Path", nameof(CarBayDto.ModelImagePath))]
+    [MapProperty("Car.Model.CheckLists", nameof(CarBayDto.CheckLists))]
     public override partial CarBayDto Map(CarBay source);
+
+    [MapProperty("Bay.Name", nameof(CarBayDto.BayName))]
+    [MapProperty("Car.Vin", nameof(CarBayDto.CarVin))]
+    [MapProperty("Car.Owner.Name", nameof(CarBayDto.OwnerName))]
+    [MapProperty("Car.Model.Name", nameof(CarBayDto.ModelName))]
+    [MapProperty("Car.Model.ModelCategory.Name", nameof(CarBayDto.ModelCategoryName))]
+    [MapProperty("Car.Model.FileAttachments.Path", nameof(CarBayDto.ModelImagePath))]
+    [MapProperty("Car.Model.CheckLists", nameof(CarBayDto.CheckLists))]
     public override partial void Map(CarBay source, CarBayDto destination);
+
+    // nested mapping for lists
+    public partial CheckListDto Map(CheckList source);
+    public partial ListItemDto Map(ListItem source);
+    public partial RadioOptionDto Map(RadioOption source);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
@@ -110,6 +130,13 @@ public partial class GuidLookupToGuidLookupDto : MapperBase<GuidLookup, GuidLook
 {
     public override partial GuidLookupDto Map(GuidLookup source);
     public override partial void Map(GuidLookup source, GuidLookupDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class GuidLookupToIntLookupDto : MapperBase<IntLookup, IntLookupDto>
+{
+    public override partial IntLookupDto Map(IntLookup source);
+    public override partial void Map(IntLookup source, IntLookupDto destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
+using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.ListItems;
 
@@ -17,4 +19,5 @@ public class ListItemDto : FullAuditedEntityDto<Guid>
     public string ConcurrencyStamp { get; set; } = default!;
 
     public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
+    public List<RadioOptionDto> RadioOptions { get; set; } = new();
 }

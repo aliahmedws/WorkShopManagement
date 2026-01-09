@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Services;
+using WorkShopManagement.Bays;
 
 namespace WorkShopManagement.CarBays;
 
@@ -18,6 +19,7 @@ public class CarBayManager : DomainService
     public virtual async Task<CarBay> CreateAsync(
         Guid carId,
         Guid bayId,
+        Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
         Guid? qualityGateId = null,
@@ -48,15 +50,20 @@ public class CarBayManager : DomainService
         Check.NotNull(carId, nameof(carId));
         Check.NotNull(bayId, nameof(bayId));
 
-        var existing = await _carBayRepository.FindByCarIdAsync(carId, bayId);
+        await EnsureNoOtherActiveBayForCarAsync(carId, isActive, ignoreId: null);
+        await EnsureBayIsNotAlreadyActiveAsync(bayId, isActive, ignoreId: null);
 
-        if (existing != null)
-            throw new UserFriendlyException("Car bay already active for car.");
+
+        //var existing = await _carBayRepository.FindByCarIdAsync(carId, bayId);
+
+        //if (existing != null)
+        //    throw new UserFriendlyException("Car bay already active for car.");
 
         var entity = new CarBay(GuidGenerator.Create(), carId, bayId);
 
         ApplyValues(
             entity,
+            priority,
             buildMaterialNumber,
             userId,
             qualityGateId,
@@ -90,6 +97,7 @@ public class CarBayManager : DomainService
 
     public virtual async Task<CarBay> UpdateAsync(
         Guid id,
+        Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
         Guid? qualityGateId = null,
@@ -119,13 +127,18 @@ public class CarBayManager : DomainService
     {
         var entity = await _carBayRepository.GetAsync(id);
 
-        var existing = await _carBayRepository.FindByCarIdAsync(entity.CarId, entity.BayId);
+        await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
+        await EnsureBayIsNotAlreadyActiveAsync(entity.BayId, isActive, ignoreId: null);
 
-        if (existing != null && existing.Id != entity.Id)
-            throw new UserFriendlyException("Car bay already active for car.");
+
+        //var existing = await _carBayRepository.FindByCarIdAsync(entity.CarId, entity.BayId);
+
+        //if (existing != null && existing.Id != entity.Id)
+        //    throw new UserFriendlyException("Car bay already active for car.");
 
         ApplyValues(
             entity,
+            priority,
             buildMaterialNumber,
             userId,
             qualityGateId,
@@ -158,34 +171,37 @@ public class CarBayManager : DomainService
     }
 
     private static void ApplyValues(
-        CarBay entity,
-        string? buildMaterialNumber,
-        Guid? userId,
-        Guid? qualityGateId,
-        DateTime? dateTimeIn,
-        DateTime? dateTimeOut,
-        bool? isActive,
-        bool? isWaiting,
-        bool? isQueue,
-        int? angleBailment,
-        AvvStatus? avvStatus,
-        string? pdiStatus,
-        int? displayBay,
-        float? percentage,
-        DateTime? dueDate,
-        DateTime? dueDateUpdated,
-        DateTime? confirmedDeliverDate,
-        string? confirmedDeliverDateNotes,
-        string? transportDestination,
-        string? storageLocation,
-        string? row,
-        string? columns,
-        DateTime? reWorkDate,
-        DateTime? manufactureStartDate,
-        string? pulseNumber,
-        bool? canProgress,
-        bool? jobCardCompleted)
+    CarBay entity,
+    Priority? priority,
+    string? buildMaterialNumber,
+    Guid? userId,
+    Guid? qualityGateId,
+    DateTime? dateTimeIn,
+    DateTime? dateTimeOut,
+    bool? isActive,
+    bool? isWaiting,
+    bool? isQueue,
+    int? angleBailment,
+    AvvStatus? avvStatus,
+    string? pdiStatus,
+    int? displayBay,
+    float? percentage,
+    DateTime? dueDate,
+    DateTime? dueDateUpdated,
+    DateTime? confirmedDeliverDate,
+    string? confirmedDeliverDateNotes,
+    string? transportDestination,
+    string? storageLocation,
+    string? row,
+    string? columns,
+    DateTime? reWorkDate,
+    DateTime? manufactureStartDate,
+    string? pulseNumber,
+    bool? canProgress,
+    bool? jobCardCompleted)
     {
+        entity.SetPriority(priority);
+
         entity.SetBuildMaterialNumber(buildMaterialNumber);
         entity.SetUserId(userId);
         entity.SetQualityGateId(qualityGateId);
@@ -198,13 +214,10 @@ public class CarBayManager : DomainService
         entity.SetIsQueue(isQueue);
 
         entity.SetAngleBailment(angleBailment);
-
         entity.SetAvvStatus(avvStatus);
-
         entity.SetPdiStatus(pdiStatus);
 
         entity.SetDisplayBay(displayBay);
-
         entity.SetPercentage(percentage);
 
         entity.SetDueDate(dueDate);
@@ -227,4 +240,39 @@ public class CarBayManager : DomainService
         entity.SetCanProgress(canProgress);
         entity.SetJobCardCompleted(jobCardCompleted);
     }
+
+    private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
+    {
+        if (isActive != true)
+            return;
+
+        var active = await _carBayRepository.FindActiveByCarIdAsync(carId);
+
+        if (active == null)
+            return;
+
+        if (ignoreId.HasValue && active.Id == ignoreId.Value)
+            return;
+
+        throw new UserFriendlyException("Car already has an active bay.");
+    }
+
+    private async Task EnsureBayIsNotAlreadyActiveAsync(Guid bayId, bool? isActive, Guid? ignoreId)
+    {
+        if (isActive != true)
+            return;
+
+        var active = await _carBayRepository.FindActiveByBayIdAsync(bayId);
+
+        if (active == null)
+            return;
+
+        if (ignoreId.HasValue && active.Id == ignoreId.Value)
+            return;
+
+        throw new UserFriendlyException("Bay is already occupied.");
+    }
+
+
+
 }

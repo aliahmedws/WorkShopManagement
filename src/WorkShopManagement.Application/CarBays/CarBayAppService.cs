@@ -26,7 +26,11 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 
     public async Task<CarBayDto> GetAsync(Guid id)
     {
-        var entity = await _repository.GetAsync(id);
+        var entity = await _repository.GetCarBayDetailsWithIdAsync(id);
+
+        if(entity == null)
+            throw new UserFriendlyException("CarBay is empty");
+
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
@@ -60,6 +64,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         var entity = await _manager.CreateAsync(
             input.CarId,
             input.BayId,
+            input.Priority,
             input.BuildMaterialNumber,
             input.UserId,
             input.QualityGateId,
@@ -96,6 +101,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     {
         var entity = await _manager.UpdateAsync(
             id,
+            input.Priority,
             input.BuildMaterialNumber,
             input.UserId,
             input.QualityGateId,

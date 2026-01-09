@@ -18,16 +18,26 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
     {
     }
 
-    public async Task<CarBay?> FindByCarIdAsync(Guid carId, Guid bayId)
+    public async Task<CarBay?> FindActiveByCarIdAsync(Guid carId)
     {
         var query = await GetQueryableAsync();
 
         return await query
-            .Include(x => x.Car)
-            .Include(x => x.Bay)
-            //.Include(x => x.QualityGate)
-            .FirstOrDefaultAsync(x => x.CarId == carId && x.BayId == bayId);
+            .Where(x => x.CarId == carId && x.IsActive == true)
+            .OrderByDescending(x => x.CreationTime)
+            .FirstOrDefaultAsync();
     }
+
+    public async Task<CarBay?> FindActiveByBayIdAsync(Guid bayId)
+    {
+        var query = await GetQueryableAsync();
+
+        return await query
+            .Where(x => x.BayId == bayId && x.IsActive == true)
+            .OrderByDescending(x => x.CreationTime)
+            .FirstOrDefaultAsync();
+    }
+
 
 
     public async Task<List<CarBay>> GetListAsync(
@@ -56,6 +66,30 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
         return await query.LongCountAsync();
     }
 
+    public async Task<CarBay?> GetCarBayDetailsWithIdAsync(Guid id)
+    {
+        var query = await GetQueryableAsync();
+
+        var entity = await query
+            .Where(x => x.Id == id)
+            .Include(x => x.Bay)
+            .Include(x => x.Car).ThenInclude(c => c!.Owner)
+            .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.FileAttachments)
+            .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.ModelCategory)
+            .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.CheckLists)
+            .FirstOrDefaultAsync();
+
+        if (entity?.Car?.Model?.CheckLists != null)
+        {
+            entity.Car.Model.CheckLists = entity.Car.Model.CheckLists
+                .OrderBy(cl => cl.Position)
+                .ToList();
+        }
+
+        return entity;
+    }
+
+
     public async Task<IQueryable<CarBay>> GetAllAsync(
         string? filter = null,
         Guid? carId = null,
@@ -77,7 +111,8 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
 
         if (!string.IsNullOrWhiteSpace(filter = filter?.Trim()))
         {
-            query = query.Where(x =>
+            query = query
+                .Where(x =>
                 x.Id.ToString() == filter ||
                 x.CarId.ToString() == filter ||
                 x.BayId.ToString() == filter ||
@@ -92,10 +127,17 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
         sorting = string.IsNullOrWhiteSpace(sorting) ? "CreationTime desc" : sorting;
 
         return query
-            .AsNoTrackingIf(asNoTracking)
-            .Include(x => x.Car)
-            .Include(x => x.Bay)
-            //.Include(x => x.QualityGate)
-            .OrderBy(sorting);
+           .AsNoTrackingIf(asNoTracking)
+           .Include(x => x.Bay)
+           .Include(x => x.Car)
+               .ThenInclude(x => x!.Owner)
+           .Include(x => x.Car)
+               .ThenInclude(x => x!.Model)
+                   .ThenInclude(x => x!.FileAttachments)
+           .Include(x => x.Car)
+                .ThenInclude(x => x!.Model)
+                    .ThenInclude(x => x!.ModelCategory)
+           .OrderBy(sorting);
+
     }
 }

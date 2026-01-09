@@ -10,6 +10,7 @@ public class UpdateCarBayDto
 
     [Required]
     public Guid BayId { get; set; }
+    public Priority Priority { get; set; }
 
     public string? BuildMaterialNumber { get; set; }
     public Guid? UserId { get; set; }

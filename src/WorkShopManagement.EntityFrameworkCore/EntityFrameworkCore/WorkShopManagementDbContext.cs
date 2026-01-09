@@ -328,6 +328,7 @@ public class WorkShopManagementDbContext :
 
             b.Property(x => x.CarId).IsRequired();
             b.Property(x => x.BayId).IsRequired();
+            b.Property(x => x.Priority).IsRequired();
 
             b.Property(x => x.BuildMaterialNumber);
             b.Property(x => x.PdiStatus);

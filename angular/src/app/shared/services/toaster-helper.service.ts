@@ -35,6 +35,13 @@ export class ToasterHelperService {
         this.success(messageKey, titleKey);
     }
 
+    assign(
+        messageKey = '',
+        titleKey = '::AssignSuccessfully'
+    ) {
+        this.success(messageKey, titleKey);
+    }
+
 
     error(messageKey: LocalizationParam, titleKey: LocalizationParam) {
         this.toaster.error(messageKey, titleKey);
