@@ -22,6 +22,8 @@ export interface IssueDto extends FullAuditedEntityDto<string> {
   qualityControlNotes?: string;
   repairerAction?: string;
   repairerNotes?: string;
+  creatorEmail?: string;
+  lastModifierEmail?: string;
   entityAttachments: EntityAttachmentDto[];
 }
 

@@ -7,6 +7,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
@@ -20,16 +21,19 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
     private readonly IRepository<Issue, Guid> _issueRepository;
     private readonly IEntityAttachmentService _attachmentService;
     private readonly ICarRepository _carRepository;
+    private readonly IRepository<IdentityUser, Guid> _userRepository;
 
     public IssueAppService(
-        IRepository<Issue, Guid> issueRepository, 
+        IRepository<Issue, Guid> issueRepository,
         IEntityAttachmentService attachmentService,
-        ICarRepository carRepository
+        ICarRepository carRepository,
+        IRepository<IdentityUser, Guid> userRepository
         )
     {
         _issueRepository = issueRepository;
         _attachmentService = attachmentService;
         _carRepository = carRepository;
+        _userRepository = userRepository;
     }
 
     [Authorize(WorkShopManagementPermissions.Issues.Upsert)]
@@ -38,7 +42,7 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
         Check.NotDefaultOrNull<Guid>(carId, nameof(carId));
         Check.NotNull(input, nameof(input));
         Check.NotNull(input.Items, nameof(input.Items));
-        
+
         // Ensure car exists (fail fast, clearer error)
         await _carRepository.GetAsync(carId);
 
@@ -109,15 +113,38 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
         var issues = await _issueRepository.GetListAsync(i => i.CarId == carId);
         var issueIds = issues.Select(i => i.Id).ToList();
 
+        var userIds = issues
+            .Select(i => new[] { i.CreatorId, i.LastModifierId })
+            .SelectMany(userId => userId)
+            .Where(id => id.HasValue)
+            .Select(id => id!.Value)
+            .Distinct()
+            .ToArray();
+
         var mapped = ObjectMapper.Map<List<Issue>, List<IssueDto>>(issues);
 
-        var fileAttachments = await _attachmentService.GetListAsync(EntityType.Issue, issueIds);
-        var attachmentDict = fileAttachments.GroupBy(x => x.EntityId).ToDictionary(x => x.Key);
+        var fileAttachments = (await _attachmentService.GetListAsync(EntityType.Issue, issueIds))
+                            .GroupBy(x => x.EntityId)
+                            .ToDictionary(x => x.Key);
+
+        var users = (await _userRepository.GetListAsync(u => userIds.Contains(u.Id))).ToDictionary(u => u.Id);
 
         foreach (var issue in mapped)
         {
-            attachmentDict.TryGetValue(issue.Id, out var attachments);
+            fileAttachments.TryGetValue(issue.Id, out var attachments);
             issue.EntityAttachments = attachments?.ToList() ?? [];
+
+            if (issue.CreatorId != null)
+            {
+                users.TryGetValue(issue.CreatorId.Value, out var createdBy);
+                issue.CreatorEmail = createdBy?.Email;
+            }
+
+            if (issue.LastModifierId != null)
+            {
+                users.TryGetValue(issue.LastModifierId.Value, out var lastModifiedBy);
+                issue.LastModifierEmail = lastModifiedBy?.Email;
+            }
         }
 
         return new ListResultDto<IssueDto>(mapped);

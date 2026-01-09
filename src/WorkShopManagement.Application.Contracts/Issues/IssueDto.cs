@@ -22,5 +22,7 @@ public class IssueDto : FullAuditedEntityDto<Guid>
     public string? QualityControlNotes { get; set; }
     public string? RepairerAction { get; set; }
     public string? RepairerNotes { get; set; }
+    public string? CreatorEmail { get; set; }
+    public string? LastModifierEmail { get; set; }
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
 }
