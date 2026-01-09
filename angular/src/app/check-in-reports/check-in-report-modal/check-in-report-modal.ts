@@ -31,8 +31,8 @@ export class CheckInReportModal {
   existingReport = {} as CheckInReportDto;
 
   // Enums for Select Lists
-  choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
-  storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
+  // choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
+  // storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
 
   modalOptions = {
     size: 'lg',
@@ -62,6 +62,7 @@ export class CheckInReportModal {
     
     // Helper to format Date for <input type="date"> (YYYY-MM-DD)
     // const formatDate = (dateStr?: string) => dateStr ? dateStr.split('T')[0] : null;
+    const carStorage = this.car ? this.car.storageLocation : null;
 
     this.form = this.fb.group({
       // carId: [this.carId, Validators.required],
@@ -85,7 +86,7 @@ export class CheckInReportModal {
       tyreLabel: [dto?.tyreLabel ?? null],
       // rsvaImportApproval: [dto?.rsvaImportApproval ?? null],
       reportStatus: [dto?.reportStatus ?? null],
-      storageLocation: [dto?.storageLocation ?? null],
+      storageLocation: [dto?.storageLocation ?? carStorage],
       concurrencyStamp: [dto?.concurrencyStamp ?? null],
     });
     

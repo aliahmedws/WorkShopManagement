@@ -5,13 +5,13 @@
 
             <nz-tab [nzTitle]="'::Enum:Stage.Incoming' | abpLocalization">
                 <div class="p-3">
-                    <app-incoming [filters]="filters"></app-incoming>
+                    <app-incoming [cars]="cars" [(filters)]="filters" [list]="list"></app-incoming>
                 </div>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.ExternalWarehouse' | abpLocalization">
                 <div class="p-3">
-                    <app-external-warehouse [filters]="filters"></app-external-warehouse>
+                    <app-external-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-external-warehouse>
                 </div>
             </nz-tab>
 

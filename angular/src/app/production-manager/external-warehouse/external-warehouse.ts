@@ -1,10 +1,12 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayDto, CarBayService, CreateCarBayDto, Priority, priorityOptions } from 'src/app/proxy/car-bays';
 import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
+import { Recalls } from 'src/app/recalls/recalls';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
@@ -13,27 +15,31 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
 @Component({
   selector: 'app-external-warehouse',
-  imports: [...SHARED_IMPORTS],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
   templateUrl: './external-warehouse.html',
   styleUrl: './external-warehouse.scss'
 })
-export class ExternalWarehouse implements OnInit {
-  public readonly list = inject(ListService);
-  private readonly carService = inject(CarService);
+export class ExternalWarehouse {
+  // private readonly carService = inject(CarService);
   private readonly carBayService = inject(CarBayService)
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService)
 
-  
+
   form!: FormGroup;
   StorageLocation = StorageLocation;
 
-  cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
+  @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
-  @Input() filters = {} as GetCarListInput;
 
-  selectedId?: string;
+  @Input() filters: any = {};
+  @Output() filtersChange = new EventEmitter<any>();
+  @Input() list: ListService;
+
+  selectedCar = {} as CarDto;
+  selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
+
   isAssignModalVisible = false;
 
   bayOptions: GuidLookupDto[] = [];
@@ -41,13 +47,15 @@ export class ExternalWarehouse implements OnInit {
 
   priority = Priority;
 
-  ngOnInit(): void {
-    const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-    this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  }
+  isRecallModalVisible = false;
+  isCheckInModalVisible = false;
+  // ngOnInit(): void {
+  //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
+  //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
+  // }
 
-    loadBays() {
-    if(!this.bayOptions.length) {
+  loadBays() {
+    if (!this.bayOptions.length) {
       this.lookupService
         .getBays()
         .subscribe(res => {
@@ -56,15 +64,15 @@ export class ExternalWarehouse implements OnInit {
     }
   }
 
-    private buildForm(): void {
+  private buildForm(): void {
     this.form = this.fb.group({
-      manufactureStartDate: [this.selectedCarBay.manufactureStartDate || null, [Validators.required]],  
-      bayId: [this.selectedCarBay.bayId || null, [Validators.required]],   
-      priority: [ this.selectedCarBay.priority || Priority.Medium, [Validators.required]], 
+      manufactureStartDate: [this.selectedCarBay.manufactureStartDate || null, [Validators.required]],
+      bayId: [this.selectedCarBay.bayId || null, [Validators.required]],
+      priority: [this.selectedCarBay.priority || Priority.Medium, [Validators.required]],
     });
   }
 
-   openAssignModal(carId: string): void {
+  openAssignModal(carId: string): void {
     this.selectedId = carId;
     this.loadBays();
     this.buildForm();
@@ -88,15 +96,25 @@ export class ExternalWarehouse implements OnInit {
     const input: CreateCarBayDto = {
       carId: this.selectedId,
       bayId,
-      priority,      
+      priority,
       isActive: true,
       manufactureStartDate
     };
 
     this.carBayService.create(input).subscribe(() => {
       this.toaster.assign();
-        this.isAssignModalVisible = false;
-        this.list.get();
-      });
-    }
+      this.isAssignModalVisible = false;
+      this.list.get();
+    });
   }
+
+  openRecallModal(car: CarDto): void {
+    this.selectedCar = car;
+    this.isRecallModalVisible = true;
+  }
+
+  openCheckInModal(car: CarDto): void {
+    this.selectedCar = car;
+    this.isCheckInModalVisible = true;
+  }
+}

@@ -107,10 +107,10 @@ namespace WorkShopManagement.External.CarsXE
         public bool? PartsAvailable { get; set; }
 
         [JsonPropertyName("labor_hours_min")]
-        public string? LaborHoursMin { get; set; }
+        public int? LaborHoursMin { get; set; }
 
         [JsonPropertyName("labor_hours_max")]
-        public string? LaborHoursMax { get; set; }
+        public int? LaborHoursMax { get; set; }
 
         [JsonPropertyName("recall_status")]
         public string? RecallStatus { get; set; }
