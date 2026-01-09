@@ -50,7 +50,7 @@ export const APP_ROUTES: Routes = [
   {
     path: 'priorities',
     loadComponent: () => import('./priorities/priorities').then(m => m.Priorities),
-  }
+  },
   {
     path: 'production-manager',
     loadComponent: () => import('./production-manager/production-manager').then(m => m.ProductionManager),

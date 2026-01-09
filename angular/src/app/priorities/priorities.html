@@ -1,62 +1,43 @@
-<abp-page [title]="'::Menu:Priorities' | abpLocalization">
-  <abp-page-toolbar-container class="col">
-    <div class="text-end">
-      <button *abpPermission="'WorkShopManagement.Priorities.Create'" id="create" class="btn btn-outline-primary btn-sm"
-        type="button" (click)="createPriority()">
-        <i class="fa fa-plus me-1"></i> {{ '::NewPriority' | abpLocalization }}
-      </button>
-    </div>
-  </abp-page-toolbar-container>
-
-  <!-- Search -->
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-10">
-          <div class="input-group gap-2">
-            <input type="text" class="form-control" [placeholder]="'::SearchHere' | abpLocalization"
-              [(ngModel)]="filters.filter" />
-            <button type="button" class="btn btn-primary" (click)="list.get()">
-              <i class="fa fa-search"></i>
-            </button> 
-              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="clearFilters()">
-                <i class="fas fa-undo me-1"></i>
-                {{ '::Reset' | abpLocalization }}
-              </button>
-          </div>
+<abp-page >
+   <app-topbar-layout titleKey="Menu:Priorities" [(filters)]="filters" [list]="list">
+        <div topbarActions>
+            <ng-container *abpPermission="'WorkShopManagement.Priorities.Create'">
+                <button class="btn btn-sm btn-outline-primary" (click)="createPriority()">
+                    <i class="fas fa-plus"></i>
+                    {{ '::AddNew' | abpLocalization }}
+                </button>
+            </ng-container>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Table -->
-  <div class="card mt-2">
-    <div class="card-body">
-      <ngx-datatable [rows]="priorities.items" [count]="priorities.totalCount" [list]="list" default>
-        <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div ngbDropdown container="body" class="d-inline-block">
-              <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
-                <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
+       
+ <!-- Table -->
+ <div class="card">
+  <div class="card-body">
+    <ngx-datatable [rows]="priorities.items" [count]="priorities.totalCount" [list]="list" default>
+      <ngx-datatable-column [name]="'::Actions' | abpLocalization" [maxWidth]="150" [sortable]="false">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <div ngbDropdown container="body" class="d-inline-block">
+            <button class="btn btn-primary btn-sm dropdown-toggle" ngbDropdownToggle>
+              <i class="fa fa-cog me-1"></i>{{ '::Actions' | abpLocalization }}
+            </button>
+            <div ngbDropdownMenu>
+              <button *abpPermission="'WorkShopManagement.Priorities.Edit'" ngbDropdownItem
+                (click)="editPriority(row.id)"> {{ '::Edit' | abpLocalization }}
               </button>
-              <div ngbDropdownMenu>
-                <button *abpPermission="'WorkShopManagement.Priorities.Edit'" ngbDropdownItem
-                  (click)="editPriority(row.id)"> {{ '::Edit' | abpLocalization }}
-                </button>
-                <button *abpPermission="'WorkShopManagement.Priorities.Delete'" ngbDropdownItem
-                  (click)="delete(row.id)"> {{ '::Delete' | abpLocalization }}
-                </button>
-              </div>
+              <button *abpPermission="'WorkShopManagement.Priorities.Delete'" ngbDropdownItem (click)="delete(row.id)">
+                {{ '::Delete' | abpLocalization }}
+              </button>
             </div>
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column [name]="'::Number' | abpLocalization" prop="number" [maxWidth]="250">
-        </ngx-datatable-column>
-        <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="description">
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Number' | abpLocalization" prop="number" [maxWidth]="250">
+      </ngx-datatable-column>
+      <ngx-datatable-column [name]="'::Description' | abpLocalization" prop="description">
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
+ </div>
+  </app-topbar-layout>
 </abp-page>
 
 <!-- Create/Edit Modal -->

@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PermissionDirective } from '@abp/ng.core';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 
 
 
@@ -18,17 +19,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   selector: 'app-priorities',
   templateUrl: './priorities.html',
   styleUrls: ['./priorities.scss'],
-  imports: [
-    CommonModule,
-    PageModule,
-    NgxDatatableModule, 
-    ThemeSharedModule,
-    ReactiveFormsModule,
-    FormsModule,
-    LocalizationPipe,
-    NgbDropdownModule,
-    PermissionDirective
-  ],
+  imports: [SHARED_IMPORTS],
   providers: [ListService]
 })
 export class Priorities implements OnInit {
