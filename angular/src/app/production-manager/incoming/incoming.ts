@@ -1,5 +1,5 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
 import { Recalls } from 'src/app/recalls/recalls';
@@ -11,13 +11,16 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss'
 })
-export class Incoming implements OnInit {
-  public readonly list = inject(ListService);
-  private readonly carService = inject(CarService);
+export class Incoming {
 
-  cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
-  @Input() filters = {} as GetCarListInput;
+  // cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
+
+  @Input() filters: any = {};
+  @Output() filtersChange = new EventEmitter<any>();
+  @Input() list: ListService;
+
+  @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
   // isModalVisible = false;
   selectedCar = {} as CarDto;
@@ -25,10 +28,10 @@ export class Incoming implements OnInit {
 
   isCheckInModalVisible = false;
 
-  ngOnInit(): void {
-    const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-    this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  }
+  // ngOnInit(): void {
+  //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
+  //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
+  // }
 
   openRecallModal(car: CarDto): void {
     this.selectedCar = car;
@@ -40,4 +43,5 @@ export class Incoming implements OnInit {
     this.isCheckInModalVisible = true;
   }
 
+  
 }
