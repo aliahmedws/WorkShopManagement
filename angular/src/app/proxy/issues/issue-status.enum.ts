@@ -5,7 +5,7 @@ export enum IssueStatus {
   Deferred = 2,
   InProgress = 3,
   NoActionRequired = 4,
-  Complete = 5,
+  Resolved = 5,
 }
 
 export const issueStatusOptions = mapEnumToOptions(IssueStatus);

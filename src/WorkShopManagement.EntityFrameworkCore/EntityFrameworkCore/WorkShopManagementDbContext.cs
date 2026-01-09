@@ -324,21 +324,32 @@ public class WorkShopManagementDbContext :
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Issues", WorkShopManagementConsts.DbSchema, tb =>
             {
+                tb.HasCheckConstraint("CK_Issues_SrNo_Range", "[SrNo] >= 1 AND [SrNo] <= 1000");
                 tb.HasCheckConstraint("CK_Issues_XPercent_Range", "[XPercent] >= 0 AND [XPercent] <= 100");
                 tb.HasCheckConstraint("CK_Issues_YPercent_Range", "[YPercent] >= 0 AND [YPercent] <= 100");
             });
 
             b.ConfigureByConvention();
 
+            b.Property(x => x.SrNo).IsRequired();
             b.Property(x => x.Description).IsRequired().HasMaxLength(IssueConsts.MaxDescriptionLength);
+
             b.Property(x => x.RectificationAction).HasMaxLength(IssueConsts.MaxRectificationActionLength);
+            b.Property(x => x.RectificationNotes).HasMaxLength(IssueConsts.MaxRectificationNotesLength);
+            b.Property(x => x.QualityControlAction).HasMaxLength(IssueConsts.MaxQualityControlActionLength);
+            b.Property(x => x.QualityControlNotes).HasMaxLength(IssueConsts.MaxQualityControlNotesLength);
+            b.Property(x => x.RepairerAction).HasMaxLength(IssueConsts.MaxRepairerActionLength);
+            b.Property(x => x.RepairerNotes).HasMaxLength(IssueConsts.MaxRepairerNotesLength);
 
             b.Property(x => x.XPercent).IsRequired().HasPrecision(6, 3);
             b.Property(x => x.YPercent).IsRequired().HasPrecision(6, 3);
 
+            b.Property(x => x.Type).IsRequired();
             b.Property(x => x.Status).IsRequired();
             b.Property(x => x.OriginStage).IsRequired();
             b.Property(x => x.DeteriorationType).IsRequired();
+
+            b.HasIndex(x => new { x.CarId, x.SrNo }).IsUnique().HasFilter("[IsDeleted] = 0");
 
             b.HasOne(x => x.Car)
                 .WithMany()

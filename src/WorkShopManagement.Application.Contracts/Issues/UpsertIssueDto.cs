@@ -10,6 +10,9 @@ public class UpsertIssueDto
 {
     public Guid? Id { get; set; }
 
+    [Range(0, 1000)]
+    public int SrNo { get; set; }
+
     [Range(0, 100)]
     public decimal XPercent { get; set; }
 
@@ -26,6 +29,21 @@ public class UpsertIssueDto
 
     [StringLength(IssueConsts.MaxRectificationActionLength)]
     public string? RectificationAction { get; set; }
+    
+    [StringLength(IssueConsts.MaxRectificationNotesLength)]
+    public string? RectificationNotes { get; set; }
+
+    [StringLength(IssueConsts.MaxQualityControlActionLength)]
+    public string? QualityControlAction { get; set; }
+
+    [StringLength(IssueConsts.MaxQualityControlNotesLength)]
+    public string? QualityControlNotes { get; set; }
+
+    [StringLength(IssueConsts.MaxRepairerActionLength)]
+    public string? RepairerAction { get; set; }
+
+    [StringLength(IssueConsts.MaxRepairerNotesLength)]
+    public string? RepairerNotes { get; set; }
 
     public List<FileAttachmentDto> TempFiles { get; set; } = [];
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];

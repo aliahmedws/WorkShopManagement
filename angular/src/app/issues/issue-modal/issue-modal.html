@@ -1,7 +1,9 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
     [options]="modalOptions">
     <ng-template #abpHeader>
+        @if (car?.vin) {
         <h3 class="text-dark m-0">{{ '::IssuesModalHeading' | abpLocalization:car.vin }}</h3>
+        }
     </ng-template>
     <ng-template #abpBody>
         @if (loading) {
@@ -11,37 +13,46 @@
             </div>
         </div>
         } @else {
-        <h5>Unresolved, Damage/Missing Parts: 1 item(s)</h5>
-        <app-damage-marker [(markers)]="issues" [vin]="car?.vin"></app-damage-marker>
-        <!-- <div class="border border-primary">
-            <img src="../../../assets/images/damage_report.png" alt="damage report image" style="height: 400px; width: 1075px;" />
-        </div> -->
+        <h5>
+            {{ (missingOrBrokenItemsCount
+            ? '::Issue:UnresolvedBrokenOrMissingPartCount'
+            : '::Issue:UnresolvedBrokenOrMissingPartCountIsNone')
+            | abpLocalization:missingOrBrokenItemsCount }}
+        </h5>
+        <app-damage-marker [(issues)]="issues" [vin]="car?.vin" (submit)="onIssuesSubmit()"></app-damage-marker>
         <hr>
-        <h5>Issue List</h5>
+        <h5>{{ '::IssueList' | abpLocalization }}</h5>
+        @if (issues?.length) {
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Sr#</th>
-                        <th>Remarks</th>
-                        <th>Status</th>
-                        <th>Description</th>
+                        <th width="5%">{{ '::SrNo' | abpLocalization }}</th>
+                        <th>{{ '::Status' | abpLocalization }}</th>
+                        <th>{{ '::Type' | abpLocalization }}</th>
+                        <th width="55%">{{ '::Description' | abpLocalization }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (item of issues; track item.sr) {
                     <tr>
-                        <td>{{ item.sr }}</td>
-                        <td>{{ item.remarks }}</td>
-                        <td>{{ item.status }}</td>
+                        <td>{{ item.srNo }}</td>
                         <td>
-                            <textarea name="" id="" class="form-control" value="{{ item.description }}"></textarea>
+                            <app-issue-status-badge [status]="item.status"></app-issue-status-badge>
                         </td>
+                        <td>{{ item.type ? (('::Enum:IssueType.' + item.type) | abpLocalization) : '-' }}</td>
+                        <td>{{ item.description }}</td>
                     </tr>
                     }
                 </tbody>
             </table>
         </div>
+        }
+        @else {
+        <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            [nzNotFoundContent]="'::ClickImageToCreateNewIssue' | abpLocalization">
+        </nz-empty>
+        }
         }
     </ng-template>
     <ng-template #abpFooter>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
@@ -16,12 +17,12 @@ namespace WorkShopManagement.Issues;
 [Authorize(WorkShopManagementPermissions.Issues.Default)]
 public class IssueAppService : WorkShopManagementAppService, IIssueAppService
 {
-    private readonly IIssueRepository _issueRepository;
+    private readonly IRepository<Issue, Guid> _issueRepository;
     private readonly IEntityAttachmentService _attachmentService;
     private readonly ICarRepository _carRepository;
 
     public IssueAppService(
-        IIssueRepository issueRepository, 
+        IRepository<Issue, Guid> issueRepository, 
         IEntityAttachmentService attachmentService,
         ICarRepository carRepository
         )

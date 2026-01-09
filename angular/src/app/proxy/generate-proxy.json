@@ -2416,6 +2416,160 @@
             }
           }
         },
+        "WorkShopManagement.Controllers.Issues.IssueController": {
+          "controllerName": "Issue",
+          "controllerGroupName": "Issue",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.Issues.IssueController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.Issues.IIssueAppService",
+              "name": "IIssueAppService",
+              "methods": [
+                {
+                  "name": "UpsertAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                      "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetListByCarAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Issues.IssueDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Issues.IssueDto>"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetListByCarAsyncByCarId": {
+              "uniqueName": "GetListByCarAsyncByCarId",
+              "name": "GetListByCarAsync",
+              "httpMethod": "GET",
+              "url": "api/app/issues/{carId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Issues.IssueDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Issues.IssueDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Issues.IIssueAppService"
+            },
+            "UpsertAsyncByCarIdAndInput": {
+              "uniqueName": "UpsertAsyncByCarIdAndInput",
+              "name": "UpsertAsync",
+              "httpMethod": "POST",
+              "url": "api/app/issues",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Issues.IIssueAppService"
+            }
+          }
+        },
         "WorkShopManagement.Controllers.ListItems.ListItemController": {
           "controllerName": "ListItem",
           "controllerGroupName": "ListItems",
@@ -4572,106 +4726,6 @@
               },
               "allowAnonymous": false,
               "implementFrom": "Volo.Abp.Identity.IIdentityUserAppService"
-            }
-          }
-        },
-        "WorkShopManagement.Issues.IssueAppService": {
-          "controllerName": "Issue",
-          "controllerGroupName": "Issue",
-          "isRemoteService": true,
-          "isIntegrationService": false,
-          "apiVersion": null,
-          "type": "WorkShopManagement.Issues.IssueAppService",
-          "interfaces": [
-            {
-              "type": "WorkShopManagement.Issues.IIssueAppService",
-              "name": "IIssueAppService",
-              "methods": [
-                {
-                  "name": "UpsertAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "carId",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    },
-                    {
-                      "name": "input",
-                      "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
-                      "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                      "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "System.Void",
-                    "typeSimple": "System.Void"
-                  }
-                }
-              ]
-            }
-          ],
-          "actions": {
-            "UpsertAsyncByCarIdAndInput": {
-              "uniqueName": "UpsertAsyncByCarIdAndInput",
-              "name": "UpsertAsync",
-              "httpMethod": "POST",
-              "url": "api/app/issue/upsert/{carId}",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "carId",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "input",
-                  "typeAsString": "WorkShopManagement.Issues.UpsertIssuesRequestDto, WorkShopManagement.Application.Contracts",
-                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "carId",
-                  "name": "carId",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "input",
-                  "name": "input",
-                  "jsonName": null,
-                  "type": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                  "typeSimple": "WorkShopManagement.Issues.UpsertIssuesRequestDto",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "Body",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "System.Void",
-                "typeSimple": "System.Void"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.Issues.IIssueAppService"
             }
           }
         },
@@ -15510,14 +15564,16 @@
         "CheckList",
         "ListItem",
         "Car",
-        "Recall"
+        "Recall",
+        "Issue"
       ],
       "enumValues": [
         1,
         2,
         3,
         4,
-        5
+        5,
+        6
       ],
       "genericArguments": null,
       "properties": null
@@ -17212,6 +17268,207 @@
       "genericArguments": null,
       "properties": null
     },
+    "WorkShopManagement.Issues.IssueDto": {
+      "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "SrNo",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "XPercent",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "YPercent",
+          "jsonName": null,
+          "type": "System.Decimal",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Type",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueType",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Status",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OriginStage",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueOriginStage",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeteriorationType",
+          "jsonName": null,
+          "type": "WorkShopManagement.Issues.IssueDeteriorationType",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Description",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RectificationAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RectificationNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QualityControlAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QualityControlNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RepairerAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RepairerNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityAttachments",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "WorkShopManagement.Issues.IssueOriginStage": {
       "baseType": "System.Enum",
       "isEnum": true,
@@ -17234,7 +17491,7 @@
         "Deferred",
         "InProgress",
         "NoActionRequired",
-        "Complete"
+        "Resolved"
       ],
       "enumValues": [
         1,
@@ -17289,6 +17546,18 @@
           "maxLength": null,
           "minimum": null,
           "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "SrNo",
+          "jsonName": null,
+          "type": "System.Int32",
+          "typeSimple": "number",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": "0",
+          "maximum": "1000",
           "regex": null
         },
         {
@@ -17383,6 +17652,90 @@
           "isRequired": false,
           "minLength": 0,
           "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RectificationNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QualityControlAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "QualityControlNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RepairerAction",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RepairerNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TempFiles",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityAttachments",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
           "minimum": null,
           "maximum": null,
           "regex": null

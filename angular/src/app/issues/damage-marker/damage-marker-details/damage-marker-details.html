@@ -1,0 +1,198 @@
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
+    [options]="{ size: 'lg' }">
+    <ng-template #abpHeader>
+        @if (issue?.srNo) {
+        <h3 class="text-dark m-0">{{ '::IssueDetailModalHeading' | abpLocalization:[vin, issue.srNo] }}</h3>
+        }
+    </ng-template>
+    <ng-template #abpBody>
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        } @else {
+        <form id="issueForm" [formGroup]="form" (ngSubmit)="save()">
+            <!-- Status -->
+            <div class="form-group">
+                <label class="form-label required">{{ '::Status' | abpLocalization }}</label>
+                <nz-select nzSize="large" nzAllowClear formControlName="status">
+                    @for (option of issueStatusOptions; track option.value) {
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:IssueStatus.' + option.value) | abpLocalization"></nz-option>
+                    }
+                </nz-select>
+            </div>
+            <hr>
+
+            <!-- Tabs -->
+            <nz-tabs [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="selectedIndex = $event">
+                <nz-tab [nzTitle]="'::IssueDetails' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="issueDetails"></ng-container>
+                </nz-tab>
+                <nz-tab [nzTitle]="'::RectificationAction' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="rectificationAction"></ng-container>
+                </nz-tab>
+                <nz-tab [nzTitle]="'::QualityControl' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="qualityControl"></ng-container>
+                </nz-tab>
+                <nz-tab [nzTitle]="'::RepairerDetails' | abpLocalization">
+                    <ng-container *ngTemplateOutlet="reparierDetails"></ng-container>
+                </nz-tab>
+            </nz-tabs>
+
+            <!-- Issue Details Template -->
+            <ng-template #issueDetails>
+                <div class="pt-2">
+                    <div class="form-group">
+                        <label for="description-input" class="form-label required">{{ '::Description' | abpLocalization
+                            }}</label>
+                        <textarea name="description-input" id="description-input" class="form-control" [rows]="3"
+                            formControlName="description"></textarea>
+                    </div>
+                    <div class="row row-cols-1 row-cols-lg-3">
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::IssueType' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear formControlName="type">
+                                    @for (option of issueTypeOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value"
+                                        [nzLabel]="('::Enum:IssueType.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::OriginStage' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear formControlName="originStage">
+                                    @for (option of issueOriginStageOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value"
+                                        [nzLabel]="('::Enum:IssueOriginStage.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group mt-2">
+                                <label class="form-label required">{{ '::DeteriorationType' | abpLocalization }}</label>
+                                <nz-select nzSize="large" nzAllowClear nzShowSearch formControlName="deteriorationType">
+                                    @for (option of issueDeteriorationTypeOptions; track option.value) {
+                                    <nz-option [nzValue]="option.value"
+                                        [nzLabel]="('::Enum:IssueDeteriorationType.' + option.value) | abpLocalization"></nz-option>
+                                    }
+                                </nz-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
+                        <app-file-upload [acceptedTypes]="['image/*']"></app-file-upload>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Rectification Action Template -->
+            <ng-template #rectificationAction>
+                <div class="pt-2">
+                    <!-- Rectification Action Input -->
+                    <div class="form-group">
+                        <label for="rectification-action-input" class="form-label">{{ '::Action' | abpLocalization
+                            }}</label>
+                        <textarea name="rectification-action-input" id="rectification-action-input" class="form-control"
+                            [rows]="3" formControlName="rectificationAction"></textarea>
+                    </div>
+
+                    <!-- Rectification Notes Input -->
+                    <div class="form-group mt-2">
+                        <label for="rectification-notes-input" class="form-label">{{ '::Notes' | abpLocalization
+                            }}</label>
+                        <textarea name="rectification-notes-input" id="rectification-acnotestion-input"
+                            class="form-control" [rows]="3" formControlName="rectificationNotes"></textarea>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Quality Control Template -->
+            <ng-template #qualityControl>
+                <div class="pt-2">
+                    <!-- Quality Control Action Input -->
+                    <div class="form-group">
+                        <label for="quality-control-action-input" class="form-label">{{ '::Action' | abpLocalization
+                            }}</label>
+                        <textarea name="quality-control-action-input" id="quality-control-action-input"
+                            class="form-control" [rows]="3" formControlName="qualityControlAction"></textarea>
+                    </div>
+
+                    <!-- Quality Control Notes Input -->
+                    <div class="form-group mt-2">
+                        <label for="quality-control-notes-input" class="form-label">{{ '::Notes' | abpLocalization
+                            }}</label>
+                        <textarea name="quality-control-notes-input" id="quality-control-notes-input"
+                            class="form-control" [rows]="3" formControlName="qualityControlNotes"></textarea>
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- Repairer Details Template -->
+            <ng-template #reparierDetails>
+                <div class="pt-2">
+                    <!-- Repairer Action Input -->
+                    <div class="form-group">
+                        <label for="repairer-details-action-input" class="form-label">{{ '::Action' | abpLocalization
+                            }}</label>
+                        <textarea name="repairer-details-action-input" id="repairer-details-action-input"
+                            class="form-control" [rows]="3" formControlName="repairerAction"></textarea>
+                    </div>
+
+                    <!-- Repairer Notes Input -->
+                    <div class="form-group mt-2">
+                        <label for="repairer-details-notes-input" class="form-label">{{ '::Notes' | abpLocalization
+                            }}</label>
+                        <textarea name="repairer-details-notes-input" id="repairer-details-notes-input"
+                            class="form-control" [rows]="3" formControlName="repairerNotes"></textarea>
+                    </div>
+                </div>
+            </ng-template>
+            <!-- TODO: Need implementation details -->
+            <!-- <div class="form-group mt-2">
+                <label for="" class="form-label">{{ '::ApplyIssueToVehicles' | abpLocalization }}</label>
+                <nz-select nzAllowClear nzSize="large" nzMode="multiple" nzShowSearch="false">
+                    @for (option of stageOptions; track option.value) {
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"></nz-option>
+                    }
+                </nz-select>
+            </div> -->
+        </form>
+        }
+    </ng-template>
+    <ng-template #abpFooter>
+        <div class="d-flex align-items-end justify-content-between w-100">
+            <div>
+                @if (issue.creationTime) {
+                <div class="issue-changed-by">
+                    Created: <span class="emphasize">{{ issue.creatorEmail ?? '-' }}</span>
+                    at <span class="emphasize">{{ issue.creationTime | date: 'MMM d, yy' }}</span>
+                </div>
+                }
+                @if (issue.lastModificationTime) {
+                <div class="issue-changed-by">
+                    Modified: <span class="emphasize">{{ issue.lastModifierEmail ?? '-' }}</span>
+                    at <span class="emphasize">{{ issue.lastModificationTime | date: 'MMM d, yy' }}</span>
+                </div>
+                }
+            </div>
+            <div>
+                <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+                    {{ '::Close' | abpLocalization }}
+                </button>
+                <button type="submit" form="issueForm" class="btn btn-primary px-3">
+                    <i class="fas fa-save me-1"></i>
+                    {{ '::Save' | abpLocalization }}
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</abp-modal>

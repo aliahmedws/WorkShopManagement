@@ -1,0 +1,25 @@
+<div class="damage-marker-container">
+  <div class="image-container border border-primary">
+    <img 
+      src="../../../assets/images/damage_report.png" 
+      alt="damage report image" 
+      class="blueprint-image"
+      (click)="onImageClick($event)"
+    />
+    
+    <!-- Damage markers overlay -->
+    @for (issue of issues; track issue.srNo) {
+        <div 
+        class="damage-marker {{getMarkerBgClass(issue)}}"
+        [style.left.%]="issue.xPercent"
+        [style.top.%]="issue.yPercent"
+        nz-tooltip 
+        [nzTooltipTitle]="issue.description"
+        (click)="onIssueClick(issue, $event)"
+        >
+            <span class="marker-number">{{ issue.srNo }}</span>
+        </div>
+    }
+  </div>
+</div>
+<app-damage-marker-details [(visible)]="isModalOpen" [vin]="vin" [issue]="selectedIssue" (submit)="onIssueSubmit($event)"></app-damage-marker-details>

@@ -35,6 +35,8 @@
     "Permission:RadioOptions.Edit": "Edit",
     "Permission:RadioOptions.Delete": "Delete",
 
+    "Permission:Issues": "Issues",
+    "Permission:Upsert": "Create & Update",
 
     "Enum:CheckListType.1": "Production",
     "Enum:CheckListType.2": "Sub Production",
@@ -243,6 +245,12 @@
     "Enum:IssueType.5": "Compliance",
     "Enum:IssueType.6": "DTC",
     "Enum:IssueType.7": "Functional",
-    "Enum:IssueType.8": "Other"
+    "Enum:IssueType.8": "Other",
+
+    "ClickImageToCreateNewIssue": "Click anywhere on image to create issue",
+    "Issue:UnresolvedBrokenOrMissingPartCount": "Unresolved Missing / Broken Parts: {0} item(s)",
+    "Issue:UnresolvedBrokenOrMissingPartCountIsNone": "Unresolved Missing / Broken Parts: None",
+    "IssueList": "Issue List",
+    "SrNo": "Sr#"
   }
 }
