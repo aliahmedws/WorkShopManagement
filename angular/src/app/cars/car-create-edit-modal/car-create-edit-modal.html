@@ -272,7 +272,7 @@
                             <!-- <input class="form-control" formControlName="storageLocation" /> -->
                             <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
                                 @for (option of storageLocationOptions; track option) {
-                                <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.key) | abpLocalization"
+                                <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
                                 }
                             </nz-select>
@@ -295,7 +295,7 @@
                         <div class="col-12 form-group">
                             <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage">
                                 @for (option of stageOptions; track option) {
-                                <nz-option [nzLabel]="('::Enum:Stage.' + option.key) | abpLocalization"
+                                <nz-option [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
                                 }
                             </nz-select>
