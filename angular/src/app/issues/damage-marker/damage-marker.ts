@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { DamageMarkerDetails } from "./damage-marker-details/damage-marker-details";
-import { IssueDto, IssueStatus } from 'src/app/proxy/issues';
+import { IssueDto, IssueStatus, UpsertIssueDto } from 'src/app/proxy/issues';
 import { ToasterService } from '@abp/ng.theme.shared';
 import { mapIssueStatusBgColor } from '../utils/issues.utils';
 
@@ -55,8 +55,8 @@ export class DamageMarker {
     this.isModalOpen = true;
   }
 
-  onIssueSubmit(issue: IssueDto | null) {
-    if (!issue) return;
+  onIssueSubmit(upsert: UpsertIssueDto | null) {
+    if (!upsert) return;
 
     //Option 1: editing a db persisted item
     if (this.selectedIssue?.id) {
@@ -65,16 +65,16 @@ export class DamageMarker {
         this.toaster.error('Error occurred while updating the record. Please try again');
         return;
       }
-      this.issues[idx] = issue;
+      this.issues[idx] = { ...this.issues[idx], ...upsert };
       this.issuesChange.emit(this.issues);
       return;
     }
 
     //Option 2: creating a new item or editing a non-db persisted item
-    const existing = this.issues.find(i => !i.id && i.srNo === issue.srNo);
+    const existing = this.issues.find(i => !i.id && i.srNo === upsert.srNo);
     const idx = this.issues.indexOf(existing);
-    if (idx >= 0) this.issues[idx] = issue;
-    else this.issues.push(issue);
+    if (idx >= 0) this.issues[idx] = upsert;
+    else this.issues.push(upsert);
     this.issuesChange.emit(this.issues);
   }
 

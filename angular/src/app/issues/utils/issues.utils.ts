@@ -1,4 +1,5 @@
-import { IssueStatus } from "src/app/proxy/issues";
+import { FileAttachmentDto } from "src/app/proxy/entity-attachments/file-attachments";
+import { IssueDto, IssueStatus, UpsertIssueDto } from "src/app/proxy/issues";
 
 export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
     if (!status) return '';
@@ -20,6 +21,30 @@ export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
             return 'bg-success';
 
         default:
-            return '';
+            return 'bg-dark';
     }
+}
+
+export function mapToUpsertIssueDto(issue: IssueDto, tempFiles?: FileAttachmentDto[]): UpsertIssueDto {
+    const upsert: UpsertIssueDto = {
+        id: issue.id,
+        srNo: issue.srNo,
+        xPercent: issue.xPercent,
+        yPercent: issue.yPercent,
+        type: issue.type,
+        status: issue.status,
+        originStage: issue.originStage,
+        deteriorationType: issue.deteriorationType,
+        description: issue.description,
+        rectificationAction: issue.rectificationAction,
+        rectificationNotes: issue.rectificationNotes,
+        qualityControlAction: issue.qualityControlAction,
+        qualityControlNotes: issue.qualityControlNotes,
+        repairerAction: issue.repairerAction,
+        repairerNotes: issue.repairerNotes,
+        tempFiles: tempFiles ?? [],
+        entityAttachments: issue.entityAttachments ?? []
+    };
+
+    return upsert;
 }

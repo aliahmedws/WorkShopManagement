@@ -4,6 +4,8 @@ import { DamageMarker } from "../damage-marker/damage-marker";
 import { IssueDto, IssueService, IssueStatus, IssueType, UpsertIssuesRequestDto } from 'src/app/proxy/issues';
 import { CarDto } from 'src/app/proxy/cars';
 import { IssueStatusBadge } from "../issue-status-badge/issue-status-badge";
+import { IssueFilesState } from '../utils/issue-files-state.service';
+import { mapToUpsertIssueDto } from '../utils/issues.utils';
 
 @Component({
   selector: 'app-issue-modal',
@@ -13,6 +15,7 @@ import { IssueStatusBadge } from "../issue-status-badge/issue-status-badge";
 })
 export class IssueModal {
   private issueService = inject(IssueService);
+  private filesState = inject(IssueFilesState);
 
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -36,6 +39,8 @@ export class IssueModal {
 
   appear() {
     this.issues = [];
+    this.filesState.clearAll();
+
     if (!this.car?.id) {
       return;
     }
@@ -50,9 +55,12 @@ export class IssueModal {
   }
 
   save() {
-    const req = {
-      items: this.issues
-    } as UpsertIssuesRequestDto;
+    const req: UpsertIssuesRequestDto = {
+      items: this.issues.map(issue => {
+        const tempFiles = this.filesState.get({ ...issue });
+        return mapToUpsertIssueDto(issue, tempFiles)
+      })
+    };
 
     this.issueService
       .upsert(this.car.id, req)

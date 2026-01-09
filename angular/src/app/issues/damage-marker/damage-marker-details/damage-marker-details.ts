@@ -1,8 +1,11 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { stageOptions } from 'src/app/proxy/cars/stages';
-import { issueDeteriorationTypeOptions, IssueDto, issueOriginStageOptions, issueStatusOptions, issueTypeOptions } from 'src/app/proxy/issues';
+import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
+import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
+import { issueDeteriorationTypeOptions, IssueDto, issueOriginStageOptions, issueStatusOptions, issueTypeOptions, UpsertIssueDto } from 'src/app/proxy/issues';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { IssueFilesState } from '../../utils/issue-files-state.service';
 
 @Component({
   selector: 'app-damage-marker-details',
@@ -12,6 +15,7 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 })
 export class DamageMarkerDetails {
   private fb = inject(FormBuilder);
+  private filesState = inject(IssueFilesState);
 
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -19,7 +23,7 @@ export class DamageMarkerDetails {
   @Input() vin: string | null;
   @Input() issue = {} as IssueDto;
 
-  @Output() submit = new EventEmitter<IssueDto>();
+  @Output() submit = new EventEmitter<UpsertIssueDto>();
 
   loading = false;
 
@@ -30,6 +34,8 @@ export class DamageMarkerDetails {
   stageOptions = stageOptions;
 
   form: FormGroup;
+  tempFiles: FileAttachmentDto[] = [];
+  existingFiles: EntityAttachmentDto[] = [];
 
   appear() {
     this.buildForm();
@@ -55,6 +61,8 @@ export class DamageMarkerDetails {
       repairerAction: [issue.repairerAction || null, [Validators.maxLength(1024)]],
       repairerNotes: [issue.repairerNotes || null, [Validators.maxLength(1024)]],
     });
+    this.tempFiles = this.filesState.get({ ...issue });
+    this.existingFiles = issue.entityAttachments || [];
   }
 
   save() {
@@ -63,8 +71,14 @@ export class DamageMarkerDetails {
       return;
     }
 
-    const issue = this.form.value as IssueDto;
-    this.submit.emit(issue);
+    const upsert: UpsertIssueDto = {
+      ...this.form.value,
+      entityAttachments: this.existingFiles
+    };
+
+    this.filesState.set({ ...upsert }, this.tempFiles)
+
+    this.submit.emit(upsert);
     this.close();
   }
 
