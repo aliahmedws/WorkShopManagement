@@ -8,15 +8,17 @@ import { Incoming } from "./incoming/incoming";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { Stage } from '../proxy/cars/stages';
 import { ExternalWarehouse } from './external-warehouse/external-warehouse';
+import { Production } from "./production/production";
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],
 })
 export class ProductionManager implements OnInit {
+  
   ngOnInit(): void {this.list.hookToQuery(query => ({
       ...query,
       ...this.filters

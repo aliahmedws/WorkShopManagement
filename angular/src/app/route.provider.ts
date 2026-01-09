@@ -23,6 +23,7 @@ function configureRoutes() {
       iconClass: 'fas fa-gauge',
       order: 2,
       layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.ProductionManager',
     },
     {
       path: '/cars',
@@ -40,6 +41,20 @@ function configureRoutes() {
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Vehicles',
     },
-    
+    // {
+    //   path: '/check-in-report',
+    //   name: '::Menu:checkInReports',
+    //   iconClass: 'fas fa-book',
+    //   order: 4,
+    //   layout: eLayoutType.application
+    // },
+    // {
+    //   path: '/check-lists',
+    //   name: '::Menu:CheckLists',
+    //   iconClass: 'fas fa-list-check',
+    //   order: 3,
+    //   layout: eLayoutType.application,
+    //   // requiredPolicy: 'WorkShopManagement.CheckLists',
+    // },
   ]);
 }

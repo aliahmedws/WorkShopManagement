@@ -34,10 +34,28 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Edit, L("Permission:RadioOptions.Edit"));
         radioOptionsPermission.AddChild(WorkShopManagementPermissions.RadioOptions.Delete, L("Permission:RadioOptions.Delete"));
 
+        var checkInReportPermissions = myGroup.AddPermission(WorkShopManagementPermissions.CheckInReports.Default, L("Permission:CheckInReports"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Create, L("Permission:CheckInReports.Create"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Edit, L("Permission:CheckInReports.Edit"));
+        checkInReportPermissions.AddChild(WorkShopManagementPermissions.CheckInReports.Delete, L("Permission:CheckInReports.Delete"));
+
         var qualityGatesPermission = myGroup.AddPermission(WorkShopManagementPermissions.QualityGates.Default, L("Permission:QualityGates"));
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Create, L("Permission:QualityGates.Create"));
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Edit, L("Permission:QualityGates.Edit"));
         qualityGatesPermission.AddChild(WorkShopManagementPermissions.QualityGates.Delete, L("Permission:QualityGates.Delete"));
+
+        var carBaysPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarBays.Default, L("Permission:CarBays"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Create, L("Permission:CarBays.Create"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Edit, L("Permission:CarBays.Edit"));
+        carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Delete, L("Permission:CarBays.Delete"));
+        
+        var carBayItemsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarBayItems.Default, L("Permission:CarBayItems"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Create, L("Permission:CarBayItems.Create"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Edit, L("Permission:CarBayItems.Edit"));
+        carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Delete, L("Permission:CarBayItems.Delete"));
+
+    
+        var productionManagerPermissions = myGroup.AddPermission(WorkShopManagementPermissions.ProductionManager.Default, L("Permission:ProductionManager"));
 
         var issuePermission = myGroup.AddPermission(WorkShopManagementPermissions.Issues.Default, L("Permission:Issues"));
         issuePermission.AddChild(WorkShopManagementPermissions.Issues.Upsert, L("Permission:Upsert"));

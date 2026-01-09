@@ -1,0 +1,68 @@
+/* bays-grid.component.scss */
+
+.bay-title {
+  color: #d40000;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.bay-box {
+  border: 3px solid #000;
+  border-radius: 4px;
+  min-height: 260px; /* adjust to match your screen */
+  background: #fff;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+  }
+}
+
+.bay-box__center {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+
+.bay-box--assigned {
+  border-color: #f5a100; /* orange like selected */
+}
+
+.bay-card {
+  width: 100%;
+}
+
+.bay-image-wrap {
+  display: flex;
+  justify-content: center;
+
+  img {
+    max-height: 120px;
+    object-fit: contain;
+  }
+}
+
+.alert-triangle {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: #d40000;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.bay-clear {
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}

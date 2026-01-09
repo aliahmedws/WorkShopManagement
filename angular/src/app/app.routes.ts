@@ -50,5 +50,9 @@ export const APP_ROUTES: Routes = [
   {
     path: 'production-manager',
     loadComponent: () => import('./production-manager/production-manager').then(m => m.ProductionManager),
+  },
+  {
+    path: 'check-in-report',
+    loadComponent: () => import('./check-in-reports/check-in-report').then(m => m.CheckInReport)
   }
 ];

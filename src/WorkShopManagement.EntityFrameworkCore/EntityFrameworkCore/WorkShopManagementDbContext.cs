@@ -15,8 +15,11 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using WorkShopManagement.Bays;
+using WorkShopManagement.CarBayItems;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CarsEx;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
@@ -78,8 +81,9 @@ public class WorkShopManagementDbContext :
     public DbSet<QualityGate> QualityGates { get; set; }
     public DbSet<EntityAttachment> EntityAttachments { get; set; }
     public DbSet<VinInfo> VinInfos { get; set; }
-
-
+    public DbSet<CarBay> CarBays { get; set; }
+    public DbSet<CarBayItem> CarBayItems { get; set; }
+    public DbSet<CheckInReport> CheckInReports { get; set; }
 
     public DbSet<Car> Cars { get; set; }
     public DbSet<CarOwner> CarOwners { get; set; }
@@ -219,7 +223,6 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.ListItemId);
         });
 
-
         builder.Entity<ListItem>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ListItems", WorkShopManagementConsts.DbSchema);
@@ -293,6 +296,23 @@ public class WorkShopManagementDbContext :
 
             b.HasIndex(x => x.Name);
         });
+
+        builder.Entity<CheckInReport>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CheckInReports", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+ 
+            b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMoterNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
+            //b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.ReportStatus).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.CarId).IsRequired();
+            b.HasOne(x => x.Car).WithOne().HasForeignKey<CheckInReport>(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
+
+        });
         builder.Entity<VinInfo>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "VinInfos", WorkShopManagementConsts.DbSchema);
@@ -301,6 +321,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.VinNo).IsRequired();
             b.HasIndex(x => x.VinNo).IsUnique();
         });
+
         builder.Entity<Recall>(b =>
         {
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "Recalls", WorkShopManagementConsts.DbSchema);
@@ -319,6 +340,70 @@ public class WorkShopManagementDbContext :
                 .HasForeignKey(x => x.CarId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+        builder.Entity<CarBay>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CarBays", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.CarId).IsRequired();
+            b.Property(x => x.BayId).IsRequired();
+            b.Property(x => x.Priority).IsRequired();
+
+            b.Property(x => x.BuildMaterialNumber);
+            b.Property(x => x.PdiStatus);
+            b.Property(x => x.ConfirmedDeliverDateNotes);
+            b.Property(x => x.TransportDestination);
+            b.Property(x => x.StorageLocation);
+            b.Property(x => x.Row);
+            b.Property(x => x.Columns);
+            b.Property(x => x.PulseNumber);
+
+            b.HasOne(x => x.Car)
+                .WithMany(x => x.CarBays)
+                .HasForeignKey(x => x.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.Bay)
+                .WithMany(x => x.CarBays)
+                .HasForeignKey(x => x.BayId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.QualityGate)
+                .WithMany( x => x.CarBays!)
+                .HasForeignKey(x => x.QualityGateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasIndex(x => x.CarId);
+            b.HasIndex(x => x.BayId);
+        });
+
+        builder.Entity<CarBayItem>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "CarBayItems", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.CarBayId).IsRequired();
+            b.Property(x => x.CheckListItemId).IsRequired();
+
+            b.Property(x => x.CheckRadioOption).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCheckRadioOptionLength);
+            b.Property(x => x.Comments).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCommentsLength);
+
+            b.HasOne(x => x.CarBay)
+                .WithMany(x => x.CarBayItems)
+                .HasForeignKey(x => x.CarBayId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.HasOne(x => x.ListItem)
+                .WithMany(x => x.CarBayItems)
+                .HasForeignKey(x => x.CarBayId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            b.HasIndex(x => x.CarBayId);
+            b.HasIndex(x => x.CheckListItemId);
+        });
+
 
         builder.Entity<Issue>(b =>
         {

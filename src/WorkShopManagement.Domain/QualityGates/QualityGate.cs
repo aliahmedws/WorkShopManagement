@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
+using WorkShopManagement.Bays;
+using WorkShopManagement.CarBays;
 
 namespace WorkShopManagement.QualityGates;
 
@@ -11,6 +14,8 @@ public class QualityGate : FullAuditedAggregateRoot<Guid>
     public QualityGateStatus Status { get; set; }
 
     //public Guid CarBayId { get; set; }
+
+    public virtual ICollection<CarBay?> CarBays { get; set; } = default!;
 
     private QualityGate() { }
 

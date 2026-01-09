@@ -7,6 +7,8 @@
         ListItem = 3,
         Car = 4,
         Recall = 5,
+        CarBayItem = 6,
+
         Issue = 6,
     }
 }

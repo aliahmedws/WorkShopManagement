@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -240,5 +241,32 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         await _entityAttachmentAppService.DeleteAsync(id, EntityType.ListItem);
         await _repository.DeleteAsync(id);
     }
-    
+
+    public async Task<List<ListItemDto>> GetByCheckListWithDetailsAsync(Guid checkListId)
+    {
+        var queryable = await _repository.WithDetailsAsync();
+
+        var items = await AsyncExecuter.ToListAsync(
+            queryable.Include(x => x.RadioOptions)
+                .Where(x => x.CheckListId == checkListId)
+                .OrderBy(x => x.Position)
+        );
+
+        var dtos = ObjectMapper.Map<List<ListItem>, List<ListItemDto>>(items);
+
+        //foreach (var dto in dtos)
+        //{
+        //    var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+        //    {
+        //        EntityId = dto.Id,
+        //        EntityType = EntityType.ListItem
+        //    });
+
+        //    dto.EntityAttachments = attachments!;
+        //}
+
+        return dtos;
+    }
+
+
 }

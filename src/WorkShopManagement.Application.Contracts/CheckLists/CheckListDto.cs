@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.ListItems;
 
 namespace WorkShopManagement.CheckLists;
 
@@ -15,4 +16,5 @@ public class CheckListDto : FullAuditedEntityDto<Guid>
     public bool? EnableCheckInReport { get; set; }
     public string ConcurrencyStamp { get; set; } = default!;
     public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
+    public List<ListItemDto> ListItems { get; set; } = new();
 }

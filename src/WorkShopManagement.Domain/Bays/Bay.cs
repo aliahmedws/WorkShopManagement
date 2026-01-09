@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
+using WorkShopManagement.CarBays;
 
 namespace WorkShopManagement.Bays;
 
@@ -9,6 +11,7 @@ public class Bay : FullAuditedAggregateRoot<Guid>
 {
     public string Name { get; private set; } = default!;
     public bool IsActive { get; private set; }
+    public virtual ICollection<CarBay> CarBays { get; set; } = default!;
 
     private Bay() { }
 

@@ -2,6 +2,7 @@ import type { CommentType } from './comment-type.enum';
 import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
+import type { RadioOptionDto } from '../radio-options/models';
 
 export interface CreateListItemDto {
   checkListId: string;
@@ -29,6 +30,7 @@ export interface ListItemDto extends FullAuditedEntityDto<string> {
   isSeparator?: boolean;
   concurrencyStamp?: string;
   entityAttachments: EntityAttachmentDto[];
+  radioOptions: RadioOptionDto[];
 }
 
 export interface UpdateListItemDto {

@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
+using WorkShopManagement.QualityGates;
 
-namespace WorkShopManagement.QualityGates;
+namespace WorkShopManagement.Controllers.QualityGates;
 
 [RemoteService(IsEnabled = true)]
 [ControllerName("QualityGates")]

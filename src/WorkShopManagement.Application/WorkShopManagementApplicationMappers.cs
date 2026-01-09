@@ -1,11 +1,13 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using WorkShopManagement.CarBayItems;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
+using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
-using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Issues;
@@ -46,6 +48,40 @@ public partial class CheckListMapper : MapperBase<CheckList, CheckListDto>
 {
     public override partial CheckListDto Map(CheckList source);
     public override partial void Map(CheckList source, CheckListDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CarBayMapper : MapperBase<CarBay, CarBayDto>
+{
+    [MapProperty("Bay.Name", nameof(CarBayDto.BayName))]
+    [MapProperty("Car.Vin", nameof(CarBayDto.CarVin))]
+    [MapProperty("Car.Owner.Name", nameof(CarBayDto.OwnerName))]
+    [MapProperty("Car.Model.Name", nameof(CarBayDto.ModelName))]
+    [MapProperty("Car.Model.ModelCategory.Name", nameof(CarBayDto.ModelCategoryName))]
+    [MapProperty("Car.Model.FileAttachments.Path", nameof(CarBayDto.ModelImagePath))]
+    [MapProperty("Car.Model.CheckLists", nameof(CarBayDto.CheckLists))]
+    public override partial CarBayDto Map(CarBay source);
+
+    [MapProperty("Bay.Name", nameof(CarBayDto.BayName))]
+    [MapProperty("Car.Vin", nameof(CarBayDto.CarVin))]
+    [MapProperty("Car.Owner.Name", nameof(CarBayDto.OwnerName))]
+    [MapProperty("Car.Model.Name", nameof(CarBayDto.ModelName))]
+    [MapProperty("Car.Model.ModelCategory.Name", nameof(CarBayDto.ModelCategoryName))]
+    [MapProperty("Car.Model.FileAttachments.Path", nameof(CarBayDto.ModelImagePath))]
+    [MapProperty("Car.Model.CheckLists", nameof(CarBayDto.CheckLists))]
+    public override partial void Map(CarBay source, CarBayDto destination);
+
+    // nested mapping for lists
+    public partial CheckListDto Map(CheckList source);
+    public partial ListItemDto Map(ListItem source);
+    public partial RadioOptionDto Map(RadioOption source);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CarBayItemMapper : MapperBase<CarBayItem, CarBayItemDto>
+{
+    public override partial CarBayItemDto Map(CarBayItem source);
+    public override partial void Map(CarBayItem source, CarBayItemDto destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
@@ -99,6 +135,13 @@ public partial class GuidLookupToGuidLookupDto : MapperBase<GuidLookup, GuidLook
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class GuidLookupToIntLookupDto : MapperBase<IntLookup, IntLookupDto>
+{
+    public override partial IntLookupDto Map(IntLookup source);
+    public override partial void Map(IntLookup source, IntLookupDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class EntityAttachmentMapper : MapperBase<EntityAttachment, EntityAttachmentDto>
 {
     public override partial EntityAttachmentDto Map(EntityAttachment source);
@@ -131,6 +174,22 @@ public partial class RecallMapper : MapperBase<Recall, RecallDto>
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
     [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
     public override partial void Map(Recall source, RecallDto destination);
+}
+
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInReport, CheckInReportDto>
+{
+    public override partial CheckInReportDto Map(CheckInReport source);
+    public override partial void Map(CheckInReport source, CheckInReportDto destination);
+
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class CheckInReportFiltersDtoToInputMapper : MapperBase<CheckInReportFiltersDto, CheckInReportFiltersInput>
+{
+    public override partial CheckInReportFiltersInput Map(CheckInReportFiltersDto source);
+    public override partial void Map(CheckInReportFiltersDto source, CheckInReportFiltersInput destination);
 }
 
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
