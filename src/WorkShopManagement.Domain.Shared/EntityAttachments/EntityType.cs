@@ -1,14 +1,12 @@
-﻿namespace WorkShopManagement.EntityAttachments
-{
-    public enum EntityType
-    {
-        CarModel = 1,
-        CheckList = 2,
-        ListItem = 3,
-        Car = 4,
-        Recall = 5,
-        CarBayItem = 6,
+﻿namespace WorkShopManagement.EntityAttachments;
 
-        Issue = 6,
-    }
+public enum EntityType
+{
+    CarModel = 1,
+    CheckList = 2,
+    ListItem = 3,
+    Car = 4,
+    Recall = 5,
+    CarBayItem = 6,
+    Issue = 7
 }
