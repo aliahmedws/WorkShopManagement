@@ -9,6 +9,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { Stage } from '../proxy/cars/stages';
 import { ExternalWarehouse } from './external-warehouse/external-warehouse';
 import { Production } from "./production/production";
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-production-manager',
@@ -19,19 +20,43 @@ import { Production } from "./production/production";
 })
 export class ProductionManager implements OnInit {
   
-  ngOnInit(): void {this.list.hookToQuery(query => ({
+  ngOnInit(): void {
+    const tabParam = this.route.snapshot.queryParamMap.get('tab');
+    if (tabParam) {
+      this.selectedIndex = Number(tabParam);
+      this.setFiltersByIndex(this.selectedIndex);
+    }
+
+    this.list.hookToQuery(query => ({
       ...query,
       ...this.filters
     }));
   }
 
-
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   public readonly list = inject(ListService);
+
   filters = { stage: Stage.Incoming } as GetCarListInput;
   selectedIndex = 0;
 
   onTabChange(index: number): void {
     this.selectedIndex = index;
+
+    // 5. Update URL without reloading the page
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: index },
+      queryParamsHandling: 'merge', // Preserves other params (like sorting) if they exist
+    });
+
+    this.setFiltersByIndex(index);
+    this.list.get();
+
+  }
+
+  // 6. Refactored logic to reuse in ngOnInit and onTabChange
+  private setFiltersByIndex(index: number): void {
     this.list.page = 0;
     let newStage: Stage;
 
@@ -44,6 +69,5 @@ export class ProductionManager implements OnInit {
       default: newStage = undefined; break;
     }
     this.filters = { ...this.filters, stage: newStage };
-    this.list.get();
   }
 }
