@@ -389,6 +389,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.CheckRadioOption).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCheckRadioOptionLength);
             b.Property(x => x.Comments).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCommentsLength);
 
+
             b.HasOne(x => x.CarBay)
                 .WithMany(x => x.CarBayItems)
                 .HasForeignKey(x => x.CarBayId)
@@ -396,7 +397,7 @@ public class WorkShopManagementDbContext :
 
             b.HasOne(x => x.ListItem)
                 .WithMany(x => x.CarBayItems)
-                .HasForeignKey(x => x.CarBayId)
+                .HasForeignKey(x => x.CheckListItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 

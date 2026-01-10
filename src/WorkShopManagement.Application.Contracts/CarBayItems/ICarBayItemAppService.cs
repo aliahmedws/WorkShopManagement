@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using WorkShopManagement.CarBayItems.BatchCarBayItems;
 
 namespace WorkShopManagement.CarBayItems;
 
@@ -12,4 +13,5 @@ public interface ICarBayItemAppService : IApplicationService
     Task<CarBayItemDto> CreateAsync(CreateCarBayItemDto input);
     Task<CarBayItemDto> UpdateAsync(Guid id, UpdateCarBayItemDto input);
     Task DeleteAsync(Guid id);
+    Task<SaveCarBayItemBatchResultDto> SaveBatchAsync(SaveCarBayItemBatchDto input);
 }

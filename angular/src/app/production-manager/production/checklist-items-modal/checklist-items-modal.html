@@ -124,7 +124,13 @@
       </button>
 
       <!-- Enable later when you implement save -->
-      <button type="button" class="btn btn-primary" disabled>
+     <button
+        type="button"
+        class="btn btn-primary"
+        (click)="save()"
+        [disabled]="saving || loading || !carBayId"
+      >
+        <span *ngIf="saving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
         {{ '::Save' | abpLocalization }}
       </button>
     </div>

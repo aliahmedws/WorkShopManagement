@@ -65,7 +65,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public bool? CanProgress { get; private set; }
     public bool? JobCardCompleted { get; private set; }
-    public virtual ICollection<CarBayItem> CarBayItems { get; private set; } = new List<CarBayItem>();
+    public virtual ICollection<CarBayItem>? CarBayItems { get; private set; } = new List<CarBayItem>();
 
     private CarBay() { }
 
