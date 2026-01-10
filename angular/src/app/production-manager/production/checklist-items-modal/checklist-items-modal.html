@@ -1,5 +1,4 @@
-<abp-modal [(visible)]="visible" [options]="{ size: 'xl' }">
-  <!-- Header -->
+<!-- <abp-modal [(visible)]="visible" [options]="{ size: 'xl' }">
   <ng-template #abpHeader>
     <div class="d-flex flex-column">
       <div class="fw-bold">
@@ -9,7 +8,6 @@
     </div>
   </ng-template>
 
-  <!-- Body -->
   <ng-template #abpBody>
     <ng-container *ngIf="!loading; else loadingTpl">
 
@@ -28,7 +26,6 @@
 
           <tbody>
             <ng-container *ngFor="let li of items; let idx = index; trackBy: trackById">
-              <!-- Separator Row (Heading) -->
               <tr *ngIf="li.isSeparator === true" class="table-light">
                 <td class="text-muted">{{ li.position ?? (idx + 1) }}</td>
                 <td class="fw-bold text-center" colspan="5">
@@ -36,7 +33,6 @@
                 </td>
               </tr>
 
-              <!-- Normal Item Row -->
               <tr *ngIf="li.isSeparator !== true">
                 <td class="text-muted">
                   {{ li.position ?? (idx + 1) }}
@@ -86,7 +82,15 @@
                 </td>
 
                 <td class="text-center">
-                  <span class="badge text-bg-light">No</span>
+                    <ng-container *ngIf="editedByInfo[li.id!] && editedByInfo[li.id!] !== '-'; else noEdit">
+                    <span class="badge text-bg-info text-wrap" style="max-width: 80px; font-size: 0.7rem;">
+                      {{ editedByInfo[li.id!] }}
+                    </span>
+                    </ng-container>
+
+                    <ng-template #noEdit>
+                      <span class="text-muted small">-</span>
+                    </ng-template>
                 </td>
 
                 <td class="text-center">
@@ -116,15 +120,150 @@
     </ng-template>
   </ng-template>
 
-  <!-- Footer -->
   <ng-template #abpFooter>
     <div class="d-flex justify-content-end gap-2">
       <button type="button" class="btn btn-outline-secondary" (click)="close()">
         {{ '::Close' | abpLocalization }}
       </button>
 
-      <!-- Enable later when you implement save -->
      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="save()"
+        [disabled]="saving || loading || !carBayId"
+      >
+        <span *ngIf="saving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        {{ '::Save' | abpLocalization }}
+      </button>
+    </div>
+  </ng-template>
+</abp-modal> -->
+
+
+
+<abp-modal [(visible)]="visible" [options]="{ size: 'xl' }">
+  <ng-template #abpHeader>
+    <div class="d-flex flex-column">
+      <div class="fw-bold">
+        {{ checkListName || ('::Checklist' | abpLocalization) }}
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <ng-container *ngIf="!loading; else loadingTpl">
+
+      <div *ngIf="lastModifiedInfo" class="alert alert-light border d-flex align-items-center justify-content-between py-2 px-3 mb-3">
+        <div class="d-flex align-items-center text-muted small">
+          <i class="fa fa-info-circle me-2"></i>
+          <span>Last updated by</span>
+          <strong class="ms-1 me-1 text-dark">{{ lastModifiedInfo.name }}</strong>
+          <span>on {{ lastModifiedInfo.time | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <div class="table-responsive checklist-table">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 60px">No</th>
+              <th>Check Items</th>
+              <th style="width: 320px">Marks</th>
+              <th style="width: 260px">Comments</th>
+              <th style="width: 120px">Attachments</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <ng-container *ngFor="let li of items; let idx = index; trackBy: trackById">
+              <tr *ngIf="li.isSeparator === true" class="table-light">
+                <td class="text-muted">{{ li.position ?? (idx + 1) }}</td>
+                <td class="fw-bold text-center" colspan="4"> {{ li.name }}
+                </td>
+              </tr>
+
+              <tr *ngIf="li.isSeparator !== true">
+                <td class="text-muted">
+                  {{ li.position ?? (idx + 1) }}
+                </td>
+
+                <td class="fw-semibold">
+                  {{ li.name }}
+                </td>
+
+                <td>
+                  <ng-container *ngIf="(li.radioOptions?.length ?? 0) > 0; else noMarks">
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                      <label class="form-check form-check-inline m-0"
+                             *ngFor="let ro of (li.radioOptions || [])">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          [name]="'li_' + li.id"
+                          [value]="ro.id"
+                          [(ngModel)]="selectedMarks[li.id!]"
+                        />
+                        <span class="form-check-label fw-semibold">{{ ro.name }}</span>
+                      </label>
+
+                      <button
+                        class="btn btn-link btn-sm p-0 ms-2"
+                        type="button"
+                        (click)="clearMark(li.id!)"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </ng-container>
+
+                  <ng-template #noMarks>
+                    <span class="text-muted small">-</span>
+                  </ng-template>
+                </td>
+
+                <td>
+                  <input
+                    class="form-control form-control-sm"
+                    [placeholder]="li.commentPlaceholder || li.name || ''"
+                    type="text"
+                    [(ngModel)]="comments[li.id!]"
+                  />
+                </td>
+
+                <td class="text-center">
+                  <button
+                    class="btn btn-light btn-sm"
+                    type="button"
+                    [disabled]="!canAttach(li)"
+                    title="Upload attachment"
+                  >
+                    +
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="(items?.length ?? 0) === 0" class="p-4 text-center text-muted">
+        No items found.
+      </div>
+
+    </ng-container>
+
+    <ng-template #loadingTpl>
+      <div class="p-4 text-center text-muted">Loading...</div>
+    </ng-template>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-outline-secondary" (click)="close()">
+        {{ '::Close' | abpLocalization }}
+      </button>
+
+      <button
         type="button"
         class="btn btn-primary"
         (click)="save()"
