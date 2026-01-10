@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -148,5 +149,50 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
         }
 
         return new ListResultDto<IssueDto>(mapped);
+    }
+
+    public async Task<PagedResultDto<IssueListDto>> GetListAsync(GetIssueListInput input)
+    {
+        var cars = await _carRepository.GetQueryableAsync();
+        var issues = await _issueRepository.GetQueryableAsync();
+
+        var projected = issues
+            .Join(cars,
+            issue => issue.CarId,
+            car => car.Id,
+            (issue, car) => new { Issue = issue, Car = car })
+            .Select(x => new IssueListDto
+            {
+                Id = x.Issue.Id,
+                CarId = x.Car.Id,
+                Vin = x.Car.Vin,
+                SrNo = x.Issue.SrNo,
+                Description = x.Issue.Description,
+                Type = x.Issue.Type,
+                Status = x.Issue.Status,
+                Stage = x.Car.Stage,
+                CreatorId = x.Issue.CreatorId,
+                CreationTime = x.Issue.CreationTime
+            });
+
+        if (string.IsNullOrWhiteSpace(input.Sorting))
+        {
+            input.Sorting = nameof(IssueListDto.CreationTime) + " DESC";
+        }
+
+        if (!string.IsNullOrWhiteSpace(input.Filter = input.Filter?.Trim()))
+        {
+            projected = projected.Where(x => x.Vin.Contains(input.Filter));
+        }
+
+        projected = projected
+            .WhereIf(input.Type != null, x => x.Type == input.Type)
+            .WhereIf(input.Status != null, x => x.Status == input.Status)
+            .WhereIf(input.Stage != null, x => x.Stage == input.Stage);
+
+        var totalCount = await AsyncExecuter.LongCountAsync(projected);
+        var items = await AsyncExecuter.ToListAsync(projected.OrderBy(input.Sorting).PageBy(input.SkipCount, input.MaxResultCount));
+
+        return new PagedResultDto<IssueListDto>(totalCount, items);
     }
 }

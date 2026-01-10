@@ -9,4 +9,5 @@ public interface IIssueAppService : IApplicationService
 {
     Task UpsertAsync(Guid carId, UpsertIssuesRequestDto input);
     Task<ListResultDto<IssueDto>> GetListByCarAsync(Guid carId);
+    Task<PagedResultDto<IssueListDto>> GetListAsync(GetIssueListInput input);
 }

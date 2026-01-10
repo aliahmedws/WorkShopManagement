@@ -160,6 +160,7 @@
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
+    "Menu:Issues": "Issues",
     "Variants": "Variants",
 
     "Menu:checkInReports": "check In Reports",
@@ -325,6 +326,7 @@
     "Enum:ChoiceOptions.1": "Yes",
     "Enum:ChoiceOptions.2": "No",
     "AvcStickers": "AVC Stickers",
-    "AvcStickersNew": "AVC Stickers New"
+    "AvcStickersNew": "AVC Stickers New",
+    "IssueStatus": "Issue Status"
   }
 }

@@ -1,6 +1,6 @@
 import { PageModule } from "@abp/ng.components/page";
 import { CoreModule } from "@abp/ng.core";
-import { ThemeSharedModule } from "@abp/ng.theme.shared";
+import { EllipsisDirective, ThemeSharedModule } from "@abp/ng.theme.shared";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbDatepickerModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -35,7 +35,8 @@ export const SHARED_IMPORTS = [
     NzImageModule,
     NzTooltipModule,
     NzTabsModule,
-    NzEmptyModule
+    NzEmptyModule,
+    EllipsisDirective
 ];
 
 export { 

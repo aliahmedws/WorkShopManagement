@@ -9,10 +9,10 @@ export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
             return 'bg-danger';
 
         case IssueStatus.Deferred:
-            return 'bg-info';
+            return 'bg-warning';
 
         case IssueStatus.InProgress:
-            return 'bg-warning';
+            return 'bg-info';
 
         case IssueStatus.NoActionRequired:
             return 'bg-success';

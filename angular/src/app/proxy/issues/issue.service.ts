@@ -1,6 +1,6 @@
-import type { IssueDto, UpsertIssuesRequestDto } from './models';
+import type { GetIssueListInput, IssueDto, IssueListDto, UpsertIssuesRequestDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
-import type { ListResultDto } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
 
 @Injectable({
@@ -9,6 +9,15 @@ import { Injectable, inject } from '@angular/core';
 export class IssueService {
   private restService = inject(RestService);
   apiName = 'Default';
+  
+
+  getList = (input: GetIssueListInput, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<IssueListDto>>({
+      method: 'GET',
+      url: '/api/app/issues',
+      params: { filter: input.filter, type: input.type, status: input.status, stage: input.stage, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
   
 
   getListByCar = (carId: string, config?: Partial<Rest.Config>) =>
