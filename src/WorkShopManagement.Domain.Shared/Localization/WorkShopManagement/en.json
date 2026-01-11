@@ -327,6 +327,7 @@
     "Enum:ChoiceOptions.2": "No",
     "AvcStickers": "AVC Stickers",
     "AvcStickersNew": "AVC Stickers New",
-    "IssueStatus": "Issue Status"
+    "IssueStatus": "Issue Status",
+    "VinDetails": "VIN Details"
   }
 }

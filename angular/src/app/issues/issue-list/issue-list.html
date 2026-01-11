@@ -39,12 +39,8 @@
                                 </button>
                                 <div ngbDropdownMenu>
                                     <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem
-                                        (click)="edit(row.id)">
-                                        {{ '::Edit' | abpLocalization }}
-                                    </button>
-                                    <button *abpPermission="'WorkShopManagement.Cars.Delete'" ngbDropdownItem
-                                        (click)="delete(row.id)">
-                                        {{ '::Delete' | abpLocalization }}
+                                        (click)="showVinDetails(row)">
+                                        {{ '::VinDetails' | abpLocalization }}
                                     </button>
                                     <button *abpPermission="'WorkShopManagement.Issues'" ngbDropdownItem
                                         (click)="showIssues(row)">
@@ -87,4 +83,5 @@
             </div>
         </div>
     </app-topbar-layout>
+    <app-issue-modal [(visible)]="isIssueModalOpen" [carId]="selected?.carId"></app-issue-modal>
 </abp-page>

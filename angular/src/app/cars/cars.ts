@@ -24,7 +24,6 @@ export class Cars implements OnInit {
 
   isModalVisible = false;
   selectedId?: string;
-  selectedCar: CarDto;
 
   isIssueModalVisible = false;
   
@@ -52,7 +51,7 @@ export class Cars implements OnInit {
   }
 
   showIssues(car: CarDto): void {
-    this.selectedCar = car;
+    this.selectedId = car?.id;
     this.isIssueModalVisible = true;
   }
 }

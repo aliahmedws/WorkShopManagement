@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { DamageMarker } from "../damage-marker/damage-marker";
 import { IssueDto, IssueService, IssueStatus, IssueType, UpsertIssuesRequestDto } from 'src/app/proxy/issues';
-import { CarDto } from 'src/app/proxy/cars';
+import { CarDto, CarService } from 'src/app/proxy/cars';
 import { IssueStatusBadge } from "../issue-status-badge/issue-status-badge";
 import { IssueFilesState } from '../utils/issue-files-state.service';
 import { mapToUpsertIssueDto } from '../utils/issues.utils';
@@ -15,6 +15,7 @@ import { PermissionService } from '@abp/ng.core';
   styleUrl: './issue-modal.scss'
 })
 export class IssueModal {
+  private carService = inject(CarService);
   private issueService = inject(IssueService);
   private filesState = inject(IssueFilesState);
   private permission = inject(PermissionService);
@@ -22,7 +23,8 @@ export class IssueModal {
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  @Input() car: CarDto | null = null;
+  @Input() carId: string;
+  car: CarDto | null = null;
 
   loading: boolean = false;
 
@@ -46,16 +48,22 @@ export class IssueModal {
     this.issues = [];
     this.filesState.clearAll();
 
-    if (!this.car?.id) {
+    if (!this.carId) {
       return;
     }
 
     this.loading = true;
-    this.issueService
-      .getListByCar(this.car.id)
-      .subscribe((response) => {
-        this.issues = response.items;
-        this.loading = false;
+
+    this.carService
+      .get(this.carId)
+      .subscribe((car) => {
+        this.car = car;
+        this.issueService
+          .getListByCar(this.car.id)
+          .subscribe((response) => {
+            this.issues = response.items;
+            this.loading = false;
+          });
       });
   }
 
