@@ -1,6 +1,10 @@
 import type { AuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { Stage } from './stages/stage.enum';
 import type { StorageLocation } from './storage-locations/storage-location.enum';
+import type { AvvStatus } from '../car-bays/avv-status.enum';
+import type { EntityAttachmentDto } from '../entity-attachments/models';
+import type { Port } from './port.enum';
+import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
 
 export interface CarDto extends AuditedEntityDto<string> {
   modelId?: string;
@@ -22,11 +26,19 @@ export interface CarDto extends AuditedEntityDto<string> {
   dueDateUpdated?: string;
   notes?: string;
   missingParts?: string;
-  locationStatus?: string;
-  etaBrisbane?: string;
-  etaScd?: string;
-  bookingNumber?: string;
-  clearingAgent?: string;
+  storageLocation?: StorageLocation;
+  buildMaterialNumber?: string;
+  angleBailment?: number;
+  avvStatus?: AvvStatus;
+  pdiStatus?: string;
+  bayId?: string;
+  bayName?: string;
+  carBayId?: string;
+  entityAttachments: EntityAttachmentDto[];
+}
+
+export interface ChangeCarStageDto {
+  targetStage?: Stage;
   storageLocation?: StorageLocation;
 }
 
@@ -37,7 +49,6 @@ export interface CreateCarDto {
   color: string;
   modelId: string;
   modelYear: number;
-  stage: Stage;
   cnc?: string;
   cncFirewall?: string;
   cncColumn?: string;
@@ -46,12 +57,14 @@ export interface CreateCarDto {
   startDate?: string;
   notes?: string;
   missingParts?: string;
-  locationStatus?: string;
-  etaBrisbane?: string;
-  etaScd?: string;
+  port?: Port;
   bookingNumber?: string;
-  clearingAgent?: string;
   storageLocation?: StorageLocation;
+  buildMaterialNumber?: string;
+  angleBailment?: number;
+  avvStatus?: AvvStatus;
+  pdiStatus?: string;
+  tempFiles: FileAttachmentDto[];
 }
 
 export interface CreateCarOwnerDto {
@@ -89,10 +102,11 @@ export interface UpdateCarDto {
   startDate?: string;
   notes?: string;
   missingParts?: string;
-  locationStatus?: string;
-  etaBrisbane?: string;
-  etaScd?: string;
-  bookingNumber?: string;
-  clearingAgent?: string;
   storageLocation?: StorageLocation;
+  buildMaterialNumber?: string;
+  angleBailment?: number;
+  avvStatus?: AvvStatus;
+  pdiStatus?: string;
+  entityAttachments: EntityAttachmentDto[];
+  tempFiles: FileAttachmentDto[];
 }

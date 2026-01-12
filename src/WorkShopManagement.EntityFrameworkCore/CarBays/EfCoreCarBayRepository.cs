@@ -66,12 +66,12 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
         return await query.LongCountAsync();
     }
 
-    public async Task<CarBay?> GetCarBayDetailsWithIdAsync(Guid id)
+    public async Task<CarBay?> GetCarBayDetailsWithIdAsync(Guid CarId)
     {
         var query = await GetQueryableAsync();
 
         var entity = await query
-            .Where(x => x.Id == id)
+            .Where(x => x.CarId == CarId)
             .Include(x => x.Bay)
             .Include(x => x.Car).ThenInclude(c => c!.Owner)
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.FileAttachments)

@@ -1,19 +1,19 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { Shared } from '../proxy/external';
+import { Component, inject, OnInit } from '@angular/core';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { CarDto, CarService, GetCarListInput } from '../proxy/cars';
-import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { Incoming } from "./incoming/incoming";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { Stage } from '../proxy/cars/stages';
 import { ExternalWarehouse } from './external-warehouse/external-warehouse';
 import { Production } from "./production/production";
 import { ActivatedRoute, Router } from '@angular/router';
+import { PostProduction } from './post-production/post-production';
+import { AwaitingTransport } from './awaiting-transport/awaiting-transport';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction, AwaitingTransport],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],

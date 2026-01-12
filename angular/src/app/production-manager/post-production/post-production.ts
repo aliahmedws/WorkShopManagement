@@ -1,29 +1,26 @@
-import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Confirmation } from '@abp/ng.theme.shared';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { PagedResultDto, ListService } from '@abp/ng.core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayDto, CarBayService, CreateCarBayDto, Priority, priorityOptions } from 'src/app/proxy/car-bays';
-import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
-import { Stage } from 'src/app/proxy/cars/stages';
+import { CarBayService, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
+import { CarDto } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
-import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
+import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
-import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-
-
+import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 
 @Component({
-  selector: 'app-external-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
-  templateUrl: './external-warehouse.html',
-  styleUrl: './external-warehouse.scss'
+  selector: 'app-post-production',
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal],
+  templateUrl: './post-production.html',
+  styleUrl: './post-production.scss',
 })
-export class ExternalWarehouse {
-  private readonly carService = inject(CarService);
-  private readonly confirm = inject(ConfirmationHelperService);
+export class PostProduction {
+  @ViewChild('detailsModal') detailsModal!: ProductionDetailsModal; //Bay
+
+// private readonly carService = inject(CarService);
   private readonly carBayService = inject(CarBayService)
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
@@ -89,36 +86,27 @@ export class ExternalWarehouse {
   }
 
   assignToBay(): void {
-  if (!this.selectedId) return;
+    if (!this.selectedId) return;
 
-  this.form.markAllAsTouched();
-  if (this.form.invalid) return;
+    this.form.markAllAsTouched();
+    if (this.form.invalid) return;
 
-  this.confirm
-    .confirmAction('::ConfirmAssignToBayMessage', '::ConfirmAssignToBayTitle')
-    .subscribe(status => {
-      if (status !== Confirmation.Status.confirm) return;
+    const { manufactureStartDate, bayId, priority } = this.form.value;
 
-      const { manufactureStartDate, bayId, priority } = this.form.value;
+    const input: CreateCarBayDto = {
+      carId: this.selectedId,
+      bayId,
+      priority,
+      isActive: true,
+      manufactureStartDate
+    };
 
-      const input: CreateCarBayDto = {
-        carId: this.selectedId!,
-        bayId,
-        priority,
-        isActive: true,
-        manufactureStartDate,
-      };
-
-      this.carBayService.create(input).subscribe(() => {
-          this.carService.changeStage(this.selectedId!, { targetStage: Stage.Production }).subscribe(() => {
-          this.toaster.assign();
-          this.list.get();
-          this.isAssignModalVisible = false;
-          });
-      });
+    this.carBayService.create(input).subscribe(() => {
+      this.toaster.assign();
+      this.isAssignModalVisible = false;
+      this.list.get();
     });
-}
-
+  }
 
   openRecallModal(car: CarDto): void {
     this.selectedCar = car;
@@ -129,4 +117,15 @@ export class ExternalWarehouse {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
   }
+
+  openProductionDetails(row: CarDto): void {
+    if (!row.id) return;
+    this.detailsModal.open(row.id, false, true);
+}
+
+onStageChanged(carId: string) {
+  this.list.get();
+  this.toaster.success('::SuccessfullyMovedToNextStage', '::Success');
+}
+
 }

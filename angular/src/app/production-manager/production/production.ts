@@ -4,6 +4,7 @@ import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
 import { GetCarListInput } from 'src/app/proxy/cars';
 import { ProductionDetailsModal } from './production-details-modal/production-details-modal';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 
 @Component({
   selector: 'app-production',
@@ -17,6 +18,8 @@ export class Production implements OnInit {
 
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: CarBayDto[] = [];
+
+  carId?: string;
 
   Priority = Priority;
 
@@ -43,10 +46,10 @@ export class Production implements OnInit {
 
   onOpenBay(bay: GuidLookupDto): void {
     const a = this.getAssignment(bay.id);
-    if (!a?.id) return;
+    if (!a?.carId) return;
 
     // safest: detailsModal exists after view init because it's in template
-    this.detailsModal?.open(a.id);
+    this.detailsModal?.open(a.carId, true, false);
   }
 
   vinLast6(v?: string | null): string {
@@ -60,4 +63,9 @@ export class Production implements OnInit {
   }
 
   trackByBayId = (_: number, bay: GuidLookupDto) => bay.id;
+
+  onStageChanged(carId: string) {
+    this.activeCarBays = this.activeCarBays.filter(x => x.carId !== carId);
+    this.reloadActiveBays();
+  }
 }

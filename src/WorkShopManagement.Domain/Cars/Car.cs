@@ -43,7 +43,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
     public string? BuildMaterialNumber { get; private set; }
 
     public int? AngleBailment { get; private set; }
-    public AvvStatus? AvvStatus { get; private set; }
+    public AvvStatus? AvvStatus { get; set; }
     public string? PdiStatus { get; private set; }
 
     //---new above from car bays

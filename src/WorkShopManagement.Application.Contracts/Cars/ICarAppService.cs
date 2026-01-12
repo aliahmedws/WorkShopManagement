@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using WorkShopManagement.Cars.Stages;
 
 namespace WorkShopManagement.Cars;
 
@@ -14,5 +13,6 @@ public interface ICarAppService : IApplicationService
     Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input);
     Task DeleteAsync(Guid id);
     Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(string vin, string? modelYear = null);
+    Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input);
 
 }

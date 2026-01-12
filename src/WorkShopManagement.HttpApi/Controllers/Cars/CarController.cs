@@ -49,4 +49,9 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
         return carAppService.GetExternalCarDetailsAsync(vin, modelYear);
     }
 
+    [HttpPut("change-car-stage/{id}")]
+    public Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input)
+    {
+       return carAppService.ChangeStageAsync(id, input);
+    }
 }

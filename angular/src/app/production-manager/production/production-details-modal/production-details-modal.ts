@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
+import { CarService } from 'src/app/proxy/cars';
+import { Stage } from 'src/app/proxy/cars/stages';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
+import { Confirmation } from '@abp/ng.theme.shared';
 
 @Component({
   selector: 'app-production-details-modal',
@@ -11,27 +15,38 @@ import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-mo
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
+
 export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
+  private readonly carService = inject(CarService)
   private readonly fb = inject(FormBuilder);
 
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
 
   visible = false;
-  @Output() visibleChange = new EventEmitter<boolean>();
+  movingStage = false;
+  allowMovetoPostProduction = true;
+  allowMovetoAwaitingTransport = true;
 
-  carBayId?: string;
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() stageChanged = new EventEmitter<string>();
+
+  private readonly confirm = inject(ConfirmationHelperService);
+
+  carId?: string;
   details?: CarBayDto;
 
   Priority = Priority;
 
   form?: FormGroup;
 
-  open(id: string): void {
-    this.carBayId = id;
+  open(id: string, allowMoveToPostProduction = true, allowMovetoAwaitingTransport = true): void {
+    this.carId = id;
+    this.allowMovetoPostProduction = allowMoveToPostProduction;
+    this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
+
     this.visible = true;
     this.visibleChange.emit(true);
-
     this.loadDetails();
   }
 
@@ -40,24 +55,27 @@ export class ProductionDetailsModal {
     this.visibleChange.emit(false);
     this.details = undefined;
     this.form = undefined;
-    this.carBayId = undefined;
+    this.carId = undefined;
+
+    this.allowMovetoPostProduction = true;
+    this.allowMovetoAwaitingTransport = true;
   }
 
   private loadDetails(): void {
-    if (!this.carBayId) return;
+    if (!this.carId) return;
 
     // IMPORTANT: this must exist in proxy (recommended)
-    this.carBayService.get(this.carBayId).subscribe((res: CarBayDto) => {
+    this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
       this.details = res;
       this.buildForm();
     });
   }
 
   openListItem(cl: any): void {
-  if (!this.carBayId) return;
+  if (!this.carId) return;
   if (!cl?.id) return;
 
-  this.checkListItemsModal.open(this.carBayId, cl.id, cl.name);
+  this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
 }
 
 
@@ -74,4 +92,59 @@ export class ProductionDetailsModal {
     if (!v) return '-';
     return v.length > 6 ? v.slice(-6) : v;
   }
+
+ moveToPostProduction() {
+  const carId = this.details?.carId;
+  if (!carId || this.movingStage) return;
+
+  this.confirm
+    .confirmAction(
+      '::ConfirmMoveToPostProductionMessage',
+      '::ConfirmMoveToPostProductionTitle'
+    )
+    .subscribe((status: Confirmation.Status) => {
+      if (status !== Confirmation.Status.confirm) return;
+
+      this.movingStage = true;
+
+      this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
+        next: () => {
+          this.movingStage = false;
+          this.close();
+          this.stageChanged.emit(carId);
+        },
+        error: () => {
+          this.movingStage = false;
+        },
+      });
+    });
+}
+
+moveToAwaitingTransportProduction() {
+  const carId = this.details?.carId;
+  if (!carId || this.movingStage) return;
+
+  this.confirm
+    .confirmAction(
+      '::ConfirmMoveToAwaitingTransport',
+      '::ConfirmMoveToAwaitingTitle'
+    )
+    .subscribe((status: Confirmation.Status) => {
+      if (status !== Confirmation.Status.confirm) return;
+
+      this.movingStage = true;
+
+      this.carService.changeStage(carId, { targetStage: Stage.AwaitingTransport }).subscribe({
+        next: () => {
+          this.movingStage = false;
+          this.close();
+          this.stageChanged.emit(carId);
+        },
+        error: () => {
+          this.movingStage = false;
+        },
+      });
+    });
+}
+
 }
