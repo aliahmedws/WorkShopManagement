@@ -135,7 +135,7 @@ namespace WorkShopManagement.Cars
 
             // Only load logistics when the target stage requires it
             LogisticsDetail? logisticsDetail = null;
-            logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(car.Id);
+            //logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(car.Id);
             if (targetStage == Stage.ExternalWarehouse)
             {
                 // Prefer lookup by CarId (since LogisticsDetail FK is CarId)
@@ -156,10 +156,11 @@ namespace WorkShopManagement.Cars
 
                 if (activeBay != null)
                     activeBay.SetIsActive(false);
+                await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);
             }
 
             car.SetStage(targetStage, logisticsDetail);
-
+            await _carRepository.UpdateAsync(car, autoSave: true);
             return car;
         }
 
@@ -189,7 +190,7 @@ namespace WorkShopManagement.Cars
                     throw new UserFriendlyException($"Cannot move car to \"External Warehouse\". Car has missing fields: {missing} ");
                 }
             }
-
+             
             if (targetStage == Stage.AwaitingTransport || targetStage == Stage.Dispatched)
             {
                 if (!car.AvvStatus.HasValue)

@@ -126,7 +126,7 @@
                   <!-- buttons row -->
                   <div class="d-flex flex-wrap justify-content-end gap-2">
                     <button
-                      *ngIf="allowMoveToPostProduction"
+                      *ngIf="allowMovetoPostProduction"
                       type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
                       [disabled]="movingStage || !details?.carId">
                       <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
@@ -135,7 +135,7 @@
 
                      <button
                       *ngIf="allowMovetoAwaitingTransport"
-                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
+                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
                       [disabled]="movingStage || !details?.carId">
                       <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
                       {{'::Move to Awaiting Transport' | abpLocalization }}

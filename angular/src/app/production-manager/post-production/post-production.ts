@@ -120,6 +120,12 @@ export class PostProduction {
 
   openProductionDetails(row: CarDto): void {
     if (!row.carBayId) return;
-    this.detailsModal.open(row.carBayId, false, true); // false => disable move button
+    this.detailsModal.open(row.carBayId, false, true);
 }
+
+onStageChanged(carId: string) {
+  this.list.get();
+  this.toaster.success('::SuccessfullyMovedToNextStage', '::Success');
+}
+
 }

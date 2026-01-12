@@ -167,12 +167,12 @@
     "ClearingAgent": "Clearing Agent",
     "StorageLocation": "Storage Location",
     // Warehouse Enum
-    "Enum:StorageLocation.K2": "K2",
-    "Enum:StorageLocation.MoviesLoan": "Loan - Movies",
-    "Enum:StorageLocation.OtherLoan": "Loan - Others",
-    "Enum:StorageLocation.ThirdPartyLoan": "Loan - 3rd Party Accessories",
-    "Enum:StorageLocation.EW": "EW - Walliam Farrior Place",
-    "Enum:StorageLocation.TerrenceRd": "24 Terrence Road",
+    "Enum:StorageLocation.1": "K2",
+    "Enum:StorageLocation.2": "Loan - Movies",
+    "Enum:StorageLocation.3": "Loan - Others",
+    "Enum:StorageLocation.4": "Loan - 3rd Party Accessories",
+    "Enum:StorageLocation.5": "EW - Walliam Farrior Place",
+    "Enum:StorageLocation.6": "24 Terrence Road",
     "Menu:ProductionManager": "Production Manager",
     "IncomingCars": "Incoming Cars",
 
@@ -215,6 +215,8 @@
     "AssignSuccessfully": "Assign Successfully",
     "ProductionDetails": "Production Details",
     "ManufactureDate": "Manufacture Date",
+
+
     "Loading...": "Loading...",
     "Noimageavailable": "No image available",
     "Image": "Image",
@@ -224,7 +226,6 @@
     "CheckLists": "Check Lists",
     "AMQInformation": "AMQ Information",
     "CriticalImages": "Critical Images",
-    "NotCurrentlyclockedin": "Not Currently clocked in",
     "RVSADocuments": "RVSA Documents",
     "Stickers": "Stickers",
     "ServiceBulletin": "Service Bulletin",
@@ -241,6 +242,15 @@
     "Button:Confirm": "Confirm",
     "Button:Cancel": "Cancel",
     "ConfirmMoveToPostProductionTitle": "Confirm stage change",
-    "ConfirmMoveToPostProductionMessage": "Are you sure you want to move this car to Post Production/Wheel Alignment?"
+    "ConfirmMoveToAwaitingTitle": "Confirm stage change",
+    "ConfirmMoveToPostProductionMessage": "Are you sure you want to move this car to Post Production/Wheel Alignment?",
+    "ConfirmMoveToAwaitingTransport": "Are you sure you want to move this car to Awaiting Transport?",
+    "ConfirmMoveToExternalWarehouseTitle": "Move to External Warehouse",
+    "ConfirmMoveToExternalWarehouseMessage": "Are you sure you want to move this car from Incoming to External Warehouse?",
+    "SuccessfullyMovedToExternalWarehouse": "Successfully Moved To External Warehouse",
+    "ConfirmAssignToBayTitle": "Assign to Bay",
+    "ConfirmAssignToBayMessage": "Are you sure you want to assign this car to the selected bay?",
+    "Success": "Success",
+    "SuccessfullyMovedToNextStage": "Successfully moved to the next stage."
   }
 }

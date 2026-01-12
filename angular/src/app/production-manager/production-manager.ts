@@ -9,10 +9,11 @@ import { ExternalWarehouse } from './external-warehouse/external-warehouse';
 import { Production } from "./production/production";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostProduction } from './post-production/post-production';
+import { AwaitingTransport } from './awaiting-transport/awaiting-transport';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction, AwaitingTransport],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],

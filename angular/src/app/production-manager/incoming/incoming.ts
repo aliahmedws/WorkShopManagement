@@ -13,7 +13,6 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 })
 export class Incoming {
 
-
   // cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
   @Input() filters: any = {};
@@ -25,8 +24,10 @@ export class Incoming {
   // isModalVisible = false;
   selectedCar = {} as CarDto;
   isRecallModalVisible = false;
-
   isCheckInModalVisible = false;
+
+
+
 
   // ngOnInit(): void {
   //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });

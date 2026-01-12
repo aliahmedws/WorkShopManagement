@@ -120,4 +120,31 @@ export class ProductionDetailsModal {
     });
 }
 
+moveToAwaitingTransportProduction() {
+  const carId = this.details?.carId;
+  if (!carId || this.movingStage) return;
+
+  this.confirm
+    .confirmAction(
+      '::ConfirmMoveToAwaitingTransport',
+      '::ConfirmMoveToAwaitingTitle'
+    )
+    .subscribe((status: Confirmation.Status) => {
+      if (status !== Confirmation.Status.confirm) return;
+
+      this.movingStage = true;
+
+      this.carService.changeStage(carId, { targetStage: Stage.AwaitingTransport }).subscribe({
+        next: () => {
+          this.movingStage = false;
+          this.close();
+          this.stageChanged.emit(carId);
+        },
+        error: () => {
+          this.movingStage = false;
+        },
+      });
+    });
+}
+
 }
