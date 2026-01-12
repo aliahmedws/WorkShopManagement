@@ -50,6 +50,6 @@
         </div>
 
         <app-car-create-edit-modal [(visible)]="isModalVisible" [carId]="selectedId" (submit)="list?.get()" />
-        <app-issue-modal [(visible)]="isIssueModalVisible" [car]="selectedCar"></app-issue-modal>
+        <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="selectedId"></app-issue-modal>
     </app-topbar-layout>
 </abp-page>

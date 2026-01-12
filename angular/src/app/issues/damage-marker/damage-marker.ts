@@ -1,9 +1,12 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { DamageMarkerDetails } from "./damage-marker-details/damage-marker-details";
-import { IssueDto, IssueStatus, UpsertIssueDto } from 'src/app/proxy/issues';
-import { ToasterService } from '@abp/ng.theme.shared';
+import { IssueDto } from 'src/app/proxy/issues';
 import { mapIssueStatusBgColor } from '../utils/issues.utils';
+import { IssueStateService } from '../utils/issue-state.service';
+import { CarDto } from 'src/app/proxy/cars';
+import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-damage-marker',
@@ -11,26 +14,33 @@ import { mapIssueStatusBgColor } from '../utils/issues.utils';
   templateUrl: './damage-marker.html',
   styleUrl: './damage-marker.scss'
 })
-export class DamageMarker {
-  private toaster = inject(ToasterService);
-
-  @Input() issues: IssueDto[] = [];
-  @Output() issuesChange = new EventEmitter<IssueDto[]>();
-
-  @Output() submit = new EventEmitter<void>();
-
-  @Input() vin: string | null;
-
-  @Input() canUpsert: boolean = false;
+export class DamageMarker implements OnInit {
+  private state = inject(IssueStateService);
+  private destroyRef = inject(DestroyRef);
+  
+  car: CarDto | null;
+  issues: IssueDto[] = [];
 
   isModalOpen = false;
-
-  selectedIssue = {} as IssueDto;
 
   get nextSrNo(): number {
     return this.issues?.length
       ? Math.max(...this.issues.map(m => m.srNo)) + 1
       : 1;
+  }
+
+  ngOnInit() {
+    this.state.car$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((car) => {
+        this.car = car;
+      });
+
+    this.state.issues$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((issues) => {
+        this.issues = issues;
+      });
   }
 
   onImageClick(event: MouseEvent) {
@@ -41,11 +51,13 @@ export class DamageMarker {
     const x = ((event.clientX - rect.left) / rect.width) * 100;
     const y = ((event.clientY - rect.top) / rect.height) * 100;
 
-    this.selectedIssue = {
+    const issue = {
       srNo: this.nextSrNo,
       xPercent: x,
       yPercent: y
     } as IssueDto;
+
+    this.state.setIssue(issue);
 
     this.isModalOpen = true;
   }
@@ -53,31 +65,8 @@ export class DamageMarker {
   onIssueClick(issue: IssueDto | null, event: Event) {
     event.stopPropagation(); // Prevent image click event
     if (!issue) return;
-    this.selectedIssue = issue;
+    this.state.setIssue(issue);
     this.isModalOpen = true;
-  }
-
-  onIssueSubmit(upsert: UpsertIssueDto | null) {
-    if (!upsert) return;
-
-    //Option 1: editing a db persisted item
-    if (this.selectedIssue?.id) {
-      const idx = this.issues.indexOf(this.selectedIssue);
-      if (idx < 0) {
-        this.toaster.error('Error occurred while updating the record. Please try again');
-        return;
-      }
-      this.issues[idx] = { ...this.issues[idx], ...upsert };
-      this.issuesChange.emit(this.issues);
-      return;
-    }
-
-    //Option 2: creating a new item or editing a non-db persisted item
-    const existing = this.issues.find(i => !i.id && i.srNo === upsert.srNo);
-    const idx = this.issues.indexOf(existing);
-    if (idx >= 0) this.issues[idx] = upsert;
-    else this.issues.push(upsert);
-    this.issuesChange.emit(this.issues);
   }
 
   getMarkerBgClass(issue: IssueDto | null): string {

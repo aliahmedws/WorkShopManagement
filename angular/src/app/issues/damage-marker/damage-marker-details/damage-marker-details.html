@@ -1,8 +1,7 @@
-<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
-    [options]="{ size: 'lg' }">
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" [options]="{ size: 'lg' }">
     <ng-template #abpHeader>
-        @if (issue?.srNo) {
-        <h3 class="text-dark m-0">{{ '::IssueDetailModalHeading' | abpLocalization:[vin, issue.srNo] }}</h3>
+        @if (car?.vin && issue?.srNo) {
+        <h3 class="text-dark m-0">{{ '::IssueDetailModalHeading' | abpLocalization:[car?.vin, issue.srNo] }}</h3>
         }
     </ng-template>
     <ng-template #abpBody>

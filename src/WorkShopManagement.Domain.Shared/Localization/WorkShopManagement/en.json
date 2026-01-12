@@ -167,6 +167,7 @@
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
     "Menu:Vehicles": "Vehicles",
+    "Menu:Issues": "Issues",
     "Variants": "Variants",
 
     "Menu:checkInReports": "check In Reports",
@@ -403,6 +404,10 @@
     "Field:LogisticsDetail": "Logistic Details",
     "Field:LogisticsDetail.RsvaNumber": "Logistics Details: RSVA Number (CRE)",
     "Field:Car.StorageLocation": "Car: Storage Location",
-    "Field:Car.AvvStatus": "Car: AVV Status"
+    "Field:Car.AvvStatus": "Car: AVV Status",
+    "IssueStatus": "Issue Status",
+    "VinDetails": "VIN Details",
+    "WorkShopManagement:DuplicateIssueSrNo": "Issue number (SrNo) '{SrNo}' already exists for this car.",
+    "WorkShopManagement:IssueCarMismatch": "The selected issue does not belong to the specified car."
   }
 }

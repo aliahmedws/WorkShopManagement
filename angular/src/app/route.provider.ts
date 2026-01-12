@@ -41,6 +41,14 @@ function configureRoutes() {
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Vehicles',
     },
+    {
+      path: '/issues',
+      name: '::Menu:Issues',
+      iconClass: 'fas fa-cogs',
+      order: 5,
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Issues',
+    },
     // {
     //   path: '/check-in-report',
     //   name: '::Menu:checkInReports',
