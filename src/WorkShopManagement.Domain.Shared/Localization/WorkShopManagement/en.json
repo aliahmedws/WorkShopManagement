@@ -191,6 +191,8 @@
     "Enum:RecallType.Csps": "CSPs",
     "Enum:RecallStatus.Pending": "Pending",
     "Enum:RecallStatus.Completed": "Completed",
+    "Enum:RecallStatus.1": "Pending",
+    "Enum:RecallStatus.2": "Completed",
     "RiskDescription": "Risk Description",
     "Notes": "Notes",
     "Title": "Title",
@@ -395,6 +397,18 @@
     "Enum:IssueType.5": "Compliance",
     "Enum:IssueType.6": "DTC",
     "Enum:IssueType.7": "Functional",
-    "Enum:IssueType.8": "Other"
+    "Enum:IssueType.8": "Other",
+    "NoRecallsFound": "No recalls found.",
+    "Recall": "Recall",
+    "NoExternalRecallsFound": "No external recalls found.",
+    "Close": "Close",
+    "Save": "Save",
+    "CheckInReport": "Check-In Report",
+    "Menu:CheckInReports": "Check-In Reports",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "FrontMoterNumbr": "Front Motor Number",
+    "RearMotorNumber": "Rear Motor Number",
+    "RsvaImportApproval": "RSVA Import Approval"
   }
 }

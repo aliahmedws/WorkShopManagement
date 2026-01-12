@@ -9,7 +9,7 @@ using Volo.Abp.Domain.Services;
 using Volo.Abp.Guids;
 using Volo.Abp.Timing;
 
-namespace WorkShopManagement.CarsEx
+namespace WorkShopManagement.VinInfos
 {
     public class VinInfoManager : DomainService
     {

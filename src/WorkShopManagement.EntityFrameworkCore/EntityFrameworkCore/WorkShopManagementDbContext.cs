@@ -20,7 +20,7 @@ using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
 using WorkShopManagement.CheckInReports;
-using WorkShopManagement.CarsEx;
+using WorkShopManagement.VinInfos;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
