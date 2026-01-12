@@ -12,6 +12,8 @@ using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Issues;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.LogisticsDetails;
+using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
 using WorkShopManagement.Lookups;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
@@ -197,4 +199,22 @@ public partial class IssueToIssueDtoMapper : MapperBase<Issue, IssueDto>
 {
     public override partial IssueDto Map(Issue source);
     public override partial void Map(Issue source, IssueDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class LogisticsDetailToLogisticsDetailDtoMapper : MapperBase<LogisticsDetail, LogisticsDetailDto>
+{
+    public override partial LogisticsDetailDto Map(LogisticsDetail source);
+    public override partial void Map(LogisticsDetail source, LogisticsDetailDto destination);
+
+    // Nested list mapping
+    public partial ArrivalEstimateDto Map(ArrivalEstimate source);
+    public partial void Map(ArrivalEstimate source, ArrivalEstimateDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class ArrivalEstimateToArrivalEstimateDtoMapper : MapperBase<ArrivalEstimate, ArrivalEstimateDto>
+{
+    public override partial ArrivalEstimateDto Map(ArrivalEstimate source);
+    public override partial void Map(ArrivalEstimate source, ArrivalEstimateDto destination);
 }

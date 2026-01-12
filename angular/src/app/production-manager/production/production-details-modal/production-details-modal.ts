@@ -53,10 +53,13 @@ export class ProductionDetailsModal {
     });
   }
 
- openListItem(cl: any): void {
+  openListItem(cl: any): void {
+  if (!this.carBayId) return;
   if (!cl?.id) return;
-  this.checkListItemsModal?.open(cl.id, cl.name);
+
+  this.checkListItemsModal.open(this.carBayId, cl.id, cl.name);
 }
+
 
   private buildForm(): void {
     // If you have quality gates fields in CarBayDto, bind them here

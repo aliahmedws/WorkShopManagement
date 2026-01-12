@@ -21,4 +21,14 @@ public static class WorkShopManagementDomainErrorCodes
     public const string CheckInReportInvalidFrontGwar = "CheckInReport:InvalidFrontGwar";
     public const string CheckInReportInvalidRearGwar = "CheckInReport:InvalidRearGwar";
     public const string CheckInReportInvalidMaxTowingCapacity = "CheckInReport:InvalidMaxTowingCapacity";
+
+    // LogisticsDetail / ArrivalEstimate
+    public const string LogisticsEmptyCarId = "Logistics:EmptyCarId";
+    public const string LogisticsInvalidEtaRange = "Logistics:InvalidEtaRange";
+    public const string LogisticsInvalidActualArrivalRange = "Logistics:InvalidActualArrivalRange";
+
+    // Car - Stage change validations
+    public const string CarStageChangeMissingFields = "Cars:StageChangeMissingFields";
+    public const string CarStageChangeRequiresAvvStatus = "Cars:StageChangeRequiresAvvStatus";
+
 }

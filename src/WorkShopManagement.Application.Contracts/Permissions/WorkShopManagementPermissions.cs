@@ -88,4 +88,21 @@ public static class WorkShopManagementPermissions
         public const string Default = GroupName + ".Issues";
         public const string Upsert = Default + ".Upsert";
     }
+
+    public static class LogisticsDetails
+    {
+        public const string Default = GroupName + ".LogisticsDetails";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class ArrivalEstimates
+    {
+        public const string Default = GroupName + ".ArrivalEstimates";
+        public const string Create = Default + ".Create";
+        public const string Edit = Default + ".Edit";
+        public const string Delete = Default + ".Delete";
+    }
+
 }

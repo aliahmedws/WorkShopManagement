@@ -1,12 +1,15 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CarService, CarDto, ExternalCarDetailsDto } from 'src/app/proxy/cars';
+import { CarService, CarDto, ExternalCarDetailsDto, UpdateCarDto, CreateCarDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
 import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
+import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
+import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments/models';
+import { avvStatusOptions } from 'src/app/proxy/car-bays/avv-status.enum';
 
 @Component({
   selector: 'app-car-create-edit-modal',
@@ -28,8 +31,15 @@ export class CarCreateEditModal {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   carModelOptions: GuidLookupDto[] = [];
-  stageOptions = stageOptions;
+  // stageOptions = stageOptions; 
+  // FILTERED OPTIONS: Remove 3 and 4
+  stageOptions = stageOptions.filter(x =>x.value !== 3 && x.value !== 4 );
   storageLocationOptions = storageLocationOptions;
+  avvStatusOptions = avvStatusOptions;
+
+  // Attachment State
+  tempFiles: FileAttachmentDto[] = [];
+  existingFiles: EntityAttachmentDto[] = [];
 
   carOwnerOptions: GuidLookupDto[] = [];
 
@@ -56,7 +66,7 @@ export class CarCreateEditModal {
   get() {
     this.external = null;
     this.loading = true;
-    
+
     this.resolveLookups();
 
     if (!this.carId) {
@@ -91,14 +101,17 @@ export class CarCreateEditModal {
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],
 
-      locationStatus: [dto?.locationStatus ?? null, Validators.maxLength(128)],
-      etaBrisbane: [dto?.etaBrisbane ? new Date(dto?.etaBrisbane) : null],
-      etaScd: [dto?.etaScd ? new Date(dto?.etaScd) : null],
-      bookingNumber: [dto?.bookingNumber ?? null, Validators.maxLength(64)],
-      clearingAgent: [dto?.clearingAgent ?? null, Validators.maxLength(128)],
+
       storageLocation: [dto?.storageLocation ?? null, Validators.maxLength(128)],
 
-      stage: [dto?.stage ?? Stage.Incoming, Validators.maxLength(128)],
+      // NEW FIELDS
+      buildMaterialNumber: [dto?.buildMaterialNumber ?? null, Validators.maxLength(64)],
+      angleBailment: [dto?.angleBailment ?? null],
+      avvStatus: [dto?.avvStatus ?? null],
+      pdiStatus: [dto?.pdiStatus ?? null, Validators.maxLength(64)],
+
+      // Stage: Keep for Edit, but we will strip it for Create in save()
+      stage: [dto?.stage ?? Stage.Incoming],
 
 
       // owner
@@ -109,6 +122,10 @@ export class CarCreateEditModal {
         contactId: ['', Validators.maxLength(64)],
       }),
     });
+
+    // Initialize existing attachments if editing
+    this.existingFiles = dto?.entityAttachments || [];
+    this.tempFiles = []; // Reset new uploads
 
     this.addListeners();
   }
@@ -149,25 +166,48 @@ export class CarCreateEditModal {
       return;
     }
 
-    const value = this.form.value;
-    const isNewOwner = value.ownerId === this.NOT_FOUND;
+    const formValue = this.form.value;
+    const isNewOwner = formValue.ownerId === this.NOT_FOUND;
 
-    const payload = {
-      ...value,
-      ownerId: isNewOwner ? null : value.ownerId,
-      owner: isNewOwner ? value.owner : null,
+    // Base payload
+    const basePayload = {
+      ...formValue,
+      ownerId: isNewOwner ? null : formValue.ownerId,
+      owner: isNewOwner ? formValue.owner : null,
     };
 
-    const req$ = this.carId
-      ? this.carService.update(this.carId, payload)
-      : this.carService.create(payload);
+    // const req$ = this.carId
+    //   ? this.carService.update(this.carId, payload)
+    //   : this.carService.create(payload);
 
-    req$
-      .subscribe((dto: CarDto) => {
-        this.toaster.createdOrUpdated(this.carId);
-        this.close();
-        this.submit.emit(dto);
-      });
+    // req$
+    //   .subscribe((dto: CarDto) => {
+    //     this.toaster.createdOrUpdated(this.carId);
+    //     this.close();
+    //     this.submit.emit(dto);
+    //   });
+
+    if (this.carId) {
+      // --- UPDATE FLOW ---
+      const updateInput: UpdateCarDto = {
+        ...basePayload,
+        tempFiles: this.tempFiles,           // New uploads
+        entityAttachments: this.existingFiles // Persist/Delete existing
+      };
+
+      this.carService.update(this.carId, updateInput).subscribe(this.handleSuccess);
+    } else {
+      // --- CREATE FLOW ---
+      // Remove Stage (backend defaults to Incoming)
+      const { stage, ...createData } = basePayload;
+
+      const createInput: CreateCarDto = {
+        ...createData,
+        tempFiles: this.tempFiles // New uploads only
+      };
+
+      this.carService.create(createInput).subscribe(this.handleSuccess);
+    }
   }
 
   close(): void {
@@ -217,4 +257,11 @@ export class CarCreateEditModal {
       modelYear: response.modelYear
     });
   }
+
+  // Helper to reduce code duplication
+  handleSuccess = (dto: CarDto) => {
+    this.toaster.createdOrUpdated(this.carId);
+    this.close();
+    this.submit.emit(dto);
+  };
 }

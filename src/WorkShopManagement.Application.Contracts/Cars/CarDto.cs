@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.EntityAttachments;
 
 namespace WorkShopManagement.Cars;
 
@@ -31,10 +34,19 @@ public class CarDto : AuditedEntityDto<Guid>
     public string? MissingParts { get; set; }
 
     // Transit vehicle data
-    public string? LocationStatus { get; set; }
-    public DateTime? EtaBrisbane { get; set; }
-    public DateTime? EtaScd { get; set; }
-    public string? BookingNumber { get; set; }
-    public string? ClearingAgent { get; set; }
+    //public string? LocationStatus { get; set; }
+    //public DateTime? EtaBrisbane { get; set; }
+    //public DateTime? EtaScd { get; set; }
+    //public string? BookingNumber { get; set; }
+    //public string? ClearingAgent { get; set; }
     public StorageLocation? StorageLocation { get; set; }
+
+    public string? BuildMaterialNumber { get; set; }
+    public int? AngleBailment { get; set; }
+    public AvvStatus? AvvStatus { get; set; }
+    public string? PdiStatus { get; set; }
+
+
+    // File Attachment
+    public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
 }

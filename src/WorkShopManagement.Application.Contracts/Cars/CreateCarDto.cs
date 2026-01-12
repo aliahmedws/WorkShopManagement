@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using WorkShopManagement.Cars.Stages;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.Cars;
 
@@ -23,8 +25,8 @@ public class CreateCarDto
 
     [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
     public int ModelYear { get; set; }
-    [Required]
-    public Stage Stage { get; set; } = Stage.Incoming;
+    //[Required]
+    //public Stage Stage { get; set; } = Stage.Incoming;
 
     [StringLength(CarConsts.MaxCncLength)]
     public string? Cnc { get; set; }
@@ -35,23 +37,28 @@ public class CreateCarDto
     [StringLength(CarConsts.MaxCncColumnLength)]
     public string? CncColumn { get; set; }
 
-    public DateTime? DueDate { get; set; }
-    public DateTime? DeliverDate { get; set; }
-    public DateTime? StartDate { get; set; }
+    public DateTime? DueDate { get; set; }              // ToDo remove in create / from logistics?
+    public DateTime? DeliverDate { get; set; }          // ToDo remove in create / from logistics?
+    public DateTime? StartDate { get; set; }             // ToDo remove in create / from logistics?
 
     [StringLength(CarConsts.MaxNotesLength)]
     public string? Notes { get; set; }
 
     [StringLength(CarConsts.MaxMissingPartsLength)]
     public string? MissingParts { get; set; }
-    // Transit vehicle data
-    [StringLength(CarConsts.MaxLocationStatusLength)]
-    public string? LocationStatus { get; set; }
-    public DateTime? EtaBrisbane { get; set; }
-    public DateTime? EtaScd { get; set; }
-    [StringLength(CarConsts.MaxBookingNumberLength)]
+
+
+    // Logistics vehicle data
+    [Required]
+    public Port? Port { get; set; } = Cars.Port.Bne;
     public string? BookingNumber { get; set; }
-    [StringLength(CarConsts.MaxClearingAgentLength)]
-    public string? ClearingAgent { get; set; }
-    public StorageLocation? StorageLocation { get; set; }
+    public StorageLocation? StorageLocation { get; set; }           // Remove when creating?
+
+    //New Added
+    public string? BuildMaterialNumber { get; set; }
+    public int? AngleBailment { get; set; }
+    public AvvStatus? AvvStatus { get; set; }
+    public string? PdiStatus { get; set; }
+
+    public List<FileAttachmentDto> TempFiles { get; set; } = [];
 }

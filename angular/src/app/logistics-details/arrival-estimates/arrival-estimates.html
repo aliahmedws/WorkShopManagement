@@ -1,0 +1,74 @@
+<abp-page>
+    <app-topbar-layout [list]="list">
+        
+        <div topbarLeft class="d-flex align-items-center">
+            <h3 class="mb-0">{{ '::EstimatedArrivalHistory' | abpLocalization }}</h3>
+        </div>
+        
+        <div topbarActions class="d-flex gap-2">
+            <ng-container *abpPermission="'WorkShopManagement.ArrivalEstimates.Create'">
+                <button class="btn btn-sm btn-outline-primary" (click)="create()">
+                    <i class="fas fa-plus"></i>
+                    {{ '::AddNewEta' | abpLocalization }}
+                </button>
+            </ng-container>
+
+            <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+                <i class="fa fa-arrow-left me-1"></i> {{ '::BackToLogistics' | abpLocalization }}
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <ngx-datatable [rows]="data.items" [count]="data.totalCount" [list]="list" default>
+                    <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div ngbDropdown container="body" class="d-inline-block">
+                                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true" ngbDropdownToggle>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <button *abpPermission="'WorkShopManagement.ArrivalEstimates.Edit'" 
+                                            ngbDropdownItem (click)="edit(row.id)">
+                                        {{ '::Edit' | abpLocalization }}
+                                    </button>
+                                    <button *abpPermission="'WorkShopManagement.ArrivalEstimates.Delete'" 
+                                            ngbDropdownItem (click)="delete(row.id)">
+                                        {{ '::Delete' | abpLocalization }}
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [name]="'::CreationTime' | abpLocalization" prop="creationTime">
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{ value | date:'short' }}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [name]="'::EtaPort' | abpLocalization" prop="etaPort">
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{ value | date:'mediumDate' }}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd">
+                        <ng-template let-value="value" ngx-datatable-cell-template>
+                            {{ value | date:'mediumDate' }}
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [name]="'::Notes' | abpLocalization" prop="notes"></ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </app-topbar-layout>
+
+    <app-arrival-estimates-create-edit-modal 
+        [(visible)]="isModalVisible" 
+        [logisticsDetailId]="logisticsDetailId!" 
+        [estimateId]="selectedId" 
+        (submit)="list.get()">
+    </app-arrival-estimates-create-edit-modal>
+</abp-page>

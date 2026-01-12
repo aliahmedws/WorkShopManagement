@@ -15,6 +15,7 @@ import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTabsModule } from "ng-zorro-antd/tabs";
 import { NzEmptyModule } from "ng-zorro-antd/empty";
+import { NzStepsModule } from 'ng-zorro-antd/steps';
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -36,7 +37,8 @@ export const SHARED_IMPORTS = [
     NzTooltipModule,
     NzTabsModule,
     NzEmptyModule,
-    EllipsisDirective
+    EllipsisDirective,
+    NzStepsModule
 ];
 
 export { 
