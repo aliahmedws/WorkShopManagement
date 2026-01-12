@@ -8,6 +8,9 @@ export interface CarBayItemDto extends FullAuditedEntityDto<string> {
   checkRadioOption?: string;
   comments?: string;
   entityAttachments: EntityAttachmentDto[];
+  concurrencyStamp?: string;
+  modifierName?: string;
+  creatorName?: string;
 }
 
 export interface CreateCarBayItemDto {

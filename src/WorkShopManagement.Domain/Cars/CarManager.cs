@@ -14,13 +14,16 @@ namespace WorkShopManagement.Cars
     {
         private readonly ICarRepository _carRepository;
         private readonly ILogisticsDetailRepository _logisticsDetailRepository;
+        private readonly ICarBayRepository _carBayRepository;
 
         public CarManager(
             ICarRepository carRepository,
-            ILogisticsDetailRepository logisticsDetailRepository)
+            ILogisticsDetailRepository logisticsDetailRepository,
+            ICarBayRepository carBayRepository)
         {
             _carRepository = carRepository;
             _logisticsDetailRepository = logisticsDetailRepository;
+            _carBayRepository = carBayRepository;
         }
 
         /// <summary>
@@ -145,7 +148,16 @@ namespace WorkShopManagement.Cars
 
             ValidateStageChange(car, targetStage, logisticsDetail, storageLocation);
 
-            // entity method should be internal
+            var oldStage = car.Stage;
+
+            if (oldStage == Stage.Production &&  targetStage == Stage.PostProduction)
+            {
+                var activeBay = await _carBayRepository.FindActiveByCarIdAsync(carId);
+
+                if (activeBay != null)
+                    activeBay.SetIsActive(false);
+            }
+
             car.SetStage(targetStage, logisticsDetail);
 
             return car;

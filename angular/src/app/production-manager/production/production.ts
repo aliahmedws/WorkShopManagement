@@ -4,6 +4,7 @@ import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
 import { GetCarListInput } from 'src/app/proxy/cars';
 import { ProductionDetailsModal } from './production-details-modal/production-details-modal';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 
 @Component({
   selector: 'app-production',
@@ -25,6 +26,7 @@ export class Production implements OnInit {
   constructor(
     private readonly lookupService: LookupService,
     private readonly carBayService: CarBayService,
+    private readonly confirm: ConfirmationHelperService
   ) {}
 
   ngOnInit(): void {
@@ -60,4 +62,9 @@ export class Production implements OnInit {
   }
 
   trackByBayId = (_: number, bay: GuidLookupDto) => bay.id;
+
+  onStageChanged(carId: string) {
+    this.activeCarBays = this.activeCarBays.filter(x => x.carId !== carId);
+    this.reloadActiveBays();
+  }
 }

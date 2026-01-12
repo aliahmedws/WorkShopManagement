@@ -10,10 +10,11 @@ import { Stage } from '../proxy/cars/stages';
 import { ExternalWarehouse } from './external-warehouse/external-warehouse';
 import { Production } from "./production/production";
 import { ActivatedRoute, Router } from '@angular/router';
+import { PostProduction } from './post-production/post-production';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],

@@ -8,6 +8,8 @@ export enum EntityType {
   Recall = 5,
   CarBayItem = 6,
   Issue = 7,
+  LogisticsDetail = 8,
+  ArrivalEstimate = 9,
 }
 
 export const entityTypeOptions = mapEnumToOptions(EntityType);

@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
+import { CarService } from 'src/app/proxy/cars';
+import { Stage } from 'src/app/proxy/cars/stages';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
+import { Confirmation } from '@abp/ng.theme.shared';
 
 @Component({
   selector: 'app-production-details-modal',
@@ -13,12 +17,18 @@ import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-mo
 })
 export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
+  private readonly carService = inject(CarService)
   private readonly fb = inject(FormBuilder);
 
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
 
   visible = false;
+  movingStage = false;
+
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() stageChanged = new EventEmitter<string>();
+
+  private readonly confirm = inject(ConfirmationHelperService);
 
   carBayId?: string;
   details?: CarBayDto;
@@ -74,4 +84,32 @@ export class ProductionDetailsModal {
     if (!v) return '-';
     return v.length > 6 ? v.slice(-6) : v;
   }
+
+ moveToPostProduction() {
+  const carId = this.details?.carId;
+  if (!carId || this.movingStage) return;
+
+  this.confirm
+    .confirmAction(
+      '::ConfirmMoveToPostProductionMessage',
+      '::ConfirmMoveToPostProductionTitle'
+    )
+    .subscribe((status: Confirmation.Status) => {
+      if (status !== Confirmation.Status.confirm) return;
+
+      this.movingStage = true;
+
+      this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
+        next: () => {
+          this.movingStage = false;
+          this.close();
+          this.stageChanged.emit(carId);
+        },
+        error: () => {
+          this.movingStage = false;
+        },
+      });
+    });
+}
+
 }

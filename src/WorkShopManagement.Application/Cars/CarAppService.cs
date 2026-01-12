@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
-using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
-using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.Cars;
@@ -66,10 +64,10 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
     public async Task<PagedResultDto<CarDto>> GetListAsync(GetCarListInput input)
     {
-        var totalCount = await _carRepository.GetLongCountAsync(input.Filter,  input.Stage);
-    
+        var totalCount = await _carRepository.GetLongCountAsync(input.Filter, input.Stage);
+
         var items = await _carRepository.GetListAsync(input.SkipCount, input.MaxResultCount, input.Sorting, input.Filter, input.Stage);
-        
+
         var dtos = ObjectMapper.Map<List<Car>, List<CarDto>>(items);
 
         foreach (var item in dtos)
@@ -128,7 +126,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
 
         //Create Logistics Default ?? 
-         
+
 
 
         return ObjectMapper.Map<Car, CarDto>(car);
@@ -212,15 +210,15 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     }
 
     public async Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(
-        [Length(CarConsts.VinLength, CarConsts.VinLength)] 
-        string vin, 
+        [Length(CarConsts.VinLength, CarConsts.VinLength)]
+        string vin,
         string? modelYear = null
         )
     {
         // CarXe Api
         var res = await _carXeService.GetVinAsync(vin);
 
-        if(res != null && res.Attributes != null && res.Success)
+        if (res != null && res.Attributes != null && res.Success)
         {
             var dto = new ExternalCarDetailsDto
             {
@@ -238,6 +236,15 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         return ObjectMapper.Map<VpicVariableResultDto, ExternalCarDetailsDto>(externalCarDetails);
     }
 
+    public async Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input)
+    {
+        var car = await _carRepository.GetAsync(id);
+        await _carManager.ChangeStageAsync(car.Id, input.TargetStage, input.StorageLocation);
+
+        car = await _carRepository.UpdateAsync(car, autoSave: true);
+
+        return ObjectMapper.Map<Car, CarDto>(car);
+    }
 
 
 
