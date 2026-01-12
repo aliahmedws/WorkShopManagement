@@ -119,8 +119,8 @@ export class PostProduction {
   }
 
   openProductionDetails(row: CarDto): void {
-    if (!row.carBayId) return;
-    this.detailsModal.open(row.carBayId, false, true);
+    if (!row.id) return;
+    this.detailsModal.open(row.id, false, true);
 }
 
 onStageChanged(carId: string) {

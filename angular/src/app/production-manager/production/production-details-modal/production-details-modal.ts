@@ -33,7 +33,7 @@ export class ProductionDetailsModal {
 
   private readonly confirm = inject(ConfirmationHelperService);
 
-  carBayId?: string;
+  carId?: string;
   details?: CarBayDto;
 
   Priority = Priority;
@@ -41,7 +41,7 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open(id: string, allowMoveToPostProduction = true, allowMovetoAwaitingTransport = true): void {
-    this.carBayId = id;
+    this.carId = id;
     this.allowMovetoPostProduction = allowMoveToPostProduction;
     this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
 
@@ -55,27 +55,27 @@ export class ProductionDetailsModal {
     this.visibleChange.emit(false);
     this.details = undefined;
     this.form = undefined;
-    this.carBayId = undefined;
+    this.carId = undefined;
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
   }
 
   private loadDetails(): void {
-    if (!this.carBayId) return;
+    if (!this.carId) return;
 
     // IMPORTANT: this must exist in proxy (recommended)
-    this.carBayService.get(this.carBayId).subscribe((res: CarBayDto) => {
+    this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
       this.details = res;
       this.buildForm();
     });
   }
 
   openListItem(cl: any): void {
-  if (!this.carBayId) return;
+  if (!this.carId) return;
   if (!cl?.id) return;
 
-  this.checkListItemsModal.open(this.carBayId, cl.id, cl.name);
+  this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
 }
 
 

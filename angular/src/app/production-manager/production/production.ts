@@ -19,6 +19,8 @@ export class Production implements OnInit {
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: CarBayDto[] = [];
 
+  carId?: string;
+
   Priority = Priority;
 
   @ViewChild('detailsModal') detailsModal?: ProductionDetailsModal;
@@ -44,10 +46,10 @@ export class Production implements OnInit {
 
   onOpenBay(bay: GuidLookupDto): void {
     const a = this.getAssignment(bay.id);
-    if (!a?.id) return;
+    if (!a?.carId) return;
 
     // safest: detailsModal exists after view init because it's in template
-    this.detailsModal?.open(a.id, true, false);
+    this.detailsModal?.open(a.carId, true, false);
   }
 
   vinLast6(v?: string | null): string {
