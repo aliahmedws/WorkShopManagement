@@ -31,6 +31,8 @@ export interface CarDto extends AuditedEntityDto<string> {
   angleBailment?: number;
   avvStatus?: AvvStatus;
   pdiStatus?: string;
+  bayId?: string;
+  bayName?: string;
   entityAttachments: EntityAttachmentDto[];
 }
 

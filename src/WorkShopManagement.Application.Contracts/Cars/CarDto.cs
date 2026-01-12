@@ -46,6 +46,10 @@ public class CarDto : AuditedEntityDto<Guid>
     public AvvStatus? AvvStatus { get; set; }
     public string? PdiStatus { get; set; }
 
+    //For Post-Production
+    public Guid? BayId { get; set; }
+    public string? BayName { get; set; }
+
 
     // File Attachment
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];

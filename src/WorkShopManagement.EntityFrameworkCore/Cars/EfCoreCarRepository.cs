@@ -36,9 +36,19 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
     public async Task<IQueryable<Car>> GetAllAsync(string? filter = null, Stage? stage = null, string? sorting = null, bool asNoTracking = false)
     {
         var query = await GetQueryableAsync();
+
         if (stage.HasValue)
         {
             query = query.Where(q => q.Stage == stage.Value);
+
+            if (stage.Value == Stage.PostProduction)
+            {
+                var dbContext = await GetDbContextAsync();
+
+                query = query.Where(c =>
+                    dbContext.CarBays.Any(cb =>
+                        cb.CarId == c.Id));
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(filter = filter?.Trim()))

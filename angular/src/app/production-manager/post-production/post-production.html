@@ -48,6 +48,8 @@
 
                 </ng-template>
             </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Bay' | abpLocalization" prop="bayName"
+                [maxWidth]="150"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName"
                 [maxWidth]="150"></ngx-datatable-column>
 

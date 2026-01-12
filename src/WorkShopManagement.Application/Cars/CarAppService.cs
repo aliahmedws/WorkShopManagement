@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
@@ -18,6 +20,7 @@ namespace WorkShopManagement.Cars;
 public class CarAppService : WorkShopManagementAppService, ICarAppService
 {
     private readonly ICarRepository _carRepository;
+    private readonly ICarBayRepository _carBayRepository;
     private readonly IRepository<CarOwner, Guid> _carOwnerRepository;
     private readonly IVpicService _vpicService;
     private readonly ICarXeService _carXeService;
@@ -28,6 +31,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
     public CarAppService(
         ICarRepository carRepository,
+        ICarBayRepository carBayRepository,
         IRepository<CarOwner, Guid> carOwnerRepository,
         IVpicService vpicService,
         ICarXeService carXeService,
@@ -37,6 +41,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         )
     {
         _carRepository = carRepository;
+        _carBayRepository = carBayRepository;
         _carOwnerRepository = carOwnerRepository;
         _vpicService = vpicService;
         _carXeService = carXeService;
@@ -69,6 +74,31 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         var items = await _carRepository.GetListAsync(input.SkipCount, input.MaxResultCount, input.Sorting, input.Filter, input.Stage);
 
         var dtos = ObjectMapper.Map<List<Car>, List<CarDto>>(items);
+
+        var carIds = dtos.Select(x => x.Id).ToList();
+
+        var carBays = await _carBayRepository.GetListAsync(
+           carId: null,
+           bayId: null,
+           isActive: false,
+           maxResultCount: int.MaxValue
+        );
+
+        var bayByCarId = carBays
+           .Where(cb => carIds.Contains(cb.CarId))
+           .GroupBy(cb => cb.CarId)
+           .Select(g => g.OrderByDescending(x => x.CreationTime).First())
+           .ToDictionary(x => x.CarId);
+
+        foreach (var dto in dtos)
+        {
+            if (bayByCarId.TryGetValue(dto.Id, out var cb))
+            {
+                dto.BayId = cb.BayId;
+                dto.BayName = cb.Bay?.Name;
+            }
+        }
+
 
         foreach (var item in dtos)
         {
