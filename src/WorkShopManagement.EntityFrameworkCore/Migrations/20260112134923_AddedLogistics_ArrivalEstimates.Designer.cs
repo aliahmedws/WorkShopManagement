@@ -13,8 +13,8 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    [Migration("20260112004653_UpdateDeliverNotesInLogistics")]
-    partial class UpdateDeliverNotesInLogistics
+    [Migration("20260112134923_AddedLogistics_ArrivalEstimates")]
+    partial class AddedLogistics_ArrivalEstimates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2964,9 +2964,6 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("CarId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CarId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("ClearanceDate")
                         .HasColumnType("datetime2");
 
@@ -3052,10 +3049,6 @@ namespace WorkShopManagement.Migrations
 
                     b.HasIndex("CarId")
                         .IsUnique();
-
-                    b.HasIndex("CarId1")
-                        .IsUnique()
-                        .HasFilter("[CarId1] IS NOT NULL");
 
                     b.ToTable("AppLogisticsDetails", (string)null);
                 });
@@ -3677,14 +3670,10 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.LogisticsDetails.LogisticsDetail", b =>
                 {
                     b.HasOne("WorkShopManagement.Cars.Car", null)
-                        .WithOne()
+                        .WithOne("LogisticsDetail")
                         .HasForeignKey("WorkShopManagement.LogisticsDetails.LogisticsDetail", "CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("WorkShopManagement.Cars.Car", null)
-                        .WithOne("LogisticsDetail")
-                        .HasForeignKey("WorkShopManagement.LogisticsDetails.LogisticsDetail", "CarId1");
                 });
 
             modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>

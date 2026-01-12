@@ -2961,9 +2961,6 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("CarId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CarId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("ClearanceDate")
                         .HasColumnType("datetime2");
 
@@ -3049,10 +3046,6 @@ namespace WorkShopManagement.Migrations
 
                     b.HasIndex("CarId")
                         .IsUnique();
-
-                    b.HasIndex("CarId1")
-                        .IsUnique()
-                        .HasFilter("[CarId1] IS NOT NULL");
 
                     b.ToTable("AppLogisticsDetails", (string)null);
                 });
@@ -3545,7 +3538,7 @@ namespace WorkShopManagement.Migrations
 
                             b1.HasKey("CarModelId");
 
-                            b1.ToTable("AppCarModels", (string)null);
+                            b1.ToTable("AppCarModels");
 
                             b1.WithOwner()
                                 .HasForeignKey("CarModelId");
@@ -3630,7 +3623,7 @@ namespace WorkShopManagement.Migrations
 
                             b1.HasKey("EntityAttachmentId");
 
-                            b1.ToTable("AppEntityAttachments", (string)null);
+                            b1.ToTable("AppEntityAttachments");
 
                             b1.WithOwner()
                                 .HasForeignKey("EntityAttachmentId");
@@ -3674,14 +3667,10 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.LogisticsDetails.LogisticsDetail", b =>
                 {
                     b.HasOne("WorkShopManagement.Cars.Car", null)
-                        .WithOne()
+                        .WithOne("LogisticsDetail")
                         .HasForeignKey("WorkShopManagement.LogisticsDetails.LogisticsDetail", "CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("WorkShopManagement.Cars.Car", null)
-                        .WithOne("LogisticsDetail")
-                        .HasForeignKey("WorkShopManagement.LogisticsDetails.LogisticsDetail", "CarId1");
                 });
 
             modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
@@ -3703,7 +3692,7 @@ namespace WorkShopManagement.Migrations
 
                             b1.HasKey("ModelCategoryId");
 
-                            b1.ToTable("AppModelCategories", (string)null);
+                            b1.ToTable("AppModelCategories");
 
                             b1.WithOwner()
                                 .HasForeignKey("ModelCategoryId");

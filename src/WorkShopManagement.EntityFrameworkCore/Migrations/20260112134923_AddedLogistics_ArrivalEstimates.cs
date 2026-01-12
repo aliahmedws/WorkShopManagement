@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WorkShopManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedLogisticsAndEArrivalEstimatesAndUpdatedCar : Migration
+    public partial class AddedLogistics_ArrivalEstimates : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,10 +68,9 @@ namespace WorkShopManagement.Migrations
                     ActualScdArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeliverTo = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     ConfirmedDeliverDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ConfirmedDeliverDateNotes = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    DeliverNotes = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
                     TransportDestination = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CarId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -91,11 +90,6 @@ namespace WorkShopManagement.Migrations
                         principalTable: "AppCars",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppLogisticsDetails_AppCars_CarId1",
-                        column: x => x.CarId1,
-                        principalTable: "AppCars",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -141,13 +135,6 @@ namespace WorkShopManagement.Migrations
                 table: "AppLogisticsDetails",
                 column: "CarId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppLogisticsDetails_CarId1",
-                table: "AppLogisticsDetails",
-                column: "CarId1",
-                unique: true,
-                filter: "[CarId1] IS NOT NULL");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AppQualityGates_AppCars_CarId",
