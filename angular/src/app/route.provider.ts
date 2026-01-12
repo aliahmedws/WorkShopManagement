@@ -28,15 +28,15 @@ function configureRoutes() {
     {
       path: '/cars',
       name: '::Menu:Cars',
-      iconClass: 'fas fa-car',
+      iconClass: 'fas fa-car-side',
       order: 3,
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Cars',
     },
     {
-      path: '/vehicles',
+      path: '/car-model',
       name: '::Menu:Vehicles',
-      iconClass: 'fas fa-car',
+      iconClass: 'fas fa-tags',
       order: 4,
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Vehicles',

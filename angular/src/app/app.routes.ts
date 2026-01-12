@@ -33,7 +33,7 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./cars/car-create-edit-modal/car-create-edit-modal').then(m => m.CarCreateEditModal),
   },
   {
-    path: 'vehicles',
+    path: 'car-model',
     loadComponent: () => import('./model-categories/model-categories').then(m => m.ModelCategories),
   },
   {
