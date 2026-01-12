@@ -27,7 +27,7 @@ public class EntityAttachmentService(
 
     public async Task<List<EntityAttachmentDto>> GetListAsync(GetEntityAttachmentListDto input)
     {
-        
+
         var items = await _repository.GetListByEntityAsync(
             entityId: input.EntityId,
             entityType: input.EntityType
@@ -81,6 +81,7 @@ public class EntityAttachmentService(
                 id: GuidGenerator.Create(),
                 entityId: input.EntityId,
                 entityType: input.EntityType,
+                subType: input.SubType,
                 attachment: saved
             ));
         }
@@ -94,24 +95,23 @@ public class EntityAttachmentService(
 
     public async Task<List<EntityAttachmentDto>> UpdateAsync(UpdateEntityAttachmentDto input)
     {
-
         var keptIds = input.EntityAttachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
 
         var queryable = await _repository.GetQueryableByEntityAsync(input.EntityId, input.EntityType);
-        var dbItems = await AsyncExecuter.ToListAsync(
+        var itemsToDelete = await AsyncExecuter.ToListAsync(
             queryable
-                .Where(x => !keptIds.Contains(x.Id))
-                .Select(x => new { x.Id, Name = x.Attachment.Name, BlobName = x.Attachment.BlobName, Path = x.Attachment.Path  })
+                .Where(x => (x.SubType == null || x.SubType == input.SubType) && !keptIds.Contains(x.Id))
+                .Select(x => new { x.Id, Name = x.Attachment.Name, BlobName = x.Attachment.BlobName, Path = x.Attachment.Path })
         );
 
-        if (dbItems != null && dbItems.Count != 0)
+        if (itemsToDelete != null && itemsToDelete.Count != 0)
         {
-            foreach (var dbItem in dbItems)
+            foreach (var dbItem in itemsToDelete)
             {
                 await _fileManager.DeleteAsync(new FileAttachment(dbItem.Name, dbItem.BlobName, dbItem.Path));
 
             }
-            var ids = dbItems.Select(x => x.Id).ToList();
+            var ids = itemsToDelete.Select(x => x.Id).ToList();
             await _repository.DeleteManyAsync(ids);
         }
 
@@ -120,6 +120,7 @@ public class EntityAttachmentService(
         {
             EntityId = input.EntityId,
             EntityType = input.EntityType,
+            SubType = input.SubType,
             TempFiles = input.TempFiles
         });
 

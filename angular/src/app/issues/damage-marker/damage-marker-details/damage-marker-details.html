@@ -87,8 +87,8 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
-                        <app-file-upload [acceptedTypes]="['image/*']" [(tempFiles)]="tempFiles"
-                            [(existingFiles)]="existingFiles"></app-file-upload>
+                        <app-file-upload [acceptedTypes]="['image/*']" [(tempFiles)]="attachmentsByTab[subType.Issue_Details].tempFiles"
+                            [(existingFiles)]="attachmentsByTab[subType.Issue_Details].existingFiles"></app-file-upload>
                     </div>
                 </div>
             </ng-template>
@@ -111,6 +111,12 @@
                         <textarea name="rectification-notes-input" id="rectification-acnotestion-input"
                             class="form-control" [rows]="3" formControlName="rectificationNotes"></textarea>
                     </div>
+
+                    <div class="form-group mt-3">
+                        <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
+                        <app-file-upload [acceptedTypes]="['image/*']" [(tempFiles)]="attachmentsByTab[subType.Issue_RectificationAction].tempFiles"
+                            [(existingFiles)]="attachmentsByTab[subType.Issue_RectificationAction].existingFiles"></app-file-upload>
+                    </div>
                 </div>
             </ng-template>
 
@@ -132,6 +138,12 @@
                         <textarea name="quality-control-notes-input" id="quality-control-notes-input"
                             class="form-control" [rows]="3" formControlName="qualityControlNotes"></textarea>
                     </div>
+
+                    <div class="form-group mt-3">
+                        <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
+                        <app-file-upload [acceptedTypes]="['image/*']" [(tempFiles)]="attachmentsByTab[subType.Issue_QualityControl].tempFiles"
+                            [(existingFiles)]="attachmentsByTab[subType.Issue_QualityControl].existingFiles"></app-file-upload>
+                    </div>
                 </div>
             </ng-template>
 
@@ -152,6 +164,12 @@
                             }}</label>
                         <textarea name="repairer-details-notes-input" id="repairer-details-notes-input"
                             class="form-control" [rows]="3" formControlName="repairerNotes"></textarea>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="" class="form-label">{{ '::Attachments' | abpLocalization }}</label>
+                        <app-file-upload [acceptedTypes]="['image/*']" [(tempFiles)]="attachmentsByTab[subType.Issue_RepairerDetails].tempFiles"
+                            [(existingFiles)]="attachmentsByTab[subType.Issue_RepairerDetails].existingFiles"></app-file-upload>
                     </div>
                 </div>
             </ng-template>

@@ -20846,6 +20846,18 @@
           "regex": null
         },
         {
+          "name": "SubType",
+          "jsonName": null,
+          "type": "WorkShopManagement.EntityAttachments.EntitySubType?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "Attachment",
           "jsonName": null,
           "type": "WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto",
@@ -20858,6 +20870,24 @@
           "regex": null
         }
       ]
+    },
+    "WorkShopManagement.EntityAttachments.EntitySubType": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Issue_Details",
+        "Issue_RectificationAction",
+        "Issue_QualityControl",
+        "Issue_RepairerDetails"
+      ],
+      "enumValues": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "genericArguments": null,
+      "properties": null
     },
     "WorkShopManagement.EntityAttachments.EntityType": {
       "baseType": "System.Enum",
@@ -23250,8 +23280,8 @@
         {
           "name": "TempFiles",
           "jsonName": null,
-          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
-          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "type": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.EntityAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
