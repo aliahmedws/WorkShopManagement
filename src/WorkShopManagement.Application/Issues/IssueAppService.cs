@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,7 +142,7 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
         var issues = await _issueRepository.GetQueryableAsync();
 
         var projected = issues
-            .Join(cars,
+            .Join(cars.Include(c => c.CarBays),
             issue => issue.CarId,
             car => car.Id,
             (issue, car) => new { Issue = issue, Car = car })
@@ -156,7 +157,8 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
                 Status = x.Issue.Status,
                 Stage = x.Car.Stage,
                 CreatorId = x.Issue.CreatorId,
-                CreationTime = x.Issue.CreationTime
+                CreationTime = x.Issue.CreationTime,
+                HasBay = x.Car.CarBays.Any(),
             });
 
         if (string.IsNullOrWhiteSpace(input.Sorting))

@@ -2,31 +2,34 @@
     <app-topbar-layout titleKey="Menu:Issues" [(filters)]="filters" [list]="list" showFiltersToggle>
         <ng-container ngProjectAs="[topbarFilters]">
             <div class="col">
-                 <label for="issue-status-filter">{{ '::IssueStatus' | abpLocalization }}</label>
-                 <nz-select nzAllowClear [(ngModel)]="filters.status">
+                <label for="issue-status-filter">{{ '::IssueStatus' | abpLocalization }}</label>
+                <nz-select nzAllowClear [(ngModel)]="filters.status">
                     @for(option of issueStatusOptions; track option.value) {
-                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueStatus.' + option.value) | abpLocalization"></nz-option>
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:IssueStatus.' + option.value) | abpLocalization"></nz-option>
                     }
-                 </nz-select>
+                </nz-select>
             </div>
             <div class="col">
-                 <label for="issue-type-filter">{{ '::IssueType' | abpLocalization }}</label>
-                 <nz-select nzAllowClear [(ngModel)]="filters.type">
+                <label for="issue-type-filter">{{ '::IssueType' | abpLocalization }}</label>
+                <nz-select nzAllowClear [(ngModel)]="filters.type">
                     @for(option of issueTypeOptions; track option.value) {
-                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueType.' + option.value) | abpLocalization"></nz-option>
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:IssueType.' + option.value) | abpLocalization"></nz-option>
                     }
-                 </nz-select>
+                </nz-select>
             </div>
             <div class="col">
-                 <label for="car-stage-filter">{{ '::Stage' | abpLocalization }}</label>
-                 <nz-select nzAllowClear [(ngModel)]="filters.stage">
+                <label for="car-stage-filter">{{ '::Stage' | abpLocalization }}</label>
+                <nz-select nzAllowClear [(ngModel)]="filters.stage">
                     @for(option of stageOptions; track option.value) {
-                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"></nz-option>
+                    <nz-option [nzValue]="option.value"
+                        [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"></nz-option>
                     }
-                 </nz-select>
+                </nz-select>
             </div>
         </ng-container>
-        
+
         <div class="card">
             <div class="card-body">
                 <ngx-datatable [rows]="issues.items" [count]="issues.totalCount" [list]="list" default>
@@ -38,10 +41,12 @@
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </button>
                                 <div ngbDropdownMenu>
+                                    @if (row.hasBay) {
                                     <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem
                                         (click)="showVinDetails(row)">
                                         {{ '::VinDetails' | abpLocalization }}
                                     </button>
+                                    }
                                     <button *abpPermission="'WorkShopManagement.Issues'" ngbDropdownItem
                                         (click)="showIssues(row)">
                                         {{ '::Issues' | abpLocalization }}
