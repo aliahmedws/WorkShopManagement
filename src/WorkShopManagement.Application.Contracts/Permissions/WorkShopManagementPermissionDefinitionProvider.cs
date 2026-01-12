@@ -59,6 +59,24 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
 
         var issuePermission = myGroup.AddPermission(WorkShopManagementPermissions.Issues.Default, L("Permission:Issues"));
         issuePermission.AddChild(WorkShopManagementPermissions.Issues.Upsert, L("Permission:Upsert"));
+
+        var logisticsDetailsPermission = myGroup.AddPermission(
+            WorkShopManagementPermissions.LogisticsDetails.Default,
+            L("Permission:LogisticsDetails")
+        );
+
+        logisticsDetailsPermission.AddChild(WorkShopManagementPermissions.LogisticsDetails.Create, L("Permission:LogisticsDetails.Create"));
+        logisticsDetailsPermission.AddChild(WorkShopManagementPermissions.LogisticsDetails.Edit, L("Permission:LogisticsDetails.Edit"));
+        //logisticsDetailsPermission.AddChild(WorkShopManagementPermissions.LogisticsDetails.Delete, L("Permission:LogisticsDetails.Delete"));
+
+        var arrivalEstimatesPermission = myGroup.AddPermission(
+            WorkShopManagementPermissions.ArrivalEstimates.Default,
+            L("Permission:ArrivalEstimates")
+        );
+        arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Create, L("Permission:ArrivalEstimates.Create"));
+        arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Edit, L("Permission:ArrivalEstimates.Edit"));
+        //arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Delete, L("Permission:ArrivalEstimates.Delete"));
+
     }
 
     private static LocalizableString L(string name)

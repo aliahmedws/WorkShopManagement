@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.Cars.Stages;
+using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
+using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.Cars;
@@ -20,31 +23,67 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     private readonly IRepository<CarOwner, Guid> _carOwnerRepository;
     private readonly IVpicService _vpicService;
     private readonly ICarXeService _carXeService;
+    private readonly IEntityAttachmentService _entityAttachmentService;
+    //private readonly ILogisticsDetailRepository _logisticsDetailRepository;
+    private readonly CarManager _carManager;
+
 
     public CarAppService(
         ICarRepository carRepository,
         IRepository<CarOwner, Guid> carOwnerRepository,
         IVpicService vpicService,
-        ICarXeService carXeService
+        ICarXeService carXeService,
+        IEntityAttachmentService entityAttachmentService,
+        //ILogisticsDetailRepository LogisticDetailRepository,
+        CarManager carManager
         )
     {
         _carRepository = carRepository;
         _carOwnerRepository = carOwnerRepository;
         _vpicService = vpicService;
         _carXeService = carXeService;
+        _entityAttachmentService = entityAttachmentService;
+        //_logisticsDetailRepository = LogisticDetailRepository;
+        _carManager = carManager;
     }
 
     public async Task<CarDto> GetAsync(Guid id)
     {
         var car = await _carRepository.GetAsync(id);
-        return ObjectMapper.Map<Car, CarDto>(car);
+
+        var dto = ObjectMapper.Map<Car, CarDto>(car);
+
+        var attachments = await _entityAttachmentService.GetListAsync(new GetEntityAttachmentListDto
+        {
+            EntityId = id,
+            EntityType = EntityType.Car
+        });
+
+        dto.EntityAttachments = attachments!;
+        return dto;
+
     }
 
     public async Task<PagedResultDto<CarDto>> GetListAsync(GetCarListInput input)
     {
         var totalCount = await _carRepository.GetLongCountAsync(input.Filter,  input.Stage);
+    
         var items = await _carRepository.GetListAsync(input.SkipCount, input.MaxResultCount, input.Sorting, input.Filter, input.Stage);
-        return new PagedResultDto<CarDto>(totalCount, ObjectMapper.Map<List<Car>, List<CarDto>>(items));
+        
+        var dtos = ObjectMapper.Map<List<Car>, List<CarDto>>(items);
+
+        foreach (var item in dtos)
+        {
+            var attachments = await _entityAttachmentService.GetListAsync(new GetEntityAttachmentListDto
+            {
+                EntityId = item.Id,
+                EntityType = EntityType.Car
+            });
+            item.EntityAttachments = attachments!;
+        }
+
+        return new PagedResultDto<CarDto>(totalCount, dtos);
+
     }
 
     [Authorize(WorkShopManagementPermissions.Cars.Create)]
@@ -52,14 +91,62 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     {
         var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
 
-        var car = new Car(
+        var car = await _carManager.CreateAsync(
             GuidGenerator.Create(),
+            ownerId: ownerId,
+            vin: input.Vin,
+            color: input.Color,
+            modelId: input.ModelId,
+            modelYear: input.ModelYear,
+            cnc: input.Cnc,
+            cncFirewall: input.CncFirewall,
+            cncColumn: input.CncColumn,
+            dueDate: input.DueDate,
+            deliverDate: input.DeliverDate,
+            startDate: input.StartDate,
+            notes: input.Notes,
+            missingParts: input.MissingParts,
+            storageLocation: input.StorageLocation,
+            buildMaterialNumber: input.BuildMaterialNumber,
+            angleBailment: input.AngleBailment,
+            avvStatus: input.AvvStatus,
+            pdiStatus: input.PdiStatus
+
+        );
+
+        var entity = await _carRepository.InsertAsync(car, autoSave: true);
+
+
+        // --- CREATE EntityAttachment 
+        await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+        {
+            EntityType = EntityType.Car,
+            EntityId = entity.Id,
+            TempFiles = input.TempFiles
+        });
+        // --- create end
+
+
+        //Create Logistics Default ?? 
+         
+
+
+        return ObjectMapper.Map<Car, CarDto>(car);
+    }
+
+    [Authorize(WorkShopManagementPermissions.Cars.Edit)]
+    public async Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input)
+    {
+        //var car = await _carRepository.GetAsync(id);
+        var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
+        var car = await _carManager.UpdateAsync(
+            id,
             ownerId,
             input.Vin,
             input.Color,
             input.ModelId,
             input.ModelYear,
-            input.Stage,
+            input.Stage,         // Manager will handle ChangeStageAsync logic internally
             input.Cnc,
             input.CncFirewall,
             input.CncColumn,
@@ -68,47 +155,23 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.StartDate,
             input.Notes,
             input.MissingParts,
-
-            input.LocationStatus,
-            input.EtaBrisbane,
-            input.EtaScd,
-            input.BookingNumber,
-            input.ClearingAgent,
-            input.StorageLocation
-
+            input.StorageLocation,
+            input.BuildMaterialNumber,
+            input.AngleBailment,
+            input.AvvStatus,
+            input.PdiStatus
         );
 
-        await _carRepository.InsertAsync(car, autoSave: true);
-
-        return ObjectMapper.Map<Car, CarDto>(car);
-    }
-
-    [Authorize(WorkShopManagementPermissions.Cars.Edit)]
-    public async Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input)
-    {
-        var car = await _carRepository.GetAsync(id);
-        var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
-
-        // Keep invariants inside aggregate
-        car.SetVin(input.Vin);
-        car.SetOwner(ownerId);
-        car.SetColor(input.Color);
-        car.SetModel(input.ModelId);
-        car.SetModelYear(input.ModelYear);
-        car.SetStage(input.Stage);
-        car.SetCnc(input.Cnc, input.CncFirewall, input.CncColumn);
-        car.SetSchedule(input.DueDate, input.DeliverDate, input.StartDate);
-        car.SetNotes(input.Notes, input.MissingParts);
-        car.SetTransitData(
-            input.LocationStatus,
-            input.EtaBrisbane,
-            input.EtaScd,
-            input.BookingNumber,
-            input.ClearingAgent,
-            input.StorageLocation
-            );
-
-        await _carRepository.UpdateAsync(car, autoSave: true);
+        var entity = await _carRepository.UpdateAsync(car, autoSave: true);
+        // --- UPDATE EntityAttachment 
+        await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+        {
+            EntityId = entity.Id,
+            EntityType = EntityType.Car,
+            TempFiles = input.TempFiles,
+            EntityAttachments = input.EntityAttachments
+        });
+        // --- update end
 
         return ObjectMapper.Map<Car, CarDto>(car);
     }
@@ -116,6 +179,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     [Authorize(WorkShopManagementPermissions.Cars.Delete)]
     public async Task DeleteAsync(Guid id)
     {
+        await _entityAttachmentService.DeleteAsync(id, EntityType.Car);
         await _carRepository.DeleteAsync(id);
     }
 
@@ -173,4 +237,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         var externalCarDetails = await _vpicService.DecodeVinExtendedAsync(vin, modelYear);
         return ObjectMapper.Map<VpicVariableResultDto, ExternalCarDetailsDto>(externalCarDetails);
     }
+
+
+
+
 }

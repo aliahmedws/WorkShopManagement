@@ -21,12 +21,12 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public virtual Priority? Priority { get; set; }
 
-    public string? BuildMaterialNumber { get; private set; }
+    public string? BuildMaterialNumber { get; private set; }    // remove this. it is in Car
 
-    public Guid? UserId { get; private set; }
+    public Guid? UserId { get; private set; }               // remove this. comes from AuditedEntity
 
-    public Guid? QualityGateId { get; private set; }
-    public virtual QualityGate? QualityGate { get; set; }
+    public Guid? QualityGateId { get; private set; }        // remove this. QualityGate entity will have carId
+    public virtual QualityGate? QualityGate { get; set; }   // remove this. QualityGate entity will have carId
 
     public DateTime? DateTimeIn { get; private set; }
     public DateTime? DateTimeOut { get; private set; }
@@ -36,25 +36,25 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     public bool? IsWaiting { get; private set; }
     public bool? IsQueue { get; private set; }
 
-    public int? AngleBailment { get; private set; }
+    public int? AngleBailment { get; private set; }         // remove this. it is in Car
 
-    public AvvStatus? AvvStatus { get; private set; }
+    public AvvStatus? AvvStatus { get; private set; }       // remove this. it is in Car
 
-    public string? PdiStatus { get; private set; }
+    public string? PdiStatus { get; private set; }         // remove this. it is in Car
 
     public int? DisplayBay { get; private set; }
 
     public float? Percentage { get; private set; }
 
-    public DateTime? DueDate { get; private set; }
-    public DateTime? DueDateUpdated { get; private set; }
+    public DateTime? DueDate { get; private set; }                      // remove this. it is in Car
+    public DateTime? DueDateUpdated { get; private set; }                   // remove this. it is in Car
 
-    public DateTime? ConfirmedDeliverDate { get; private set; }
-    public string? ConfirmedDeliverDateNotes { get; private set; }
+    public DateTime? ConfirmedDeliverDate { get; private set; }             // remove this. it is in Car.LogisticsDetails 
+    public string? ConfirmedDeliverDateNotes { get; private set; }          // remove this. it is in Car.LogisticsDetails
 
-    public string? TransportDestination { get; private set; }
+    public string? TransportDestination { get; private set; }               // remove this. it is in Car.LogisticsDetails
 
-    public string? StorageLocation { get; private set; }
+    public string? StorageLocation { get; private set; }                    // remove this. it is in Car
     public string? Row { get; private set; }
     public string? Columns { get; private set; }
 

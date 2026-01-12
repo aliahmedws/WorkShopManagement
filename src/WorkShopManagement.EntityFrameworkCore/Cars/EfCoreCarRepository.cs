@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -56,4 +57,21 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
             .Include(q => q.Model)
             .OrderBy(CarConsts.GetNormalizedSorting(sorting));
     }
+
+    public async Task<Car> GetWithDetailsAsync(Guid id, bool asNoTracking = false)
+    {
+        var query = await GetQueryableAsync();
+
+        query = query
+            .Include(x => x.LogisticsDetail);    // Not working
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        var car = await query.FirstOrDefaultAsync(x => x.Id == id);
+
+        return car ?? throw new EntityNotFoundException(typeof(Car), id);
+    }
+
+
 }

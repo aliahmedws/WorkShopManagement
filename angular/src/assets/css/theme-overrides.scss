@@ -1425,3 +1425,9 @@ lpx-footer {
 .ngb-dp-navigation-chevron {
     color: var(--brand-primary);
 }
+
+// FIX THIS LATER -- icon in btn btn-primary
+.alert-light a, .alert-light .bi, .alert-light .fa, .alert-light .icon, .alert-light .highlight, .alert-light .alert-link{
+    color: #fff;
+}
+// --- to fix above

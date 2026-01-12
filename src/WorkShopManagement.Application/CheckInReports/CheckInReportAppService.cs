@@ -18,12 +18,15 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
 {
     private readonly ICheckInReportRepository _checkInReportRepository;
     private readonly ICarRepository _carRepository;
+    private readonly CarManager _carManager;
     public CheckInReportAppService(
         ICheckInReportRepository checkInReportRepository,
-        ICarRepository carRepository)
+        ICarRepository carRepository,
+        CarManager carManager)
     {
-            _checkInReportRepository = checkInReportRepository;
-            _carRepository = carRepository;
+        _checkInReportRepository = checkInReportRepository;
+        _carRepository = carRepository;
+        _carManager = carManager;
     }
 
     public async Task<CheckInReportDto> CreateAsync(CreateCheckInReportDto  input)
@@ -55,19 +58,17 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             maxTowingCapacity: input.MaxTowingCapacity,
             emission: input.Emission,
             tyreLabel: input.TyreLabel,
-            //rsvaImportApproval: input.RsvaImportApproval,
             reportStatus: input.ReportStatus
 
         );
 
         if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
         {
-            car.SetStorageLocation(input.StorageLocation.Value);
             if (car.Stage == Stage.Incoming)
             {
-                car.SetStage(Stage.ExternalWarehouse);
+                car = await _carManager.ChangeStageAsync(car.Id, Stage.ExternalWarehouse, input.StorageLocation);
             }
-            await _carRepository.UpdateAsync(car, autoSave: true);
+            car = await _carRepository.UpdateAsync(car);
         }
 
         report = await _checkInReportRepository.InsertAsync(report, autoSave: true);
@@ -129,12 +130,12 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
 
         if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
         {
-            car.SetStorageLocation(input.StorageLocation.Value);
+            car.SetStorageLocation(input.StorageLocation);
             if (car.Stage == Stage.Incoming)
             {
-                car.SetStage(Stage.ExternalWarehouse);
+                car = await _carManager.ChangeStageAsync(car.Id, Stage.ExternalWarehouse, input.StorageLocation);
             }
-            await _carRepository.UpdateAsync(car, autoSave: true);
+            car = await _carRepository.UpdateAsync(car);
         }
 
         await _checkInReportRepository.UpdateAsync(report, autoSave: true);

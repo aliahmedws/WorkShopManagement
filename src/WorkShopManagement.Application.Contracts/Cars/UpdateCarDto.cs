@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.Cars;
 
@@ -47,13 +51,27 @@ public class UpdateCarDto
     public string? MissingParts { get; set; }
 
     // Transit vehicle data
-    [StringLength(CarConsts.MaxLocationStatusLength)]
-    public string? LocationStatus { get; set; }
-    public DateTime? EtaBrisbane { get; set; }
-    public DateTime? EtaScd { get; set; }
-    [StringLength(CarConsts.MaxBookingNumberLength)]
-    public string? BookingNumber { get; set; }
-    [StringLength(CarConsts.MaxClearingAgentLength)]
-    public string? ClearingAgent { get; set; }
+    //[StringLength(CarConsts.MaxLocationStatusLength)]
+    //public string? LocationStatus { get; set; }
+    //public DateTime? EtaBrisbane { get; set; }
+    //public DateTime? EtaScd { get; set; }
+    //[StringLength(CarConsts.MaxBookingNumberLength)]
+    //public string? BookingNumber { get; set; }
+    //[StringLength(CarConsts.MaxClearingAgentLength)]
+    //public string? ClearingAgent { get; set; }
     public StorageLocation? StorageLocation { get; set; }
+
+    [StringLength(CarConsts.MaxBuildMaterialNumberLength)]
+    public string? BuildMaterialNumber { get; set; }
+
+    public int? AngleBailment { get; set; }
+    public AvvStatus? AvvStatus { get; set; }
+
+    [StringLength(CarConsts.MaxPdiStatusLength)]
+    public string? PdiStatus { get; set; }
+
+    // File Attachments
+    public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
+    public List<FileAttachmentDto> TempFiles { get; set; } = [];
+
 }

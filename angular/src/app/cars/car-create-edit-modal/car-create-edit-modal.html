@@ -233,44 +233,40 @@
             </div>
             <!-- Additional Information -->
 
-            <!-- Transit Information -->
             <div class="row g-2">
                 <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::TransitInformation' | abpLocalization }}</h5>
+                    <h5 class="text-dark">{{ '::ProductionData' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
                         <div class="col-12 col-md-6 form-group">
-                            <label class="form-label">{{ '::LocationStatus' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="locationStatus" />
+                            <label class="form-label">{{ '::BuildMaterialNumber' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="buildMaterialNumber" />
                         </div>
 
                         <div class="col-12 col-md-6 form-group">
-                            <label class="form-label">{{ '::BookingNumber' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="bookingNumber" />
+                            <label class="form-label">{{ '::PdiStatus' | abpLocalization }}</label>
+                            <input class="form-control" formControlName="pdiStatus" />
                         </div>
 
                         <div class="col-12 col-md-6 form-group">
-                            <label class="form-label">{{ '::EtaBrisbane' | abpLocalization }}</label>
-                            <input #etaBrisbanePicker="ngbDatepicker" class="form-control" name="etaBrisbane"
-                                formControlName="etaBrisbane" ngbDatepicker (click)="etaBrisbanePicker.toggle()" />
+                            <label class="form-label">{{ '::AngleBailment' | abpLocalization }}</label>
+                            <input type="number" class="form-control" formControlName="angleBailment" />
                         </div>
 
                         <div class="col-12 col-md-6 form-group">
-                            <label class="form-label">{{ '::EtaScd' | abpLocalization }}</label>
-                            <input #etaScdPicker="ngbDatepicker" class="form-control" name="etaScd"
-                                formControlName="etaScd" ngbDatepicker (click)="etaScdPicker.toggle()" />
-                        </div>
-
-                        <div class="col-12 col-md-6 form-group">
-                            <label class="form-label">{{ '::ClearingAgent' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="clearingAgent" />
+                            <label class="form-label">{{ '::AvvStatus' | abpLocalization }}</label>
+                            <nz-select nzAllowClear formControlName="avvStatus">
+                                @for (option of avvStatusOptions; track option) {
+                                <nz-option [nzLabel]="('::Enum:AvvStatus.' + option.value) | abpLocalization"
+                                    [nzValue]="option.value"></nz-option>
+                                }
+                            </nz-select>
                         </div>
 
                         <div class="col-12 col-md-6 form-group">
                             <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
-                            <!-- <input class="form-control" formControlName="storageLocation" /> -->
-                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
+                            <nz-select nzShowSearch nzAllowClear formControlName="storageLocation">
                                 @for (option of storageLocationOptions; track option) {
                                 <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
@@ -283,7 +279,6 @@
                     <hr>
                 </div>
             </div>
-            <!-- Transit Data -->
 
             <!-- Stage -->
             <div class="row g-2">
@@ -293,7 +288,7 @@
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
                         <div class="col-12 form-group">
-                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage">
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage" [nzDisabled]="!carId">
                                 @for (option of stageOptions; track option) {
                                 <nz-option [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
@@ -308,6 +303,16 @@
             </div>
             <!-- Stage -->
 
+             <!-- Attachments -->
+            <div class="row g-2">
+                <div class="col-12 col-lg-3">
+                    <h5 class="text-dark">{{ '::Attachments' | abpLocalization }}</h5>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles">
+                    </app-file-upload>
+                </div>
+            </div>
         </form>
         }
 

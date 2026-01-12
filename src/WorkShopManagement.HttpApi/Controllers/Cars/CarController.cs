@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 
 namespace WorkShopManagement.Controllers.Cars;
 
@@ -47,4 +48,5 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     {
         return carAppService.GetExternalCarDetailsAsync(vin, modelYear);
     }
+
 }

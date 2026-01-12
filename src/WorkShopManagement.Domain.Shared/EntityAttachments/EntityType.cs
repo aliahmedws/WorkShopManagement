@@ -8,5 +8,7 @@ public enum EntityType
     Car = 4,
     Recall = 5,
     CarBayItem = 6,
-    Issue = 7
+    Issue = 7,
+    LogisticsDetail = 8,
+    ArrivalEstimate = 9,
 }
