@@ -49,6 +49,7 @@ public class CarDto : AuditedEntityDto<Guid>
     //For Post-Production
     public Guid? BayId { get; set; }
     public string? BayName { get; set; }
+    public Guid? CarBayId { get; set; }
 
 
     // File Attachment

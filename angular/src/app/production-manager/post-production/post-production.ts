@@ -1,5 +1,5 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayService, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
@@ -9,14 +9,17 @@ import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 
 @Component({
   selector: 'app-post-production',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal],
   templateUrl: './post-production.html',
   styleUrl: './post-production.scss',
 })
 export class PostProduction {
+  @ViewChild('detailsModal') detailsModal!: ProductionDetailsModal; //Bay
+
 // private readonly carService = inject(CarService);
   private readonly carBayService = inject(CarBayService)
   private readonly lookupService = inject(LookupService);
@@ -114,4 +117,9 @@ export class PostProduction {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
   }
+
+  openProductionDetails(row: CarDto): void {
+    if (!row.carBayId) return;
+    this.detailsModal.open(row.carBayId, false, true); // false => disable move button
+}
 }

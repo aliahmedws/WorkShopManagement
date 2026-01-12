@@ -29,7 +29,7 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
 
     public async Task<long> GetLongCountAsync(string? filter = null, Stage? stage = null)
     {
-        var query = await GetAllAsync(filter, asNoTracking: true);
+        var query = await GetAllAsync(filter, stage, sorting: null, asNoTracking: true);
         return await query.LongCountAsync();
     }
 

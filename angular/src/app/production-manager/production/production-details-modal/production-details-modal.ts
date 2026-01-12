@@ -15,6 +15,7 @@ import { Confirmation } from '@abp/ng.theme.shared';
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
+
 export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
   private readonly carService = inject(CarService)
@@ -24,6 +25,8 @@ export class ProductionDetailsModal {
 
   visible = false;
   movingStage = false;
+  allowMovetoPostProduction = true;
+  allowMovetoAwaitingTransport = true;
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
@@ -37,11 +40,13 @@ export class ProductionDetailsModal {
 
   form?: FormGroup;
 
-  open(id: string): void {
+  open(id: string, allowMoveToPostProduction = true, allowMovetoAwaitingTransport = true): void {
     this.carBayId = id;
+    this.allowMovetoPostProduction = allowMoveToPostProduction;
+    this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
+
     this.visible = true;
     this.visibleChange.emit(true);
-
     this.loadDetails();
   }
 
@@ -51,6 +56,9 @@ export class ProductionDetailsModal {
     this.details = undefined;
     this.form = undefined;
     this.carBayId = undefined;
+
+    this.allowMovetoPostProduction = true;
+    this.allowMovetoAwaitingTransport = true;
   }
 
   private loadDetails(): void {

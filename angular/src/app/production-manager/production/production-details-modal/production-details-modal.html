@@ -125,20 +125,28 @@
 
                   <!-- buttons row -->
                   <div class="d-flex flex-wrap justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
+                    <button
+                      *ngIf="allowMoveToPostProduction"
+                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
                       [disabled]="movingStage || !details?.carId">
                       <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
                       {{'::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
+                    </button>
+
+                     <button
+                      *ngIf="allowMovetoAwaitingTransport"
+                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
+                      [disabled]="movingStage || !details?.carId">
+                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
+                      {{'::Move to Awaiting Transport' | abpLocalization }}
                     </button>
 
                     <button type="button" class="btn btn-sm btn-primary px-4">
                       {{ '::ClockIn' | abpLocalization }}
                     </button>
                   </div>
-
                 </div>
               </div>
-
             </div>
           </div>
         </div>

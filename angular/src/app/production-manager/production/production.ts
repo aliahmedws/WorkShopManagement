@@ -26,7 +26,6 @@ export class Production implements OnInit {
   constructor(
     private readonly lookupService: LookupService,
     private readonly carBayService: CarBayService,
-    private readonly confirm: ConfirmationHelperService
   ) {}
 
   ngOnInit(): void {
@@ -48,7 +47,7 @@ export class Production implements OnInit {
     if (!a?.id) return;
 
     // safest: detailsModal exists after view init because it's in template
-    this.detailsModal?.open(a.id);
+    this.detailsModal?.open(a.id, true, false);
   }
 
   vinLast6(v?: string | null): string {

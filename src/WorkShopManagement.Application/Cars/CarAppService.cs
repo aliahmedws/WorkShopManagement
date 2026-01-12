@@ -96,6 +96,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             {
                 dto.BayId = cb.BayId;
                 dto.BayName = cb.Bay?.Name;
+                dto.CarBayId = cb.Id;
             }
         }
 

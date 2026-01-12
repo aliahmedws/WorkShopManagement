@@ -1,9 +1,7 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { Shared } from '../proxy/external';
+import { Component, inject, OnInit } from '@angular/core';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { CarDto, CarService, GetCarListInput } from '../proxy/cars';
-import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { Incoming } from "./incoming/incoming";
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { Stage } from '../proxy/cars/stages';
