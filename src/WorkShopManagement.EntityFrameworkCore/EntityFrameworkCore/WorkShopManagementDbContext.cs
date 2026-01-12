@@ -288,7 +288,7 @@ public class WorkShopManagementDbContext :
                 .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(x => x.LogisticsDetail)
-             .WithOne() // or .WithOne(x => x.Car) if you add nav on LogisticsDetail
+             .WithOne()                                     // or .WithOne(x => x.Car) if you add nav on LogisticsDetail
              .HasForeignKey<LogisticsDetail>(x => x.CarId)
              .OnDelete(DeleteBehavior.Cascade);
 
@@ -472,10 +472,10 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.DeliverNotes).HasMaxLength(LogisticsDetailConsts.MaxConfirmedDeliverDateNotesLength);
             b.Property(x => x.TransportDestination).HasMaxLength(LogisticsDetailConsts.MaxTransportDestinationLength);
 
-            b.HasOne<Car>()
-                .WithOne()                                      // you can change this if you add Car.LogisticsDetail navigation
-                .HasForeignKey<LogisticsDetail>(x => x.CarId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //b.HasOne<Car>()
+            //    .WithOne()                                      // you can change this if you add Car.LogisticsDetail navigation
+            //    .HasForeignKey<LogisticsDetail>(x => x.CarId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // Estimates relationship
             b.HasMany(x => x.ArrivalEstimates)
