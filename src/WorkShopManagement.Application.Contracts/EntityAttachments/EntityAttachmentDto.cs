@@ -8,5 +8,6 @@ public class EntityAttachmentDto : EntityDto<Guid>
 {
     public Guid EntityId { get; set; }
     public EntityType EntityType { get; set; }
+    public EntitySubType? SubType { get; set; }
     public FileAttachmentDto Attachment { get; set; } = default!;
 }

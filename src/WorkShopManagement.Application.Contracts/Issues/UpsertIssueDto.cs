@@ -45,6 +45,6 @@ public class UpsertIssueDto
     [StringLength(IssueConsts.MaxRepairerNotesLength)]
     public string? RepairerNotes { get; set; }
 
-    public List<FileAttachmentDto> TempFiles { get; set; } = [];
+    public List<EntityAttachmentDto> TempFiles { get; set; } = [];
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];
 }

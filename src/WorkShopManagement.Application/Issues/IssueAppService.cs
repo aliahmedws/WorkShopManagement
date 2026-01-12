@@ -74,13 +74,21 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
             await _issueRepository.InsertAsync(issue);
         }
 
-        await _attachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+        var entitySubTypes = EntityType.Issue.GetSubTypes();
+        foreach (var subType in entitySubTypes)
         {
-            EntityId = issue.Id,
-            EntityType = EntityType.Issue,
-            TempFiles = input.TempFiles,
-            EntityAttachments = input.EntityAttachments
-        });
+            var tempFiles = input.TempFiles.Where(t => t.SubType == subType);
+            var attachments = input.EntityAttachments.Where(t => t.SubType == subType);
+
+            await _attachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            {
+                EntityId = issue.Id,
+                EntityType = EntityType.Issue,
+                SubType = subType,
+                TempFiles = [.. tempFiles.Select(t => t.Attachment)],
+                EntityAttachments = [.. attachments]
+            });
+        }
 
         return ObjectMapper.Map<Issue, IssueDto>(issue);
     }

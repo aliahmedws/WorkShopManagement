@@ -5,7 +5,6 @@ import type { Stage } from '../cars/stages/stage.enum';
 import type { IssueOriginStage } from './issue-origin-stage.enum';
 import type { IssueDeteriorationType } from './issue-deterioration-type.enum';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
-import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
 
 export interface GetIssueListInput extends PagedAndSortedResultRequestDto {
   filter?: string;
@@ -65,6 +64,6 @@ export interface UpsertIssueDto {
   qualityControlNotes?: string;
   repairerAction?: string;
   repairerNotes?: string;
-  tempFiles: FileAttachmentDto[];
+  tempFiles: EntityAttachmentDto[];
   entityAttachments: EntityAttachmentDto[];
 }
