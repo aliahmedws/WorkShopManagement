@@ -1,4 +1,4 @@
-import type { GetIssueListInput, IssueDto, IssueListDto, UpsertIssuesRequestDto } from './models';
+import type { GetIssueListInput, IssueDto, IssueListDto, UpsertIssueDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
@@ -28,11 +28,10 @@ export class IssueService {
     { apiName: this.apiName,...config });
   
 
-  upsert = (carId: string, input: UpsertIssuesRequestDto, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, void>({
+  upsert = (carId: string, input: UpsertIssueDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, IssueDto>({
       method: 'POST',
-      url: '/api/app/issues',
-      params: { carId },
+      url: `/api/app/issues/${carId}`,
       body: input,
     },
     { apiName: this.apiName,...config });

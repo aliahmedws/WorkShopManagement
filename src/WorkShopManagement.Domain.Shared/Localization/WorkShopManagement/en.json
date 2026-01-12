@@ -328,6 +328,8 @@
     "AvcStickers": "AVC Stickers",
     "AvcStickersNew": "AVC Stickers New",
     "IssueStatus": "Issue Status",
-    "VinDetails": "VIN Details"
+    "VinDetails": "VIN Details",
+    "WorkShopManagement:DuplicateIssueSrNo": "Issue number (SrNo) '{SrNo}' already exists for this car.",
+    "WorkShopManagement:IssueCarMismatch": "The selected issue does not belong to the specified car."
   }
 }

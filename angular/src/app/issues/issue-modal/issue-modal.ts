@@ -1,34 +1,37 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { DamageMarker } from "../damage-marker/damage-marker";
-import { IssueDto, IssueService, IssueStatus, IssueType, UpsertIssuesRequestDto } from 'src/app/proxy/issues';
+import { IssueDto, IssueService, IssueStatus, IssueType } from 'src/app/proxy/issues';
 import { CarDto, CarService } from 'src/app/proxy/cars';
 import { IssueStatusBadge } from "../issue-status-badge/issue-status-badge";
-import { IssueFilesState } from '../utils/issue-files-state.service';
-import { mapToUpsertIssueDto } from '../utils/issues.utils';
-import { PermissionService } from '@abp/ng.core';
+import { IssueStateService } from '../utils/issue-state.service';
+import { forkJoin, finalize, auditTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-issue-modal',
   imports: [...SHARED_IMPORTS, DamageMarker, IssueStatusBadge],
   templateUrl: './issue-modal.html',
-  styleUrl: './issue-modal.scss'
+  styleUrl: './issue-modal.scss',
+  providers: [IssueStateService]
 })
-export class IssueModal {
+export class IssueModal implements OnInit {
   private carService = inject(CarService);
   private issueService = inject(IssueService);
-  private filesState = inject(IssueFilesState);
-  private permission = inject(PermissionService);
+  private state = inject(IssueStateService);
+
+  private destroyRef = inject(DestroyRef);
 
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
 
   @Input() carId: string;
+
   car: CarDto | null = null;
 
-  loading: boolean = false;
+  issues: IssueDto[] = [];
 
-  canUpsert: boolean = false;
+  loading: boolean = false;
 
   modalOptions = {
     size: 'xl',
@@ -37,53 +40,51 @@ export class IssueModal {
     animation: true,
   };
 
-  issues: IssueDto[] = [];
-
   get missingOrBrokenItemsCount(): number {
     return this.issues.filter(i => i.status != IssueStatus.Resolved && i.type == IssueType.MissingOrBrokenPart)?.length || 0;
   };
 
-  appear() {
-    this.canUpsert = this.permission.getGrantedPolicy('WorkShopManagement.Issues.Upsert');
-    this.issues = [];
-    this.filesState.clearAll();
-
-    if (!this.carId) {
-      return;
-    }
-
-    this.loading = true;
-
-    this.carService
-      .get(this.carId)
-      .subscribe((car) => {
-        this.car = car;
-        this.issueService
-          .getListByCar(this.car.id)
-          .subscribe((response) => {
-            this.issues = response.items;
-            this.loading = false;
-          });
-      });
-  }
-
-  save() {
-    const req: UpsertIssuesRequestDto = {
-      items: this.issues.map(issue => {
-        const tempFiles = this.filesState.get({ ...issue });
-        return mapToUpsertIssueDto(issue, tempFiles)
-      })
-    };
-
-    this.issueService
-      .upsert(this.car.id, req)
+  ngOnInit() {
+    this.state.refreshRequested$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        auditTime(100)
+      )
       .subscribe(() => {
-        this.close();
-      })
+        this.reloadIssues();
+      });
   }
 
   close() {
     this.visible = false;
     this.visibleChange.emit(false);
+  }
+
+  appear() {
+    this.loading = true;
+
+    forkJoin({
+      car: this.carService.get(this.carId),
+      issues: this.issueService.getListByCar(this.carId),
+    })
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(({ car, issues }) => {
+        this.car = car;
+        this.issues = issues.items;
+
+        this.state.setCar(car);
+        this.state.setIssues(issues.items);
+      });
+  }
+
+  private reloadIssues() {
+    if (!this.carId) return;
+
+    this.issueService
+      .getListByCar(this.carId)
+      .subscribe(res => {
+        this.issues = res.items;
+        this.state.setIssues(res.items);
+      });
   }
 }

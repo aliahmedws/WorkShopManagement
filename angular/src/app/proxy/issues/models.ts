@@ -68,7 +68,3 @@ export interface UpsertIssueDto {
   tempFiles: FileAttachmentDto[];
   entityAttachments: EntityAttachmentDto[];
 }
-
-export interface UpsertIssuesRequestDto {
-  items: UpsertIssueDto[];
-}

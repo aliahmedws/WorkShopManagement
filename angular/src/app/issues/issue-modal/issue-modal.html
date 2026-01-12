@@ -19,7 +19,7 @@
             : '::Issue:UnresolvedBrokenOrMissingPartCountIsNone')
             | abpLocalization:missingOrBrokenItemsCount }}
         </h5>
-        <app-damage-marker [(issues)]="issues" [vin]="car?.vin" (submit)="onIssuesSubmit()" [canUpsert]="canUpsert"></app-damage-marker>
+        <app-damage-marker></app-damage-marker>
         <hr>
         <h5>{{ '::IssueList' | abpLocalization }}</h5>
         @if (issues?.length) {
@@ -37,9 +37,7 @@
                     @for (item of issues; track item.srNo) {
                     <tr>
                         <td>{{ item.srNo }}</td>
-                        <td>
-                            <app-issue-status-badge [status]="item.status"></app-issue-status-badge>
-                        </td>
+                        <td><app-issue-status-badge [status]="item.status" /></td>
                         <td>{{ item.type ? (('::Enum:IssueType.' + item.type) | abpLocalization) : '-' }}</td>
                         <td>{{ item.description }}</td>
                     </tr>
@@ -59,11 +57,5 @@
         <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
-        @if (canUpsert) {
-        <button type="submit" class="btn btn-primary px-3" (click)="save()">
-            <i class="fas fa-save me-1"></i>
-            {{ '::Save' | abpLocalization }}
-        </button>
-        }
     </ng-template>
 </abp-modal>
