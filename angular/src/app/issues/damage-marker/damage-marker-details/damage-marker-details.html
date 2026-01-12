@@ -191,13 +191,13 @@
             <div>
                 @if (issue.creationTime) {
                 <div class="issue-changed-by">
-                    Created: <span class="emphasize">{{ issue.creatorEmail ?? '-' }}</span>
+                    {{ '::Created' | abpLocalization }}: <span class="emphasize">{{ issue.creatorEmail ?? '-' }}</span>
                     at <span class="emphasize">{{ issue.creationTime | date: 'MMM d, yy' }}</span>
                 </div>
                 }
                 @if (issue.lastModificationTime) {
                 <div class="issue-changed-by">
-                    Modified: <span class="emphasize">{{ issue.lastModifierEmail ?? '-' }}</span>
+                    {{ '::Modified' | abpLocalization }}: <span class="emphasize">{{ issue.lastModifierEmail ?? '-' }}</span>
                     at <span class="emphasize">{{ issue.lastModificationTime | date: 'MMM d, yy' }}</span>
                 </div>
                 }

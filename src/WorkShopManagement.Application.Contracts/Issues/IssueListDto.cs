@@ -16,4 +16,5 @@ public class IssueListDto
     public Guid? CreatorId { get; set; }
     public string? CreatorName { get; set; }
     public DateTime CreationTime { get; set; }
+    public bool HasBay { get; set; }
 }
