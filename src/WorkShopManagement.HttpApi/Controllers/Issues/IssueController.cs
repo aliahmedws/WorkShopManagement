@@ -20,9 +20,15 @@ public class IssueController(IIssueAppService service) : WorkShopManagementContr
         return service.GetListByCarAsync(carId);
     }
 
-    [HttpPost]
-    public Task UpsertAsync(Guid carId, UpsertIssuesRequestDto input)
+    [HttpPost("{carId}")]
+    public Task<IssueDto> UpsertAsync(Guid carId, UpsertIssueDto input)
     {
         return service.UpsertAsync(carId, input);
+    }
+
+    [HttpGet]
+    public Task<PagedResultDto<IssueListDto>> GetListAsync(GetIssueListInput input)
+    {
+        return service.GetListAsync(input);
     }
 }

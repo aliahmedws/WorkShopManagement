@@ -1,0 +1,87 @@
+<abp-page *abpPermission="'WorkShopManagement.Issues'">
+    <app-topbar-layout titleKey="Menu:Issues" [(filters)]="filters" [list]="list" showFiltersToggle>
+        <ng-container ngProjectAs="[topbarFilters]">
+            <div class="col">
+                 <label for="issue-status-filter">{{ '::IssueStatus' | abpLocalization }}</label>
+                 <nz-select nzAllowClear [(ngModel)]="filters.status">
+                    @for(option of issueStatusOptions; track option.value) {
+                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueStatus.' + option.value) | abpLocalization"></nz-option>
+                    }
+                 </nz-select>
+            </div>
+            <div class="col">
+                 <label for="issue-type-filter">{{ '::IssueType' | abpLocalization }}</label>
+                 <nz-select nzAllowClear [(ngModel)]="filters.type">
+                    @for(option of issueTypeOptions; track option.value) {
+                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:IssueType.' + option.value) | abpLocalization"></nz-option>
+                    }
+                 </nz-select>
+            </div>
+            <div class="col">
+                 <label for="car-stage-filter">{{ '::Stage' | abpLocalization }}</label>
+                 <nz-select nzAllowClear [(ngModel)]="filters.stage">
+                    @for(option of stageOptions; track option.value) {
+                        <nz-option [nzValue]="option.value" [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"></nz-option>
+                    }
+                 </nz-select>
+            </div>
+        </ng-container>
+        
+        <div class="card">
+            <div class="card-body">
+                <ngx-datatable [rows]="issues.items" [count]="issues.totalCount" [list]="list" default>
+                    <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <div ngbDropdown container="body" class="d-inline-block">
+                                <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true"
+                                    ngbDropdownToggle>
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div ngbDropdownMenu>
+                                    <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem
+                                        (click)="showVinDetails(row)">
+                                        {{ '::VinDetails' | abpLocalization }}
+                                    </button>
+                                    <button *abpPermission="'WorkShopManagement.Issues'" ngbDropdownItem
+                                        (click)="showIssues(row)">
+                                        {{ '::Issues' | abpLocalization }}
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vin"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Notes' | abpLocalization" prop="srNo">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <span abpEllipsis>#{{ row.srNo }}: {{ row.description }}</span>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::IssueStatus' | abpLocalization" prop="status">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <app-issue-status-badge [status]="row.status"></app-issue-status-badge>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::IssueType' | abpLocalization" prop="type">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <span>{{ ('::Enum:IssueType.' + row.type) | abpLocalization}}</span>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Stage' | abpLocalization" prop="stage">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            <span>{{ ('::Enum:Stage.' + row.stage) | abpLocalization}}</span>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Created' | abpLocalization" prop="creationTime">
+                        <ng-template let-row="row" ngx-datatable-cell-template>
+                            @if (row.creatorName) {
+                            <span>{{ row.creatorName }} |</span>
+                            }
+                            <span>{{ row.creationTime | date:'MMM d, yy' }}</span>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </app-topbar-layout>
+    <app-issue-modal [(visible)]="isIssueModalOpen" [carId]="selected?.carId"></app-issue-modal>
+</abp-page>

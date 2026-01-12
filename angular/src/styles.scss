@@ -46,3 +46,10 @@
 
 
 }
+
+.clickable {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}

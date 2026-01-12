@@ -63,6 +63,9 @@ export const APP_ROUTES: Routes = [
   {
     path: 'arrival-estimates',
     loadComponent: () => import('./logistics-details/arrival-estimates/arrival-estimates').then(m => m.ArrivalEstimates),
+  },
+  {
+    path: 'issues',
+    loadComponent: () => import('./issues/issue-list/issue-list').then(m => m.IssueList)
   }
-
 ];
