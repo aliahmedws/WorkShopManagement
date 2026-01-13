@@ -16,8 +16,10 @@ export class TopbarLayoutComponent {
   @Input({ transform: booleanAttribute }) showFiltersToggle = false;
   @Input({ transform: booleanAttribute }) showApplyFilters = true;
   @Input({ transform: booleanAttribute }) showResetFilters = true;
+  @Input({ transform: booleanAttribute }) showBackButton = false;
 
   @Input({ transform: localizeKey }) filtersTitleKey = '::Filters';
+  @Input({ transform: localizeKey }) backText = '::Back';
 
   @Input() list: ListService;
 
@@ -29,6 +31,7 @@ export class TopbarLayoutComponent {
 
   @Output() onReset = new EventEmitter<any>();
   @Output() onFilter = new EventEmitter<any>();
+  @Output() onBack = new EventEmitter<void>();
 
   @Input({ transform: localizeKey }) searchPlaceholder = '::Search';
 

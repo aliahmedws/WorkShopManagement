@@ -1,17 +1,9 @@
-import { PagedResultDto, ListService, LocalizationPipe, PermissionDirective } from '@abp/ng.core';
-import { ThemeSharedModule } from '@abp/ng.theme.shared';
+import { PagedResultDto, ListService} from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PageModule } from '@abp/ng.components/page';
 
 import { CarModelDto, CarModelService, GetCarModelListDto } from '../proxy/car-models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
-import {
-  GetModelCategoryListDto,
-  ModelCategoryDto,
-  ModelCategoryService,
-} from '../proxy/model-categories';
 
 @Component({
   selector: 'app-car-model',
@@ -53,7 +45,7 @@ export class CarModel implements OnInit {
   }
 
    goBack(): void {
-    this.router.navigate(['/vehicles']);
+    this.router.navigate(['/car-model']);
   }
 
    normilzeUrl(url?: string) {

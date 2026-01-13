@@ -1,10 +1,5 @@
 <abp-page *abpPermission="'WorkShopManagement.CarModels'">
-  <app-topbar-layout titleKey="Menu:Variants" [(filters)]="filters" [list]="list">
-    <div topbarLeft>
-      <button type="button" class="btn btn-link p-0" (click)="goBack()" title="Back">
-        <i class="fa fa-arrow-left"></i>
-      </button>
-    </div>
+  <app-topbar-layout titleKey="Menu:Variants" [(filters)]="filters" [list]="list" showBackButton (onBack)="goBack()">
     <div class="card">
       <div class="card-body">
         <ngx-datatable [rows]="carModels.items" [count]="carModels.totalCount" [list]="list" default>
