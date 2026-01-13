@@ -32,4 +32,10 @@ public class StageAppService : WorkShopManagementAppService, IStageAppService
             Items = ObjectMapper.Map<List<StageModel>, List<StageDto>>(items.Items)
         };
     }
+
+    public async Task<List<StageBayDto>> GetBaysAsync()
+    {
+        var bays = await _stageRepository.GetBaysAsync();
+        return ObjectMapper.Map<List<StageBayModel>, List<StageBayDto>>(bays);
+    }
 }

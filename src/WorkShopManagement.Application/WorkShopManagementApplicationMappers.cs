@@ -226,3 +226,10 @@ public partial class StageModelToStageDtoMapper : MapperBase<StageModel, StageDt
     public override partial StageDto Map(StageModel source);
     public override partial void Map(StageModel source, StageDto destination);
 }
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class StageBayModelToStageBayDtoMapper : MapperBase<StageBayModel, StageBayDto>
+{
+    public override partial StageBayDto Map(StageBayModel source);
+    public override partial void Map(StageBayModel source, StageBayDto destination);
+}

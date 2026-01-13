@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Common;
 using WorkShopManagement.EntityFrameworkCore;
+using WorkShopManagement.Issues;
+using WorkShopManagement.Recalls;
 
 namespace WorkShopManagement.Stages;
 
@@ -98,6 +101,9 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                 // -- Recalls
                 RecallStatuses = ctx.Recalls.AsNoTracking().Where(r => r.CarId == car.Id).Select(r => r.Status),
 
+                //-- Issues
+                IssueStatuses = ctx.Issues.AsNoTracking().Where(r => r.CarId == car.Id).Select(r => r.Status),
+
                 // -- CarBay (active only; adjust ordering/key as appropriate)
                 CarBay = ctx.CarBays.AsNoTracking()
                     .Where(cb => cb.CarId == car.Id)
@@ -110,5 +116,95 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
             TotalCount = await carsBase.LongCountAsync(),
             Items = await query.ToListAsync()
         };
+    }
+
+    public async Task<List<StageBayModel>> GetBaysAsync()
+    {
+        var ctx = await GetDbContextAsync();
+
+        // Load active bays
+        var bays = await ctx.Bays
+            .AsNoTracking()
+            .Where(b => b.IsActive)
+            .Select(b => new { b.Id, b.Name })
+            .ToListAsync();
+
+        var bayIds = bays.Select(b => b.Id).ToList();
+
+        // Pull active car-bay rows (if multiple per bay, pick one deterministically)
+        var activeRows = await (
+            from carBay in ctx.CarBays.AsNoTracking()
+            where bayIds.Contains(carBay.BayId) && carBay.IsActive == true
+            join car in ctx.Cars.AsNoTracking() on carBay.CarId equals car.Id
+            join owner in ctx.CarOwners.AsNoTracking() on car.OwnerId equals owner.Id into ownerGroup
+            from owner in ownerGroup.DefaultIfEmpty()
+            join model in ctx.CarModels.AsNoTracking() on car.ModelId equals model.Id into modelGroup
+            from model in modelGroup.DefaultIfEmpty()
+            select new
+            {
+                carBay,
+                car,
+                OwnerName = owner != null ? owner.Name : null,
+                ModelName = model != null ? model.Name : null,
+                ImageUrl = model != null && model.FileAttachments != null ? model.FileAttachments.Path : null,
+            }
+        ).ToListAsync();
+
+        // Preload statuses in bulk (avoid correlated subqueries)
+        var carIds = activeRows.Select(x => x.car.Id).Distinct().ToList();
+
+        var recallMap = await ctx.Recalls.AsNoTracking()
+            .Where(r => carIds.Contains(r.CarId))
+            .GroupBy(r => r.CarId)
+            .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.Status).ToList());
+
+        var issueMap = await ctx.Issues.AsNoTracking()
+            .Where(i => carIds.Contains(i.CarId))
+            .GroupBy(i => i.CarId)
+            .ToDictionaryAsync(g => g.Key, g => g.Select(x => x.Status).ToList());
+
+        // Choose one active row per bay (example: lowest Priority value wins)
+        var activeByBay = activeRows
+            .GroupBy(x => x.carBay.BayId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(x => x.carBay.Priority).First()
+            );
+
+        var results = new List<StageBayModel>(bays.Count);
+
+        foreach (var bay in bays)
+        {
+            if (activeByBay.TryGetValue(bay.Id, out var x))
+            {
+                recallMap.TryGetValue(x.car.Id, out var recalls);
+                issueMap.TryGetValue(x.car.Id, out var issues);
+
+                results.Add(new StageBayModel
+                {
+                    CarBayId = x.carBay.Id,
+                    BayId = x.carBay.BayId,
+                    BayName = bay.Name,
+                    Priority = x.carBay.Priority,
+                    Vin = x.car.Vin,
+                    ManufactureStartDate = x.carBay.ManufactureStartDate,
+                    OwnerName = x.OwnerName,
+                    ModelName = x.ModelName,
+                    ImageUrl = x.ImageUrl,
+                    RecallStatuses = recalls ?? new List<RecallStatus>(),
+                    IssueStatuses = issues ?? new List<IssueStatus>(),
+                });
+            }
+            else
+            {
+                results.Add(new StageBayModel
+                {
+                    BayId = bay.Id,
+                    BayName = bay.Name
+                });
+            }
+        }
+
+        return results;
     }
 }

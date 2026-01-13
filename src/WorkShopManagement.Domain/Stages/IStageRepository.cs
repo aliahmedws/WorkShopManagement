@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
@@ -16,4 +17,6 @@ public interface IStageRepository : IRepository<Car, Guid>
         int maxResultCount = int.MaxValue,
         string? filter = null
         );
+    
+    Task<List<StageBayModel>> GetBaysAsync();
 }

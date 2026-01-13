@@ -18,8 +18,8 @@ public class StageDto
     public AvvStatus? AvvStatus { get; set; }
     public DateTime? EstimatedRelease { get; set; }
     public string? Notes { get; set; }
-    public string OwnerName { get; set; } = default!;
-    public string ModelName { get; set; } = default!;
+    public string? OwnerName { get; set; }
+    public string? ModelName { get; set; }
     public Port? Port { get; set; }
     public string? BookingNumber { get; set; }
     public string? ClearingAgent { get; set; }
