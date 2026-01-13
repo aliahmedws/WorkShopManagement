@@ -35,7 +35,7 @@ function configureRoutes() {
     },
     {
       path: '/vehicles',
-      name: '::Menu:Vehicles',
+      name: '::Menu:VehicleModels',
       iconClass: 'fas fa-car',
       order: 4,
       layout: eLayoutType.application,
