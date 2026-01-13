@@ -256,7 +256,7 @@
 
                         <div class="col-12 col-md-6 form-group">
                             <label class="form-label">{{ '::AvvStatus' | abpLocalization }}</label>
-                            <nz-select nzAllowClear formControlName="avvStatus">
+                            <nz-select nzAllowClear formControlName="avvStatus" nzSize="large">
                                 @for (option of avvStatusOptions; track option) {
                                 <nz-option [nzLabel]="('::Enum:AvvStatus.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
@@ -266,7 +266,7 @@
 
                         <div class="col-12 col-md-6 form-group">
                             <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
-                            <nz-select nzShowSearch nzAllowClear formControlName="storageLocation">
+                            <nz-select nzShowSearch nzAllowClear formControlName="storageLocation" nzSize="large">
                                 @for (option of storageLocationOptions; track option) {
                                 <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
