@@ -4,7 +4,7 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayDto, CarBayService, CreateCarBayDto, Priority, priorityOptions } from 'src/app/proxy/car-bays';
-import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
+import { CarService, CarDto } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
@@ -70,7 +70,6 @@ export class ExternalWarehouse {
 
   private buildForm(): void {
     this.form = this.fb.group({
-      manufactureStartDate: [this.selectedCarBay.manufactureStartDate || null, [Validators.required]],
       bayId: [this.selectedCarBay.bayId || null, [Validators.required]],
       priority: [this.selectedCarBay.priority || Priority.Medium, [Validators.required]],
     });
@@ -100,14 +99,13 @@ export class ExternalWarehouse {
     .subscribe(status => {
       if (status !== Confirmation.Status.confirm) return;
 
-      const { manufactureStartDate, bayId, priority } = this.form.value;
+      const { bayId, priority } = this.form.value;
 
       const input: CreateCarBayDto = {
         carId: this.selectedId!,
         bayId,
         priority,
-        isActive: true,
-        manufactureStartDate,
+        isActive: true
       };
 
       this.carBayService.create(input).subscribe(() => {

@@ -136,7 +136,7 @@ namespace WorkShopManagement.Cars
             // Only load logistics when the target stage requires it
             LogisticsDetail? logisticsDetail = null;
             //logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(car.Id);
-            if (targetStage == Stage.ExternalWarehouse)
+            if (targetStage == Stage.ExternalWarehouse || targetStage == Stage.Dispatched)
             {
                 // Prefer lookup by CarId (since LogisticsDetail FK is CarId)
                 logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(
@@ -196,6 +196,38 @@ namespace WorkShopManagement.Cars
                 if (!car.AvvStatus.HasValue)
                 {
                     throw new UserFriendlyException($"Car is missing \"AVV Status\". Cannot move it to Awaiting Transport.");
+                }
+            }
+
+            if (targetStage == Stage.Dispatched)
+            {
+                var missingLabels = new List<string>();
+
+                if (!car.AvvStatus.HasValue)
+                    missingLabels.Add("AVV status");
+
+                if (logisticsDetail is null)
+                {
+                    missingLabels.Add("Logistics details");
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(logisticsDetail.DeliverTo))
+                        missingLabels.Add("Deliver to");
+
+                    if (string.IsNullOrWhiteSpace(logisticsDetail.TransportDestination))
+                        missingLabels.Add("Transport destination");
+                }
+
+                if (!car.DeliverDate.HasValue)
+                    missingLabels.Add("Estimated release date");
+
+                if (missingLabels.Count > 0)
+                {
+                    var missing = missingLabels.JoinAsString(", ");
+                    throw new UserFriendlyException(
+                        message: $"Cannot dispatch this car. Please provide: {missing}."
+                    );
                 }
             }
         }

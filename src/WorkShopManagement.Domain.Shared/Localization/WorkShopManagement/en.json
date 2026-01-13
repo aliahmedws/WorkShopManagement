@@ -44,11 +44,12 @@
     "Permission:CarBayItems.Delete": "Delete",
 
 
-    "Enum:Stage.1": "Incoming",
-    "Enum:Stage.2": "External Warehouse",
+    "Enum:Stage.1": "Incoming Vehicle",
+    "Enum:Stage.2": "Dealer Warehouse (External)",
     "Enum:Stage.3": "Production",
     "Enum:Stage.4": "Post-Production",
     "Enum:Stage.5": "Awaiting Transport",
+    "Enum:Stage.6": "Dispatched",
     "Enum:Priority.1": "Low",
     "Enum:Priority.2": "Medium",
     "Enum:Priority.3": "High",
@@ -338,6 +339,8 @@
     "SuccessfullyMovedToExternalWarehouse": "Successfully Moved To External Warehouse",
     "ConfirmAssignToBayTitle": "Assign to Bay",
     "ConfirmAssignToBayMessage": "Are you sure you want to assign this car to the selected bay?",
+    "ConfirmDispatchedTitle": "Confirm Dispatch",
+    "ConfirmDispatchedMessage": "Are you sure you want to dispatch this car? This action cannot be undone.",
     "Success": "Success",
     "SuccessfullyMovedToNextStage": "Successfully moved to the next stage.",
     "ClickImageToCreateNewIssue": "Click anywhere on image to create issue",
@@ -416,6 +419,7 @@
     "EstimatedReleaseDateUpdated": "Estimated Release Date Updated",
     "NotesUpdatedSuccessfully": "Notes Updated Successfully",
     "Menu:VehicleModels": "Vehicle Models",
-    "Menu:VehicleInStock": "Vehicle InStock"
+    "Menu:VehicleInStock": "Vehicle InStock",
+    "CarDispatchedSuccessfully": "Car Dispatched Successfully"
   }
 }

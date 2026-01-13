@@ -10,10 +10,11 @@ import { Production } from "./production/production";
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostProduction } from './post-production/post-production';
 import { AwaitingTransport } from './awaiting-transport/awaiting-transport';
+import { Dispatched } from './dispatched/dispatched';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction, AwaitingTransport],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, Production, PostProduction, AwaitingTransport, Dispatched],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],

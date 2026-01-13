@@ -1,27 +1,23 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
-import { Confirmation } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayService, CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
-import { CarDto, CarService } from 'src/app/proxy/cars';
-import { Stage } from 'src/app/proxy/cars/stages';
+import { CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
+import { CarService, CarDto } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
-import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
 @Component({
-  selector: 'app-awaiting-transport',
+  selector: 'app-dispatched',
   imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
-  templateUrl: './awaiting-transport.html',
-  styleUrl: './awaiting-transport.scss'
+  templateUrl: './dispatched.html',
+  styleUrl: './dispatched.scss'
 })
-export class AwaitingTransport {
- private readonly carService = inject(CarService);
- private readonly confirm = inject(ConfirmationHelperService);
+export class Dispatched {
+private readonly carService = inject(CarService);
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService)
@@ -135,18 +131,6 @@ closeEstReleaseModal(): void {
       this.list.get();
     });
 }
-
-dispatched(carId: string){
-  this.confirm.confirmAction('::ConfirmDispatchedMessage', '::ConfirmDispatchedTitle').subscribe(status => {
-    if (status !== Confirmation.Status.confirm) return;
-
-    this.carService.changeStage(carId, { targetStage: Stage.Dispatched }).subscribe(() => {
-      this.toaster.success('::CarDispatchedSuccessfully', '::Success');
-      this.list.get();
-    });
-  });
-}
-
 
   private toDateInputValue(date: string | Date): string {
     const d = new Date(date);
