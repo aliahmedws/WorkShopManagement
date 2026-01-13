@@ -2554,6 +2554,31 @@
                     "type": "WorkShopManagement.Cars.CarDto",
                     "typeSimple": "WorkShopManagement.Cars.CarDto"
                   }
+                },
+                {
+                  "name": "UpdateAvvStatusAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.Cars.UpdateCarAvvStatusDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
+                      "typeSimple": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.Cars.CarDto",
+                    "typeSimple": "WorkShopManagement.Cars.CarDto"
+                  }
                 }
               ]
             }
@@ -2912,6 +2937,63 @@
                   "jsonName": null,
                   "type": "WorkShopManagement.Cars.ChangeCarStageDto",
                   "typeSimple": "WorkShopManagement.Cars.ChangeCarStageDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.Cars.CarDto",
+                "typeSimple": "WorkShopManagement.Cars.CarDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Cars.ICarAppService"
+            },
+            "UpdateAvvStatusAsyncByIdAndInput": {
+              "uniqueName": "UpdateAvvStatusAsyncByIdAndInput",
+              "name": "UpdateAvvStatusAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/cars/{id}/avvStatus",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.Cars.UpdateCarAvvStatusDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
+                  "typeSimple": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
+                  "typeSimple": "WorkShopManagement.Cars.UpdateCarAvvStatusDto",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -19256,6 +19338,27 @@
       ],
       "genericArguments": null,
       "properties": null
+    },
+    "WorkShopManagement.Cars.UpdateCarAvvStatusDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "AvvStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.AvvStatus?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
     },
     "WorkShopManagement.Cars.UpdateCarDto": {
       "baseType": null,

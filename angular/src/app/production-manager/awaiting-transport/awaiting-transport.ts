@@ -2,8 +2,8 @@ import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayService, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
-import { CarDto } from 'src/app/proxy/cars';
+import { CarBayService, CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
+import { CarDto, CarService } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
@@ -17,18 +17,17 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
   styleUrl: './awaiting-transport.scss'
 })
 export class AwaitingTransport {
- // private readonly carService = inject(CarService);
-  private readonly carBayService = inject(CarBayService)
+ private readonly carService = inject(CarService);
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService)
 
 
   form!: FormGroup;
+  avvForm!: FormGroup;
   StorageLocation = StorageLocation;
 
   @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
-
 
   @Input() filters: any = {};
   @Output() filtersChange = new EventEmitter<any>();
@@ -38,18 +37,17 @@ export class AwaitingTransport {
   selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
 
   isAssignModalVisible = false;
+  isAvvModalVisible = false;
 
   bayOptions: GuidLookupDto[] = [];
   selectedCarBay = {} as CarBayDto;
 
   priority = Priority;
+  aVVStatusOptions = avvStatusOptions;
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
-  // ngOnInit(): void {
-  //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-  //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  // }
+
 
   loadBays() {
     if (!this.bayOptions.length) {
@@ -61,50 +59,6 @@ export class AwaitingTransport {
     }
   }
 
-  private buildForm(): void {
-    this.form = this.fb.group({
-      manufactureStartDate: [this.selectedCarBay.manufactureStartDate || null, [Validators.required]],
-      bayId: [this.selectedCarBay.bayId || null, [Validators.required]],
-      priority: [this.selectedCarBay.priority || Priority.Medium, [Validators.required]],
-    });
-  }
-
-  openAssignModal(carId: string): void {
-    this.selectedId = carId;
-    this.loadBays();
-    this.buildForm();
-    this.isAssignModalVisible = true;
-  }
-
-  closeAssignModal(): void {
-    this.isAssignModalVisible = false;
-    // this.selectedCarBay = {};
-    this.selectedId = undefined;
-  }
-
-  assignToBay(): void {
-    if (!this.selectedId) return;
-
-    this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-
-    const { manufactureStartDate, bayId, priority } = this.form.value;
-
-    const input: CreateCarBayDto = {
-      carId: this.selectedId,
-      bayId,
-      priority,
-      isActive: true,
-      manufactureStartDate
-    };
-
-    this.carBayService.create(input).subscribe(() => {
-      this.toaster.assign();
-      this.isAssignModalVisible = false;
-      this.list.get();
-    });
-  }
-
   openRecallModal(car: CarDto): void {
     this.selectedCar = car;
     this.isRecallModalVisible = true;
@@ -113,5 +67,35 @@ export class AwaitingTransport {
   openCheckInModal(car: CarDto): void {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
+  }
+
+   openAvvModal(car: CarDto): void {
+    this.selectedCar = car;
+
+    this.avvForm = this.fb.group({
+      avvStatus: [car.avvStatus ?? null, [Validators.required]],
+    });
+
+    this.isAvvModalVisible = true;
+  }
+
+  closeAvvModal(): void {
+    this.isAvvModalVisible = false;
+    this.avvForm = undefined as any;
+  }
+
+  saveAvvStatus(): void {
+    if (!this.selectedCar?.id) return;
+
+    this.avvForm.markAllAsTouched();
+    if (this.avvForm.invalid) return;
+
+    const avvStatus = this.avvForm.value.avvStatus;
+
+    this.carService.updateAvvStatus(this.selectedCar.id, { avvStatus }).subscribe(() => {
+      this.isAvvModalVisible = false;
+      this.toaster.success('::AVVStatusUpdated', '::Success');
+      this.list.get();
+    });
   }
 }

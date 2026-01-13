@@ -4,7 +4,6 @@ using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using WorkShopManagement.Cars;
-using WorkShopManagement.Cars.Stages;
 
 namespace WorkShopManagement.Controllers.Cars;
 
@@ -52,6 +51,12 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     [HttpPut("change-car-stage/{id}")]
     public Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input)
     {
-       return carAppService.ChangeStageAsync(id, input);
+        return carAppService.ChangeStageAsync(id, input);
+    }
+
+    [HttpPut("{id}/avvStatus")]
+    public Task<CarDto> UpdateAvvStatusAsync(Guid id, UpdateCarAvvStatusDto input)
+    {
+        return carAppService.UpdateAvvStatusAsync(id, input);
     }
 }

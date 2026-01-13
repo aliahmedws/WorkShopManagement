@@ -409,6 +409,8 @@
     "Delete": "Delete",
     "FrontMoterNumbr": "Front Motor Number",
     "RearMotorNumber": "Rear Motor Number",
-    "RsvaImportApproval": "RSVA Import Approval"
+    "RsvaImportApproval": "RSVA Import Approval",
+    "UpdateAvvStatus": "AVV Status",
+    "AVVStatusUpdated": "AVV Status Updated"
   }
 }

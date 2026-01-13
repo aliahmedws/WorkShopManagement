@@ -277,6 +277,14 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         return ObjectMapper.Map<Car, CarDto>(car);
     }
 
+    [Authorize(WorkShopManagementPermissions.Cars.Edit)]
+    public async Task<CarDto> UpdateAvvStatusAsync(Guid id, UpdateCarAvvStatusDto input)
+    {
+        var car = await _carRepository.GetAsync(id);
+        car.SetAvvStatus(input.AvvStatus);
 
+        var entity = await _carRepository.UpdateAsync(car, autoSave: true);
 
+        return ObjectMapper.Map<Car, CarDto>(entity);
+    }
 }
