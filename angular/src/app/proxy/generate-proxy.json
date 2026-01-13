@@ -2579,6 +2579,31 @@
                     "type": "WorkShopManagement.Cars.CarDto",
                     "typeSimple": "WorkShopManagement.Cars.CarDto"
                   }
+                },
+                {
+                  "name": "UpdateEstimatedReleaseAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "estimatedReleaseDate",
+                      "typeAsString": "System.DateTime, System.Private.CoreLib",
+                      "type": "System.DateTime",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.Cars.CarDto",
+                    "typeSimple": "WorkShopManagement.Cars.CarDto"
+                  }
                 }
               ]
             }
@@ -2998,6 +3023,63 @@
                   "defaultValue": null,
                   "constraintTypes": null,
                   "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.Cars.CarDto",
+                "typeSimple": "WorkShopManagement.Cars.CarDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Cars.ICarAppService"
+            },
+            "UpdateEstimatedReleaseAsyncByIdAndEstimatedReleaseDate": {
+              "uniqueName": "UpdateEstimatedReleaseAsyncByIdAndEstimatedReleaseDate",
+              "name": "UpdateEstimatedReleaseAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/cars/{id}/estimated-release",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "estimatedReleaseDate",
+                  "typeAsString": "System.DateTime, System.Private.CoreLib",
+                  "type": "System.DateTime",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "estimatedReleaseDate",
+                  "name": "estimatedReleaseDate",
+                  "jsonName": null,
+                  "type": "System.DateTime",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
                   "descriptorName": ""
                 }
               ],

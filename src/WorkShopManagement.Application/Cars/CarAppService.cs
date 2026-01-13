@@ -287,4 +287,20 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
         return ObjectMapper.Map<Car, CarDto>(entity);
     }
+
+    [Authorize(WorkShopManagementPermissions.Cars.Edit)]
+    public async Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate)
+    {
+        var car = await _carRepository.GetAsync(id);
+
+
+        car.SetSchedule(
+            dueDate: car.DueDate,
+            deliverDate: estimatedReleaseDate,
+            startDate: car.StartDate
+        );
+
+        var entity = await _carRepository.UpdateAsync(car, autoSave: true);
+        return ObjectMapper.Map<Car, CarDto>(entity);
+    }
 }

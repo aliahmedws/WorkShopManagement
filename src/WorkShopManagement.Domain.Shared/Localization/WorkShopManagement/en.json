@@ -411,6 +411,8 @@
     "RearMotorNumber": "Rear Motor Number",
     "RsvaImportApproval": "RSVA Import Approval",
     "UpdateAvvStatus": "AVV Status",
-    "AVVStatusUpdated": "AVV Status Updated"
+    "AVVStatusUpdated": "AVV Status Updated",
+    "EstimatedRelease": "Estimated Release",
+    "EstimatedReleaseDateUpdated": "Estimated Release Date Updated"
   }
 }

@@ -73,7 +73,6 @@
                     </ng-container>
 
                     <ng-template #dash>-</ng-template>
-
                     </button>
                 </ng-template>
             </ngx-datatable-column>
@@ -101,8 +100,12 @@
             <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
                 [sortable]="false"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate" [maxWidth]="120">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    {{ value | date:'shortDate' }}
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <button type="button" class="btn btn-link p-0" (click)="openEstReleaseModal(row)">
+                    <span class="text-decoration-underline">
+                        {{ value ? (value | date:'shortDate') : '-' }}
+                    </span>
+                    </button>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"
@@ -142,13 +145,30 @@
   </ng-template>
 
   <ng-template #abpFooter>
-    <button type="button" class="btn btn-outline-secondary" (click)="closeAvvModal()">
-      {{ '::Cancel' | abpLocalization }}
-    </button>
-
     <button type="button" class="btn btn-primary" [disabled]="!avvForm || avvForm.invalid" (click)="saveAvvStatus()">
        <i class="fas fa-save me-1"></i>
         {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>
+
+<abp-modal [(visible)]="isEstReleaseModalVisible" [options]="{ size: 'md' }">
+  <ng-template #abpHeader>
+    {{ '::EstimatedRelease' | abpLocalization }}
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form *ngIf="estReleaseForm" [formGroup]="estReleaseForm" class="row g-3">
+      <div class="col-12">
+        <input type="date" class="form-control" formControlName="estimatedReleaseDate" />
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-primary" [disabled]="!estReleaseForm" (click)="saveEstRelease()">
+      <i class="fas fa-save me-1"></i>
+      {{ '::Save' | abpLocalization }}
     </button>
   </ng-template>
 </abp-modal>

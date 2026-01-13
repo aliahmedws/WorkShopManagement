@@ -79,4 +79,13 @@ export class CarService {
       body: input,
     },
     { apiName: this.apiName,...config });
+  
+
+  updateEstimatedRelease = (id: string, estimatedReleaseDate: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/${id}/estimated-release`,
+      params: { estimatedReleaseDate },
+    },
+    { apiName: this.apiName,...config });
 }

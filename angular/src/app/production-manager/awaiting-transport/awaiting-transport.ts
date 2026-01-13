@@ -25,6 +25,7 @@ export class AwaitingTransport {
 
   form!: FormGroup;
   avvForm!: FormGroup;
+  estReleaseForm!: FormGroup;
   StorageLocation = StorageLocation;
 
   @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
@@ -36,6 +37,7 @@ export class AwaitingTransport {
   selectedCar = {} as CarDto;
   selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
 
+  isEstReleaseModalVisible = false;
   isAssignModalVisible = false;
   isAvvModalVisible = false;
 
@@ -79,6 +81,23 @@ export class AwaitingTransport {
     this.isAvvModalVisible = true;
   }
 
+  openEstReleaseModal(car: CarDto): void {
+  this.selectedCar = car;
+
+  const dateValue = car.deliverDate ? this.toDateInputValue(car.deliverDate) : null;
+
+  this.estReleaseForm = this.fb.group({
+    estimatedReleaseDate: [dateValue],
+  });
+
+  this.isEstReleaseModalVisible = true;
+}
+
+closeEstReleaseModal(): void {
+  this.isEstReleaseModalVisible = false;
+  this.estReleaseForm = undefined as any;
+}
+
   closeAvvModal(): void {
     this.isAvvModalVisible = false;
     this.avvForm = undefined as any;
@@ -97,5 +116,27 @@ export class AwaitingTransport {
       this.toaster.success('::AVVStatusUpdated', '::Success');
       this.list.get();
     });
+  }
+
+  saveEstRelease(): void {
+  if (!this.selectedCar?.id) return;
+
+  const dateStr = this.estReleaseForm.value.estimatedReleaseDate as string | null;
+  if (!dateStr) return;
+
+  const estimatedReleaseDate = new Date(dateStr);
+    this.carService.updateEstimatedRelease(this.selectedCar.id, estimatedReleaseDate.toISOString()).subscribe(() => {
+      this.isEstReleaseModalVisible = false;
+      this.toaster.success('::EstimatedReleaseDateUpdated', '::Success');
+      this.list.get();
+    });
+}
+
+  private toDateInputValue(date: string | Date): string {
+    const d = new Date(date);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   }
 }

@@ -59,4 +59,10 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     {
         return carAppService.UpdateAvvStatusAsync(id, input);
     }
+
+    [HttpPut("{id}/estimated-release")]
+    public Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate)
+    {
+        return carAppService.UpdateEstimatedReleaseAsync(id, estimatedReleaseDate);
+    }
 }
