@@ -1,6 +1,7 @@
 import { EntityAttachmentDto, EntitySubType } from "src/app/proxy/entity-attachments";
 import { FileAttachmentDto } from "src/app/proxy/entity-attachments/file-attachments";
 import { IssueStatus } from "src/app/proxy/issues";
+import { mapIssueStatusColor } from "src/app/shared/utils/stage-colors.utils";
 
 export interface TabAttachments {
     tempFiles: FileAttachmentDto[];
@@ -19,25 +20,6 @@ export function createEmptyAttachmentsMap(): IssueAttachmentsMap {
 }
 
 export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
-    if (!status) return '';
-
-    switch (status) {
-        case IssueStatus.Pending:
-            return 'bg-danger';
-
-        case IssueStatus.Deferred:
-            return 'bg-warning';
-
-        case IssueStatus.InProgress:
-            return 'bg-info';
-
-        case IssueStatus.NoActionRequired:
-            return 'bg-success';
-
-        case IssueStatus.Resolved:
-            return 'bg-success';
-
-        default:
-            return 'bg-dark';
-    }
+    const color = mapIssueStatusColor(status);
+    return color ? `bg-${color}` : '';
 }
