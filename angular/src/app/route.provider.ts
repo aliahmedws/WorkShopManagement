@@ -34,7 +34,7 @@ function configureRoutes() {
       requiredPolicy: 'WorkShopManagement.Cars',
     },
     {
-      path: '/car-model'
+      path: '/car-model',
       name: '::Menu:VehicleModels',
       iconClass: 'fas fa-tags',
       order: 4,
