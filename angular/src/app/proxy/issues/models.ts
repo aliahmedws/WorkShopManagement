@@ -46,6 +46,7 @@ export interface IssueListDto {
   creatorId?: string;
   creatorName?: string;
   creationTime?: string;
+  hasBay: boolean;
 }
 
 export interface UpsertIssueDto {

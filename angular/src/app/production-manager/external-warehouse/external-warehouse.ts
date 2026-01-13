@@ -46,6 +46,7 @@ export class ExternalWarehouse {
   isAssignModalVisible = false;
 
   bayOptions: GuidLookupDto[] = [];
+  priorityOptions = priorityOptions;
   selectedCarBay = {} as CarBayDto;
 
   priority = Priority;
