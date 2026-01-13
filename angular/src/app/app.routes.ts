@@ -71,6 +71,10 @@ export const APP_ROUTES: Routes = [
       //   path: 'issues',
       //   loadComponent: () => import('./issues/issue-list/issue-list').then(m => m.IssueList)
       // }
+      {
+        path: 'bays',
+        loadComponent: () => import('./bays/bays').then(m => m.Bays)
+      }
     ]
   }
 ];

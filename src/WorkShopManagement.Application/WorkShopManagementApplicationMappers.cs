@@ -1,5 +1,6 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using WorkShopManagement.Bays;
 using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
@@ -232,4 +233,11 @@ public partial class StageBayModelToStageBayDtoMapper : MapperBase<StageBayModel
 {
     public override partial StageBayDto Map(StageBayModel source);
     public override partial void Map(StageBayModel source, StageBayDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class BayToBayDtoMapper : MapperBase<Bay, BayDto>
+{
+    public override partial BayDto Map(Bay source);
+    public override partial void Map(Bay source, BayDto destination);
 }

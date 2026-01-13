@@ -41,6 +41,14 @@ function configureRoutes() {
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Vehicles',
     },
+    {
+      path: '/bays',
+      name: '::Menu:Bays',
+      iconClass: 'fas fa-tools',
+      order: 5,
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Bays',
+    },
     // {
     //   path: '/issues',
     //   name: '::Menu:Issues',

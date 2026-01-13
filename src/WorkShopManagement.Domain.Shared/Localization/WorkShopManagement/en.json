@@ -10,6 +10,8 @@
     "NullField:00006": "A required field is missing or empty. Please complete all required fields and try again.",
     "CarModelAlreadyExists": "A car model with the same name : {name} already exists. Please use a different name.",
     "CarModelNotFound": "Car model was not found.",
+    "Permission:Bays": "Bays",
+    "Permission:SetIsActive": "Set Active",
 
     "Permission:Cars": "Cars",
     "Permission:Create": "Create",
@@ -119,6 +121,7 @@
     "NoFileChosen": "No File Chosen",
     "SuccessfullyUpdated": "Successfully Updated",
 
+    "Menu:Bays": "Bays",
     "Menu:Cars": "Cars",
     "AddNew": "Add New",
     "Error:InvalidVinLength": "VIN must be exactly 17 characters. The provided VIN is {length} characters long.",
@@ -433,6 +436,9 @@
     "NotesUpdatedSuccessfully": "Notes Updated Successfully",
     "Menu:VehicleModels": "Vehicle Models",
     "Menu:VehicleInStock": "Vehicle Stock",
-    "CarDispatchedSuccessfully": "Car Dispatched Successfully"
+    "CarDispatchedSuccessfully": "Car Dispatched Successfully",
+    "ChangeActiveStatus": "Change Active Status",
+    "ChangeBayStatus": "Change Bay Status",
+    "AreYouSureToChangeBayActiveStatus":  "Are you sure you want to change bay status?"
   }
 }
