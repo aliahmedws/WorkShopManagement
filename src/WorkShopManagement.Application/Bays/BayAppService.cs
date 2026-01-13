@@ -62,10 +62,13 @@ public class BayAppService : ApplicationService, IBayAppService
     {
         var bay = await _bayRepository.GetAsync(id);
 
-        var inUse = await _carBayRepository.AnyAsync(cb => cb.BayId == id && cb.IsActive == true);
-        if (inUse)
+        if (isActive)
         {
-            throw new UserFriendlyException("This bay has a vehicle in progress");
+            var inUse = await _carBayRepository.AnyAsync(cb => cb.BayId == id && cb.IsActive == true);
+            if (inUse)
+            {
+                throw new UserFriendlyException("This bay has a vehicle in progress");
+            }
         }
 
         bay.SetActive(isActive);
