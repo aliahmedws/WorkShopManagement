@@ -413,6 +413,8 @@
     "UpdateAvvStatus": "AVV Status",
     "AVVStatusUpdated": "AVV Status Updated",
     "EstimatedRelease": "Estimated Release",
-    "EstimatedReleaseDateUpdated": "Estimated Release Date Updated"
+    "EstimatedReleaseDateUpdated": "Estimated Release Date Updated",
+    "NotesUpdatedSuccessfully": "Notes Updated Successfully",
+    "Menu:VehicleModels": "Vehicle Models"
   }
 }

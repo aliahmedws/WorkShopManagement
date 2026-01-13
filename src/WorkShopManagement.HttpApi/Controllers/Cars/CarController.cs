@@ -65,4 +65,10 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     {
         return carAppService.UpdateEstimatedReleaseAsync(id, estimatedReleaseDate);
     }
+
+    [HttpPut("{id}/notes")]
+    public Task<CarDto> UpdateNotesAsync(Guid id, string? notes)
+    {
+        return carAppService.UpdateNotesAsync(id, notes);
+    }
 }

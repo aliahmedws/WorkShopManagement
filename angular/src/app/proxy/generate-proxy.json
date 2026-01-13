@@ -2604,6 +2604,31 @@
                     "type": "WorkShopManagement.Cars.CarDto",
                     "typeSimple": "WorkShopManagement.Cars.CarDto"
                   }
+                },
+                {
+                  "name": "UpdateNotesAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "notes",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.Cars.CarDto",
+                    "typeSimple": "WorkShopManagement.Cars.CarDto"
+                  }
                 }
               ]
             }
@@ -3075,6 +3100,63 @@
                   "name": "estimatedReleaseDate",
                   "jsonName": null,
                   "type": "System.DateTime",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.Cars.CarDto",
+                "typeSimple": "WorkShopManagement.Cars.CarDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Cars.ICarAppService"
+            },
+            "UpdateNotesAsyncByIdAndNotes": {
+              "uniqueName": "UpdateNotesAsyncByIdAndNotes",
+              "name": "UpdateNotesAsync",
+              "httpMethod": "PUT",
+              "url": "api/app/cars/{id}/notes",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "notes",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "notes",
+                  "name": "notes",
+                  "jsonName": null,
+                  "type": "System.String",
                   "typeSimple": "string",
                   "isOptional": false,
                   "defaultValue": null,

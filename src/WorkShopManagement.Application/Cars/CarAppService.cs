@@ -303,4 +303,14 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         var entity = await _carRepository.UpdateAsync(car, autoSave: true);
         return ObjectMapper.Map<Car, CarDto>(entity);
     }
+
+    public async Task<CarDto> UpdateNotesAsync(Guid id, string? notes)
+    {
+        var car = await _carRepository.GetAsync(id);
+
+        car.SetNotes(notes, car.MissingParts);
+
+        var entity = await _carRepository.UpdateAsync(car, autoSave: true);
+        return ObjectMapper.Map<Car, CarDto>(entity);
+    }
 }
