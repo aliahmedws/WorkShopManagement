@@ -27,7 +27,7 @@ function configureRoutes() {
     },
     {
       path: '/cars',
-      name: '::Menu:Cars',
+      name: '::Menu:VehicleInStock',
       iconClass: 'fas fa-car',
       order: 3,
       layout: eLayoutType.application,

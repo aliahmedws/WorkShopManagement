@@ -157,7 +157,7 @@
     "NewAttachment": "New Attachments",
     "ExistingAttachments": "Existing Attachments",
     "Menu:Models": "Models",
-    "Menu:Vehicles": "Vehicles",
+    "Menu:Vehicles": "Vehicle Models",
     "Menu:Issues": "Issues",
     "Variants": "Variants",
     "TransitInformation": "Transit Information",
@@ -184,7 +184,7 @@
     "Enum:Stage.AwaitingTransport": "Awaiting Transport",
     "Enum:Stage.Dispatched": "Dispatched",
     "ExternalWarehouse": "External Warehouse",
-    "Menu:Vehicle": "Vehicles",
+    "Menu:Vehicle": "Vehicle Models",
     "Menu:Variants": "Variants",
     "Recalls": "Recalls",
     "Enum:RecallType.Recalls": "Recalls",
@@ -415,6 +415,7 @@
     "EstimatedRelease": "Estimated Release",
     "EstimatedReleaseDateUpdated": "Estimated Release Date Updated",
     "NotesUpdatedSuccessfully": "Notes Updated Successfully",
-    "Menu:VehicleModels": "Vehicle Models"
+    "Menu:VehicleModels": "Vehicle Models",
+    "Menu:VehicleInStock": "Vehicle InStock"
   }
 }
