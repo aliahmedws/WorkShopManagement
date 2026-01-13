@@ -6,6 +6,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
 using WorkShopManagement.CarBayItems;
+using WorkShopManagement.CarBayItems.BatchCarBayItems;
 
 namespace WorkShopManagement.Controllers.CarBayItems;
 
@@ -51,5 +52,11 @@ public class CarBayItemController : AbpController, ICarBayItemAppService
     public async Task<CarBayItemDto> UpdateAsync(Guid id, UpdateCarBayItemDto input)
     {
         return await _service.UpdateAsync(id, input);
+    }
+
+    [HttpPost("batch")]
+    public async Task<SaveCarBayItemBatchResultDto> SaveBatchAsync([FromBody] SaveCarBayItemBatchDto input)
+    {
+        return await _service.SaveBatchAsync(input);
     }
 }

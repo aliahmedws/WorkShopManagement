@@ -157,7 +157,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         });
         // --- create end
 
-        return await GetAsync(entity.Id);
+        //return await GetAsync(entity.Id);
+        return ObjectMapper.Map<ListItem, ListItemDto>(entity);
     }
 
 

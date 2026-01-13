@@ -17,6 +17,8 @@ public static class CarConsts
     public const int MaxLocationStatusLength = 128;
     public const int MaxBookingNumberLength = 64;
     public const int MaxClearingAgentLength = 128;
+    public const int MaxBuildMaterialNumberLength = 64;
+    public const int MaxPdiStatusLength = 64;
 
     public const string DefaultSorting = "CreationTime DESC";
 

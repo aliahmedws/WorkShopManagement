@@ -14,8 +14,8 @@ export interface CarsXeRecallItemDto {
   remedy_available?: boolean;
   recall_remedy?: string;
   parts_available?: boolean;
-  labor_hours_min?: string;
-  labor_hours_max?: string;
+  labor_hours_min?: number;
+  labor_hours_max?: number;
   recall_status?: string;
 }
 

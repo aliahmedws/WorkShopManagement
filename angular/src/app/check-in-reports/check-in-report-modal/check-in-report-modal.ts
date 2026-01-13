@@ -1,12 +1,14 @@
 import { Component, inject, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ToasterService } from '@abp/ng.theme.shared';
+import { Confirmation, ToasterService } from '@abp/ng.theme.shared';
 import { ThemeSharedModule } from '@abp/ng.theme.shared';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ChoiceOptions } from 'src/app/proxy/utils/enums';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { CheckInReportDto, CheckInReportService, CreateCheckInReportDto, UpdateCheckInReportDto } from 'src/app/proxy/check-in-reports';
-import { CarDto, UpdateCarDto } from 'src/app/proxy/cars';
+import { CarDto, CarService, UpdateCarDto } from 'src/app/proxy/cars';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
+import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-check-in-report-modal',
@@ -19,7 +21,10 @@ export class CheckInReportModal {
 
   private fb = inject(FormBuilder);
   private service = inject(CheckInReportService);
+  private readonly carService = inject(CarService);
   private toaster = inject(ToasterService);
+  private readonly confirm = inject(ConfirmationHelperService);
+
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -31,8 +36,8 @@ export class CheckInReportModal {
   existingReport = {} as CheckInReportDto;
 
   // Enums for Select Lists
-  // choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
-  // storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
+  choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
+  storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
 
   modalOptions = {
     size: 'lg',
@@ -103,12 +108,31 @@ export class CheckInReportModal {
       ? this.service.update(this.existingReport.id, formValue as UpdateCheckInReportDto)
       : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.car.id });
 
-    request$
-      .subscribe(() => {
-        this.toaster.success('::SuccessfullySaved');
-        this.submit.emit();
-        this.close();
-      });
+    request$.subscribe({
+    next: () => {
+      this.confirm
+        .confirmAction('::ConfirmMoveToExternalWarehouseMessage', '::ConfirmMoveToExternalWarehouseTitle')
+        .subscribe((status: Confirmation.Status) => {
+          if (status !== Confirmation.Status.confirm) {
+            this.submit.emit();
+            this.close();
+            return;
+          }
+
+          this.carService.changeStage(this.car.id, { targetStage: Stage.ExternalWarehouse }).subscribe({
+            next: () => {
+              this.toaster.success('::SuccessfullyMovedToExternalWarehouse');
+              this.submit.emit();
+              this.close();
+            },
+            error: () => {
+              this.submit.emit();
+              this.close();
+            },
+          });
+        });
+    },
+  });
   }
 
   close() {

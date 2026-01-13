@@ -5,6 +5,7 @@ import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { CarCreateEditModal } from './car-create-edit-modal/car-create-edit-modal';
 import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { IssueModal } from '../issues/issue-modal/issue-modal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cars',
@@ -17,6 +18,7 @@ export class Cars implements OnInit {
   public readonly list = inject(ListService);
   private readonly carService = inject(CarService);
   private readonly confirmation = inject(ConfirmationHelperService);
+  private readonly router = inject(Router); // Inject Router
 
   cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
@@ -24,7 +26,6 @@ export class Cars implements OnInit {
 
   isModalVisible = false;
   selectedId?: string;
-  selectedCar: CarDto;
 
   isIssueModalVisible = false;
   
@@ -52,7 +53,14 @@ export class Cars implements OnInit {
   }
 
   showIssues(car: CarDto): void {
-    this.selectedCar = car;
+    this.selectedId = car?.id;
     this.isIssueModalVisible = true;
+  }
+
+  manageLogistics(carId: string, vin: string): void {
+    this.router.navigate(['/logistics-details'], { 
+      queryParams: { carId: carId, vin: vin },
+      // state: { vin: vin } // didnt work
+    });
   }
 }

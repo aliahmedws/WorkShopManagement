@@ -19,5 +19,5 @@ public class ListItemDto : FullAuditedEntityDto<Guid>
     public string ConcurrencyStamp { get; set; } = default!;
 
     public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
-    public List<RadioOptionDto> RadioOptions { get; set; } = new();
+    public List<RadioOptionDto>? RadioOptions { get; set; } = new();
 }

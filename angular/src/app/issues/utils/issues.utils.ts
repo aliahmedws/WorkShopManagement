@@ -1,5 +1,22 @@
+import { EntityAttachmentDto, EntitySubType } from "src/app/proxy/entity-attachments";
 import { FileAttachmentDto } from "src/app/proxy/entity-attachments/file-attachments";
-import { IssueDto, IssueStatus, UpsertIssueDto } from "src/app/proxy/issues";
+import { IssueStatus } from "src/app/proxy/issues";
+
+export interface TabAttachments {
+    tempFiles: FileAttachmentDto[];
+    existingFiles: EntityAttachmentDto[];
+}
+
+export type IssueAttachmentsMap = Record<EntitySubType, TabAttachments>;
+
+export function createEmptyAttachmentsMap(): IssueAttachmentsMap {
+    return {
+        [EntitySubType.Issue_Details]: { tempFiles: [], existingFiles: [] },
+        [EntitySubType.Issue_RectificationAction]: { tempFiles: [], existingFiles: [] },
+        [EntitySubType.Issue_QualityControl]: { tempFiles: [], existingFiles: [] },
+        [EntitySubType.Issue_RepairerDetails]: { tempFiles: [], existingFiles: [] },
+    };
+}
 
 export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
     if (!status) return '';
@@ -9,10 +26,10 @@ export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
             return 'bg-danger';
 
         case IssueStatus.Deferred:
-            return 'bg-info';
+            return 'bg-warning';
 
         case IssueStatus.InProgress:
-            return 'bg-warning';
+            return 'bg-info';
 
         case IssueStatus.NoActionRequired:
             return 'bg-success';
@@ -23,28 +40,4 @@ export function mapIssueStatusBgColor(status: IssueStatus | null): string | '' {
         default:
             return 'bg-dark';
     }
-}
-
-export function mapToUpsertIssueDto(issue: IssueDto, tempFiles?: FileAttachmentDto[]): UpsertIssueDto {
-    const upsert: UpsertIssueDto = {
-        id: issue.id,
-        srNo: issue.srNo,
-        xPercent: issue.xPercent,
-        yPercent: issue.yPercent,
-        type: issue.type,
-        status: issue.status,
-        originStage: issue.originStage,
-        deteriorationType: issue.deteriorationType,
-        description: issue.description,
-        rectificationAction: issue.rectificationAction,
-        rectificationNotes: issue.rectificationNotes,
-        qualityControlAction: issue.qualityControlAction,
-        qualityControlNotes: issue.qualityControlNotes,
-        repairerAction: issue.repairerAction,
-        repairerNotes: issue.repairerNotes,
-        tempFiles: tempFiles ?? [],
-        entityAttachments: issue.entityAttachments ?? []
-    };
-
-    return upsert;
 }

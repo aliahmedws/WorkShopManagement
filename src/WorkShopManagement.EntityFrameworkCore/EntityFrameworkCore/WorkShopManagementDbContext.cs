@@ -20,7 +20,7 @@ using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
 using WorkShopManagement.CheckInReports;
-using WorkShopManagement.CarsEx;
+using WorkShopManagement.VinInfos;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
@@ -30,6 +30,8 @@ using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 using WorkShopManagement.Recalls;
+using WorkShopManagement.LogisticsDetails;
+using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -89,7 +91,8 @@ public class WorkShopManagementDbContext :
     public DbSet<CarOwner> CarOwners { get; set; }
     public DbSet<Recall> Recalls { get; set; }
     public DbSet<Issue> Issues { get; set; }
-
+    public DbSet<ArrivalEstimate> ArrivalEstimates { get; set; }
+    public DbSet<LogisticsDetail> LogisticsDetails { get; set; }
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -272,6 +275,7 @@ public class WorkShopManagementDbContext :
                 .IsUnicode(false);
 
             b.HasIndex(x => x.Vin);
+            //.IsUnique();          // TODO: Ensure no duplicate VINs in Db. Clean and Enable later.
 
             b.HasOne(x => x.Owner)
                 .WithMany()
@@ -283,7 +287,12 @@ public class WorkShopManagementDbContext :
                 .HasForeignKey(x => x.ModelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-        });
+            b.HasOne(x => x.LogisticsDetail)
+             .WithOne()                                     // or .WithOne(x => x.Car) if you add nav on LogisticsDetail
+             .HasForeignKey<LogisticsDetail>(x => x.CarId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+             });
 
         builder.Entity<CarOwner>(b =>
         {
@@ -389,6 +398,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.CheckRadioOption).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCheckRadioOptionLength);
             b.Property(x => x.Comments).IsRequired(false).HasMaxLength(CarBayItemConsts.MaxCommentsLength);
 
+
             b.HasOne(x => x.CarBay)
                 .WithMany(x => x.CarBayItems)
                 .HasForeignKey(x => x.CarBayId)
@@ -396,7 +406,7 @@ public class WorkShopManagementDbContext :
 
             b.HasOne(x => x.ListItem)
                 .WithMany(x => x.CarBayItems)
-                .HasForeignKey(x => x.CarBayId)
+                .HasForeignKey(x => x.CheckListItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
 
@@ -441,5 +451,54 @@ public class WorkShopManagementDbContext :
                 .HasForeignKey(x => x.CarId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+
+
+        builder.Entity<LogisticsDetail>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "LogisticsDetails", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.CarId).IsRequired();
+
+            // 1:1 with Car 
+            b.HasIndex(x => x.CarId).IsUnique();
+
+            b.Property(x => x.BookingNumber).HasMaxLength(LogisticsDetailConsts.MaxBookingNumberLength);
+            b.Property(x => x.ClearingAgent).HasMaxLength(LogisticsDetailConsts.MaxClearingAgentLength);
+            b.Property(x => x.ClearanceRemarks).HasMaxLength(LogisticsDetailConsts.MaxClearanceRemarksLength);
+            b.Property(x => x.RsvaNumber).HasMaxLength(LogisticsDetailConsts.MaxRsvaNumberLength);
+
+            b.Property(x => x.DeliverTo).HasMaxLength(LogisticsDetailConsts.MaxDeliverToLength);
+            b.Property(x => x.DeliverNotes).HasMaxLength(LogisticsDetailConsts.MaxConfirmedDeliverDateNotesLength);
+            b.Property(x => x.TransportDestination).HasMaxLength(LogisticsDetailConsts.MaxTransportDestinationLength);
+
+            //b.HasOne<Car>()
+            //    .WithOne()                                      // you can change this if you add Car.LogisticsDetail navigation
+            //    .HasForeignKey<LogisticsDetail>(x => x.CarId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            // Estimates relationship
+            b.HasMany(x => x.ArrivalEstimates)
+                .WithOne()
+                .HasForeignKey(x => x.LogisticsDetailId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<ArrivalEstimate>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "ArrivalEstimates", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(x => x.LogisticsDetailId).IsRequired();
+
+            b.Property(x => x.EtaPort).IsRequired();
+            b.Property(x => x.EtaScd).IsRequired();
+
+            b.Property(x => x.Notes).HasMaxLength(ArrivalEstimateConsts.MaxNotesLength);
+
+            b.HasIndex(x => x.LogisticsDetailId);
+        });
+
+
     }
 }

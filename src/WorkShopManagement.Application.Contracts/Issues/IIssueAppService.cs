@@ -7,6 +7,7 @@ namespace WorkShopManagement.Issues;
 
 public interface IIssueAppService : IApplicationService
 {
-    Task UpsertAsync(Guid carId, UpsertIssuesRequestDto input);
+    Task<IssueDto> UpsertAsync(Guid carId, UpsertIssueDto input);
     Task<ListResultDto<IssueDto>> GetListByCarAsync(Guid carId);
+    Task<PagedResultDto<IssueListDto>> GetListAsync(GetIssueListInput input);
 }

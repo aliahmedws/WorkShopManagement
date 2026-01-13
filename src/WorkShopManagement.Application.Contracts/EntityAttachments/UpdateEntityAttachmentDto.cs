@@ -12,6 +12,9 @@ namespace WorkShopManagement.EntityAttachments
         public Guid EntityId { get; set; }
         [Required]
         public EntityType EntityType { get; set; }
+
+        public EntitySubType? SubType { get; set; }
+
         [Required]
         public List<FileAttachmentDto> TempFiles { get; set; } = [];
         [Required]

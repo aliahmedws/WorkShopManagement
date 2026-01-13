@@ -1,5 +1,6 @@
 import { authGuard, permissionGuard } from '@abp/ng.core';
 import { Routes } from '@angular/router';
+import { LogisticsDetailsCreateEdit } from './logistics-details/logistics-details-create-edit/logistics-details-create-edit';
 
 export const APP_ROUTES: Routes = [
   {
@@ -54,5 +55,17 @@ export const APP_ROUTES: Routes = [
   {
     path: 'check-in-report',
     loadComponent: () => import('./check-in-reports/check-in-report').then(m => m.CheckInReport)
+  },
+  {
+    path: 'logistics-details',
+    loadComponent: () => import('./logistics-details/logistics-details-create-edit/logistics-details-create-edit').then(m => m.LogisticsDetailsCreateEdit),
+  },
+  {
+    path: 'arrival-estimates',
+    loadComponent: () => import('./logistics-details/arrival-estimates/arrival-estimates').then(m => m.ArrivalEstimates),
+  },
+  {
+    path: 'issues',
+    loadComponent: () => import('./issues/issue-list/issue-list').then(m => m.IssueList)
   }
 ];

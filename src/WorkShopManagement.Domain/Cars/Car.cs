@@ -8,6 +8,8 @@ using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars.Exceptions;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.LogisticsDetails;
+using WorkShopManagement.QualityGates;
 using WorkShopManagement.Recalls;
 
 namespace WorkShopManagement.Cars;
@@ -15,6 +17,7 @@ namespace WorkShopManagement.Cars;
 [Audited]
 public class Car : FullAuditedAggregateRoot<Guid>
 {
+    // ToDo: VIN Duplicate Exception Handling
     public string Vin { get; private set; } = default!;         // TODO: unique index
     public string Color { get; private set; } = default!;
     public Guid OwnerId { get; private set; }
@@ -25,31 +28,36 @@ public class Car : FullAuditedAggregateRoot<Guid>
     public string? CncFirewall { get; private set; }
     public string? CncColumn { get; private set; }
 
-    public DateTime? DueDate { get; private set; }
-    public DateTime? DeliverDate { get; private set; }
-    public DateTime? StartDate { get; private set; }
+    public DateTime? DueDate { get; private set; }              
+    public DateTime? DeliverDate { get; private set; }          //
+    public DateTime? StartDate { get; private set; }            // Manufacture Start Date
     public DateTime? DueDateUpdated { get; private set; }
 
     public string? Notes { get; private set; }
     public string? MissingParts { get; private set; }
     public Stage Stage { get; private set; } = Stage.Incoming;
 
-    // Incoming / Transit vehicle data
-    public string? LocationStatus { get; private set; }
-    public DateTime? EtaBrisbane { get; private set; }
-    public DateTime? EtaScd { get; private set; }
-    public string? BookingNumber { get; private set; }
-    public string? ClearingAgent { get; private set; }
     public StorageLocation? StorageLocation { get; private set; }
+
+    // new below - move from car bay 
+    public string? BuildMaterialNumber { get; private set; }
+
+    public int? AngleBailment { get; private set; }
+    public AvvStatus? AvvStatus { get; set; }
+    public string? PdiStatus { get; private set; }
+
+    //---new above from car bays
 
 
     public virtual CarModel? Model { get; private set; }
     public virtual CarOwner? Owner { get; private set; }
-    public virtual ICollection<CarBay> CarBays { get; set; } = default!;
-    public virtual ICollection<Recall> Recalls { get; private set; } = default!;
+    public virtual ICollection<CarBay> CarBays { get; set; } = [];
+    public virtual ICollection<Recall> Recalls { get; private set; } = [];
+    public virtual ICollection<QualityGate> QualityGates { get; private set; } = [];
+    public virtual LogisticsDetail? LogisticsDetail { get; private set; }
     private Car() { }
 
-    public Car(
+    internal Car(
         Guid id,
         Guid ownerId,
         string vin,
@@ -57,7 +65,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
         Guid modelId,
         int modelYear,
 
-        Stage stage = Stage.Incoming,
+        //Stage stage = Stage.Incoming,
 
         string? cnc = null,
         string? cncFirewall = null,
@@ -68,12 +76,12 @@ public class Car : FullAuditedAggregateRoot<Guid>
         string? notes = null,
         string? missingParts = null,
 
-        string? locationStatus = null,
-        DateTime? etaBrisbane = null,
-        DateTime? etaScd = null,
-        string? bookingNumber = null,
-        string? clearingAgent = null,
-        StorageLocation? storageLocation = null
+        StorageLocation? storageLocation = null,
+
+        string? buildMaterialNumber = null,
+        int? angleBailment = null,
+        AvvStatus? avvStatus = null,
+        string? pdiStatus = null
 
     ) : base(id)
     {
@@ -82,18 +90,15 @@ public class Car : FullAuditedAggregateRoot<Guid>
         SetColor(color);
         SetModel(modelId);
         SetModelYear(modelYear);
-        SetStage(stage);
+        Stage = Stage.Incoming;
         SetCnc(cnc, cncFirewall, cncColumn);
         SetSchedule(dueDate, deliverDate, startDate);
         SetNotes(notes, missingParts);
-        SetTransitData(
-            locationStatus,
-            etaBrisbane,
-            etaScd,
-            bookingNumber,
-            clearingAgent,
-            storageLocation
-        );
+        SetStorageLocation(storageLocation);
+        SetBuildMaterialNumber(buildMaterialNumber);
+        SetAngleBailment(angleBailment);
+        SetAvvStatus(avvStatus);
+        SetPdiStatus(pdiStatus);
     }
 
     public void SetOwner(Guid ownerId)
@@ -165,29 +170,44 @@ public class Car : FullAuditedAggregateRoot<Guid>
         MissingParts = DomainCheck.TrimOptional(missingParts, nameof(missingParts), maxLength: CarConsts.MaxMissingPartsLength);
     }
 
-    public void SetStage(Stage stage)
+    internal void SetStage(Stage stage, LogisticsDetail? logisticDetail)              
     {
         Stage = Check.NotNull(stage, nameof(stage));
-    }
-
-    public void SetTransitData(
-        string? statusLocation,
-        DateTime? etaBrisbane,
-        DateTime? etaScd,
-        string? bookingNumber,
-        string? clearingAgent,
-        StorageLocation? storageLocation)
-    {
-        LocationStatus = DomainCheck.TrimOptional(statusLocation, nameof(statusLocation), maxLength: CarConsts.MaxLocationStatusLength);
-        EtaBrisbane = etaBrisbane;
-        EtaScd = etaScd;
-        BookingNumber = DomainCheck.TrimOptional(bookingNumber, nameof(bookingNumber), maxLength: CarConsts.MaxBookingNumberLength);
-        ClearingAgent = DomainCheck.TrimOptional(clearingAgent, nameof(clearingAgent), maxLength: CarConsts.MaxClearingAgentLength);
-        StorageLocation = storageLocation;
     }
 
     public void SetStorageLocation(StorageLocation? storageLocation)
     {
         StorageLocation = storageLocation;
     }
+
+    public void SetBuildMaterialNumber(string? buildMaterialNumber)
+    {
+        BuildMaterialNumber = DomainCheck.TrimOptional(
+            buildMaterialNumber,
+            nameof(buildMaterialNumber),
+            maxLength: CarConsts.MaxBuildMaterialNumberLength
+        );
+    }
+
+
+
+    public void SetAngleBailment(int? angleBailment)
+    {
+        AngleBailment = angleBailment; // add range check if you have a valid domain range
+    }
+
+    public void SetAvvStatus(AvvStatus? avvStatus)
+    {
+        AvvStatus = avvStatus;
+    }
+
+    public void SetPdiStatus(string? pdiStatus)
+    {
+        PdiStatus = DomainCheck.TrimOptional(
+            pdiStatus,
+            nameof(pdiStatus),
+            maxLength: CarConsts.MaxPdiStatusLength
+        );
+    }
+
 }

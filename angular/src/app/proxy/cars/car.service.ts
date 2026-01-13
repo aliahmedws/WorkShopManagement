@@ -1,4 +1,4 @@
-import type { CarDto, CreateCarDto, ExternalCarDetailsDto, GetCarListInput, UpdateCarDto } from './models';
+import type { CarDto, ChangeCarStageDto, CreateCarDto, ExternalCarDetailsDto, GetCarListInput, UpdateCarAvvStatusDto, UpdateCarDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
@@ -9,6 +9,15 @@ import { Injectable, inject } from '@angular/core';
 export class CarService {
   private restService = inject(RestService);
   apiName = 'Default';
+  
+
+  changeStage = (id: string, input: ChangeCarStageDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/change-car-stage/${id}`,
+      body: input,
+    },
+    { apiName: this.apiName,...config });
   
 
   create = (input: CreateCarDto, config?: Partial<Rest.Config>) =>
@@ -59,6 +68,33 @@ export class CarService {
       method: 'PUT',
       url: `/api/app/cars/${id}`,
       body: input,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  updateAvvStatus = (id: string, input: UpdateCarAvvStatusDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/${id}/avvStatus`,
+      body: input,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  updateEstimatedRelease = (id: string, estimatedReleaseDate: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/${id}/estimated-release`,
+      params: { estimatedReleaseDate },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  updateNotes = (id: string, notes: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/${id}/notes`,
+      params: { notes },
     },
     { apiName: this.apiName,...config });
 }

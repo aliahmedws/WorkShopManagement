@@ -10,4 +10,7 @@ public interface ICarRepository : IRepository<Car, Guid>
 {
     Task<long> GetLongCountAsync(string? filter = null, Stage? stage = null);
     Task<List<Car>> GetListAsync(int skipCount = 0, int maxResultCount = 10, string? sorting = null, string? filter = null, Stage? stage = null);
+
+    Task<Car> GetWithDetailsAsync(Guid id, bool asNoTracking = false);
+
 }

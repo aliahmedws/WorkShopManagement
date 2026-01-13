@@ -27,7 +27,7 @@ function configureRoutes() {
     },
     {
       path: '/cars',
-      name: '::Menu:Cars',
+      name: '::Menu:VehicleInStock',
       iconClass: 'fas fa-car',
       order: 3,
       layout: eLayoutType.application,
@@ -35,11 +35,19 @@ function configureRoutes() {
     },
     {
       path: '/vehicles',
-      name: '::Menu:Vehicles',
+      name: '::Menu:VehicleModels',
       iconClass: 'fas fa-car',
       order: 4,
       layout: eLayoutType.application,
       requiredPolicy: 'WorkShopManagement.Vehicles',
+    },
+    {
+      path: '/issues',
+      name: '::Menu:Issues',
+      iconClass: 'fas fa-cogs',
+      order: 5,
+      layout: eLayoutType.application,
+      requiredPolicy: 'WorkShopManagement.Issues',
     },
     // {
     //   path: '/check-in-report',

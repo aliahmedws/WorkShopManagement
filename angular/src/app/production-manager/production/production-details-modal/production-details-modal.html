@@ -83,29 +83,144 @@
           <div class="card shadow-sm h-100">
             <div class="card-header bg-white d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ details.modelName ?? '-' }}</div>
-              <span class="badge text-bg-light" *ngIf="details.modelImagePath">{{'::Image' | abpLocalization }}</span>
+              <!-- <span class="badge text-bg-light" *ngIf="details.modelImagePath">{{'::Image' | abpLocalization }}</span> -->
             </div>
 
-            <div class="card-body d-flex align-items-center justify-content-center image-body">
-              <ng-container *ngIf="details.modelImagePath; else noImage">
-                <img
-                  nz-image
-                  class="model-image"
-                  [nzSrc]="details.modelImagePath"
-                  [alt]="details.modelName || 'model'"
-                />
-              </ng-container>
+            <div class="card-body position-relative p-3">
 
-              <ng-template #noImage>
-                <div class="text-muted">{{'::Noimageavailable' | abpLocalization}}</div>
-              </ng-template>
+              <!-- TOP BUTTONS (overlay) -->
+              <div class="position-absolute top-0 start-0 p-3">
+
+                <button type="button" class="btn btn-sm btn-primary px-4">
+                  {{'::CriticalImages' | abpLocalization}}
+                </button>
+              </div>
+
+              <div class="position-absolute top-0 end-0 p-3">
+                <button type="button" class="btn btn-sm btn-primary px-4">
+                  {{'::Issues' | abpLocalization }}
+                </button>
+              </div>
+
+              <!-- IMAGE AREA -->
+              <div class="d-flex align-items-center justify-content-center" style="min-height: 520px;">
+                <ng-container *ngIf="details.modelImagePath; else noImage">
+                  <img nz-image class="img-fluid" [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
+                    style="max-height: 500px; object-fit: contain;" />
+                </ng-container>
+
+                <ng-template #noImage>
+                  <div class="text-muted">{{'::Noimageavailable' | abpLocalization}}</div>
+                </ng-template>
+              </div>
+
+              <!-- BOTTOM RIGHT STATUS + BUTTON -->
+              <div class="position-absolute bottom-0 end-0 p-3">
+                <div class="d-flex flex-column align-items-end gap-2">
+
+                  <!-- status text -->
+                  <div class="text-muted small">
+                    {{ '::Notcurrentlyclockedin.' | abpLocalization }}
+                  </div>
+
+                  <!-- buttons row -->
+                  <div class="d-flex flex-wrap justify-content-end gap-2">
+                    <button
+                      *ngIf="allowMovetoPostProduction"
+                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
+                      [disabled]="movingStage || !details?.carId">
+                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
+                      {{'::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
+                    </button>
+
+                     <button
+                      *ngIf="allowMovetoAwaitingTransport"
+                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
+                      [disabled]="movingStage || !details?.carId">
+                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
+                      {{'::Move to Awaiting Transport' | abpLocalization }}
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-primary px-4">
+                      {{ '::ClockIn' | abpLocalization }}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-    </ng-container>
+      <!-- Action Buttons Section (Bootstrap only) -->
+      <div class="mt-4 border-top pt-4">
+        <div class="row g-4">
 
+          <!-- AMQ Information -->
+          <div class="col-12 col-lg-4">
+            <div class="fw-bold text-center mb-3">{{'::AMQInformation' | abpLocalization }}</div>
+
+            <div class="row g-1">
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Issues' | abpLocalization }}</button>
+              </div>
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Notes' | abpLocalization }}</button>
+              </div>
+
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::JobCard' | abpLocalization}}</button>
+              </div>
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::PartsAccessories' | abpLocalization
+                  }}</button>
+              </div>
+
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Logistics' | abpLocalization }}</button>
+              </div>
+              <div class="col-6">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{"::Recalls" | abpLocalization }}</button>
+              </div>
+
+              <!-- Full width -->
+              <div class="col-12">
+                <button type="button" class="btn btn-sm btn-primary w-100">{{'::ServiceBulletin' | abpLocalization
+                  }}</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RVSA Documents -->
+          <div class="col-12 col-lg-4">
+            <div class="fw-bold text-center mb-3">{{'::RVSADocuments' | abpLocalization }}</div>
+
+            <div class="d-grid gap-3">
+              <button type="button" class="btn btn-sm btn-primary w-100">{{'::ViewModelReportSummary' |
+                abpLocalization}}</button>
+              <button type="button" class="btn btn-sm btn-primary w-100">{{'::ViewConsumerInformationNotice' |
+                abpLocalization }}</button>
+              <button type="button" class="btn btn-sm btn-primary w-100">
+                {{'::Re-generateUploadAllDocumentstoGDrive' | abpLocalization}}
+              </button>
+            </div>
+          </div>
+
+          <!-- Stickers -->
+          <div class="col-12 col-lg-4">
+            <div class="fw-bold text-center mb-3">{{'::Stickers' |abpLocalization }}</div>
+
+            <div class="d-grid gap-3">
+              <button type="button" class="btn btn-sm btn-primary w-100">{{'::PrintProductionStickers' | abpLocalization
+                }}</button>
+              <button type="button" class="btn btn-sm btn-primary w-100">{{'::PrintReceivingStickers' |
+                abpLocalization}}</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </ng-container>
     <ng-template #loadingTpl>
       <div class="p-4 text-center text-muted">{{'::Loading...' | abpLocalization}}</div>
     </ng-template>

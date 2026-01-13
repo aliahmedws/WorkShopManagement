@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Volo.Abp.Domain.Entities;
 
-namespace WorkShopManagement.CarsEx
+namespace WorkShopManagement.VinInfos
 {
     public class VinInfo : Entity<Guid>
     {

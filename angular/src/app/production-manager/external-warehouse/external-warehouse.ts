@@ -1,9 +1,11 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
+import { Confirmation } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayDto, CarBayService, CreateCarBayDto, Priority, priorityOptions } from 'src/app/proxy/car-bays';
 import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
+import { Stage } from 'src/app/proxy/cars/stages';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
@@ -20,7 +22,8 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
   styleUrl: './external-warehouse.scss'
 })
 export class ExternalWarehouse {
-  // private readonly carService = inject(CarService);
+  private readonly carService = inject(CarService);
+  private readonly confirm = inject(ConfirmationHelperService);
   private readonly carBayService = inject(CarBayService)
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
@@ -43,6 +46,7 @@ export class ExternalWarehouse {
   isAssignModalVisible = false;
 
   bayOptions: GuidLookupDto[] = [];
+  priorityOptions = priorityOptions;
   selectedCarBay = {} as CarBayDto;
 
   priority = Priority;
@@ -86,27 +90,36 @@ export class ExternalWarehouse {
   }
 
   assignToBay(): void {
-    if (!this.selectedId) return;
+  if (!this.selectedId) return;
 
-    this.form.markAllAsTouched();
-    if (this.form.invalid) return;
+  this.form.markAllAsTouched();
+  if (this.form.invalid) return;
 
-    const { manufactureStartDate, bayId, priority } = this.form.value;
+  this.confirm
+    .confirmAction('::ConfirmAssignToBayMessage', '::ConfirmAssignToBayTitle')
+    .subscribe(status => {
+      if (status !== Confirmation.Status.confirm) return;
 
-    const input: CreateCarBayDto = {
-      carId: this.selectedId,
-      bayId,
-      priority,
-      isActive: true,
-      manufactureStartDate
-    };
+      const { manufactureStartDate, bayId, priority } = this.form.value;
 
-    this.carBayService.create(input).subscribe(() => {
-      this.toaster.assign();
-      this.isAssignModalVisible = false;
-      this.list.get();
+      const input: CreateCarBayDto = {
+        carId: this.selectedId!,
+        bayId,
+        priority,
+        isActive: true,
+        manufactureStartDate,
+      };
+
+      this.carBayService.create(input).subscribe(() => {
+          this.carService.changeStage(this.selectedId!, { targetStage: Stage.Production }).subscribe(() => {
+          this.toaster.assign();
+          this.list.get();
+          this.isAssignModalVisible = false;
+          });
+      });
     });
-  }
+}
+
 
   openRecallModal(car: CarDto): void {
     this.selectedCar = car;

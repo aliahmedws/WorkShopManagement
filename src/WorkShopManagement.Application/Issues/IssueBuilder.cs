@@ -30,7 +30,6 @@ public class IssueBuilder
 
     public static Issue Update(Issue issue, UpsertIssueDto item)
     {
-        if (issue.SrNo != item.SrNo) issue.SetSrNo(item.SrNo);
         if (issue.XPercent != item.XPercent || issue.YPercent != item.YPercent) issue.SetCoordinates(item.XPercent, item.YPercent);
         if (issue.Type != item.Type) issue.SetType(item.Type);
         if (issue.Status != item.Status) issue.SetStatus(item.Status);

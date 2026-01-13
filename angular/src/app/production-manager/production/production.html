@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title align-items-center d-flex justify-content-center">
-            {{ '::AMQ-RAMRemanufactureLine' | abpLocalization }}
+            {{ '::Bays' | abpLocalization }}
         </div>
     </div>
 
@@ -94,4 +94,4 @@
 
 <!-- your grid / bay cards html stays the same -->
 
-<app-production-details-modal #detailsModal></app-production-details-modal>
+<app-production-details-modal #detailsModal (stageChanged)="onStageChanged($event)"></app-production-details-modal>
