@@ -1,9 +1,9 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
-using Volo.Abp.AspNetCore.Mvc;
 using WorkShopManagement.Bays;
 
 namespace WorkShopManagement.Controllers.Bays;
@@ -22,8 +22,14 @@ public class BayController : WorkShopManagementController, IBayAppService
     }
 
     [HttpGet]
-    public Task<ListResultDto<BayDto>> GetListAsync()
+    public Task<ListResultDto<BayDto>> GetListAsync(GetBayListInput input)
     {
-        return _bayAppService.GetListAsync();
+        return _bayAppService.GetListAsync(input);
+    }
+
+    [HttpPost("{id}/active/{isActive}")]
+    public Task SetIsActiveAsync(Guid id, bool isActive)
+    {
+        return _bayAppService.SetIsActiveAsync(id, isActive);
     }
 }

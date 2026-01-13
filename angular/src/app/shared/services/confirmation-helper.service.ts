@@ -4,8 +4,8 @@ import { Confirmation, ConfirmationService } from '@abp/ng.theme.shared';
 import { Observable } from 'rxjs';
 
 export const DELETE_CONFIRMATION_OPTIONS: Confirmation.Options = {
-    yesText: '::Button:ConfirmDelete',
-    icon: 'fas fa-trash text-danger'
+  yesText: '::Button:ConfirmDelete',
+  icon: 'fas fa-trash text-danger'
 } as const;
 
 export const ACTION_CONFIRMATION_OPTIONS: Confirmation.Options = {
@@ -16,19 +16,19 @@ export const ACTION_CONFIRMATION_OPTIONS: Confirmation.Options = {
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmationHelperService {
-    constructor(private confirmation: ConfirmationService) { }
+  constructor(private confirmation: ConfirmationService) { }
 
-    /**
-     * Shortcut for delete confirmation
-     */
-    confirmDelete(
-        messageKey = '::DeleteConfirmationMessage',
-        titleKey = '::DeleteConfirmationTitle'
-    ): Observable<Confirmation.Status> {
-        return this.confirmation.warn(messageKey, titleKey, DELETE_CONFIRMATION_OPTIONS);
-    }
+  /**
+   * Shortcut for delete confirmation
+   */
+  confirmDelete(
+    messageKey = '::DeleteConfirmationMessage',
+    titleKey = '::DeleteConfirmationTitle'
+  ): Observable<Confirmation.Status> {
+    return this.confirmation.warn(messageKey, titleKey, DELETE_CONFIRMATION_OPTIONS);
+  }
 
-    confirmAction(
+  confirmAction(
     messageKey: string,
     titleKey: string,
     options: Confirmation.Options = ACTION_CONFIRMATION_OPTIONS

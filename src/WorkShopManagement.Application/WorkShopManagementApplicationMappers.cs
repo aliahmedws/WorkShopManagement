@@ -1,5 +1,6 @@
 using Riok.Mapperly.Abstractions;
 using Volo.Abp.Mapperly;
+using WorkShopManagement.Bays;
 using WorkShopManagement.CarBayItems;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
@@ -19,6 +20,7 @@ using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 using WorkShopManagement.Recalls;
+using WorkShopManagement.Stages;
 
 namespace WorkShopManagement;
 
@@ -217,4 +219,25 @@ public partial class ArrivalEstimateToArrivalEstimateDtoMapper : MapperBase<Arri
 {
     public override partial ArrivalEstimateDto Map(ArrivalEstimate source);
     public override partial void Map(ArrivalEstimate source, ArrivalEstimateDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class StageModelToStageDtoMapper : MapperBase<StageModel, StageDto>
+{
+    public override partial StageDto Map(StageModel source);
+    public override partial void Map(StageModel source, StageDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class StageBayModelToStageBayDtoMapper : MapperBase<StageBayModel, StageBayDto>
+{
+    public override partial StageBayDto Map(StageBayModel source);
+    public override partial void Map(StageBayModel source, StageBayDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class BayToBayDtoMapper : MapperBase<Bay, BayDto>
+{
+    public override partial BayDto Map(Bay source);
+    public override partial void Map(Bay source, BayDto destination);
 }

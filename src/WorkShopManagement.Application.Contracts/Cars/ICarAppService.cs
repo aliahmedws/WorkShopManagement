@@ -14,5 +14,8 @@ public interface ICarAppService : IApplicationService
     Task DeleteAsync(Guid id);
     Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(string vin, string? modelYear = null);
     Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input);
+    Task<CarDto> UpdateAvvStatusAsync(Guid id, UpdateCarAvvStatusDto input);
+    Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate);
+    Task<CarDto> UpdateNotesAsync(Guid id, string? notes);
 
 }

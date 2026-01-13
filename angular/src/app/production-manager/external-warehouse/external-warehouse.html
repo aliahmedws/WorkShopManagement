@@ -115,21 +115,16 @@
         <form *ngIf="form" [formGroup]="form" class="row g-3">
 
             <!-- Manufacture Start Date -->
-            <div class="col-12 col-md-6">
+            <!-- <div class="col-12 col-md-12">
                 <label class="form-label fw-semibold">
                     {{ '::ManufactureStartDate' | abpLocalization }}
                 </label>
 
                 <input type="date" class="form-control" formControlName="manufactureStartDate" />
-
-                <div class="text-danger small mt-1"
-                    *ngIf="form.get('manufactureStartDate')?.touched && form.get('manufactureStartDate')?.invalid">
-                    {{ '::Required' | abpLocalization }}
-                </div>
-            </div>
+            </div> -->
 
             <!-- Bay -->
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-12">
                 <label class="form-label fw-semibold">
                     {{ '::BayNumber' | abpLocalization }}
                 </label>
@@ -139,35 +134,20 @@
                     <nz-option *ngFor="let option of bayOptions" [nzLabel]="option.displayName"
                         [nzValue]="option.id"></nz-option>
                 </nz-select>
-
-                <div class="text-danger small mt-1" *ngIf="form.get('bayId')?.touched && form.get('bayId')?.invalid">
-                    {{ '::Required' | abpLocalization }}
-                </div>
             </div>
 
             <!-- Priority -->
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-12">
                 <label class="form-label fw-semibold">
                     {{ '::Priority' | abpLocalization }}
                 </label>
 
                 <nz-select nzAllowClear nzSize="large" class="w-100" formControlName="priority"
                     [nzPlaceHolder]="'::Select' | abpLocalization">
-                    <nz-option [nzLabel]="('::Enum:Priority.1' | abpLocalization)" [nzValue]="priority.Low"></nz-option>
-                    <nz-option [nzLabel]="('::Enum:Priority.2' | abpLocalization)"
-                        [nzValue]="priority.Medium"></nz-option>
-                    <nz-option [nzLabel]="('::Enum:Priority.3' | abpLocalization)"
-                        [nzValue]="priority.High"></nz-option>
-                    <nz-option [nzLabel]="('::Enum:Priority.4' | abpLocalization)"
-                        [nzValue]="priority.Critical"></nz-option>
+                    <nz-option *ngFor="let option of priorityOptions" [nzLabel]="('::Enum:Priority.' + option.value | abpLocalization)"
+                        [nzValue]="option.value"></nz-option>
                 </nz-select>
-
-                <div class="text-danger small mt-1"
-                    *ngIf="form.get('priority')?.touched && form.get('priority')?.invalid">
-                    {{ '::Required' | abpLocalization }}
-                </div>
             </div>
-
         </form>
     </ng-template>
 

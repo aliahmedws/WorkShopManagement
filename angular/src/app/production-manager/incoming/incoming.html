@@ -40,6 +40,16 @@
                         abpLocalization }}</span>
                 </ng-template>
             </ngx-datatable-column>
+            <ngx-datatable-column
+                [name]="'::Notes' | abpLocalization"
+                [maxWidth]="100"
+                [sortable]="false"
+                >
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                       <span class="badge bg-danger" (click)="openNotesModal(row)" style="cursor: pointer;">{{ '::N' |
+                        abpLocalization }}</span>
+                </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
                 [sortable]="false"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate" [maxWidth]="120">
@@ -65,3 +75,26 @@
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()">
     </app-check-in-report-modal>
 </div>
+
+<abp-modal [(visible)]="isNotesModalVisible" [options]="{ size: 'xl' }">
+  <ng-template #abpHeader>
+    {{ '::Notes' | abpLocalization }}
+  </ng-template>
+
+  <ng-template #abpBody>
+    <form *ngIf="notesForm" [formGroup]="notesForm">
+      <textarea
+        class="form-control"
+        rows="14"
+        formControlName="notes"
+      ></textarea>
+    </form>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-primary" [disabled]="!notesForm" (click)="saveNotes()">
+      <i class="fas fa-save me-1"></i>
+      {{ '::Save' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

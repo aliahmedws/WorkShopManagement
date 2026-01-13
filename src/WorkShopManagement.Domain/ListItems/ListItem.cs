@@ -28,13 +28,12 @@ public class ListItem : FullAuditedAggregateRoot<Guid>
     public bool? IsSeparator { get; set; }
 
     public virtual ICollection<EntityAttachment> Attachments { get; set; } = new List<EntityAttachment>();
-    public virtual ICollection<RadioOption> RadioOptions { get; set; }
-    public virtual ICollection<CarBayItem> CarBayItems { get; set; }
+    public virtual ICollection<RadioOption>? RadioOptions { get; set; } = new List<RadioOption>();
+    public virtual ICollection<CarBayItem> CarBayItems { get; set; } = new List<CarBayItem>();
 
     private ListItem()
     {
-        RadioOptions = new List<RadioOption>();
-        CarBayItems = new List<CarBayItem>();
+
     }
 
     public ListItem(

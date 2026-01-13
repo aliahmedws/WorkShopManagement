@@ -4,6 +4,12 @@ public static class WorkShopManagementPermissions
 {
     public const string GroupName = "WorkShopManagement";
 
+    public static class Bays
+    {
+        public const string Default = GroupName + ".Bays";
+        public const string SetIsActive = Default + ".SetIsActive";
+    }
+
     public static class Cars
     {
         public const string Default = GroupName + ".Cars";

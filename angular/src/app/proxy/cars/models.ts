@@ -86,6 +86,10 @@ export interface GetCarListInput extends PagedAndSortedResultRequestDto {
   stage?: Stage;
 }
 
+export interface UpdateCarAvvStatusDto {
+  avvStatus?: AvvStatus;
+}
+
 export interface UpdateCarDto {
   ownerId?: string;
   owner: CreateCarOwnerDto;
