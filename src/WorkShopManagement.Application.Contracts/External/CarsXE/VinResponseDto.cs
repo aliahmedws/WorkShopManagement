@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WorkShopManagement.External.CarsXE
+namespace WorkShopManagement.External.CarsXe
 {
     public sealed class VinResponseDto
     {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
 
-        [JsonPropertyName("input")]
-        public CarsXeVinInputDto? Input { get; set; }
+        [JsonPropertyName("message")]
+        public string? Message { get; set; }
 
-        // Docs show this as "attributes" object containing vin/make/model/year/... :contentReference[oaicite:2]{index=2}
+        [JsonPropertyName("input")]
+        public VinInputDto? Input { get; set; }
+
         [JsonPropertyName("attributes")]
         public VinAttributesDto? Attributes { get; set; }
 
@@ -22,7 +22,7 @@ namespace WorkShopManagement.External.CarsXE
         public string? Timestamp { get; set; }
     }
 
-    public sealed class CarsXeVinInputDto
+    public sealed class VinInputDto
     {
         [JsonPropertyName("vin")]
         public string? Vin { get; set; }

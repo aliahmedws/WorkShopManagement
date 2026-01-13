@@ -9,7 +9,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.EntityAttachments;
-using WorkShopManagement.External.CarsXE;
+using WorkShopManagement.External.CarsXe;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Permissions;
 

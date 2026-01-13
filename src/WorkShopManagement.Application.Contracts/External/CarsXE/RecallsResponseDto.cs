@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace WorkShopManagement.External.CarsXE
+namespace WorkShopManagement.External.CarsXe
 {
     public sealed class RecallsResponseDto
     {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
+        [JsonPropertyName("message")]
+        public string? Message { get; set; }
 
         [JsonPropertyName("input")]
         public RecallsInputDto? Input { get; set; }
@@ -58,10 +58,10 @@ namespace WorkShopManagement.External.CarsXE
         public int RecallCount { get; set; }
 
         [JsonPropertyName("recalls")]
-        public List<CarsXeRecallItemDto>? Recalls { get; set; }
+        public List<RecallItemDto>? Recalls { get; set; }
     }
 
-    public sealed class CarsXeRecallItemDto
+    public sealed class RecallItemDto
     {
         [JsonPropertyName("recall_date")]
         public string? RecallDate { get; set; }

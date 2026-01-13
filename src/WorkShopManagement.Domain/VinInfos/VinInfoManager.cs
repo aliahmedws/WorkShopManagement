@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Volo.Abp;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Guids;
-using Volo.Abp.Timing;
+using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.VinInfos
 {
@@ -15,16 +12,23 @@ namespace WorkShopManagement.VinInfos
     {
         private readonly IRepository<VinInfo, Guid> _vinInfoRepository;
         private readonly IGuidGenerator _guidGenerator;
-        private readonly IClock _clock;
 
         public VinInfoManager(
             IRepository<VinInfo, Guid> vinInfoRepository,
-            IGuidGenerator guidGenerator,
-            IClock clock)
+            IGuidGenerator guidGenerator)
         {
             _vinInfoRepository = vinInfoRepository;
             _guidGenerator = guidGenerator;
-            _clock = clock;
+        }
+
+        public async Task<VinInfo?> FindVinAsync(string? vin, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(vin))
+            {
+                return null;
+            }
+
+            return await _vinInfoRepository.FirstOrDefaultAsync(x => x.VinNo == vin, cancellationToken: ct);
         }
 
         /// <summary>
@@ -37,24 +41,19 @@ namespace WorkShopManagement.VinInfos
             DateTime? updatedAt = null,
             CancellationToken ct = default)
         {
-            var vin = NormalizeVin(vinNo);
+            var vin = CarHelper.NormalizeAndValidateVin(vinNo);
 
-            var existing = await _vinInfoRepository.FirstOrDefaultAsync(
-                x => x.VinNo == vin,
-                cancellationToken: ct
-            );
+            var existing = await FindVinAsync(vin, ct);
 
-            var ts = updatedAt ?? _clock.Now;
+            var ts = updatedAt ?? Clock.Now;
 
             if (existing is null)
             {
                 var entity = new VinInfo(
-                    id: _guidGenerator.Create(),
+                    id: GuidGenerator.Create(),
                     vinNo: vin,
                     vinResponse: vinResponse,
-                    recallResponse: null,
-                    vinLastUpdated: ts,
-                    recallLastUpdated: default
+                    vinLastUpdated: ts
                 );
 
                 await _vinInfoRepository.InsertAsync(entity, autoSave: true, cancellationToken: ct);
@@ -77,23 +76,18 @@ namespace WorkShopManagement.VinInfos
             DateTime? updatedAt = null,
             CancellationToken ct = default)
         {
-            var vin = NormalizeVin(vinNo);
+            var vin = CarHelper.NormalizeAndValidateVin(vinNo);
 
-            var existing = await _vinInfoRepository.FirstOrDefaultAsync(
-                x => x.VinNo == vin,
-                cancellationToken: ct
-            );
+            var existing = await FindVinAsync(vin, ct);
 
-            var ts = updatedAt ?? _clock.Now;
+            var ts = updatedAt ?? Clock.Now;
 
             if (existing is null)
             {
                 var entity = new VinInfo(
-                    id: _guidGenerator.Create(),
+                    id: GuidGenerator.Create(),
                     vinNo: vin,
-                    vinResponse: null,
                     recallResponse: recallResponse,
-                    vinLastUpdated: default,
                     recallLastUpdated: ts
                 );
 
@@ -107,18 +101,60 @@ namespace WorkShopManagement.VinInfos
             return existing;
         }
 
-        private static string NormalizeVin(string vinNo)
+        public async Task<VinInfo> UpsertSpecsAsync(
+            string vinNo,
+            string specsResponse,
+            DateTime? updatedAt = null,
+            CancellationToken ct = default)
         {
-            if (vinNo.IsNullOrWhiteSpace())
-                throw new BusinessException("VinInfo:VinNoRequired");
+            var vin = CarHelper.NormalizeAndValidateVin(vinNo);
 
-            var normalized = vinNo.Trim().ToUpperInvariant();
+            var existing = await FindVinAsync(vin, ct);
 
-            // Optional: VINs are 17 chars typically; keep if you want strict validation
-            // if (normalized.Length != 17) throw new BusinessException("VinInfo:VinNoInvalidLength").WithData("Length", normalized.Length);
+            var ts = updatedAt ?? Clock.Now;
 
-            return normalized;
+            if (existing is null)
+            {
+                var entity = new VinInfo(
+                    id: GuidGenerator.Create(),
+                    vinNo: vin,
+                    specsResponse: specsResponse,
+                    specsLastUpdated: ts
+                );
+
+                await _vinInfoRepository.InsertAsync(entity, autoSave: true, cancellationToken: ct);
+                return entity;
+            }
+
+            existing.SetSpecs(specsResponse, ts);
+
+            await _vinInfoRepository.UpdateAsync(existing, autoSave: true, cancellationToken: ct);
+            return existing;
         }
 
+        public async Task<VinInfo> UpsertImagesAsync(
+            string vinNo,
+            string imagesResponse,
+            DateTime? updatedAt = null,
+            CancellationToken ct = default)
+        {
+            var vin = CarHelper.NormalizeAndValidateVin(vinNo);
+            var existing = await FindVinAsync(vin, ct);
+            var ts = updatedAt ?? Clock.Now;
+            if (existing is null)
+            {
+                var entity = new VinInfo(
+                    id: GuidGenerator.Create(),
+                    vinNo: vin,
+                    imagesResponse: imagesResponse,
+                    imagesLastUpdated: ts
+                );
+                await _vinInfoRepository.InsertAsync(entity, autoSave: true, cancellationToken: ct);
+                return entity;
+            }
+            existing.SetImages(imagesResponse, ts);
+            await _vinInfoRepository.UpdateAsync(existing, autoSave: true, cancellationToken: ct);
+            return existing;
+        }
     }
 }

@@ -5,23 +5,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Volo.Abp;
+using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Shared;
+using WorkShopManagement.Utils.Helpers;
 
-namespace WorkShopManagement.External.CarsXE
+namespace WorkShopManagement.External.CarsXe
 {
     public class CarsXeApiOptions
     {
         public const string ConfigurationKey = "External:CarsXe";
 
         public string BaseUrl { get; set; } = default!;
-
-        // Example values:
-        // "international-vin-decoder"
-        // "recalls"
         public string VinDecoderUrl { get; set; } = default!;
         public string RecallsUrl { get; set; } = default!;
-
-        // API key (kept in appsettings/secret store)
+        public string SpecsUrl { get; set; } = default!;
+        public string ImagesUrl { get; set; } = default!;
         public string ApiKey { get; set; } = default!;
     }
 
@@ -48,6 +46,12 @@ namespace WorkShopManagement.External.CarsXE
 
             if (options.RecallsUrl.IsNullOrWhiteSpace())
                 throw new AbpException($"{CarsXeApiOptions.ConfigurationKey}:RecallsUrl is missing.");
+
+            if (options.SpecsUrl.IsNullOrWhiteSpace())
+                throw new AbpException($"{CarsXeApiOptions.ConfigurationKey}:SpecsUrl is missing.");
+
+            if (options.ImagesUrl.IsNullOrWhiteSpace())
+                throw new AbpException($"{CarsXeApiOptions.ConfigurationKey}:ImagesUrl is missing.");
         }
     }
 
@@ -81,7 +85,7 @@ namespace WorkShopManagement.External.CarsXE
         {
             ArgumentNullException.ThrowIfNull(options);
 
-            var normalizedVin = NormalizeAndValidateVin(vin);
+            var normalizedVin = CarHelper.NormalizeAndValidateVin(vin);
 
             // e.g. GET /international-vin-decoder?key=...&vin=...
             var request = new RestRequest(options.VinDecoderUrl, Method.Get)
@@ -94,7 +98,7 @@ namespace WorkShopManagement.External.CarsXE
         {
             ArgumentNullException.ThrowIfNull(options);
 
-            var normalizedVin = NormalizeAndValidateVin(vin);
+            var normalizedVin = CarHelper.NormalizeAndValidateVin(vin);
 
             // e.g. GET /recalls?key=...&vin=...
             var request = new RestRequest(options.RecallsUrl, Method.Get)
@@ -103,17 +107,35 @@ namespace WorkShopManagement.External.CarsXE
             return request;
         }
 
-        public static string NormalizeAndValidateVin(string vin)
+        public static RestRequest CreateSpecsRequest(this CarsXeApiOptions options, string vin)
         {
-            if (vin.IsNullOrWhiteSpace())
-                throw new UserFriendlyException("VIN is required.");
-
-            var normalized = vin.Trim().ToUpperInvariant();
-
-            if (normalized.Length != 17)
-                throw new UserFriendlyException("VIN must be exactly 17 characters.");
-
-            return normalized;
+            ArgumentNullException.ThrowIfNull(options);
+            var normalizedVin = CarHelper.NormalizeAndValidateVin(vin);
+            // e.g. GET /specs?key=...&vin=...
+            var request = new RestRequest(options.SpecsUrl, Method.Get)
+                .AddQueryParameter("vin", normalizedVin);
+            return request;
         }
+
+        public static RestRequest CreateImagesRequest(this CarsXeApiOptions options, ImagesRequestDto input)
+        {
+            ArgumentNullException.ThrowIfNull(options);
+            // e.g. GET /images?key=...&make=...&model=...&year=...&trim=...&color=...&angle=...&size=All
+            var request = new RestRequest(options.ImagesUrl, Method.Get)
+                .AddQueryParameter("make", input.Make)
+                .AddQueryParameter("model", input.Model)
+                .AddQueryParameter("size", "All");
+
+            if(string.IsNullOrWhiteSpace(input.Year))  request.AddQueryParameter("year", input.Year!);
+            if(string.IsNullOrWhiteSpace(input.Trim))  request.AddQueryParameter("trim", input.Trim!);
+            if(string.IsNullOrWhiteSpace(input.Color))  request.AddQueryParameter("color", input.Color!);
+            if (string.IsNullOrWhiteSpace(input.Angle)) request.AddQueryParameter("angle", "front");
+
+            if(string.IsNullOrWhiteSpace(input.Make) && string.IsNullOrWhiteSpace(input.Model) && string.IsNullOrWhiteSpace(input.Year) && string.IsNullOrWhiteSpace(input.Trim))
+                request.AddQueryParameter("photoType", "exterior");
+
+            return request;
+        }
+
     }
 }

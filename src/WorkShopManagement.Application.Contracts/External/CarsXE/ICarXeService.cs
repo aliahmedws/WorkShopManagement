@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Volo.Abp.Application.Services;
+using Volo.Abp.DependencyInjection;
+using WorkShopManagement.External.CarsXE;
 
-namespace WorkShopManagement.External.CarsXE
+namespace WorkShopManagement.External.CarsXe
 {
-    public interface ICarXeService : IApplicationService
+    public interface ICarXeService : ITransientDependency
     {
         Task<VinResponseDto> GetVinAsync(
         string vinNo,
@@ -13,5 +14,14 @@ namespace WorkShopManagement.External.CarsXE
         Task<RecallsResponseDto> GetRecallAsync(
             string vinNo,
             CancellationToken ct = default);
+
+        Task<SpecsResponseDto> GetSpecsAsync(
+            string vinNo,
+            CancellationToken ct = default);
+
+        Task<ImagesResponseDto> GetImagesAsync(
+            ImagesRequestDto requestDto,
+            CancellationToken ct = default);
+
     }
 }

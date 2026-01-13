@@ -2,7 +2,7 @@
 using System;
 using Volo.Abp.Modularity;
 using WorkShopManagement.EntityAttachments.FileAttachments;
-using WorkShopManagement.External.CarsXE;
+using WorkShopManagement.External.CarsXe;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Twilio;
 using WorkShopManagement.External.Vpic;

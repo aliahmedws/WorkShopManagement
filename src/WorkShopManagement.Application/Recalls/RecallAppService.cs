@@ -8,7 +8,7 @@ using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
-using WorkShopManagement.External.CarsXE;
+using WorkShopManagement.External.CarsXe;
 using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.Recalls
