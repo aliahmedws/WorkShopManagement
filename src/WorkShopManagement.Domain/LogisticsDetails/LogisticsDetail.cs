@@ -44,7 +44,6 @@ namespace WorkShopManagement.LogisticsDetails
             SetCarId(carId);
             SetPort(port);
             SetBookingNumber(bookingNumber);
-
         }
 
         public void SetCarId(Guid carId)
@@ -98,6 +97,10 @@ namespace WorkShopManagement.LogisticsDetails
         {
             SetRsvaNumber(rsvaNumber);
             SetCreSubmissionDate(creSubmissionDate);
+        }
+        public void SetCreStatus(CreStatus creStatus)
+        {
+            CreStatus = creStatus;
         }
 
         public void SetActualArrivals(DateTime? actualPortArrivalDate, DateTime? actualScdArrivalDate)
@@ -163,11 +166,6 @@ namespace WorkShopManagement.LogisticsDetails
                 nameof(rsvsNumber),
                 maxLength: LogisticsDetailConsts.MaxRsvaNumberLength
             );
-
-            if (!string.IsNullOrWhiteSpace(rsvsNumber))
-                CreStatus = CreStatus.Submitted;
-            else
-                CreStatus = CreStatus.Pending;
         }
 
         internal void SetCreSubmissionDate(DateTime? creSubmissionDate)

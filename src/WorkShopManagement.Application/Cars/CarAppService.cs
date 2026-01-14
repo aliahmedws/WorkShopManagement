@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -177,11 +176,6 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.Color,
             input.ModelId,
             input.ModelYear,
-            input.Stage,         // Manager will handle ChangeStageAsync logic internally
-
-            //input.Make,
-            //input.Trim,
-
             input.Cnc,
             input.CncFirewall,
             input.CncColumn,

@@ -96,8 +96,6 @@ namespace WorkShopManagement.Cars
             Guid modelId,
             int modelYear,
 
-            Stage stage,
-
             string? cnc,
             string? cncFirewall,
             string? cncColumn,
@@ -126,8 +124,6 @@ namespace WorkShopManagement.Cars
             car.SetColor(color);
             car.SetModel(modelId);
             car.SetModelYear(modelYear);
-            await ChangeStageAsync(car.Id, stage, storageLocation);
-            //car.SetMakeTrim(make, trim);
             car.SetCnc(cnc, cncFirewall, cncColumn);
             car.SetSchedule(dueDate, deliverDate, startDate);
             car.SetNotes(notes, missingParts);
@@ -192,6 +188,10 @@ namespace WorkShopManagement.Cars
                 else if (string.IsNullOrWhiteSpace(logisticsDetail.RsvaNumber))
                 {
                     missingFields.Add("LogisticsDetail.RsvaNumber");
+                }
+                else if (logisticsDetail.CreStatus.Equals(CreStatus.Pending))
+                {
+                    missingFields.Add("LogisticsDetail.CreStatus.Pending");
                 }
 
                 if (!car.StorageLocation.HasValue && !storageLocation.HasValue)

@@ -8,6 +8,7 @@ using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars.Exceptions;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
+using WorkShopManagement.Extensions;
 using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.Recalls;
@@ -181,7 +182,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     internal void SetStage(Stage stage, LogisticsDetail? logisticDetail)              
     {
-        Stage = Check.NotNull(stage, nameof(stage));
+        Stage = stage.EnsureDefined(nameof(Stage));
     }
 
     public void SetStorageLocation(StorageLocation? storageLocation)

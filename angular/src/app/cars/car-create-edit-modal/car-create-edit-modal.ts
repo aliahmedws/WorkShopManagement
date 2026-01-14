@@ -5,13 +5,10 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
-// import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
-// import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments/models';
 import { avvStatusOptions } from 'src/app/proxy/car-bays/avv-status.enum';
 import { CarExternalResponseModal } from "../car-external-response-modal/car-external-response-modal";
-import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-car-create-edit-modal',
@@ -112,8 +109,6 @@ export class CarCreateEditModal {
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],
 
-      stage: [dto?.stage ?? Stage.Incoming],
-
       // owner
       ownerId: [dto?.ownerId ?? null, Validators.required],
       owner: this.fb.group({
@@ -176,16 +171,6 @@ export class CarCreateEditModal {
       owner: isNewOwner ? formValue.owner : null,
     };
 
-    // const req$ = this.carId
-    //   ? this.carService.update(this.carId, payload)
-    //   : this.carService.create(payload);
-
-    // req$
-    //   .subscribe((dto: CarDto) => {
-    //     this.toaster.createdOrUpdated(this.carId);
-    //     this.close();
-    //     this.submit.emit(dto);
-    //   });
 
     if (this.carId) {
       // --- UPDATE FLOW ---
@@ -198,8 +183,6 @@ export class CarCreateEditModal {
       this.carService.update(this.carId, updateInput).subscribe(this.handleSuccess);
     } else {
       // --- CREATE FLOW ---
-      // Remove Stage (backend defaults to Incoming)
-      // const { stage, ...createData } = basePayload;
       const {...createData } = basePayload;
 
       const createInput: CreateCarDto = {
