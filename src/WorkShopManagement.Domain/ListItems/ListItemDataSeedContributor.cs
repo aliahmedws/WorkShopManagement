@@ -315,7 +315,7 @@ public class ListItemDataSeedContributor : ITransientDependency
             new(31, "Lighting", "Lighting", null, false, true),
 
             new(32, "LHS Headlight", "LHS Headlight", CommentType.String, true, false),
-            new(33, "RHS Headlight", "RHS Headlight", null, false, true),
+            new(33, "RHS Headlight", "RHS Headlight", CommentType.String, true, false),
             new(34, "LHS Taillight", "LHS Taillight", CommentType.String, true, false),
             new(35, "RHS Taillight", "RHS Taillight", CommentType.String, true, false),
             new(36, "CHMSL", "CHMSL", CommentType.String, true, false),

@@ -1,96 +1,105 @@
-<div class="card">
-    <div class="card-header">
+<!-- <div class="card"> -->
+<!-- <div class="card-header">
         <div class="card-title align-items-center d-flex justify-content-center">
             {{ '::Bays' | abpLocalization }}
         </div>
-    </div>
+    </div> -->
 
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-12 col-md-6 col-xl-3" *ngFor="let bay of bayOptions; trackBy: trackByBayId">
+<!-- <div class="card-body"> -->
+<div class="row g-3">
+    @for (bay of activeCarBays; track bay.bayId) {
+    <div class="col-12 col-md-6 col-xl-3">
 
-                <!-- Bay title -->
-                <div class="bay-title text-center mb-2">
-                    {{ bay.displayName }}
+        <!-- Bay title -->
+        <div class="bay-title text-center mb-2">
+            {{ bay.bayName }}
+        </div>
+
+        <!-- get assignment -->
+        <!-- @let a = getAssignment(bay.id); -->
+
+        <div class="bay-box" [class.bay-box--assigned]="!!bay.carId" role="button" tabindex="0"
+            (click)="onOpenBay(bay)">
+
+            <!-- Unassigned -->
+            <ng-container *ngIf="!bay.carId; else assignedTpl">
+                <div class="bay-box__center text-muted fw-semibold">
+                    {{ '::Unassigned' | abpLocalization }}
                 </div>
+            </ng-container>
 
-                <!-- get assignment -->
-                @let a = getAssignment(bay.id);
+            <!-- Assigned -->
+            <ng-template #assignedTpl>
+                <div class="bay-card p-2">
 
-                <div class="bay-box" [class.bay-box--assigned]="!!a" role="button" tabindex="0"
-                    (click)="onOpenBay(bay)">
-
-                    <!-- Unassigned -->
-                    <ng-container *ngIf="!a; else assignedTpl">
-                        <div class="bay-box__center text-muted fw-semibold">
-                            {{ '::Unassigned' | abpLocalization }}
+                    <!-- top row -->
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div class="fw-bold">
+                            {{ vinLast6(bay.vin) }}
                         </div>
-                    </ng-container>
 
-                    <!-- Assigned -->
-                    <ng-template #assignedTpl>
-                        <div class="bay-card p-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge text-bg-warning">
+                                {{'::Enum:Priority.' + bay.priority | abpLocalization}}
+                            </span>
 
-                            <!-- top row -->
-                            <div class="d-flex align-items-start justify-content-between">
-                                <div class="fw-bold">
-                                    {{ vinLast6(a?.carVin) }}
-                                </div>
+                            <button type="button" class="btn btn-sm btn-link text-danger p-0 bay-clear"
+                                *ngIf="bay.bayId" (click)="onDelete(bay.bayId, $event)" aria-label="Clear bay"
+                                title="Clear bay">
+                                ✕
+                            </button>
 
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge text-bg-warning">
-                                        {{ priorityText(a?.priority) }}
-                                    </span>
+                        </div>
+                    </div>
 
-                                    <button type="button" class="btn btn-sm btn-link text-danger p-0 bay-clear"
-                                        *ngIf="a?.id" (click)="onDelete(a.id, $event)" aria-label="Clear bay"
-                                        title="Clear bay">
-                                        ✕
-                                    </button>
+                    <div class="d-flex justify-content-center my-2">
+                        <img *ngIf="bay.imageUrl; else noImg" nz-image width="160" height="95" [nzSrc]="bay.imageUrl"
+                            [alt]="bay.modelName || 'model'"
+                            style="object-fit: cover; border-radius: 2px; pointer-events: none;" />
 
-                                </div>
+                        <ng-template #noImg>
+                            <div class="text-muted small">-</div>
+                        </ng-template>
+                    </div>
+
+
+                    <!-- center text -->
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <div class="small fw-bold">
+                                {{ bay.ownerName ?? '-' }}
                             </div>
 
-                            <div class="d-flex justify-content-center my-2">
-                                <img *ngIf="a?.modelImagePath; else noImg" nz-image width="160" height="95"
-                                    [nzSrc]="a.modelImagePath" [alt]="a?.modelName || 'model'"
-                                    style="object-fit: cover; border-radius: 2px; pointer-events: none;"/>
-
-                                <ng-template #noImg>
-                                    <div class="text-muted small">-</div>
-                                </ng-template>
+                            <div class="small fw-bold">
+                                {{ bay.modelName ?? '-' }}
                             </div>
 
+                            <div class="small fw-bold">
+                                {{ '::ManufactureStartDate' | abpLocalization }}:
+                                <span *ngIf="bay.manufactureStartDate; else dashDate">
+                                    {{ bay.manufactureStartDate | date:'dd/MMM/yyyy' }}
+                                </span>
+                                <ng-template #dashDate>-</ng-template>
+                            </div>
 
-                            <!-- center text -->
-                            <div class="text-center">
-                                <div class="small fw-bold">
-                                    {{ a?.ownerName ?? '-' }}
-                                </div>
-
-                                <div class="small fw-bold">
-                                    {{ a?.modelName ?? '-' }}
-                                </div>
-
-                                <div class="small fw-bold">
-                                    {{ '::ManufactureStartDate' | abpLocalization }}:
-                                    <span *ngIf="a?.manufactureStartDate; else dashDate">
-                                        {{ a?.manufactureStartDate | date:'dd/MMM/yyyy' }}
-                                    </span>
-                                    <ng-template #dashDate>-</ng-template>
-                                </div>
-
-                                <div class="small fw-bold">
+                            <!-- <div class="small fw-bold">
                                     {{ a?.modelCategoryName ?? '-' }}
-                                </div>
-                            </div>
+                                </div> -->
                         </div>
-                    </ng-template>
+                        <div>
+                            <div class="text-{{getRecallColor(bay)}} fs-5 fw-bold">R</div>
+                            <div class="text-{{getIssueColor(bay)}} fs-4"><i class="fas fa-triangle-exclamation"></i></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </ng-template>
         </div>
     </div>
+    }
+
 </div>
+<!-- </div>
+</div> -->
 
 <!-- your grid / bay cards html stays the same -->
 

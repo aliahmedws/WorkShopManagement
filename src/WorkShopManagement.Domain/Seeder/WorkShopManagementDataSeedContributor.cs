@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Entities;
@@ -21,6 +23,7 @@ using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.ListItems;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.RadioOptions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace WorkShopManagement.Seeder;
@@ -858,7 +861,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
             new(31, "Lighting", "Lighting", null, false, true),
 
             new(32, "LHS Headlight", "LHS Headlight", CommentType.String, true, false),
-            new(33, "RHS Headlight", "RHS Headlight", null, false, true),
+            new(33, "RHS Headlight", "RHS Headlight", CommentType.String, true, false),
             new(34, "LHS Taillight", "LHS Taillight", CommentType.String, true, false),
             new(35, "RHS Taillight", "RHS Taillight", CommentType.String, true, false),
             new(36, "CHMSL", "CHMSL", CommentType.String, true, false),
@@ -1525,64 +1528,53 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
     private static IReadOnlyList<RadioSeed> GetStation0_RadioSeeds()
     => new List<RadioSeed>
     {
-            new(2,  "Yes", "No", "N/A"),
-            new(3,  "Yes", "No", "N/A"),
-            new(5,  "Yes", "No", "N/A"),
-            new(6,  "Yes", "No", "N/A"),
-
-            new(8,  "2", "1", "0"),
-            new(9,  "No Lock Nuts", "Missing Key", "Lock Nuts with Key"),
-
-            new(10, "Present", "Missing"),
+            new(1, "Yes", "No", "N/A"),
+            new(3, "Completed", "Deferred"),
+            new(4, "Yes", "No", "N/A"),
+            new(6, "Yes", "No", "N/A"),
+            new(7, "Yes", "No", "N/A"),
+            new(9, "2", "1", "0"),
+            new(10, "No Lock Nuts", "Missing Key", "Lock Nuts with Key"),
             new(11, "Present", "Missing"),
             new(12, "Present", "Missing"),
             new(13, "Present", "Missing"),
-
-            new(15, "Yes", "No", "N/A"),
+            new(14, "Present", "Missing"),
             new(16, "Yes", "No", "N/A"),
             new(17, "Yes", "No", "N/A"),
-
-            new(19, "Yes", "No", "N/A"),
+            new(18, "Yes", "No", "N/A"),
             new(20, "Yes", "No", "N/A"),
             new(21, "Yes", "No", "N/A"),
-
+            new(22, "Yes", "No", "N/A"),
             new(23, "Yes", "No", "N/A"),
             new(24, "Yes", "No", "N/A"),
-
-            new(26, "SAE HL A I5 P P2 22TK", "Other (Write In Comments)"),
-            new(27, "SAE HL A I5 P P2 22TK", "Other (Write In Comments)"),
-
-            new(28, "SAE AIP2RST 22TK", "Other (Write In Comments)"),
-            new(29, "SAE AIP2RST 22TK", "Other (Write In Comments)"),
-
-            new(30, "SAE U3 (2)G 17TK", "SAE U3 (2)G 15TK", "Other (Write In Comments)"),
-
-            new(31, "SAE E220", "N/A", "Other (Write In Comments)"),
-            new(32, "SAE E220", "N/A", "Other (Write In Comments)"),
-
-            new(34, "DOT-22 M50L1 AS1", "Other (Write In Comments)"),
-
-            new(35, "E11 43R-000257", "Other (Write In Comments)"),
-            new(36, "E11 43R-000257", "Other (Write In Comments)"),
-
-            new(37, "DOT-467 M40T3 AS3", "Other (Write In Comments)"),
-            new(38, "DOT-467 M40T3 AS3", "Other (Write In Comments)"),
-
-            new(39, "E11 43R-000147", "Other (Write In Comments)"),
-
-            new(40, "N/A", "E2 43R 0115131", "Other (Write In Comments)"),
-            new(41, "N/A", "E2 43R 0115131", "Other (Write In Comments)"),
-
-            new(42, "E11 026533", "Other (Write In Comments)"),
-
-            new(44, "Michelin", "General", "Hankook", "Goodyear", "Other (Write In Comments)"),
-
-            new(46, "No", "Yes"),
-            new(47, "Pass", "Fail", "N/A"),
-            new(48, "Pass", "Fail", "N/A"),
-            new(49, "Complete"),
-            new(50, "No", "Yes"),
-            new(51, "Yes", "No", "N/A"),
+            new(25, "Yes", "No", "N/A"),
+            new(26, "Yes", "No", "N/A"),
+            new(27, "Yes", "No", "N/A"),
+            new(29, "Yes", "No", "N/A"),
+            new(30, "Yes", "No", "N/A"),
+            new(32, "SAE HL A I5 P P2 22TK", "Other (Write In Comments)"),
+            new(33, "SAE HL A I5 P P2 22TK", "Other (Write In Comments)"),
+            new(34, "SAE AIP2RST 22TK", "Other (Write In Comments)"),
+            new(35, "SAE AIP2RST 22TK", "Other (Write In Comments)"),
+            new(36, "SAE U3 (2)G 17TK","SAE U3 (2)G 15TK", "Other (Write In Comments)"),
+            new(37, "SAE E220","N/A", "Other (Write In Comments)"),
+            new(38, "SAE E220","N/A", "Other (Write In Comments)"),
+            new(40, "DOT-22 M50L1 AS1", "Other (Write In Comments)"),
+            new(41, "E11 43R-000257", "Other (Write In Comments)"),
+            new(42, "E11 43R-000257", "Other (Write In Comments)"),
+            new(43, "DOT-467 M40T3 AS3", "Other (Write In Comments)"),
+            new(44, "DOT-467 M40T3 AS3", "Other (Write In Comments)"),
+            new(45, "E11 43R-000147", "Other (Write In Comments)"),
+            new(46, "N/A", "E2 43R 0115131", "Other (Write In Comments)"),
+            new(47, "N/A", "E2 43R 0115131", "Other (Write In Comments)"),
+            new(48, "E11 026533", "Other (Write In Comments)"),
+            new(50, "Michelin", "General", "Hankook", "Goodyear", "Other (Write In Comments)"),
+            new(52, "No", "Yes"),
+            new(53, "Pass", "Fail", "N/A"),
+            new(54, "Pass", "Fail", "N/A"),
+            new(55, "Complete"),
+            new(56, "No", "Yes"),
+            new(57, "Yes", "No", "N/A")
     };
 
     private static IReadOnlyList<RadioSeed> GetStation1A_RadioSeeds()
@@ -1624,7 +1616,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         new(33, "Yes", "No", "N/A"),
         new(34, "Yes", "No", "N/A"),
         new(36, "Yes", "No", "N/A"),
-        new(43, "Yes", "No", "N/A"),
+       
 
         // PASS / FAIL
         new(37, "PASS", "FAIL"),
@@ -1633,6 +1625,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         new(40, "PASS", "FAIL"),
         new(41, "PASS", "FAIL"),
         new(42, "PASS", "FAIL"),
+        new(43, "Yes", "No", "N/A"),
      };
     private static IReadOnlyList<RadioSeed> GetStation1B_RadioSeeds()
      => new List<RadioSeed>
@@ -1683,8 +1676,8 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
     private static IReadOnlyList<RadioSeed> GetProcurement_RadioSeeds()
       => new List<RadioSeed>
       {
-                new(1,  "AUSEV", "AUSMV", "Performance", "SCD-RV/External($0 invoice)"),
-                new(2,  "Yes", "No", "N/A"),
+                new(1, "AUSEV", "AUSMV", "Performance", "SCD-RV/External($0 invoice)"),
+                new(2, "Yes", "No", "N/A"),
       };
 
     private static IReadOnlyList<RadioSeed> GetQuality_RadioSeeds()
@@ -2016,7 +2009,6 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         new(4, "Yes", "No", "N/A"),
         new(5, "Yes", "No", "N/A"),
         new(6, "Yes", "No", "N/A"),
-
         new(8, "PASS", "FAIL"),
         new(9, "PASS", "FAIL"),
     };

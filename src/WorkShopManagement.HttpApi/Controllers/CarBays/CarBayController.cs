@@ -22,6 +22,18 @@ public class CarBayController : AbpController, ICarBayAppService
         _service = service;
     }
 
+    [HttpPost("{id}/clock-in")]
+    public async Task<CarBayDto> ClockInAsync(Guid id, DateTime? clockInTime)
+    {
+       return await _service.ClockInAsync(id, clockInTime);
+    }
+
+    [HttpPost("{id}/clock-out")]
+    public async Task<CarBayDto> ClockOutAsync(Guid id, DateTime? clockOutTime)
+    {
+       return await _service.ClockOutAsync(id, clockOutTime);
+    }
+
     [HttpPost]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
@@ -44,6 +56,12 @@ public class CarBayController : AbpController, ICarBayAppService
     public async Task<PagedResultDto<CarBayDto>> GetListAsync(GetCarBayListDto input)
     {
         return await _service.GetListAsync(input);
+    }
+
+    [HttpPost("{id}/reset-clock")]
+    public Task<CarBayDto> ResetClockAsync(Guid id)
+    {
+        return _service.ResetClockAsync(id);
     }
 
     [HttpPut("{id}")]

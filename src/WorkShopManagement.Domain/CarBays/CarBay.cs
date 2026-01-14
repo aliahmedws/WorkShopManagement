@@ -25,9 +25,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public Guid? UserId { get; private set; }               // remove this. comes from AuditedEntity
 
-    public Guid? QualityGateId { get; private set; }        // remove this. QualityGate entity will have carId
-    public virtual QualityGate? QualityGate { get; set; }   // remove this. QualityGate entity will have carId
-
     public DateTime? DateTimeIn { get; private set; }
     public DateTime? DateTimeOut { get; private set; }
 
@@ -65,7 +62,12 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public bool? CanProgress { get; private set; }
     public bool? JobCardCompleted { get; private set; }
+
+    public DateTime? ClockInTime { get; private set; }
+    public DateTime? ClockOutTime { get; private set; }
+    public ClockInStatus ClockInStatus { get; private set; } = ClockInStatus.NotClockedIn;
     public virtual ICollection<CarBayItem>? CarBayItems { get; private set; } = new List<CarBayItem>();
+    public virtual ICollection<QualityGate>? QualityGates { get; set; } = new List<QualityGate>(); 
 
     private CarBay() { }
 
@@ -78,8 +80,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     public void SetPriority(Priority? priority) => Priority = priority;
     public void SetBuildMaterialNumber(string? buildMaterialNumber) => BuildMaterialNumber = buildMaterialNumber?.Trim();
     public void SetUserId(Guid? userId) => UserId = userId;
-    public void SetQualityGateId(Guid? qualityGateId) => QualityGateId = qualityGateId;
-
     public void SetDateTimeIn(DateTime? dateTimeIn) => DateTimeIn = dateTimeIn;
     public void SetDateTimeOut(DateTime? dateTimeOut) => DateTimeOut = dateTimeOut;
 
@@ -116,4 +116,34 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public void SetCanProgress(bool? canProgress) => CanProgress = canProgress;
     public void SetJobCardCompleted(bool? jobCardCompleted) => JobCardCompleted = jobCardCompleted;
+
+    public void ClockIn(DateTime clockInTime)
+    {
+        if (ClockInStatus == ClockInStatus.ClockedIn)
+            throw new UserFriendlyException("CarBay already clocked in.");
+
+        ClockInTime = clockInTime;
+        ClockOutTime = null;
+        ClockInStatus = ClockInStatus.ClockedIn;
+    }
+
+    public void ClockOut(DateTime clockOutTime)
+    {
+        if (ClockInStatus != ClockInStatus.ClockedIn)
+            throw new UserFriendlyException("CarBay is not clocked in.");
+
+        if (ClockInTime.HasValue && clockOutTime < ClockInTime.Value)
+            throw new UserFriendlyException("Clock out time cannot be before clock in time.");
+
+        ClockOutTime = clockOutTime;
+        ClockInStatus = ClockInStatus.ClockedOut;
+    }
+
+    public void ResetClock()
+    {
+        ClockInTime = null;
+        ClockOutTime = null;
+        ClockInStatus = ClockInStatus.NotClockedIn;
+    }
+
 }

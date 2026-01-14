@@ -12,11 +12,15 @@ public class StageBayModel
     public string BayName { get; set; } = default!;
     public Guid? CarBayId { get; set; }
     public Priority? Priority { get; set; }
+    public Guid? CarId { get; set; }
     public string? Vin { get; set; }
     public DateTime? ManufactureStartDate { get; set; }
     public string? OwnerName { get; set; }
     public string? ModelName { get; set; }
     public string? ImageUrl { get; set; }
+    public DateTime? ClockInTime { get; set; }
+    public DateTime? ClockOutTime { get; set; }
+    public ClockInStatus ClockInStatus { get; set; }
 
     //--Recalls
     public IEnumerable<RecallStatus> RecallStatuses { get; set; } = [];

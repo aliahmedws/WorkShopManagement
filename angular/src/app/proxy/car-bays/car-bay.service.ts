@@ -11,6 +11,24 @@ export class CarBayService {
   apiName = 'Default';
   
 
+  clockIn = (id: string, clockInTime: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarBayDto>({
+      method: 'POST',
+      url: `/api/app/car-bays/${id}/clock-in`,
+      params: { clockInTime },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  clockOut = (id: string, clockOutTime: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarBayDto>({
+      method: 'POST',
+      url: `/api/app/car-bays/${id}/clock-out`,
+      params: { clockOutTime },
+    },
+    { apiName: this.apiName,...config });
+  
+
   create = (input: CreateCarBayDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, CarBayDto>({
       method: 'POST',
@@ -41,6 +59,14 @@ export class CarBayService {
       method: 'GET',
       url: '/api/app/car-bays',
       params: { filter: input.filter, carId: input.carId, bayId: input.bayId, isActive: input.isActive, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  resetClock = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarBayDto>({
+      method: 'POST',
+      url: `/api/app/car-bays/${id}/reset-clock`,
     },
     { apiName: this.apiName,...config });
   

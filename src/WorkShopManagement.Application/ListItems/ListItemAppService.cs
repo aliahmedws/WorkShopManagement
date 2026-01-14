@@ -12,6 +12,7 @@ using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
+using WorkShopManagement.RadioOptions;
 
 namespace WorkShopManagement.ListItems;
 
@@ -255,16 +256,30 @@ public class ListItemAppService : ApplicationService, IListItemAppService
 
         var dtos = ObjectMapper.Map<List<ListItem>, List<ListItemDto>>(items);
 
-        //foreach (var dto in dtos)
-        //{
-        //    var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
-        //    {
-        //        EntityId = dto.Id,
-        //        EntityType = EntityType.ListItem
-        //    });
+        foreach (var dto in dtos)
+        {
+            var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+            {
+                EntityId = dto.Id,
+                EntityType = EntityType.ListItem
+            });
 
-        //    dto.EntityAttachments = attachments!;
-        //}
+            dto.EntityAttachments = attachments!;
+
+            dto.RadioOptions = dto.RadioOptions?
+                .OrderBy(x =>
+                {
+                    var name = x.Name.ToUpperInvariant();
+                    if (name == "N/A")
+                        return int.MaxValue;
+                    if (name.StartsWith("OTHER"))
+                        return int.MaxValue - 1;
+                    var i = Array.IndexOf(RadioOptionConsts.OrderedNames, name);
+                    return i < 0 ? int.MaxValue - 2 : i;
+                })
+                .ThenBy(x => x.Name)
+                .ToList();
+        }
 
         return dtos;
     }

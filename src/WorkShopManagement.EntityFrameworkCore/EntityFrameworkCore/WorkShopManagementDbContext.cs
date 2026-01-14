@@ -183,6 +183,11 @@ public class WorkShopManagementDbContext :
             b.ToTable(WorkShopManagementConsts.DbTablePrefix + "QualityGates", WorkShopManagementConsts.DbSchema);
             b.ConfigureByConvention();
 
+            b.HasOne(x => x.CarBays)
+               .WithMany(x => x.QualityGates)
+                   .HasForeignKey(x => x.CarBayId)
+                       .OnDelete(DeleteBehavior.Restrict);
+
             b.Property(x => x.Status).IsRequired();
             b.Property(x => x.GateName).IsRequired();
         });
@@ -366,6 +371,9 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.Row);
             b.Property(x => x.Columns);
             b.Property(x => x.PulseNumber);
+            b.Property(x => x.ClockInTime);
+            b.Property(x => x.ClockOutTime);
+            b.Property(x => x.ClockInStatus);
 
             b.HasOne(x => x.Car)
                 .WithMany(x => x.CarBays)
@@ -375,11 +383,6 @@ public class WorkShopManagementDbContext :
             b.HasOne(x => x.Bay)
                 .WithMany(x => x.CarBays)
                 .HasForeignKey(x => x.BayId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            b.HasOne(x => x.QualityGate)
-                .WithMany( x => x.CarBays!)
-                .HasForeignKey(x => x.QualityGateId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             b.HasIndex(x => x.CarId);

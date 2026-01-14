@@ -21,6 +21,10 @@
     "Permission:QualityGates.Create": "Create",
     "Permission:QualityGates.Edit": "Edit",
     "Permission:QualityGates.Delete": "Delete",
+    "Permission:CheckInReports": "CheckIn Report Management",
+    "Permission:CheckInReports.Create": "Create",
+    "Permission:CheckInReports.Edit": "Edit",
+    "Permission:CheckInReports.Delete": "Delete",
 
     "Permission:CarModels": "Car Model Management",
     "Permission:Vehicles": "Vehicles Model Management",
@@ -75,11 +79,11 @@
     "Enum:GateName.2": "Quality Control",
     "Enum:GateName.3": "Quality Release",
     "Enum:GateName.4": "Pre-Delivery",
-    "Enum:QualityGateStatus.1": "PASSED",
-    "Enum:QualityGateStatus.2": "CONDITIONAL PASSED - MAJOR",
-    "Enum:QualityGateStatus.3": "CONDITIONAL PASSED - MINOR",
-    "Enum:QualityGateStatus.4": "OPEN",
-    "Enum:QualityGateStatus.5": "RESET",
+    "Enum:QualityGateStatus.1": "Passed",
+    "Enum:QualityGateStatus.2": "Conditional Passed - Major",
+    "Enum:QualityGateStatus.3": "Conditional Passed - Minor",
+    "Enum:QualityGateStatus.4": "Open",
+    "Enum:QualityGateStatus.5": "Reset",
     "Enum:AvvStatus.1": "Required",
     "Enum:AvvStatus.2": "Inspected",
     "Enum:AvvStatus.3": "Uploaded",
@@ -450,8 +454,8 @@
     "ApiResponse": "API Response",
     "Response": "Response",
     "EditVehicle": "Edit Vehicle",
-    "NewVehicle" : "New Vehicle"
-    // -- 
-
+    "NewVehicle" : "New Vehicle",
+    "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
+    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully"
   }
 }

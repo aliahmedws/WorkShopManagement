@@ -8,7 +8,13 @@ export interface TabAttachments {
     existingFiles: EntityAttachmentDto[];
 }
 
-export type IssueAttachmentsMap = Record<EntitySubType, TabAttachments>;
+export type IssueEntitySubType =
+  | EntitySubType.Issue_Details
+  | EntitySubType.Issue_RectificationAction
+  | EntitySubType.Issue_QualityControl
+  | EntitySubType.Issue_RepairerDetails;
+
+export type IssueAttachmentsMap = Record<IssueEntitySubType, TabAttachments>;
 
 export function createEmptyAttachmentsMap(): IssueAttachmentsMap {
     return {

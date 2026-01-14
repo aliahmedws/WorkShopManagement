@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
+using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityFrameworkCore;
 
 namespace WorkShopManagement.CarBays;
@@ -66,8 +67,10 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
         return await query.LongCountAsync();
     }
 
-    public async Task<CarBay?> GetCarBayDetailsWithIdAsync(Guid CarId)
+    public async Task<CarBayDetails> GetCarBayDetailsWithIdAsync(Guid CarId)
     {
+        var ctx = await GetDbContextAsync();
+
         var query = await GetQueryableAsync();
 
         var entity = await query
@@ -79,14 +82,73 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.CheckLists)
             .FirstOrDefaultAsync();
 
+        var progressMap = new Dictionary<Guid, CheckListProgressStatus>();
+
         if (entity?.Car?.Model?.CheckLists != null)
         {
-            entity.Car.Model.CheckLists = entity.Car.Model.CheckLists
-                .OrderBy(cl => cl.Position)
-                .ToList();
+            entity.Car.Model.CheckLists = [.. entity.Car.Model.CheckLists.OrderBy(cl => cl.Position)];
+
+            var checkListids = entity.Car.Model.CheckLists.Select(x => x.Id);
+
+            var listItems = await ctx.ListItems.Where(li => checkListids.Contains(li.CheckListId)).Include(cli => cli.RadioOptions).ToListAsync();
+
+            // Pull only what you need from DB
+            var bayItems = await ctx.CarBayItems
+                .Where(bi => bi.CarBay != null && bi.CarBay.CarId == CarId)
+                .Select(bi => new
+                {
+                    bi.CheckListItemId,
+                    bi.CheckRadioOption
+                })
+                .ToListAsync();
+
+            // Fast lookup by checklist-item id
+            var bayByItemId = bayItems
+                .GroupBy(x => x.CheckListItemId)
+                .ToDictionary(g => g.Key, g => g.First().CheckRadioOption); // assuming 0/1 row per item
+
+            // Enumerate checklists in-memory; compute in O(total items)
+            foreach (var cl in entity.Car.Model.CheckLists)
+            {
+                // Only actionable items (exclude separators)
+                var actionableItems = listItems?.Where(li => li.CheckListId == cl.Id && li.IsSeparator != true && li.RadioOptions?.Count > 0).ToList() ?? [];
+
+                if (actionableItems.Count == 0)
+                {
+                    progressMap[cl.Id] = CheckListProgressStatus.Completed;
+                    continue;
+                }
+
+                var total = 0;
+                var filled = 0;
+
+                foreach (var li in actionableItems)
+                {
+                    total++;
+
+                    // If no bay item exists, treat as empty
+                    bayByItemId.TryGetValue(li.Id, out var option);
+
+                    if (!option.IsNullOrWhiteSpace())
+                    {
+                        filled++;
+                    }
+                }
+
+                var status =
+                    filled == 0 ? CheckListProgressStatus.Pending :
+                    filled < total ? CheckListProgressStatus.InProgress :
+                    CheckListProgressStatus.Completed;
+
+                progressMap[cl.Id] = status;
+            }
         }
 
-        return entity;
+        return new CarBayDetails
+        {
+            CarBay = entity,
+            Progress = progressMap
+        };
     }
 
 

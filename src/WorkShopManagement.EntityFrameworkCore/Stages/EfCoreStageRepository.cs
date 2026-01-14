@@ -6,12 +6,15 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
+using WorkShopManagement.Bays;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Common;
 using WorkShopManagement.EntityFrameworkCore;
 using WorkShopManagement.Issues;
 using WorkShopManagement.Recalls;
+using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.Stages;
 
@@ -147,6 +150,9 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                 OwnerName = owner != null ? owner.Name : null,
                 ModelName = model != null ? model.Name : null,
                 ImageUrl = model != null && model.FileAttachments != null ? model.FileAttachments.Path : null,
+                ClockInTime = carBay.ClockInTime,
+                ClockOutTime = carBay.ClockOutTime,
+                ClockInStatus = carBay.ClockInStatus
             }
         ).ToListAsync();
 
@@ -186,6 +192,7 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                     BayId = x.carBay.BayId,
                     BayName = bay.Name,
                     Priority = x.carBay.Priority,
+                    CarId = x.car.Id,
                     Vin = x.car.Vin,
                     ManufactureStartDate = x.carBay.ManufactureStartDate,
                     OwnerName = x.OwnerName,
@@ -204,6 +211,11 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                 });
             }
         }
+
+        results = [.. results
+                .OrderBy(x => BayHelper.GetNamePrefix(x.BayName))
+                .ThenBy(x => BayHelper.GetTrailingNumberOrMax(x.BayName))
+                .ThenBy(x => x.BayName)];
 
         return results;
     }

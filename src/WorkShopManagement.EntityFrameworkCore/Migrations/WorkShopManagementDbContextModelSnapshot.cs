@@ -2038,6 +2038,15 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("CarId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("ClockInStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ClockInTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ClockOutTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Columns")
                         .HasColumnType("nvarchar(max)");
 
@@ -2131,9 +2140,6 @@ namespace WorkShopManagement.Migrations
                     b.Property<string>("PulseNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("QualityGateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("ReWorkDate")
                         .HasColumnType("datetime2");
 
@@ -2154,8 +2160,6 @@ namespace WorkShopManagement.Migrations
                     b.HasIndex("BayId");
 
                     b.HasIndex("CarId");
-
-                    b.HasIndex("QualityGateId");
 
                     b.ToTable("AppCarBays", (string)null);
                 });
@@ -3092,6 +3096,9 @@ namespace WorkShopManagement.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CarBayId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("CarId")
                         .HasColumnType("uniqueidentifier");
 
@@ -3144,6 +3151,8 @@ namespace WorkShopManagement.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarBayId");
 
                     b.HasIndex("CarId");
 
@@ -3521,16 +3530,9 @@ namespace WorkShopManagement.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WorkShopManagement.QualityGates.QualityGate", "QualityGate")
-                        .WithMany("CarBays")
-                        .HasForeignKey("QualityGateId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Bay");
 
                     b.Navigation("Car");
-
-                    b.Navigation("QualityGate");
                 });
 
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
@@ -3724,9 +3726,17 @@ namespace WorkShopManagement.Migrations
 
             modelBuilder.Entity("WorkShopManagement.QualityGates.QualityGate", b =>
                 {
+                    b.HasOne("WorkShopManagement.CarBays.CarBay", "CarBays")
+                        .WithMany("QualityGates")
+                        .HasForeignKey("CarBayId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("WorkShopManagement.Cars.Car", null)
                         .WithMany("QualityGates")
                         .HasForeignKey("CarId");
+
+                    b.Navigation("CarBays");
                 });
 
             modelBuilder.Entity("WorkShopManagement.RadioOptions.RadioOption", b =>
@@ -3799,6 +3809,8 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.CarBays.CarBay", b =>
                 {
                     b.Navigation("CarBayItems");
+
+                    b.Navigation("QualityGates");
                 });
 
             modelBuilder.Entity("WorkShopManagement.CarModels.CarModel", b =>
@@ -3841,11 +3853,6 @@ namespace WorkShopManagement.Migrations
             modelBuilder.Entity("WorkShopManagement.ModelCategories.ModelCategory", b =>
                 {
                     b.Navigation("CarModels");
-                });
-
-            modelBuilder.Entity("WorkShopManagement.QualityGates.QualityGate", b =>
-                {
-                    b.Navigation("CarBays");
                 });
 #pragma warning restore 612, 618
         }

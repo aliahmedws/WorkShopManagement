@@ -123,12 +123,12 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
 
             dto.EntityAttachments = attachments!;
 
-            if(modifier != null && modifier.UserName != null)
+            if (modifier != null && modifier.UserName != null)
             {
                 dto.ModifierName = modifier!.UserName;
             }
 
-            if(creator != null && creator.UserName != null)
+            if (creator != null && creator.UserName != null)
             {
                 dto.CreatorName = creator!.UserName;
             }
@@ -194,7 +194,7 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
         entity.SetCheckListItem(input.CheckListItemId);
         entity.SetCheckRadioOption(input.CheckRadioOption);
         entity.SetComments(input.Comments);
-        
+
 
         if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
         {
@@ -318,32 +318,13 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
                 }
             }
 
-            // Attachments: upsert per row
-            // If your attachment service needs "Create" for new and "Update" for modify,
-            // we can just call Update always (if your service supports it), otherwise keep as below.
-
-            // 1) Add new temp files (if any)
-            if (row.TempFiles != null && row.TempFiles.Count > 0)
+            await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
             {
-                await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
-                {
-                    EntityType = EntityType.CarBayItem,
-                    EntityId = entity.Id,
-                    TempFiles = row.TempFiles
-                });
-            }
-
-            // 2) Apply final attachment set (keep/delete) if UI sends existing list
-            if (row.EntityAttachments.Count > 0)
-            {
-                await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
-                {
-                    EntityId = entity.Id,
-                    EntityType = EntityType.CarBayItem,
-                    TempFiles = null, // already handled above
-                    EntityAttachments = row.EntityAttachments
-                });
-            }
+                EntityId = entity.Id,
+                EntityType = EntityType.CarBayItem,
+                EntityAttachments = row?.EntityAttachments ?? [],
+                TempFiles = row?.TempFiles ?? []
+            });
 
             // Map result (optionally include attachments)
             var dto = ObjectMapper.Map<CarBayItem, CarBayItemDto>(entity);

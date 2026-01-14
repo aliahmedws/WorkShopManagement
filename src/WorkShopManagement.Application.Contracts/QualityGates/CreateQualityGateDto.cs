@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace WorkShopManagement.QualityGates;
 
@@ -9,4 +10,7 @@ public class CreateQualityGateDto
 
     [Required]
     public QualityGateStatus Status { get; set; }
+
+    [Required]
+    public Guid CarBayId { get; set; }
 }
