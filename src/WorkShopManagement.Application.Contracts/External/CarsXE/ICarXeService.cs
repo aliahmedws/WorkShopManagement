@@ -20,7 +20,7 @@ namespace WorkShopManagement.External.CarsXe
             CancellationToken ct = default);
 
         Task<ImagesResponseDto> GetImagesAsync(
-            ImagesRequestDto requestDto,
+            ImagesSearchRequestDto requestDto,
             CancellationToken ct = default);
 
     }

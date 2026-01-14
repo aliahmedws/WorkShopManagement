@@ -11,14 +11,11 @@ namespace WorkShopManagement.VinInfos
     public class VinInfoManager : DomainService
     {
         private readonly IRepository<VinInfo, Guid> _vinInfoRepository;
-        private readonly IGuidGenerator _guidGenerator;
 
         public VinInfoManager(
-            IRepository<VinInfo, Guid> vinInfoRepository,
-            IGuidGenerator guidGenerator)
+            IRepository<VinInfo, Guid> vinInfoRepository)
         {
             _vinInfoRepository = vinInfoRepository;
-            _guidGenerator = guidGenerator;
         }
 
         public async Task<VinInfo?> FindVinAsync(string? vin, CancellationToken ct = default)

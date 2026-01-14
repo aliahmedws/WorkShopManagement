@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WorkShopManagement.External.CarsXE
 {
-    public class ImagesRequestDto
+    public class ImagesSearchRequestDto
     {
 
         /// <summary>

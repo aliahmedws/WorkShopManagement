@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WorkShopManagement.External.CarsXe;
 using WorkShopManagement.Lookups;
 
 namespace WorkShopManagement.Controllers.Lookups;
@@ -33,6 +34,12 @@ public class LookupController(ILookupAppService lookupAppService) : WorkShopMana
     public Task<List<GuidLookupDto>> GetCarsAsync()
     {
         return lookupAppService.GetCarsAsync();
+    }
+
+    [HttpGet("external-specs/{vin}")]
+    public Task<SpecsResponseDto> GetExternalSpecsResponseAsync(string vin)
+    {
+           return lookupAppService.GetExternalSpecsResponseAsync(vin);
     }
 
     [HttpGet("priorities")]

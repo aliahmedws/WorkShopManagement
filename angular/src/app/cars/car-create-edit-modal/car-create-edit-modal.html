@@ -1,6 +1,6 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="text-dark m-0">{{ (carId? '::EditCar' : '::NewCar') | abpLocalization }}</h3>
+        <h3 class="text-dark m-0">{{ (carId? '::EditVehicle' : '::NewVehicle') | abpLocalization }}</h3>
     </ng-template>
     <ng-template #abpBody>
         @if (loading) {
@@ -12,7 +12,7 @@
         }
         @if (form && !loading) {
         <div id="top"></div>
-        @if (external) {
+        @if (external && !carId) {
         <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'"
             role="alert">
             <h4 class="alert-heading">
@@ -56,7 +56,7 @@
                             <div class="input-group" validationTarget>
                                 <input class="form-control" formControlName="vin" maxlength="17" />
                                 @if (canFetchVinDetails){
-                                <button type="button" class="btn btn-outline-info" (click)="getExternalCarDetails()">
+                                <button type="button" class="btn btn-outline-info" (click)="fetchExternalCarDetails()">
                                     {{ '::Fetch Details' | abpLocalization }}
                                 </button>
                                 }
@@ -66,7 +66,26 @@
                         <!-- COLOR -->
                         <div class="col-12 form-group">
                             <label class="form-label required">{{ '::Color' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="color" />
+                            <!-- <input class="form-control" formControlName="color" /> -->
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" [nzDropdownRender]="colorRender"
+                                formControlName="color">
+                                @for (option of colorOptions; track option) {
+                                <nz-option [nzLabel]="option" [nzValue]="option"></nz-option>
+                                }
+                            </nz-select>
+                            <ng-template #colorRender>
+                                <nz-divider style="margin: 4px 0;"></nz-divider>
+                                <div class="container p-2 d-flex align-items-center input-group">
+                                    <input class="form-control" type="text" nz-input #inputElement
+                                        placeholder="Type custom color..."
+                                        (keydown.enter)=" $event.preventDefault(); $event.stopPropagation();  addColor(inputElement, colorSelect)" />
+                                    <!-- <input class="form-control" type="text" nz-input #inputElement placeholder="Type custom color..."  (keydown.enter)="  addColor(inputElement, colorSelect)"/> -->
+                                    <a class="add-item btn btn-sm  btn-primary d-flex align-items-center"
+                                        (click)="addColor(inputElement)">
+                                        <i class="fa fa-plus me-1"></i> {{ '::Add' | abpLocalization }}
+                                    </a>
+                                </div>
+                            </ng-template>
                         </div>
 
                         <!-- CAR MODEL -->
@@ -80,7 +99,7 @@
                         </div>
 
                         <!-- CAR MODEL YEAR -->
-                        <div class="col-12 col-md-6 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label required">{{ '::ModelYear' | abpLocalization }}</label>
                             <input type="number" class="form-control" formControlName="modelYear" />
                         </div>
@@ -142,35 +161,6 @@
             </div>
             <!-- Owner Information -->
 
-            <!-- CNC Information -->
-            <div class="row g-2">
-                <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::CncInformation' | abpLocalization }}</h5>
-                </div>
-                <div class="col-12 col-lg-9">
-                    <div class="row g-2">
-                        <!-- CNC -->
-                        <div class="col-12 col-md-4 form-group">
-                            <label class="form-label">{{ '::Cnc' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="cnc" />
-                        </div>
-                        <!-- CNC Firewall -->
-                        <div class="col-12 col-md-4 form-group">
-                            <label class="form-label">{{ '::CncFirewall' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="cncFirewall" />
-                        </div>
-                        <!-- CNC Column -->
-                        <div class="col-12 col-md-4 form-group">
-                            <label class="form-label">{{ '::CncColumn' | abpLocalization }}</label>
-                            <input class="form-control" formControlName="cncColumn" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <hr>
-                </div>
-            </div>
-            <!-- CNC Information -->
 
             <!-- Delivery Information -->
             <div class="row g-2">
@@ -233,7 +223,7 @@
             </div>
             <!-- Additional Information -->
 
-            <div class="row g-2">
+            <!-- <div class="row g-2">
                 <div class="col-12 col-lg-3">
                     <h5 class="text-dark">{{ '::ProductionData' | abpLocalization }}</h5>
                 </div>
@@ -278,17 +268,18 @@
                 <div class="col-12">
                     <hr>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Stage -->
-            <div class="row g-2">
+            <!-- <div class="row g-2">
                 <div class="col-12 col-lg-3">
                     <h5 class="text-dark">{{ '::Stage' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
                         <div class="col-12 form-group">
-                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage" [nzDisabled]="!carId">
+                            <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="stage"
+                                [nzDisabled]="!carId">
                                 @for (option of stageOptions; track option) {
                                 <nz-option [nzLabel]="('::Enum:Stage.' + option.value) | abpLocalization"
                                     [nzValue]="option.value"></nz-option>
@@ -300,13 +291,15 @@
                 <div class="col-12">
                     <hr>
                 </div>
-            </div>
+            </div> -->
             <!-- Stage -->
 
-             <!-- Attachments -->
+            <!-- Attachments -->
             <div class="row g-2">
                 <div class="col-12 col-lg-3">
                     <h5 class="text-dark">{{ '::Attachments' | abpLocalization }}</h5>
+                    <p class="text-muted ">
+                        {{ '::Car.Attachments.HelpText' | abpLocalization }}
                 </div>
                 <div class="col-12 col-lg-9">
                     <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles">
@@ -318,13 +311,22 @@
 
     </ng-template>
     <ng-template #abpFooter>
-        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+
+        <button abpClose type="button" class="btn btn-outline-secondary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
+
+        @if (external) {
+        <button type="button" class="btn btn-outline-info me-2 px-3" (click)="onModalOpen()">
+            {{ '::Response' | abpLocalization }}
+        </button>
+        }
+
         <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">
             <i class="fas fa-save me-1"></i>
             {{ '::Save' | abpLocalization }}
         </button>
     </ng-template>
 
+    <app-car-external-response-modal #responseModal></app-car-external-response-modal>
 </abp-modal>

@@ -274,8 +274,7 @@ public class WorkShopManagementDbContext :
                 .HasMaxLength(CarConsts.VinLength)
                 .IsUnicode(false);
 
-            b.HasIndex(x => x.Vin);
-            //.IsUnique();          // TODO: Ensure no duplicate VINs in Db. Clean and Enable later.
+            b.HasIndex(x => x.Vin).IsUnique().HasFilter("[IsDeleted] = 0");
 
             b.HasOne(x => x.Owner)
                 .WithMany()

@@ -13,4 +13,6 @@ public interface ICarRepository : IRepository<Car, Guid>
 
     Task<Car> GetWithDetailsAsync(Guid id, bool asNoTracking = false);
 
+    Task DeleteAsync(Guid id);
+
 }

@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using WorkShopManagement.Cars;
@@ -46,6 +47,18 @@ public class CarController(ICarAppService carAppService) : WorkShopManagementCon
     public Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(string vin, string? modelYear = null)
     {
         return carAppService.GetExternalCarDetailsAsync(vin, modelYear);
+    }
+
+    [HttpPut("save-car-image/{carId}")]
+    public Task<CarDto> SaveCarImageAsync(Guid carId, string imagelink)
+    {
+        return carAppService.SaveCarImageAsync(carId, imagelink);
+    }
+
+    [HttpGet("external-car-images/{carId}")]
+    public Task<List<string>> GetExternalCarImagesAsync(Guid carId)
+    {
+        return carAppService.GetExternalCarImagesAsync(carId);
     }
 
     [HttpPut("change-car-stage/{id}")]

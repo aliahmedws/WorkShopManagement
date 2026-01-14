@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
@@ -72,15 +73,57 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
     {
         var query = await GetQueryableAsync();
 
-        query = query
-            .Include(x => x.LogisticsDetail);    // Not working
-
         if (asNoTracking)
             query = query.AsNoTracking();
+
+        query = query
+            .Include(x => x.LogisticsDetail);    // Not working
 
         var car = await query.FirstOrDefaultAsync(x => x.Id == id);
 
         return car ?? throw new EntityNotFoundException(typeof(Car), id);
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        var car = await GetAsync(id);
+        if (!car.Stage.Equals(Stage.Incoming))
+        {
+            throw new UserFriendlyException($"Cannot Delete Car with VIN: <strong>{car.Vin}</strong>. \nThe car is not in Incoming stage.");
+        }
+
+
+        var dbContext = await GetDbContextAsync();
+        var carBays = dbContext.CarBays.Where(cb => cb.CarId == id);
+
+        if(carBays.Any())
+        {
+            throw new InvalidOperationException($"Cannot Delete Car with VIN: <strong>{car.Vin}</strong>. \nThe car was assigned to a Car Bay.");
+        }
+
+        var logisticsDetail = dbContext.LogisticsDetails.FirstOrDefault(ld => ld.CarId == id);
+        var checkInReport = dbContext.CheckInReports.FirstOrDefault(cir => cir.CarId == id);
+        var issues = dbContext.Issues.Where(i => i.CarId == id);
+        var attachments = dbContext.EntityAttachments.Where(a => a.EntityId == id);
+
+        if (logisticsDetail != null)
+        {
+            dbContext.LogisticsDetails.Remove(logisticsDetail);
+        }
+        if (checkInReport != null)
+        {
+            dbContext.CheckInReports.Remove(checkInReport);
+        }
+        if(issues.Any())
+        {
+            dbContext.Issues.RemoveRange(issues);
+        }
+        if (attachments.Any())
+        {
+            dbContext.EntityAttachments.RemoveRange(attachments);
+        }
+        await dbContext.SaveChangesAsync();
+        await DeleteAsync(car);
     }
 
 

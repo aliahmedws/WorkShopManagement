@@ -29,7 +29,8 @@ public class UpdateCarDto
     public int ModelYear { get; set; }
 
     [Required]
-    public Stage Stage { get; set; }
+    public Stage Stage { get; set; } = Stage.Incoming;
+
 
     [StringLength(CarConsts.MaxCncLength)]
     public string? Cnc { get; set; }
@@ -50,15 +51,6 @@ public class UpdateCarDto
     [StringLength(CarConsts.MaxMissingPartsLength)]
     public string? MissingParts { get; set; }
 
-    // Transit vehicle data
-    //[StringLength(CarConsts.MaxLocationStatusLength)]
-    //public string? LocationStatus { get; set; }
-    //public DateTime? EtaBrisbane { get; set; }
-    //public DateTime? EtaScd { get; set; }
-    //[StringLength(CarConsts.MaxBookingNumberLength)]
-    //public string? BookingNumber { get; set; }
-    //[StringLength(CarConsts.MaxClearingAgentLength)]
-    //public string? ClearingAgent { get; set; }
     public StorageLocation? StorageLocation { get; set; }
 
     [StringLength(CarConsts.MaxBuildMaterialNumberLength)]
@@ -69,6 +61,9 @@ public class UpdateCarDto
 
     [StringLength(CarConsts.MaxPdiStatusLength)]
     public string? PdiStatus { get; set; }
+
+    [StringLength(CarConsts.ImageLinkLength)]
+    public string? ImageLink { get; set; }
 
     // File Attachments
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];

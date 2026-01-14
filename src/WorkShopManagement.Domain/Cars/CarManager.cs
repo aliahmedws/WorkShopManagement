@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Domain.Services;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars.Stages;
@@ -29,7 +30,7 @@ namespace WorkShopManagement.Cars
         /// <summary>
         /// Creates a new Car. Stage is always Incoming by design.
         /// </summary>
-        public Task<Car> CreateAsync(
+        public async Task<Car> CreateAsync(
             Guid id,
             Guid ownerId,
             string vin,
@@ -48,9 +49,15 @@ namespace WorkShopManagement.Cars
             string? buildMaterialNumber = null,
             int? angleBailment = null,
             AvvStatus? avvStatus = null,
-            string? pdiStatus = null)
+            string? pdiStatus = null, 
+
+            string? imageLink = null)
         {
-            // If you later enforce VIN uniqueness at domain level, do it here.
+            var existing = await _carRepository.FirstOrDefaultAsync(x => x.Vin == vin);
+            if(existing != null)
+            {
+                throw new UserFriendlyException($"A car with VIN '{vin}' already exists.");
+            }
 
             var car = new Car(
                 id: id,
@@ -71,10 +78,11 @@ namespace WorkShopManagement.Cars
                 buildMaterialNumber: buildMaterialNumber,
                 angleBailment: angleBailment,
                 avvStatus: avvStatus,
-                pdiStatus: pdiStatus
+                pdiStatus: pdiStatus,
+                imageLink: imageLink
             );
 
-            return Task.FromResult(car);
+            return car;
         }
 
         /// <summary>
@@ -102,9 +110,15 @@ namespace WorkShopManagement.Cars
             string? buildMaterialNumber,
             int? angleBailment,
             AvvStatus? avvStatus,
-            string? pdiStatus)
+            string? pdiStatus, 
+            string? imageLink
+            )
         {
-            var car = await _carRepository.GetAsync(id);
+            var car = await _carRepository.FirstOrDefaultAsync(x => x.Id == id);
+            if (car == null)
+            {
+                throw new UserFriendlyException("Car not found.");
+            }
 
             // internal methods on entity
             car.SetOwner(ownerId);
@@ -113,6 +127,7 @@ namespace WorkShopManagement.Cars
             car.SetModel(modelId);
             car.SetModelYear(modelYear);
             await ChangeStageAsync(car.Id, stage, storageLocation);
+            //car.SetMakeTrim(make, trim);
             car.SetCnc(cnc, cncFirewall, cncColumn);
             car.SetSchedule(dueDate, deliverDate, startDate);
             car.SetNotes(notes, missingParts);
@@ -121,7 +136,7 @@ namespace WorkShopManagement.Cars
             car.SetAngleBailment(angleBailment);
             car.SetAvvStatus(avvStatus);
             car.SetPdiStatus(pdiStatus);
-
+            car.SetImageLink(imageLink);
             return car;
         }
 

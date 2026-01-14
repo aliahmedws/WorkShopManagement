@@ -127,7 +127,10 @@ public partial class CarToCarDtoMapper : MapperBase<Car, CarDto>
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class VpicVariableResultDtoToExternalCarDetailsDtoMapper : MapperBase<VpicVariableResultDto, ExternalCarDetailsDto>
 {
+    [MapperIgnoreTarget(nameof(ExternalCarDetailsDto.Colors))]
     public override partial ExternalCarDetailsDto Map(VpicVariableResultDto source);
+
+    [MapperIgnoreTarget(nameof(ExternalCarDetailsDto.Colors))]
     public override partial void Map(VpicVariableResultDto source, ExternalCarDetailsDto destination);
 }
 

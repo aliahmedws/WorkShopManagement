@@ -439,6 +439,19 @@
     "CarDispatchedSuccessfully": "Car Dispatched Successfully",
     "ChangeActiveStatus": "Change Active Status",
     "ChangeBayStatus": "Change Bay Status",
-    "AreYouSureToChangeBayActiveStatus":  "Are you sure you want to change bay status?"
+    "AreYouSureToChangeBayActiveStatus": "Are you sure you want to change bay status?",
+    "Car.Attachments.HelpText": "Documents of the car can be attached here.",
+    // -- New adding car
+    "ExternalApiResponse": "External API Response",
+    "Loading": "Loading",
+    "NoExternalDataFound": "No data found for this vin number",
+    "ExternalApiResponseFailed": "External API response failed.",
+    "Menu:VehicleStock": "Vehicle Stock",
+    "ApiResponse": "API Response",
+    "Response": "Response",
+    "EditVehicle": "Edit Vehicle",
+    "NewVehicle" : "New Vehicle"
+    // -- 
+
   }
 }

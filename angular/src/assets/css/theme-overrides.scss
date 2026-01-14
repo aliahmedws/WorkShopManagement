@@ -1426,8 +1426,21 @@ lpx-footer {
     color: var(--brand-primary);
 }
 
-// FIX THIS LATER -- icon in btn btn-primary
+// PROPERLY REVIEW/FIX THIS LATER -- icon in btn btn-primary
 .alert-light a, .alert-light .bi, .alert-light .fa, .alert-light .icon, .alert-light .highlight, .alert-light .alert-link{
     color: #fff;
+}
+
+
+.ant-input {
+    border-radius: 0.25rem;
+    color: var(--text-primary);
+    border-color: #e7e9ec; /* Match your default border color */
+    background-color: #f5f5f7; /* Match your form control bg color */
+}
+
+.ant-input:hover {
+    border-color: var(--brand-primary-light) !important;
+    border-right-width: 1px !important; 
 }
 // --- to fix above

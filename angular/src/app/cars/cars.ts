@@ -6,10 +6,11 @@ import { CarCreateEditModal } from './car-create-edit-modal/car-create-edit-moda
 import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 import { IssueModal } from '../issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
+import { CarImagesModal } from "./car-images-modal/car-images-modal";
 
 @Component({
   selector: 'app-cars',
-  imports: [...SHARED_IMPORTS, CarCreateEditModal, IssueModal],
+  imports: [...SHARED_IMPORTS, CarCreateEditModal, IssueModal, CarImagesModal],
   templateUrl: './cars.html',
   styleUrl: './cars.scss',
   providers: [ListService],
@@ -28,7 +29,7 @@ export class Cars implements OnInit {
   selectedId?: string;
 
   isIssueModalVisible = false;
-  
+  isImageModalVisible = false;
   ngOnInit(): void {
     const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
@@ -62,5 +63,12 @@ export class Cars implements OnInit {
       queryParams: { carId: carId, vin: vin },
       // state: { vin: vin } // didnt work
     });
+  }
+  
+  selectedCar: CarDto;
+  showImages(car: CarDto): void {
+
+    this.selectedCar = car;
+    this.isImageModalVisible = true;
   }
 }

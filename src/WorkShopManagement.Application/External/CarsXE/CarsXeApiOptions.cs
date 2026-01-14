@@ -117,7 +117,7 @@ namespace WorkShopManagement.External.CarsXe
             return request;
         }
 
-        public static RestRequest CreateImagesRequest(this CarsXeApiOptions options, ImagesRequestDto input)
+        public static RestRequest CreateImagesRequest(this CarsXeApiOptions options, ImagesSearchRequestDto input)
         {
             ArgumentNullException.ThrowIfNull(options);
             // e.g. GET /images?key=...&make=...&model=...&year=...&trim=...&color=...&angle=...&size=All
@@ -126,12 +126,12 @@ namespace WorkShopManagement.External.CarsXe
                 .AddQueryParameter("model", input.Model)
                 .AddQueryParameter("size", "All");
 
-            if(string.IsNullOrWhiteSpace(input.Year))  request.AddQueryParameter("year", input.Year!);
-            if(string.IsNullOrWhiteSpace(input.Trim))  request.AddQueryParameter("trim", input.Trim!);
-            if(string.IsNullOrWhiteSpace(input.Color))  request.AddQueryParameter("color", input.Color!);
-            if (string.IsNullOrWhiteSpace(input.Angle)) request.AddQueryParameter("angle", "front");
+            if(!string.IsNullOrWhiteSpace(input.Year))  request.AddQueryParameter("year", input.Year!);
+            if(!string.IsNullOrWhiteSpace(input.Trim))  request.AddQueryParameter("trim", input.Trim!);
+            if(!string.IsNullOrWhiteSpace(input.Color))  request.AddQueryParameter("color", input.Color!);
+            if (!string.IsNullOrWhiteSpace(input.Angle)) request.AddQueryParameter("angle", "front");
 
-            if(string.IsNullOrWhiteSpace(input.Make) && string.IsNullOrWhiteSpace(input.Model) && string.IsNullOrWhiteSpace(input.Year) && string.IsNullOrWhiteSpace(input.Trim))
+            if(!string.IsNullOrWhiteSpace(input.Make) && !string.IsNullOrWhiteSpace(input.Model) && !string.IsNullOrWhiteSpace(input.Year) && string.IsNullOrWhiteSpace(input.Trim))
                 request.AddQueryParameter("photoType", "exterior");
 
             return request;

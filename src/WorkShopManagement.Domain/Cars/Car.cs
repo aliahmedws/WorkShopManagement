@@ -11,6 +11,7 @@ using WorkShopManagement.Cars.StorageLocations;
 using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.Recalls;
+using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.Cars;
 
@@ -23,6 +24,11 @@ public class Car : FullAuditedAggregateRoot<Guid>
     public Guid OwnerId { get; private set; }
     public Guid ModelId { get; private set; }
     public int ModelYear { get; private set; }
+
+    //--- storing make, trim for Image api 
+    //public string? Make { get; private set; }           // To Review this
+    //public string? Trim { get; private set; }           // To Review this
+    //public string? Model { get; private set; }           // To Review this
 
     public string? Cnc { get; private set; }
     public string? CncFirewall { get; private set; }
@@ -48,6 +54,8 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     //---new above from car bays
 
+    public string? ImageLink { get; private set; }      // For Thumbnail Image with Color 
+
 
     public virtual CarModel? Model { get; private set; }
     public virtual CarOwner? Owner { get; private set; }
@@ -65,8 +73,6 @@ public class Car : FullAuditedAggregateRoot<Guid>
         Guid modelId,
         int modelYear,
 
-        //Stage stage = Stage.Incoming,
-
         string? cnc = null,
         string? cncFirewall = null,
         string? cncColumn = null,
@@ -81,7 +87,8 @@ public class Car : FullAuditedAggregateRoot<Guid>
         string? buildMaterialNumber = null,
         int? angleBailment = null,
         AvvStatus? avvStatus = null,
-        string? pdiStatus = null
+        string? pdiStatus = null,
+        string? imageLink = null
 
     ) : base(id)
     {
@@ -99,6 +106,8 @@ public class Car : FullAuditedAggregateRoot<Guid>
         SetAngleBailment(angleBailment);
         SetAvvStatus(avvStatus);
         SetPdiStatus(pdiStatus);
+        SetImageLink(imageLink);
+
     }
 
     public void SetOwner(Guid ownerId)
@@ -210,4 +219,11 @@ public class Car : FullAuditedAggregateRoot<Guid>
         );
     }
 
+    public void SetImageLink(string? link)
+    {
+        if(CarHelper.TryGetValidHttpUrl(link, out var url))
+        {
+            ImageLink = DomainCheck.TrimOptional(url, nameof(url), maxLength: CarConsts.ImageLinkLength);
+        }
+    }
 }

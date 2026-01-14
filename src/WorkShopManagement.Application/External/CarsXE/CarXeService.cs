@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
 using RestSharp;
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
-using Volo.Abp.Application.Services;
 using Volo.Abp.DependencyInjection;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Timing;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Shared;
@@ -20,7 +19,6 @@ namespace WorkShopManagement.External.CarsXe
     //[RemoteService(false)]
     public class CarXeService : ITransientDependency, ICarXeService
     {
-        private readonly IRepository<VinInfo, Guid> _vinInfoRepository;
         private readonly VinInfoManager _vinInfoManager;
         private readonly IRestClientFactory _restClientFactory;
         private readonly CarsXeApiOptions _carsXeOptions;
@@ -32,13 +30,11 @@ namespace WorkShopManagement.External.CarsXe
         };
 
         public CarXeService(
-            IRepository<VinInfo, Guid> vinInfoRepository,
             VinInfoManager vinInfoManager,
             IRestClientFactory restClientFactory,
             IOptions<CarsXeApiOptions> carsXeOptions,
             IClock clock)
         {
-            _vinInfoRepository = vinInfoRepository;
             _vinInfoManager = vinInfoManager;
             _restClientFactory = restClientFactory;
             _carsXeOptions = carsXeOptions.Value;
@@ -65,14 +61,22 @@ namespace WorkShopManagement.External.CarsXe
 
             var data = response.Data ?? null;
 
-            if(data != null)
+            if(response.IsSuccessful && data != null)
             {
-                if(data.Success.Equals(false))
+
+                if (!data.Success)
                 {
-                    if(string.IsNullOrWhiteSpace(data.Message))
+                    if (string.IsNullOrWhiteSpace(data.Message))
                     {
-                        data.Message = "Failed to retrieve VIN information from external API.";
+                        data.Message = "Failed to retrieve VIN information from CarXe API.";
                     }
+                    return data;
+                }
+
+                if (data.Attributes == null)
+                {
+                    data.Success = false;
+                    data.Message = "No data found for the provided VIN.";
                     return data;
                 }
 
@@ -80,14 +84,16 @@ namespace WorkShopManagement.External.CarsXe
                 await _vinInfoManager.UpsertVinAsync(vin, json, _clock.Now, ct);
 
                 return data!;
+                
+
             }
 
             return new VinResponseDto
             {
                 Success = false,
-                Message = "Failed to retrieve VIN information from external API.",
+                Message = response.ErrorMessage ?? "External API Failed.",
             };
-            
+
         }
 
         public async Task<RecallsResponseDto> GetRecallAsync(
@@ -110,29 +116,32 @@ namespace WorkShopManagement.External.CarsXe
             var response = await client.ExecutePostAsync<RecallsResponseDto>(request, ct);
 
             var data = response.Data;
-            if(data != null)
+            if (response.IsSuccessful && data != null)
             {
-                if (data.Success.Equals(false))
+                if (!data.Success)
                 {
                     if (string.IsNullOrWhiteSpace(data.Message))
                     {
-                        data.Message = "Failed to retrieve recall information from external API.";
+                        data.Message = "Failed to retrieve recall information from CarXe API.";
                     }
                     return data;
                 }
+
 
                 var json = JsonSerializer.Serialize(data, JsonOptions);
 
                 await _vinInfoManager.UpsertRecallAsync(vin, json, _clock.Now, ct);
 
                 return data;
+                
             }
 
             return new RecallsResponseDto
             {
                 Success = false,
-                Message = "Failed to retrieve recall information from external API.",
+                Message = response.ErrorMessage ?? "CarXe API Failed.",
             };
+
         }
 
 
@@ -153,19 +162,33 @@ namespace WorkShopManagement.External.CarsXe
 
             // Call CarsXE
             var client = _carsXeOptions.CreateRestClient(_restClientFactory);
-            var request = _carsXeOptions.CreateSpecsRequest(vinNo);
+            var request = _carsXeOptions.CreateSpecsRequest(vin);
             var response = await client.ExecutePostAsync<SpecsResponseDto>(request, ct);
             var data = response.Data;
-            if (data != null)
+            if (response.IsSuccessful && data != null)
             {
-                if (data.Success.Equals(false))
+                if (!data.Success)
                 {
                     if (string.IsNullOrWhiteSpace(data.Message))
                     {
-                        data.Message = "Failed to retrieve VIN information and specifications from external API.";
+                        data.Message = "Failed to retrieve VIN information and specifications from CarXe API.";
                     }
                     return data;
                 }
+
+                if(data.Attributes == null)
+                {
+                    data.Success = false;
+                    data.Message = "No data found for the provided VIN.";
+                    return data;
+                }
+
+                // Can Remove if only doing Filtering on Frontend. For Case [""] 
+                //data.Attributes.ExteriorColor?
+                //    .Select(x => x.Trim())
+                //    .Where(x => x.Length > 0)
+                //    .ToList();
+
 
                 var json = JsonSerializer.Serialize(data, JsonOptions);
                 await _vinInfoManager.UpsertSpecsAsync(vin, json, _clock.Now, ct);
@@ -174,12 +197,12 @@ namespace WorkShopManagement.External.CarsXe
             return new SpecsResponseDto
             {
                 Success = false,
-                Message = "Failed to retrieve VIN information and specifications from external API.",
+                Message = response.ErrorMessage ?? "Failed to retrieve VIN information and specifications from CarXe API.",
             };
         }
 
         public async Task<ImagesResponseDto> GetImagesAsync(
-            ImagesRequestDto requestDto,
+            ImagesSearchRequestDto requestDto,
             CancellationToken ct = default)
         {
 
@@ -194,15 +217,22 @@ namespace WorkShopManagement.External.CarsXe
             var client = _carsXeOptions.CreateRestClient(_restClientFactory);
             var request = _carsXeOptions.CreateImagesRequest(requestDto);
             var response = await client.ExecutePostAsync<ImagesResponseDto>(request, ct);
-            var data = response.Data;
-            if (data != null)
+            var data = response.Data ?? null;
+            if (response.IsSuccessful && data != null)
             {
-                if (data.Success.Equals(false))
+                if (!data.Success)
                 {
                     if (string.IsNullOrWhiteSpace(data.Message))
                     {
-                        data.Message = "Failed to retrieve vehicle images from external API.";
+                        data.Message = "Failed to retrieve vehicle images from CarXe API.";
                     }
+                    return data;
+                }
+
+                if (data.Images == null || data.Images.Count == 0)
+                {
+                    data.Success = false;
+                    data.Message = "No images found for the provided VIN.";
                     return data;
                 }
 
@@ -210,10 +240,11 @@ namespace WorkShopManagement.External.CarsXe
                 await _vinInfoManager.UpsertImagesAsync(vin, json, _clock.Now, ct);
                 return data;
             }
+
             return new ImagesResponseDto
             {
                 Success = false,
-                Message = "Failed to retrieve vehicle images from external API.",
+                Message = response.ErrorMessage ?? "External API Failed.",
             };
         }
 

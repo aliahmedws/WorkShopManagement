@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -13,6 +14,9 @@ public interface ICarAppService : IApplicationService
     Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input);
     Task DeleteAsync(Guid id);
     Task<ExternalCarDetailsDto> GetExternalCarDetailsAsync(string vin, string? modelYear = null);
+
+    Task<List<string>> GetExternalCarImagesAsync(Guid carId);
+    Task<CarDto> SaveCarImageAsync(Guid carId, string imageUrl);
     Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input);
     Task<CarDto> UpdateAvvStatusAsync(Guid id, UpdateCarAvvStatusDto input);
     Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate);

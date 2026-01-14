@@ -1,0 +1,110 @@
+<abp-modal [(visible)]="visible" [options]="modalOptions" (appear)="init()"
+    (visibleChange)="visibleChange.emit($event)">
+    <ng-template #abpHeader>
+
+        <!--  -->
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <h1 class="fw-bold">
+                        {{ car?.vin ?? '-' }}
+                        <span class="text-muted ms-2">
+                            {{ '::Images' | abpLocalization }}
+                        </span>
+                    </h1>
+
+                </div>
+                <div class="text-muted small">
+                    {{ car?.modelName ?? '-' }} • {{ car?.modelYear ?? '-' }} • {{ car?.color ?? '-' }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #abpBody>
+        @if (selectedImage) {
+        <div class="mb-4 text-center">
+            <div class="d-inline-block position-relative border border-success border-2 rounded p-1">
+                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success">
+                    {{ '::Selected' | abpLocalization }}
+                </span>
+                @if (previewLoading) {
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-light"
+                    style="opacity: 0.8; z-index: 5;">
+                    <div class="spinner-border text-success" role="status"></div>
+                </div>
+                }
+                <img nz-image [nzSrc]="selectedImage" (load)="this.previewLoading=false" style="height: 200px; object-fit: contain; min-width: 300px;"
+                    class="rounded bg-transparent" />
+            </div>
+            <!-- <div class="mt-2">
+                <button class="btn btn-sm btn-link text-danger text-decoration-none" (click)="selectedImage = null">
+                    <i class="fa fa-times me-1"></i> {{ '::RemoveSelection' | abpLocalization }}
+                </button>
+            </div> -->
+            <hr class="mt-4 text-muted">
+        </div>
+        }
+
+        @if (loading) {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">...</span>
+            </div>
+            <p class="mt-2 text-muted">{{ '::FetchingImages' | abpLocalization }}...</p>
+        </div>
+        }
+
+        @if (!loading && (!images || images.length === 0) && !selectedImage) {
+        <div class="text-center py-5 text-muted">
+            <i class="fa fa-images fa-3x mb-3"></i>
+            <p>{{ '::NoImagesFound' | abpLocalization }}</p>
+            <button class="btn btn-primary mt-2" (click)="getCarImages()">
+                <i class="fa fa-sync-alt me-1"></i> {{ '::FetchImages' | abpLocalization }}
+            </button>
+        </div>
+        }
+
+        @if (!loading && images.length > 0) {
+        <div class="d-flex flex-wrap gap-4 justify-content-center p-2">
+            @for (url of images; track url) {
+            <div class="position-relative border rounded p-1 d-flex align-items-center justify-content-center transition-all"
+                [class.border-success]="selectedImage === url" [class.border-2]="selectedImage === url"
+                [style.background-color]="selectedImage === url ? '#f0fdf4' : 'transparent'" style="cursor: pointer;"
+                (click)="selectImage(url)">
+
+                <img nz-image [nzSrc]="url" class="rounded" alt="Car Image"
+                    style="width: auto; height: 100px; object-fit: contain; min-width: 150px;" />
+
+                <button type="button"
+                    class="btn btn-sm position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm"
+                    [class.btn-success]="selectedImage === url" [class.btn-light]="selectedImage !== url"
+                    [class.border]="selectedImage !== url" style="width: 28px; height: 28px;"
+                    (click)="$event.stopPropagation(); selectImage(url)">
+                    <i class="fa fa-check" [class.text-white]="selectedImage === url"
+                        [class.text-secondary]="selectedImage !== url" style="font-size: 14px;"></i>
+                </button>
+            </div>
+            }
+        </div>
+        }
+    </ng-template>
+
+    <ng-template #abpFooter>
+
+        <button type="button" class="btn btn-outline-secondary" (click)="close()">
+            {{ '::Close' | abpLocalization }}
+        </button>
+
+        <button class="btn btn-outline-info" (click)="getCarImages()" [disabled]="loading"
+            title="Fetch/Refresh External Images">
+            <i class="fa fa-sync-alt" [class.fa-spin]="loading"></i>
+            <span class="d-none d-md-inline ms-1">{{ '::Sync' | abpLocalization }}</span>
+        </button>
+
+        <button type="submit" class="btn  btn-primary px-3" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

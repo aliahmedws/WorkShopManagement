@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.External.CarsXe;
+using WorkShopManagement.Utils.Helpers;
+using WorkShopManagement.VinInfos;
 
 namespace WorkShopManagement.Lookups;
 
 [RemoteService(false)]
 [Authorize]
-public class LookupAppService(ILookupRepository lookupRepository) : WorkShopManagementAppService, ILookupAppService
+public class LookupAppService(ILookupRepository lookupRepository, CarXeService carXeService) : WorkShopManagementAppService, ILookupAppService
 {
     private readonly ILookupRepository _lookupRepository = lookupRepository;
+    private readonly ICarXeService _carXeService = carXeService;
 
     public async Task<List<GuidLookupDto>> GetCarModelsAsync()
     {
@@ -41,5 +46,11 @@ public class LookupAppService(ILookupRepository lookupRepository) : WorkShopMana
     {
        var Priorities = await _lookupRepository.GetPrioritiesAsync();
         return ObjectMapper.Map<List<IntLookup>, List<IntLookupDto>>(Priorities);
+    }
+
+    public async Task<SpecsResponseDto> GetExternalSpecsResponseAsync(string vin)
+    {
+        var vinNo = CarHelper.NormalizeAndValidateVin(vin);
+        return await _carXeService.GetSpecsAsync(vinNo);
     }
 }

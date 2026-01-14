@@ -20,5 +20,47 @@ namespace WorkShopManagement.Utils.Helpers
 
             return normalized;
         }
+
+
+        // REVIEW THIS: Is this needed?
+        public static bool TryGetValidHttpUrl(string? url, out string normalized)
+        {
+            normalized = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(url))
+                return false;
+
+            url = url.Trim();
+
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                return false;
+
+            // Only allow http/https
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                return false;
+
+            // Must have a host
+            if (string.IsNullOrWhiteSpace(uri.Host))
+                return false;
+
+            normalized = uri.AbsoluteUri;
+            return true;
+        }
+
+        // REVIEW THIS: Is this needed?
+        // Optional: if you want to ensure it's an image-like URL (basic heuristic)
+        public static bool HasCommonImageExtension(string url)
+        {
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                return false;
+
+            var path = uri.AbsolutePath;
+
+            return path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(".png", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith(".gif", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

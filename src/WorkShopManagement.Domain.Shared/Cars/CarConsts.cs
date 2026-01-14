@@ -20,6 +20,11 @@ public static class CarConsts
     public const int MaxBuildMaterialNumberLength = 64;
     public const int MaxPdiStatusLength = 64;
 
+    public const int MaxMakeLength = 128;
+    public const int MaxTrimLength = 128;
+
+    public const int ImageLinkLength = 2048;
+
     public const string DefaultSorting = "CreationTime DESC";
 
     public static string GetNormalizedSorting(string? sorting)

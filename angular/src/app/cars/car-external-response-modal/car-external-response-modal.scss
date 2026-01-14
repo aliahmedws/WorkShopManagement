@@ -1,0 +1,16 @@
+.ls-1 {
+    letter-spacing: 1px;
+}
+
+// Remove border from the last elements to avoid double borders with the container
+.col-12:last-child, 
+.col-lg-6:nth-last-child(-n+2) { 
+    border-bottom: 0 !important; 
+}
+
+// Ensure the right border on the left column only shows on large screens
+@media (max-width: 991.98px) {
+    .border-end-lg {
+        border-right: 0 !important;
+    }
+}

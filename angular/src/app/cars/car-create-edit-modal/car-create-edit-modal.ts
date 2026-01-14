@@ -1,19 +1,21 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarService, CarDto, ExternalCarDetailsDto, UpdateCarDto, CreateCarDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
-import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
-import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
+// import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
+// import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments/models';
 import { avvStatusOptions } from 'src/app/proxy/car-bays/avv-status.enum';
+import { CarExternalResponseModal } from "../car-external-response-modal/car-external-response-modal";
+import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-car-create-edit-modal',
-  imports: [...SHARED_IMPORTS],
+  imports: [...SHARED_IMPORTS, CarExternalResponseModal ],
   templateUrl: './car-create-edit-modal.html',
   styleUrl: './car-create-edit-modal.scss',
   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
@@ -30,12 +32,13 @@ export class CarCreateEditModal {
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
+
+  @ViewChild(CarExternalResponseModal) responseModal: CarExternalResponseModal;
+
   carModelOptions: GuidLookupDto[] = [];
-  // stageOptions = stageOptions; 
-  // FILTERED OPTIONS: Remove 3 and 4
-  stageOptions = stageOptions.filter(x =>x.value !== 3 && x.value !== 4 );
-  storageLocationOptions = storageLocationOptions;
   avvStatusOptions = avvStatusOptions;
+
+  colorOptions: string[] = [];
 
   // Attachment State
   tempFiles: FileAttachmentDto[] = [];
@@ -65,6 +68,8 @@ export class CarCreateEditModal {
 
   get() {
     this.external = null;
+    this.colorOptions = [];
+  
     this.loading = true;
 
     this.resolveLookups();
@@ -75,24 +80,30 @@ export class CarCreateEditModal {
       return;
     }
 
+
+
     this.carService
       .get(this.carId)
       .subscribe((dto: CarDto) => {
         this.buildForm(dto);
+        this.getExternalCarDetails(dto.vin, dto.modelYear?.toString()); 
         this.loading = false;
+
       });
   }
 
   buildForm(dto?: CarDto) {
+    // this.colorOptions = [];
+
+    if(dto?.color){
+      this.colorOptions = [...this.colorOptions, dto.color];
+    }
+
     this.form = this.fb.group({
       vin: [dto?.vin ?? null, [Validators.required, Validators.minLength(17), Validators.maxLength(17)]],
       color: [dto?.color ?? null, [Validators.required, Validators.maxLength(64)]],
       modelId: [dto?.modelId ?? null, [Validators.required]],
-      modelYear: [dto?.modelYear, [Validators.required, Validators.min(1886), Validators.max(2100)]],
-
-      cnc: [dto?.cnc ?? null, Validators.maxLength(64)],
-      cncFirewall: [dto?.cncFirewall ?? null, Validators.maxLength(64)],
-      cncColumn: [dto?.cncColumn ?? null, Validators.maxLength(64)],
+      modelYear: [dto?.modelYear, [Validators.required, Validators.min(1800)]],
 
       dueDate: [dto?.dueDate ? new Date(dto?.dueDate) : null],
       deliverDate: [dto?.deliverDate ? new Date(dto?.deliverDate) : null],
@@ -101,18 +112,7 @@ export class CarCreateEditModal {
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],
 
-
-      storageLocation: [dto?.storageLocation ?? null, Validators.maxLength(128)],
-
-      // NEW FIELDS
-      buildMaterialNumber: [dto?.buildMaterialNumber ?? null, Validators.maxLength(64)],
-      angleBailment: [dto?.angleBailment ?? null],
-      avvStatus: [dto?.avvStatus ?? null],
-      pdiStatus: [dto?.pdiStatus ?? null, Validators.maxLength(64)],
-
-      // Stage: Keep for Edit, but we will strip it for Create in save()
       stage: [dto?.stage ?? Stage.Incoming],
-
 
       // owner
       ownerId: [dto?.ownerId ?? null, Validators.required],
@@ -199,7 +199,8 @@ export class CarCreateEditModal {
     } else {
       // --- CREATE FLOW ---
       // Remove Stage (backend defaults to Incoming)
-      const { stage, ...createData } = basePayload;
+      // const { stage, ...createData } = basePayload;
+      const {...createData } = basePayload;
 
       const createInput: CreateCarDto = {
         ...createData,
@@ -235,18 +236,41 @@ export class CarCreateEditModal {
     document.getElementById('top').scrollIntoView({ behavior: 'smooth' });
   }
 
-  getExternalCarDetails() {
-    if (!this.canFetchVinDetails) return;
+  getExternalCarDetails(vin: string, modelYear?: string) {
 
-    const { vin, modelYear } = this.form.value || {};
+
+    // if(!this.carId){
+    //   const formValue = this.form.value || {};
+    //   vin = formValue.vin;
+    //   modelYear = formValue.modelYear?.toString();
+    // }
+    
+    if (!this.canFetchVinDetails) return;
     this.carService
       .getExternalCarDetails(vin, modelYear)
       .subscribe(response => {
         this.external = response;
-        this.resolveExternalCarResponse(response);
+        this.colorOptions = response?.colors.filter(color => color.trim() !== '') || [];
+
+        if(!this.carId){
+          this.resolveExternalCarResponse(response);
+        }
+        // this.resolveExternalCarResponse(response);
       });
 
   }
+
+  fetchExternalCarDetails(){
+    if(!this.carId){
+      const { vin, modelYear} = this.form.value || {};
+      this.getExternalCarDetails(vin, modelYear);
+      this.resolveExternalCarResponse(this.external);
+    } else {
+      this.resolveExternalCarResponse(this.external);
+    }
+  }
+
+
 
   resolveExternalCarResponse(response: ExternalCarDetailsDto | null) {
     if (!response?.success) {
@@ -264,4 +288,31 @@ export class CarCreateEditModal {
     this.close();
     this.submit.emit(dto);
   };
+
+  addColor(input: HTMLInputElement){
+    const value = input.value?.trim();
+    if(!value){
+      return;
+    }
+    if(this.colorOptions.includes(value)){
+      this.form.get('color').setValue(value);
+      input.value = '';
+      return;
+    }
+
+    this.colorOptions = [...this.colorOptions, value];
+    this.form.get('color').setValue(value);
+    input.value = '';
+  }
+
+
+  onModalOpen(): void {
+    if(this.canFetchVinDetails){
+      const vin = this.form.get('vin').value || null;
+      this.responseModal?.open(vin);
+    }
+
+  }
+
+
 }

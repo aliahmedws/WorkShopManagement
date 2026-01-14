@@ -33,12 +33,7 @@ public class CarDto : AuditedEntityDto<Guid>
     public string? Notes { get; set; }
     public string? MissingParts { get; set; }
 
-    // Transit vehicle data
-    //public string? LocationStatus { get; set; }
-    //public DateTime? EtaBrisbane { get; set; }
-    //public DateTime? EtaScd { get; set; }
-    //public string? BookingNumber { get; set; }
-    //public string? ClearingAgent { get; set; }
+
     public StorageLocation? StorageLocation { get; set; }
 
     public string? BuildMaterialNumber { get; set; }
@@ -51,6 +46,7 @@ public class CarDto : AuditedEntityDto<Guid>
     public string? BayName { get; set; }
     public Guid? CarBayId { get; set; }
 
+    public string? ImageLink { get; set; }
 
     // File Attachment
     public List<EntityAttachmentDto> EntityAttachments { get; set; } = [];

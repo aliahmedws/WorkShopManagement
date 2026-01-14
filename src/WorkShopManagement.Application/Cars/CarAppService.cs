@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -10,12 +11,15 @@ using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.External.CarsXe;
+using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Permissions;
+using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.Cars;
 
 [RemoteService(false)]
+[Authorize(WorkShopManagementPermissions.Cars.Default)]
 [Authorize(WorkShopManagementPermissions.Cars.Default)]
 public class CarAppService : WorkShopManagementAppService, ICarAppService
 {
@@ -25,7 +29,6 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     private readonly IVpicService _vpicService;
     private readonly ICarXeService _carXeService;
     private readonly IEntityAttachmentService _entityAttachmentService;
-    //private readonly ILogisticsDetailRepository _logisticsDetailRepository;
     private readonly CarManager _carManager;
 
 
@@ -36,7 +39,6 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         IVpicService vpicService,
         ICarXeService carXeService,
         IEntityAttachmentService entityAttachmentService,
-        //ILogisticsDetailRepository LogisticDetailRepository,
         CarManager carManager
         )
     {
@@ -46,7 +48,6 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         _vpicService = vpicService;
         _carXeService = carXeService;
         _entityAttachmentService = entityAttachmentService;
-        //_logisticsDetailRepository = LogisticDetailRepository;
         _carManager = carManager;
     }
 
@@ -118,8 +119,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     [Authorize(WorkShopManagementPermissions.Cars.Create)]
     public async Task<CarDto> CreateAsync(CreateCarDto input)
     {
-        var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
 
+        var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
         var car = await _carManager.CreateAsync(
             GuidGenerator.Create(),
             ownerId: ownerId,
@@ -135,11 +136,13 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             startDate: input.StartDate,
             notes: input.Notes,
             missingParts: input.MissingParts,
-            storageLocation: input.StorageLocation,
+            //storageLocation: input.StorageLocation,
             buildMaterialNumber: input.BuildMaterialNumber,
             angleBailment: input.AngleBailment,
             avvStatus: input.AvvStatus,
-            pdiStatus: input.PdiStatus
+            pdiStatus: input.PdiStatus,
+
+            imageLink: input.ImageLink
 
         );
 
@@ -158,15 +161,14 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
         //Create Logistics Default ?? 
 
-
-
         return ObjectMapper.Map<Car, CarDto>(car);
     }
 
     [Authorize(WorkShopManagementPermissions.Cars.Edit)]
     public async Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input)
     {
-        //var car = await _carRepository.GetAsync(id);
+
+
         var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
         var car = await _carManager.UpdateAsync(
             id,
@@ -176,6 +178,10 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.ModelId,
             input.ModelYear,
             input.Stage,         // Manager will handle ChangeStageAsync logic internally
+
+            //input.Make,
+            //input.Trim,
+
             input.Cnc,
             input.CncFirewall,
             input.CncColumn,
@@ -188,7 +194,9 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.BuildMaterialNumber,
             input.AngleBailment,
             input.AvvStatus,
-            input.PdiStatus
+            input.PdiStatus,
+
+            input.ImageLink
         );
 
         var entity = await _carRepository.UpdateAsync(car, autoSave: true);
@@ -208,8 +216,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     [Authorize(WorkShopManagementPermissions.Cars.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _entityAttachmentService.DeleteAsync(id, EntityType.Car);
         await _carRepository.DeleteAsync(id);
+        await _entityAttachmentService.DeleteAsync(id, EntityType.Car);
     }
 
     private async Task<Guid> ResolveOrCreateOwnerAsync(Guid? carOwnerId, CreateCarOwnerDto? ownerDto)
@@ -247,19 +255,25 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         )
     {
         // CarXe Api
-        var res = await _carXeService.GetVinAsync(vin);
-
-        if (res != null && res.Attributes != null && res.Success)
+        var res = await _carXeService.GetSpecsAsync(vin); 
+        if (res != null && res.Success)                    
         {
             var dto = new ExternalCarDetailsDto
             {
-                Model = res.Attributes.Model,
-                ModelYear = res.Attributes.Year,
-                Error = "",
+                Error = res.Message,
                 Success = res.Success
             };
 
+            if (res.Attributes != null)
+            {
+
+                dto.Model = res.Attributes.Model;
+                dto.ModelYear = res.Attributes.Year;
+                dto.Colors = res.Attributes.ExteriorColor ?? []; 
+               
+            }
             return dto;
+
         }
 
         // govt api
@@ -267,6 +281,71 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         return ObjectMapper.Map<VpicVariableResultDto, ExternalCarDetailsDto>(externalCarDetails);
     }
 
+    public async Task<CarDto> SaveCarImageAsync(
+        [Required]
+        Guid carId,
+        [Required]
+        [MaxLength(CarConsts.ImageLinkLength)]
+        string link)
+    {
+        var car = await _carRepository.GetAsync(carId);                     
+        //var car = await _carRepository.GetWithDetailsAsync(carId);        // Get with detail to save url of model in car link
+
+        CarHelper.TryGetValidHttpUrl(link, out var url);
+        car.SetImageLink(url);
+
+        car = await _carRepository.UpdateAsync(car, autoSave: true);
+        return ObjectMapper.Map<Car, CarDto>(car);
+    }
+
+
+
+    public async Task<List<string>> GetExternalCarImagesAsync(Guid carId)
+    {
+        var car = await _carRepository.GetAsync(carId);
+
+        // Calling get Specs to get (Trim, Make)
+        var specs = await _carXeService.GetSpecsAsync(car.Vin);
+
+        var make = specs?.Attributes?.Make;
+        var trim = specs?.Attributes?.Trim;
+        var model = specs?.Attributes?.Model;         // from 
+
+        if (string.IsNullOrEmpty(make) &&  string.IsNullOrEmpty(model))
+        {
+            return [];              // cannot get image without make
+        }
+
+        var input = new ImagesSearchRequestDto
+        {
+            Vin = car.Vin,
+            Make = make!,
+            Model = model!,
+            Trim = trim,
+            Year = car.ModelYear.ToString(),
+            Color = car.Color,
+        };
+
+        var res = await _carXeService.GetImagesAsync(input);
+        List<string> imgs = [];
+        if (res != null && res.Success)
+        {
+            if(res.Images != null && res.Images.Count!=0)
+            {
+                foreach (var i in res.Images)
+                {
+                    if (!CarHelper.TryGetValidHttpUrl(i.Link, out var url))
+                        continue;
+
+                    imgs.Add(url!);
+                }
+            }
+        }
+
+        return imgs.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+
+    }
     public async Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input)
     {
         var car = await _carRepository.GetAsync(id);

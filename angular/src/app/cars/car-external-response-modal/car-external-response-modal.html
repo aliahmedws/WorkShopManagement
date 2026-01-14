@@ -1,0 +1,91 @@
+<abp-modal [(visible)]="visible" [options]="modalOptions" (visibleChange)="visibleChange.emit($event)">
+    <ng-template #abpHeader>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <h1 class="fw-bold">
+                        {{ vinNo || '-' }}
+                        <span class="text-muted ms-2">
+                            {{ '::ExternalApiResponse' | abpLocalization }}
+                        </span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #abpBody>
+        @if(loading) {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">...</span>
+            </div>
+            <p class="mt-2 text-muted">{{ '::Loading' | abpLocalization }}...</p>
+        </div>
+        }
+
+        @if(!loading && !specs){
+        <div class="alert alert-warning" role="alert">
+            {{ '::NoExternalDataFound' | abpLocalization }}
+        </div>
+        }
+
+        @if(!loading && specs && !specs.success){
+        <div class="alert alert-danger" role="alert">
+            {{ '::ExternalApiResponseFailed' | abpLocalization }}
+        </div>
+        <div class="p-2">
+            <p class="text-danger mb-0">{{ specs.error || 'Unknown error' }}</p>
+        </div>
+        }
+
+        @if(!loading && specs?.success){
+        <div class="container-fluid p-0">
+            <div class="row g-0 border rounded overflow-hidden">
+
+                @for (item of displayItems; track $index) {
+
+                @if (item.isHeader) {
+                <div class="col-12 bg-secondary p-2 border-bottom border-top">
+                    <h6 class="m-0 fw-bold text-white text-uppercase small ls-1">
+                        {{ item.value }}
+                    </h6>
+                </div>
+                }
+
+                @else if (item.isValueOnly) {
+                <!-- Value-only row (for long values like exterior colors) -->
+                <div class="col-12 border-bottom">
+                    <div class="p-2 text-break" style="font-size: 0.9rem;">
+                        {{ item.value }}
+                    </div>
+                </div>
+                }
+
+                @else {
+                <!-- Regular key-value pair -->
+                <div class="col-12 border-bottom" [class.col-lg-6]="!item.isFullWidth"
+                    [class.border-end-lg]="!item.isFullWidth">
+                    <div class="d-flex h-100">
+                        <div class="bg-body-tertiary p-2 fw-semibold text-muted border-end"
+                            style="width: 40%; min-width: 140px; font-size: 0.9rem;">
+                            {{ item.key }}
+                        </div>
+                        <div class="p-2 text-break flex-grow-1" style="font-size: 0.9rem;">
+                            {{ item.value }}
+                        </div>
+                    </div>
+                </div>
+                }
+                }
+            </div>
+        </div>
+        }
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <button type="button" class="btn btn-outline-secondary px-3" (click)="close()">
+            {{ '::Close' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using WorkShopManagement.CarBays;
-using WorkShopManagement.Cars.StorageLocations;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 
 namespace WorkShopManagement.Cars;
@@ -25,8 +24,6 @@ public class CreateCarDto
 
     [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
     public int ModelYear { get; set; }
-    //[Required]
-    //public Stage Stage { get; set; } = Stage.Incoming;
 
     [StringLength(CarConsts.MaxCncLength)]
     public string? Cnc { get; set; }
@@ -52,13 +49,16 @@ public class CreateCarDto
     [Required]
     public Port? Port { get; set; } = Cars.Port.Bne;
     public string? BookingNumber { get; set; }
-    public StorageLocation? StorageLocation { get; set; }           // Remove when creating?
+    //public StorageLocation? StorageLocation { get; set; }           // Remove when creating?
 
     //New Added
     public string? BuildMaterialNumber { get; set; }
     public int? AngleBailment { get; set; }
     public AvvStatus? AvvStatus { get; set; }
     public string? PdiStatus { get; set; }
+
+    [StringLength(CarConsts.ImageLinkLength)]
+    public string? ImageLink { get; set; }
 
     public List<FileAttachmentDto> TempFiles { get; set; } = [];
 }
