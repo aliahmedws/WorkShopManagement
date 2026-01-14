@@ -17,6 +17,7 @@ import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2';
 import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.util';
 import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
 import { finalize } from 'rxjs';
+import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
   private readonly carService = inject(CarService)
   private readonly qualityGateService = inject(QualityGateService);
+  private readonly toaster = inject(ToasterHelperService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
@@ -381,6 +383,7 @@ moveToAwaitingTransportProduction() {
       .subscribe({
         next: (updated) => {
           this.gateByName[gateValue] = updated ?? null;
+          this.toaster.success('::QualityGateUpdatedSuccessfully', '::Success');
         },
         error: () => {
           // optional: revert UI by reloading
@@ -404,6 +407,7 @@ moveToAwaitingTransportProduction() {
     .subscribe({
       next: (created) => {
         this.gateByName[gateValue] = created ?? null;
+        this.toaster.success('::QualityGateCreatedSuccessfully', '::Success');
       },
       error: () => {
         // optional: revert UI by reloading

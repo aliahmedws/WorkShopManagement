@@ -91,7 +91,6 @@
               <div class="fw-bold">{{ details.modelName ?? '-' }}</div>
               <!-- <span class="badge text-bg-light" *ngIf="details.modelImagePath">{{'::Image' | abpLocalization }}</span> -->
             </div>
-
             <!-- QualityGates -->
             <div class="quality-gates-wrap">
               <div class="d-flex align-items-center gap-2 mb-2">
@@ -113,15 +112,17 @@
                       <i class="fa fa-caret-down ms-2"></i>
                     </button>
 
-
+                    
                     <!-- menu -->
-                    <div class="gate-menu" *ngIf="openGateValue === g.value">
-                      <button type="button" class="gate-item d-flex align-items-center gap-2 w-100"
+                    <div *abpPermission="'WorkShopManagement.QualityGates.Create'">
+                        <div class="gate-menu" *ngIf="openGateValue === g.value" >
+                      <button  type="button" class="gate-item d-flex align-items-center gap-2 w-100"
                         *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
                         [class.active]="isSelected(g.value, s.value)">
                         <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
                         <span>{{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}</span>
                       </button>
+                    </div>
                     </div>
                   </div>
                 </div>

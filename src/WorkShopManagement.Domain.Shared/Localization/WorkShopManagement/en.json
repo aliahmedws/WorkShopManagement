@@ -21,6 +21,10 @@
     "Permission:QualityGates.Create": "Create",
     "Permission:QualityGates.Edit": "Edit",
     "Permission:QualityGates.Delete": "Delete",
+    "Permission:CheckInReports": "CheckIn Report Management",
+    "Permission:CheckInReports.Create": "Create",
+    "Permission:CheckInReports.Edit": "Edit",
+    "Permission:CheckInReports.Delete": "Delete",
 
     "Permission:CarModels": "Car Model Management",
     "Permission:Vehicles": "Vehicles Model Management",
@@ -439,6 +443,8 @@
     "CarDispatchedSuccessfully": "Car Dispatched Successfully",
     "ChangeActiveStatus": "Change Active Status",
     "ChangeBayStatus": "Change Bay Status",
-    "AreYouSureToChangeBayActiveStatus": "Are you sure you want to change bay status?"
+    "AreYouSureToChangeBayActiveStatus": "Are you sure you want to change bay status?",
+    "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
+    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully"
   }
 }
