@@ -1,4 +1,16 @@
-<abp-modal [(visible)]="visible" [options]="{ size: 'lg' }">
+<!-- Trigger button (inside component) -->
+<button
+  type="button"
+  [class]="buttonClass"
+  [disabled]="disabled"
+  (click)="open()"
+  [title]="buttonTitle"
+>
+  <i [class]="buttonIcon" aria-hidden="true"></i>
+</button>
+
+<!-- Modal -->
+<abp-modal [(visible)]="visible" [options]="{ size: modalSize }">
   <ng-template #abpHeader>
     <div class="fw-bold">{{ title }}</div>
   </ng-template>

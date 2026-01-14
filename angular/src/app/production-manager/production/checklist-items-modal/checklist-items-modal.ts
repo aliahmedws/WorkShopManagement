@@ -242,22 +242,6 @@ export class CheckListItemsModal {
       });
   }
 
-openUpload(li: ListItemDto): void {
-  if (!li?.id) return;
-
-  this.activeListItemId = li.id;
-
-  this.activeTempFiles = [...(this.tempFilesByListItemId[li.id] ?? [])];
-  this.activeExistingFiles = [...(this.attachmentsByListItemId[li.id] ?? [])];
-
-  this.uploadModal.open({
-    title: 'Attachments',
-    multiple: true,
-    tempFiles: this.activeTempFiles,
-    existingFiles: this.activeExistingFiles,
-    context: { listItemId: li.id, carBayId: this.carBayId }
-  });
-}
 
 onTempFilesChanged(files: FileAttachmentDto[]): void {
   this.activeTempFiles = files ?? [];

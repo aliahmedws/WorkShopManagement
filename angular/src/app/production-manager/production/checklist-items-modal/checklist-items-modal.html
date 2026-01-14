@@ -89,21 +89,22 @@
                 </td>
 
                 <td class="text-center">
-                  <!-- <button
-                    class="btn btn-light btn-sm"
-                    type="button"
-                    [disabled]="!canAttach(li)"
-                    title="Upload attachment"
-                    (click)="openUpload(li)"
-                    title="Upload attachment"
-                  > -->
-                  <button class="btn btn-sm btn-outline-primary" (click)="openUpload(li)">
-                     <i class="fa fa-paperclip" aria-hidden="true" ></i>
-                  </button>
-                 
-                    <!-- + -->
-                  <!-- </button> -->
-                </td>
+                <app-file-upload-modal
+                  [title]="'Attachments'"
+                  [modalSize]="'small'"
+                  [buttonClass]="'btn btn-sm btn-outline-primary'"
+                  [buttonIcon]="'fa fa-paperclip'"
+                  [disabled]="!canAttach(li)"
+                  [context]="{ listItemId: li.id!, carBayId: carBayId }"
+
+                  [tempFiles]="tempFilesByListItemId[li.id!]"
+                  (tempFilesChange)="tempFilesByListItemId[li.id!] = $event"
+
+                  [existingFiles]="attachmentsByListItemId[li.id!]"
+                  (existingFilesChange)="attachmentsByListItemId[li.id!] = $event"
+                ></app-file-upload-modal>
+              </td>
+
               </tr>
             </ng-container>
           </tbody>
@@ -139,15 +140,3 @@
     </div>
   </ng-template>
 </abp-modal>
-
-
-<app-file-upload-modal
-  #uploadModal
-  [multiple]="true"
-  [maxSizeMB]="10"
-  [acceptedTypes]="['image/*','application/pdf']"
-  [tempFiles]="activeTempFiles"
-  (tempFilesChange)="onTempFilesChanged($event)"
-  [existingFiles]="activeExistingFiles"
-  (existingFilesChange)="onExistingFilesChanged($event)"
-></app-file-upload-modal>

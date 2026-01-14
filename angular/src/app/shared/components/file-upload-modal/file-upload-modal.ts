@@ -10,6 +10,12 @@ import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachm
 
 type FileValidationError = { fileName: string; reason: string };
 
+export type UploadContext = {
+  listItemId?: string;
+  carBayId?: string;
+  entityId?: string;
+};
+
 @Component({
   selector: 'app-file-upload-modal',
   standalone: true,
@@ -18,57 +24,56 @@ type FileValidationError = { fileName: string; reason: string };
   styleUrls: ['./file-upload-modal.scss'],
 })
 export class FileUploadModal {
-  // ✅ Required for [(visible)]
+  // Modal visible (ABP modal requires it for [(visible)])
   visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  // ✅ Modal title (optional)
-  title = 'Attachments';
+  // Modal title
+  @Input() title = 'Attachments';
 
-  // ✅ Inputs
+  // Upload behavior
   @Input({ transform: booleanAttribute }) multiple = true;
   @Input() maxSizeMB = 10;
   @Input() acceptedTypes: string[] = ['image/*', 'application/pdf'];
 
+  // Data binding
   @Input() tempFiles: FileAttachmentDto[] = [];
   @Output() tempFilesChange = new EventEmitter<FileAttachmentDto[]>();
 
   @Input() existingFiles: EntityAttachmentDto[] = [];
   @Output() existingFilesChange = new EventEmitter<EntityAttachmentDto[]>();
 
-  @Input() size: null | undefined | 'small' | 'large' = null;
+  // Optional: context comes from parent (row/li etc.)
+  @Input() context?: UploadContext;
+  @Output() opened = new EventEmitter<UploadContext | undefined>();
+
+  // Trigger button customization (so you can match your UI)
+  @Input() buttonClass = 'btn btn-sm btn-outline-primary';
+  @Input() buttonIcon = 'fa fa-paperclip';
+  @Input() buttonTitle = 'Attachments';
+  @Input({ transform: booleanAttribute }) disabled = false;
+
+  // Modal size for ABP (sm | md | lg | xl depending on your ABP version; you were using 'lg')
+  @Input() modalSize: 'sm' | 'md' | 'lg' | 'xl' = 'lg';
 
   private readonly uploadService = inject(UploadFileService);
 
   dragging = false;
   error = '';
 
-  // ✅ Optional: for parent to know which row opened it
-  context?: { listItemId?: string; carBayId?: string; entityId?: string };
-
   // ---------------------------
   // OPEN / CLOSE
   // ---------------------------
-  open(options?: {
-    title?: string;
-    multiple?: boolean;
-    tempFiles?: FileAttachmentDto[];
-    existingFiles?: EntityAttachmentDto[];
-    context?: { listItemId?: string; carBayId?: string; entityId?: string };
-  }): void {
+  open(): void {
+    if (this.disabled) return;
+
     this.error = '';
     this.dragging = false;
 
-    if (options?.title) this.title = options.title;
-    if (typeof options?.multiple === 'boolean') this.multiple = options.multiple;
-
-    if (options?.tempFiles) this.tempFiles = options.tempFiles;
-    if (options?.existingFiles) this.existingFiles = options.existingFiles;
-
-    this.context = options?.context;
-
     this.visible = true;
     this.visibleChange.emit(true);
+
+    this.opened.emit(this.context);
   }
 
   close(): void {
@@ -118,7 +123,6 @@ export class FileUploadModal {
       return;
     }
 
-    // If some invalid files exist, show summary but still upload valid
     if (errors.length) {
       this.error = this.buildErrorSummary(errors);
     }
@@ -155,7 +159,6 @@ export class FileUploadModal {
 
       valid.push(file);
 
-      // Single mode: accept only first valid
       if (!this.multiple) break;
     }
 
