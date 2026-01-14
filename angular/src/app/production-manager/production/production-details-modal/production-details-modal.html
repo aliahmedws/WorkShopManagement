@@ -177,7 +177,8 @@
               </div>
 
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Logistics' | abpLocalization }}</button>
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="goToLogistics()"
+                      [disabled]="!carId">{{'::Logistics' | abpLocalization }}</button>
               </div>
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100">{{"::Recalls" | abpLocalization }}</button>

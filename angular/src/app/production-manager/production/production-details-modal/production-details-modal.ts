@@ -112,16 +112,15 @@ export class ProductionDetailsModal {
   }
 
   goToLogistics() {
+    const carId = this.carId;
+    const vin = this.details?.carVin ?? null;
+
     if (!this.carId) return;
 
-  const vin = this.details?.carVin ?? null;
-
-  // Optional: close the production modal before navigation
-  this.close();
-
-  this.router.navigate(['/logistics-details'], {
-    queryParams: { carId: this.carId, vin }
-  });
+    this.router.navigate(['/logistics-details'], {
+      queryParams: { carId, vin }
+    });
+    // this.close();
 }
 
 
