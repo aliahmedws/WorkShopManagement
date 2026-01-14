@@ -26,7 +26,19 @@ public class RadioOptionAppService : ApplicationService, IRadioOptionAppService
     {
         var queryable = await _repository.GetQueryableAsync();
 
-        var items = await AsyncExecuter.ToListAsync(queryable.Where(x => x.ListItemId == input.ListItemId));
+        var items = queryable
+        .Where(x => x.ListItemId == input.ListItemId)
+        .AsEnumerable()
+        .OrderBy(x =>
+        {
+            var i = Array.IndexOf(
+                RadioOptionConsts.OrderedNames,
+                x.Name.ToUpperInvariant()
+            );
+            return i < 0 ? int.MaxValue : i;
+        })
+        .ThenBy(x => x.Name)
+        .ToList();
 
         return ObjectMapper.Map<List<RadioOption>, List<RadioOptionDto>>(items);
     }
