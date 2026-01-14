@@ -267,6 +267,40 @@ public class CarBayManager : DomainService
         throw new UserFriendlyException("Bay is already occupied.");
     }
 
+    public virtual async Task<CarBay> ClockInAsync(Guid carBayId, DateTime? clockInTime = null)
+    {
+        var entity = await _carBayRepository.GetAsync(carBayId);
+
+        // Prefer server time to avoid client manipulation
+        var time = clockInTime ?? Clock.Now;
+
+        entity.ClockIn(time);
+
+        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
+    }
+
+    public virtual async Task<CarBay> ClockOutAsync(Guid carBayId, DateTime? clockOutTime = null)
+    {
+        var entity = await _carBayRepository.GetAsync(carBayId);
+
+        var time = clockOutTime ?? Clock.Now;
+
+        entity.ClockOut(time);
+
+        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
+    }
+
+    public virtual async Task<CarBay> ResetClockAsync(Guid carBayId)
+    {
+        var entity = await _carBayRepository.GetAsync(carBayId);
+
+        entity.ResetClock();
+
+        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
+    }
+
+
+
 
 
 }

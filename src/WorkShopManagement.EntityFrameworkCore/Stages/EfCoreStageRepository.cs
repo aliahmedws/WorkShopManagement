@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.Bays;
+using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Common;
@@ -149,6 +150,9 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                 OwnerName = owner != null ? owner.Name : null,
                 ModelName = model != null ? model.Name : null,
                 ImageUrl = model != null && model.FileAttachments != null ? model.FileAttachments.Path : null,
+                ClockInTime = carBay.ClockInTime,
+                ClockOutTime = carBay.ClockOutTime,
+                ClockInStatus = carBay.ClockInStatus
             }
         ).ToListAsync();
 

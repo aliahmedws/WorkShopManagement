@@ -19,4 +19,7 @@ public class StageBayDto
     public string? ImageUrl { get; set; }
     public RecallStatus? RecallStatus { get; set; }
     public IssueStatus? IssueStatus { get; set; }
+    public DateTime? ClockInTime { get; set; }
+    public DateTime? ClockOutTime { get; set; }
+    public ClockInStatus ClockInStatus { get; set; }
 }

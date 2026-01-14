@@ -372,6 +372,9 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.Row);
             b.Property(x => x.Columns);
             b.Property(x => x.PulseNumber);
+            b.Property(x => x.ClockInTime);
+            b.Property(x => x.ClockOutTime);
+            b.Property(x => x.ClockInStatus);
 
             b.HasOne(x => x.Car)
                 .WithMany(x => x.CarBays)

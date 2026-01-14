@@ -18,6 +18,9 @@ public class StageBayModel
     public string? OwnerName { get; set; }
     public string? ModelName { get; set; }
     public string? ImageUrl { get; set; }
+    public DateTime? ClockInTime { get; set; }
+    public DateTime? ClockOutTime { get; set; }
+    public ClockInStatus ClockInStatus { get; set; }
 
     //--Recalls
     public IEnumerable<RecallStatus> RecallStatuses { get; set; } = [];
