@@ -165,7 +165,7 @@
                 <button type="button" class="btn btn-sm btn-primary w-100">{{'::Issues' | abpLocalization }}</button>
               </div>
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Notes' | abpLocalization }}</button>
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openNotes()">{{'::Notes' | abpLocalization }}</button>
               </div>
 
               <div class="col-6">
@@ -237,3 +237,4 @@
 </abp-modal>
 
 <app-checklist-items-modal #checkListItemsModal></app-checklist-items-modal>
+<app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>

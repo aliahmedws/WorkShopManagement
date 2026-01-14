@@ -3,15 +3,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
-import { CarService } from 'src/app/proxy/cars';
+import { CarDto, CarService } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { Confirmation } from '@abp/ng.theme.shared';
+import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -22,6 +23,7 @@ export class ProductionDetailsModal {
   private readonly fb = inject(FormBuilder);
 
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
+  @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
 
   visible = false;
   movingStage = false;
@@ -35,6 +37,7 @@ export class ProductionDetailsModal {
 
   carId?: string;
   details?: CarBayDto;
+  carNotes = '';
 
   Priority = Priority;
 
@@ -48,7 +51,16 @@ export class ProductionDetailsModal {
     this.visible = true;
     this.visibleChange.emit(true);
     this.loadDetails();
+    this.loadCarNotes();
   }
+
+  private loadCarNotes(): void {
+  if (!this.carId) return;
+
+  this.carService.get(this.carId).subscribe((car: CarDto) => {
+    this.carNotes = car.notes ?? '';
+  });
+}
 
   close(): void {
     this.visible = false;
@@ -78,6 +90,15 @@ export class ProductionDetailsModal {
   this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
 }
 
+ openNotes(): void {
+  if (!this.carId) return;
+  this.carNotesModal.open(this.carId, this.carNotes);
+}
+
+  onNotesSaved(_: string) {
+  this.carNotes = this.carNotesModal.form?.value?.notes ?? '';
+}
+
 
   private buildForm(): void {
     // If you have quality gates fields in CarBayDto, bind them here
@@ -87,6 +108,7 @@ export class ProductionDetailsModal {
       // preProduction: [this.details?.preProduction ?? null, Validators.required],
     });
   }
+  
 
   vinLast6(v?: string | null): string {
     if (!v) return '-';
