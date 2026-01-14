@@ -97,7 +97,7 @@
               </div>
 
               <div class="position-absolute top-0 end-0 p-3">
-                <button type="button" class="btn btn-sm btn-primary px-4">
+                <button type="button" class="btn btn-sm btn-primary px-4" (click)="openIssues()">
                   {{'::Issues' | abpLocalization }}
                 </button>
               </div>
@@ -162,7 +162,7 @@
 
             <div class="row g-1">
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100">{{'::Issues' | abpLocalization }}</button>
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openIssues()">{{'::Issues' | abpLocalization }}</button>
               </div>
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100" (click)="openNotes()">{{'::Notes' | abpLocalization }}</button>
@@ -181,12 +181,6 @@
               </div>
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100">{{"::Recalls" | abpLocalization }}</button>
-              </div>
-
-              <!-- Full width -->
-              <div class="col-12">
-                <button type="button" class="btn btn-sm btn-primary w-100">{{'::ServiceBulletin' | abpLocalization
-                  }}</button>
               </div>
             </div>
           </div>
@@ -234,7 +228,13 @@
       </button>
     </div>
   </ng-template>
+
+  <app-issue-modal
+  [(visible)]="isIssueModalVisible"
+  [carId]="carId">
+</app-issue-modal>
 </abp-modal>
 
 <app-checklist-items-modal #checkListItemsModal></app-checklist-items-modal>
 <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
+<!-- <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="carId"></app-issue-modal> -->

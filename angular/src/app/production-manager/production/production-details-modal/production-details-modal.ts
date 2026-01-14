@@ -8,11 +8,13 @@ import { Stage } from 'src/app/proxy/cars/stages';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { Confirmation } from '@abp/ng.theme.shared';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
+import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -21,12 +23,15 @@ export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
   private readonly carService = inject(CarService)
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
   @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
+  @ViewChild(IssueModal) issueModal!: IssueModal;
 
   visible = false;
   movingStage = false;
+  isIssueModalVisible = false;
   allowMovetoPostProduction = true;
   allowMovetoAwaitingTransport = true;
 
@@ -88,24 +93,40 @@ export class ProductionDetailsModal {
   if (!cl?.id) return;
 
   this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
-}
+  }
 
  openNotes(): void {
   if (!this.carId) return;
   this.carNotesModal.open(this.carId, this.carNotes);
-}
+  }
 
   onNotesSaved(_: string) {
   this.carNotes = this.carNotesModal.form?.value?.notes ?? '';
+  }
+
+  openIssues(): void {
+    debugger;
+  if (!this.carId) return;
+
+  this.isIssueModalVisible = true; // ✅ THIS IS CORRECT
+  }
+
+  goToLogistics() {
+    if (!this.carId) return;
+
+  const vin = this.details?.carVin ?? null;
+
+  // Optional: close the production modal before navigation
+  this.close();
+
+  this.router.navigate(['/logistics-details'], {
+    queryParams: { carId: this.carId, vin }
+  });
 }
 
 
   private buildForm(): void {
-    // If you have quality gates fields in CarBayDto, bind them here
-    // Otherwise remove form completely.
     this.form = this.fb.group({
-      // example only, replace with your real fields:
-      // preProduction: [this.details?.preProduction ?? null, Validators.required],
     });
   }
   
