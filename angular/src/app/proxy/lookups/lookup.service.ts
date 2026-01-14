@@ -1,6 +1,7 @@
 import type { GuidLookupDto, IntLookupDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
+import type { SpecsResponseDto } from '../external/cars-xe/models';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,14 @@ export class LookupService {
     this.restService.request<any, GuidLookupDto[]>({
       method: 'GET',
       url: '/api/app/lookups/cars',
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getExternalSpecsResponse = (vin: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, SpecsResponseDto>({
+      method: 'GET',
+      url: `/api/app/lookups/external-specs/${vin}`,
     },
     { apiName: this.apiName,...config });
   

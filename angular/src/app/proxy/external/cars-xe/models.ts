@@ -1,0 +1,162 @@
+
+export interface SpecAttributesDto {
+  year?: string;
+  make?: string;
+  model?: string;
+  trim?: string;
+  style?: string;
+  type?: string;
+  made_in?: string;
+  made_in_city?: string;
+  doors?: string;
+  fuel_type?: string;
+  fuel_capacity?: string;
+  city_mileage?: string;
+  highway_mileage?: string;
+  engine?: string;
+  engine_cylinders?: string;
+  transmission?: string;
+  drivetrain?: string;
+  curb_weight?: string;
+  overall_height?: string;
+  overall_length?: string;
+  overall_width?: string;
+  wheelbase_length?: string;
+  standard_seating?: string;
+  production_seq_number?: string;
+  interior_trim: string[];
+  exterior_color: string[];
+  extraAttributes: Record<string, any>;
+}
+
+export interface SpecColorDto {
+  category?: string;
+  name?: string;
+}
+
+export interface SpecEquipmentDto {
+  '4wd_awd'?: string;
+  abs_brakes?: string;
+  adjustable_foot_pedals?: string;
+  air_conditioning?: string;
+  alloy_wheels?: string;
+  am_fm_radio?: string;
+  automatic_headlights?: string;
+  automatic_load_leveling?: string;
+  cargo_area_cover?: string;
+  cargo_area_tiedowns?: string;
+  cargo_net?: string;
+  cassette_player?: string;
+  cd_changer?: string;
+  cd_player?: string;
+  child_safety_door_locks?: string;
+  chrome_wheels?: string;
+  cruise_control?: string;
+  daytime_running_lights?: string;
+  deep_tinted_glass?: string;
+  driver_airbag?: string;
+  driver_multi_adjustable_power_seat?: string;
+  dvd_player?: string;
+  electrochromic_exterior_rearview_mirror?: string;
+  electrochromic_interior_rearview_mirror?: string;
+  electronic_brake_assistance?: string;
+  electronic_parking_aid?: string;
+  first_aid_kit?: string;
+  fog_lights?: string;
+  front_air_dam?: string;
+  front_cooled_seat?: string;
+  front_heated_seat?: string;
+  front_power_lumbar_support?: string;
+  front_power_memory_seat?: string;
+  front_side_airbag?: string;
+  front_side_airbag_with_head_protection?: string;
+  front_split_bench_seat?: string;
+  full_size_spare_tire?: string;
+  genuine_wood_trim?: string;
+  glass_rear_window_on_convertible?: string;
+  heated_exterior_mirror?: string;
+  heated_steering_wheel?: string;
+  high_intensity_discharge_headlights?: string;
+  interval_wipers?: string;
+  keyless_entry?: string;
+  leather_seat?: string;
+  leather_steering_wheel?: string;
+  limited_slip_differential?: string;
+  load_bearing_exterior_rack?: string;
+  locking_differential?: string;
+  locking_pickup_truck_tailgate?: string;
+  manual_sunroof?: string;
+  navigation_aid?: string;
+  passenger_airbag?: string;
+  passenger_multi_adjustable_power_seat?: string;
+  pickup_truck_bed_liner?: string;
+  pickup_truck_cargo_box_light?: string;
+  power_adjustable_exterior_mirror?: string;
+  power_door_locks?: string;
+  power_sliding_side_van_door?: string;
+  power_sunroof?: string;
+  power_trunk_lid?: string;
+  power_windows?: string;
+  rain_sensing_wipers?: string;
+  rear_spoiler?: string;
+  rear_window_defogger?: string;
+  rear_wiper?: string;
+  remote_ignition?: string;
+  removable_top?: string;
+  run_flat_tires?: string;
+  running_boards?: string;
+  second_row_folding_seat?: string;
+  second_row_heated_seat?: string;
+  second_row_multi_adjustable_power_seat?: string;
+  second_row_removable_seat?: string;
+  second_row_side_airbag?: string;
+  second_row_side_airbag_with_head_protection?: string;
+  second_row_sound_controls?: string;
+  separate_driver_front_passenger_climate_controls?: string;
+  side_head_curtain_airbag?: string;
+  skid_plate?: string;
+  sliding_rear_pickup_truck_window?: string;
+  splash_guards?: string;
+  steel_wheels?: string;
+  steering_wheel_mounted_controls?: string;
+  subwoofer?: string;
+  tachometer?: string;
+  telematics_system?: string;
+  telescopic_steering_column?: string;
+  third_row_removable_seat?: string;
+  tilt_steering?: string;
+  tilt_steering_column?: string;
+  tire_pressure_monitor?: string;
+  tow_hitch_receiver?: string;
+  towing_preparation_package?: string;
+  traction_control?: string;
+  trip_computer?: string;
+  trunk_anti_trap_device?: string;
+  vehicle_anti_theft?: string;
+  vehicle_stability_control_system?: string;
+  voice_activated_telephone?: string;
+  wind_deflector_for_convertibles?: string;
+  extraEquipment: Record<string, any>;
+}
+
+export interface SpecWarrantyDto {
+  type?: string;
+  miles?: string;
+  months?: string;
+}
+
+export interface SpecsResponseDto {
+  success: boolean;
+  message?: string;
+  input: VinInputDto;
+  attributes: SpecAttributesDto;
+  colors: SpecColorDto[];
+  equipment: SpecEquipmentDto;
+  warranties: SpecWarrantyDto[];
+  deepdata: Record<string, string>;
+  timestamp?: string;
+}
+
+export interface VinInputDto {
+  vin?: string;
+}

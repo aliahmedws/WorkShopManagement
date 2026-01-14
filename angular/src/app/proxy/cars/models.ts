@@ -34,6 +34,7 @@ export interface CarDto extends AuditedEntityDto<string> {
   bayId?: string;
   bayName?: string;
   carBayId?: string;
+  imageLink?: string;
   entityAttachments: EntityAttachmentDto[];
 }
 
@@ -59,11 +60,11 @@ export interface CreateCarDto {
   missingParts?: string;
   port?: Port;
   bookingNumber?: string;
-  storageLocation?: StorageLocation;
   buildMaterialNumber?: string;
   angleBailment?: number;
   avvStatus?: AvvStatus;
   pdiStatus?: string;
+  imageLink?: string;
   tempFiles: FileAttachmentDto[];
 }
 
@@ -77,6 +78,7 @@ export interface ExternalCarDetailsDto {
   model?: string;
   modelYear?: string;
   suggestedVin?: string;
+  colors: string[];
   error?: string;
   success: boolean;
 }
@@ -97,7 +99,6 @@ export interface UpdateCarDto {
   color: string;
   modelId: string;
   modelYear: number;
-  stage: Stage;
   cnc?: string;
   cncFirewall?: string;
   cncColumn?: string;
@@ -111,6 +112,7 @@ export interface UpdateCarDto {
   angleBailment?: number;
   avvStatus?: AvvStatus;
   pdiStatus?: string;
+  imageLink?: string;
   entityAttachments: EntityAttachmentDto[];
   tempFiles: FileAttachmentDto[];
 }

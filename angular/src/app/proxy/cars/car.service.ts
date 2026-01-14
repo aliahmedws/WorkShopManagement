@@ -54,11 +54,28 @@ export class CarService {
     { apiName: this.apiName,...config });
   
 
+  getExternalCarImages = (carId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, string[]>({
+      method: 'GET',
+      url: `/api/app/cars/external-car-images/${carId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: GetCarListInput, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<CarDto>>({
       method: 'GET',
       url: '/api/app/cars',
       params: { filter: input.filter, stage: input.stage, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  saveCarImage = (carId: string, imagelink: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, CarDto>({
+      method: 'PUT',
+      url: `/api/app/cars/save-car-image/${carId}`,
+      params: { imagelink },
     },
     { apiName: this.apiName,...config });
   
