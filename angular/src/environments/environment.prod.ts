@@ -1,9 +1,9 @@
 import { Environment } from '@abp/ng.core';
 
-const baseUrl = 'http://localhost:4200';
+const baseUrl = 'https://workshop-web-223915365858.australia-southeast1.run.app';
 
 const oAuthConfig = {
-  issuer: 'https://localhost:44315/',
+  issuer: 'https://workshop-api-223915365858.australia-southeast1.run.app/',
   redirectUri: baseUrl,
   clientId: 'WorkShopManagement_App',
   responseType: 'code',
@@ -20,7 +20,7 @@ export const environment = {
   oAuthConfig,
   apis: {
     default: {
-      url: 'https://localhost:44315',
+      url: 'https://workshop-api-223915365858.australia-southeast1.run.app',
       rootNamespace: 'WorkShopManagement',
     },
     AbpAccountPublic: {
