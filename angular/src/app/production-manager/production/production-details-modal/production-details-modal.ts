@@ -15,6 +15,7 @@ import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
 import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2'; 
 import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.util';
+import { gateNameOptions, qualityGateStatusOptions } from 'src/app/proxy/quality-gates';
 
 
 @Component({
@@ -54,6 +55,8 @@ export class ProductionDetailsModal {
   carNotes = '';
 
   Priority = Priority;
+  GateName = gateNameOptions;
+  QualityGateStatus = qualityGateStatusOptions;
 
   form?: FormGroup;
 

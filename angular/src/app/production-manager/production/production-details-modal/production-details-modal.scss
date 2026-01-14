@@ -43,7 +43,7 @@
 }
 
 .checklist-group {
-  padding: 10px 0;
+  padding: 2px 0;
   border-bottom: 1px solid #f0f1f3;
 
   &:last-child {
@@ -77,11 +77,11 @@
 }
 
 .checklist-row:hover .checklist-name {
-  color: #0d6efd;
+  color: #062535 !important;
 }
 
 .checklist-row:hover .checklist-index {
-  color: #0d6efd !important;
+  color: #062535 !important;
 }
 
 
@@ -126,3 +126,4 @@
   object-fit: contain;
   border-radius: 10px;
 }
+

@@ -12,6 +12,7 @@ public class StageBayModel
     public string BayName { get; set; } = default!;
     public Guid? CarBayId { get; set; }
     public Priority? Priority { get; set; }
+    public Guid? CarId { get; set; }
     public string? Vin { get; set; }
     public DateTime? ManufactureStartDate { get; set; }
     public string? OwnerName { get; set; }

@@ -21085,13 +21085,15 @@
         "Issue_Details",
         "Issue_RectificationAction",
         "Issue_QualityControl",
-        "Issue_RepairerDetails"
+        "Issue_RepairerDetails",
+        "ListItem_AttachmentFromBay"
       ],
       "enumValues": [
         0,
         1,
         2,
-        3
+        3,
+        4
       ],
       "genericArguments": null,
       "properties": null
@@ -24495,6 +24497,18 @@
           "jsonName": null,
           "type": "WorkShopManagement.CarBays.Priority?",
           "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,

@@ -18,6 +18,7 @@ export interface StageBayDto {
   bayName?: string;
   carBayId?: string;
   priority?: Priority;
+  carId?: string;
   vin?: string;
   manufactureStartDate?: string;
   ownerName?: string;
