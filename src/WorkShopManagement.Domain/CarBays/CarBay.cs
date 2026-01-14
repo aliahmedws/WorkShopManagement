@@ -25,9 +25,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public Guid? UserId { get; private set; }               // remove this. comes from AuditedEntity
 
-    public Guid? QualityGateId { get; private set; }        // remove this. QualityGate entity will have carId
-    public virtual QualityGate? QualityGate { get; set; }   // remove this. QualityGate entity will have carId
-
     public DateTime? DateTimeIn { get; private set; }
     public DateTime? DateTimeOut { get; private set; }
 
@@ -66,6 +63,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     public bool? CanProgress { get; private set; }
     public bool? JobCardCompleted { get; private set; }
     public virtual ICollection<CarBayItem>? CarBayItems { get; private set; } = new List<CarBayItem>();
+    public virtual ICollection<QualityGate>? QualityGates { get; set; } = new List<QualityGate>(); 
 
     private CarBay() { }
 
@@ -78,8 +76,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     public void SetPriority(Priority? priority) => Priority = priority;
     public void SetBuildMaterialNumber(string? buildMaterialNumber) => BuildMaterialNumber = buildMaterialNumber?.Trim();
     public void SetUserId(Guid? userId) => UserId = userId;
-    public void SetQualityGateId(Guid? qualityGateId) => QualityGateId = qualityGateId;
-
     public void SetDateTimeIn(DateTime? dateTimeIn) => DateTimeIn = dateTimeIn;
     public void SetDateTimeOut(DateTime? dateTimeOut) => DateTimeOut = dateTimeOut;
 

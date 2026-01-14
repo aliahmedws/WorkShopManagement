@@ -61,20 +61,18 @@
 
             <div class="card-body checklist-body">
               <ng-container *ngIf="(details.checkLists?.length ?? 0) > 0; else noLists">
-               <div class="checklist-group"
-                  *ngFor="let cl of (details.checkLists || []); let i = index">
-                <div class="checklist-title checklist-row d-flex align-items-center gap-2"
-                    (click)="openListItem(cl)">
+                <div class="checklist-group" *ngFor="let cl of (details.checkLists || []); let i = index">
+                  <div class="checklist-title checklist-row d-flex align-items-center gap-2" (click)="openListItem(cl)">
 
-                  <span class="checklist-index text-muted">
-                    {{ i + 1 }}.
-                  </span>
+                    <span class="checklist-index text-muted">
+                      {{ i + 1 }}.
+                    </span>
 
-                  <span class="checklist-name">
-                    {{ cl.name }}
-                  </span>
+                    <span class="checklist-name">
+                      {{ cl.name }}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
 
               </ng-container>
@@ -94,15 +92,52 @@
               <!-- <span class="badge text-bg-light" *ngIf="details.modelImagePath">{{'::Image' | abpLocalization }}</span> -->
             </div>
 
-            <div class="card-body position-relative p-3">
+            <!-- QualityGates -->
+            <div class="quality-gates-wrap">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="fw-semibold">Quality Gates</div>
+                <i class="fa fa-question-circle text-muted" aria-hidden="true"></i>
+              </div>
 
+              <div class="row g-2">
+                <div class="col-12 col-sm-3" *ngFor="let g of GateName">
+                  <div class="position-relative w-100" (click)="$event.stopPropagation()">
+                    <!-- button -->
+                    <button
+                      class="btn btn-sm w-100 d-flex align-items-center justify-content-between gate-btn"
+                      type="button"
+                      [ngClass]="gateBtnClass(g.value)"
+                      (click)="toggleGate(g.value)"
+                    >
+                      <span>{{ ('::Enum:GateName.' + g.value) | abpLocalization }}</span>
+                      <i class="fa fa-caret-down ms-2"></i>
+                    </button>
+
+
+                    <!-- menu -->
+                    <div class="gate-menu" *ngIf="openGateValue === g.value">
+                      <button type="button" class="gate-item d-flex align-items-center gap-2 w-100"
+                        *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
+                        [class.active]="isSelected(g.value, s.value)">
+                        <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
+                        <span>{{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div class="card-body position-relative p-3">
               <!-- TOP BUTTONS (overlay) -->
               <div class="position-absolute top-0 start-0 p-3">
 
                 <button type="button" class="btn btn-sm btn-primary px-4">
                   {{'::CriticalImages' | abpLocalization}}
                 </button>
-                
+
               </div>
 
               <!-- Quality Gates (Design Only) -->
@@ -138,17 +173,15 @@
 
                   <!-- buttons row -->
                   <div class="d-flex flex-wrap justify-content-end gap-2">
-                    <button
-                      *ngIf="allowMovetoPostProduction"
-                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
+                    <button *ngIf="allowMovetoPostProduction" type="button"
+                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
                       [disabled]="movingStage || !details?.carId">
                       <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
                       {{'::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
                     </button>
 
-                     <button
-                      *ngIf="allowMovetoAwaitingTransport"
-                      type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
+                    <button *ngIf="allowMovetoAwaitingTransport" type="button"
+                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
                       [disabled]="movingStage || !details?.carId">
                       <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
                       {{'::Move to Awaiting Transport' | abpLocalization }}
@@ -175,10 +208,12 @@
 
             <div class="row g-1">
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openIssues()">{{'::Issues' | abpLocalization }}</button>
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openIssues()">{{'::Issues' |
+                  abpLocalization }}</button>
               </div>
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openNotes()">{{'::Notes' | abpLocalization }}</button>
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openNotes()">{{'::Notes' |
+                  abpLocalization }}</button>
               </div>
 
               <div class="col-6">
@@ -191,10 +226,10 @@
 
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100" (click)="goToLogistics()"
-                      [disabled]="!carId">{{'::Logistics' | abpLocalization }}</button>
+                  [disabled]="!carId">{{'::Logistics' | abpLocalization }}</button>
               </div>
               <div class="col-6">
-                <button type="button" class="btn btn-sm btn-primary w-100"  (click)="openRecalls()"
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openRecalls()"
                   [disabled]="!selectedCar?.id">{{"::Recalls" | abpLocalization }}</button>
               </div>
             </div>
@@ -221,10 +256,10 @@
 
             <div class="d-grid gap-3">
               <button type="button" class="btn btn-sm btn-primary w-100" (click)="printProductionSticker()"
-                    [disabled]="!details?.carVin">{{'::PrintProductionStickers' | abpLocalization
+                [disabled]="!details?.carVin">{{'::PrintProductionStickers' | abpLocalization
                 }}</button>
               <button type="button" class="btn btn-sm btn-primary w-100" (click)="printVehicleStickerV2()"
-                    [disabled]="!details?.carVin">{{'::PrintReceivingStickers' |
+                [disabled]="!details?.carVin">{{'::PrintReceivingStickers' |
                 abpLocalization}}</button>
             </div>
           </div>
@@ -252,6 +287,3 @@
   <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls>
 
 </abp-modal>
-
-
-

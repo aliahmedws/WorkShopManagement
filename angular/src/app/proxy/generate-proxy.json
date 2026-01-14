@@ -6113,6 +6113,23 @@
                     "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
                     "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
                   }
+                },
+                {
+                  "name": "GetListByCarBayIdAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carBayId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
+                    "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
+                  }
                 }
               ]
             }
@@ -6237,6 +6254,43 @@
               "supportedVersions": [],
               "parametersOnMethod": [],
               "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
+                "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.QualityGates.IQualityGateAppService"
+            },
+            "GetListByCarBayIdAsyncByCarBayId": {
+              "uniqueName": "GetListByCarBayIdAsyncByCarBayId",
+              "name": "GetListByCarBayIdAsync",
+              "httpMethod": "GET",
+              "url": "api/app/quality-gates/list-by-carBayId/{carBayId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carBayId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carBayId",
+                  "name": "carBayId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
               "returnValue": {
                 "type": "System.Collections.Generic.List<WorkShopManagement.QualityGates.QualityGateDto>",
                 "typeSimple": "[WorkShopManagement.QualityGates.QualityGateDto]"
@@ -23729,6 +23783,18 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "CarBayId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
     },
@@ -23774,6 +23840,30 @@
           "jsonName": null,
           "type": "WorkShopManagement.QualityGates.QualityGateStatus",
           "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarBayId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ConcurrencyStamp",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -23838,6 +23928,18 @@
           "name": "ConcurrencyStamp",
           "jsonName": null,
           "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CarBayId",
+          "jsonName": null,
+          "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": true,
           "minLength": null,

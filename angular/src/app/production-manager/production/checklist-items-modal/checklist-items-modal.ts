@@ -30,6 +30,8 @@ export class CheckListItemsModal {
   activeTempFiles: FileAttachmentDto[] = [];
   activeExistingFiles: EntityAttachmentDto[] = [];
 
+  savingRow: Record<string, boolean> = {};
+
   loading = false;
   saving = false;
 
@@ -238,23 +240,77 @@ export class CheckListItemsModal {
     this.carBayItemService.saveBatch({ items: rows } as any)
       .pipe(finalize(() => (this.saving = false)))
       .subscribe({
-        next: () => this.close(),
-      });
-  }
+        next: (res : any) => {
+          for (const li of this.items) {
+          if (!li?.id || li.isSeparator === true) continue;
+          this.tempFilesByListItemId[li.id] = [];
+          this.close();
+        }
+      }
+    });}
 
 
-onTempFilesChanged(files: FileAttachmentDto[]): void {
-  this.activeTempFiles = files ?? [];
-  if (!this.activeListItemId) return;
-
-  this.tempFilesByListItemId[this.activeListItemId] = this.activeTempFiles;
+onTempFilesChanged(listItemId: string, files: FileAttachmentDto[]): void {
+  this.tempFilesByListItemId[listItemId] = files ?? [];
+  this.updateRowAttachments(listItemId);
 }
 
-onExistingFilesChanged(files: EntityAttachmentDto[]): void {
-  this.activeExistingFiles = files ?? [];
-  if (!this.activeListItemId) return;
+onExistingFilesChanged(listItemId: string, files: EntityAttachmentDto[]): void {
+  this.attachmentsByListItemId[listItemId] = files ?? [];
+  this.updateRowAttachments(listItemId);
+}
 
-  this.attachmentsByListItemId[this.activeListItemId] = this.activeExistingFiles;
+private updateRowAttachments(listItemId: string): void {
+  if (!this.carBayId) return;
+
+  // prevent concurrent spam for same row
+  if (this.savingRow[listItemId]) return;
+  this.savingRow[listItemId] = true;
+
+  const li = this.items.find(x => x.id === listItemId);
+  if (!li) {
+    this.savingRow[listItemId] = false;
+    return;
+  }
+
+  const selectedRadioId = this.selectedMarks[listItemId];
+  const selectedRadioName =
+    selectedRadioId
+      ? (li.radioOptions ?? []).find(ro => ro.id === selectedRadioId)?.name ?? null
+      : null;
+
+  const payload = {
+    items: [
+      {
+        id: this.existingRowId[listItemId] ?? null,
+        carBayId: this.carBayId,
+        checkListItemId: listItemId,
+
+        // keep existing values so update does not wipe them
+        checkRadioOption: selectedRadioName,
+        comments: (this.comments[listItemId] ?? '').trim() || null,
+
+        // attachments
+        tempFiles: this.tempFilesByListItemId[listItemId] ?? [],
+        entityAttachments: this.attachmentsByListItemId[listItemId] ?? [],
+      },
+    ],
+  };
+
+  this.carBayItemService
+    .saveBatch(payload as any)
+    .pipe(finalize(() => (this.savingRow[listItemId] = false)))
+    .subscribe({
+      next: (res: any) => {
+        // If backend returns created/updated row id, store it so next updates are true updates
+        // Adjust this depending on your API response shape.
+        const returnedId = res?.items?.[0]?.id || res?.id;
+        if (returnedId) this.existingRowId[listItemId] = returnedId;
+      },
+      error: () => {
+        // Optional: show a toast, but don't break UI
+      },
+    });
 }
 
 }

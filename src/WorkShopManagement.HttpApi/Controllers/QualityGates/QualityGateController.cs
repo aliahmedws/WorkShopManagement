@@ -46,6 +46,12 @@ public class QualityGateController : AbpController, IQualityGateAppService
         return await _appService.GetListAsync();
     }
 
+    [HttpGet("list-by-carBayId/{carBayId}")]
+    public async Task<List<QualityGateDto>> GetListByCarBayIdAsync(Guid carBayId)
+    {
+        return await _appService.GetListByCarBayIdAsync(carBayId);
+    }
+
     [HttpPut("{id}")]
     public async Task<QualityGateDto> UpdateAsync(UpdateQualityGateDto input, Guid id)
     {

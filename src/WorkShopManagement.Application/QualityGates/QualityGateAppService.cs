@@ -27,9 +27,11 @@ public class QualityGateAppService : ApplicationService, IQualityGateAppService
         Check.NotNull(input, nameof(input));
         Check.NotNull(input.GateName, nameof(input.GateName));
         Check.NotNull(input.Status, nameof(input.Status));
+        Check.NotNull(input.CarBayId, nameof(input.CarBayId));
 
         var entity = new QualityGate(
             GuidGenerator.Create(),
+            input.CarBayId,
             input.GateName,
             input.Status
         );
@@ -68,9 +70,11 @@ public class QualityGateAppService : ApplicationService, IQualityGateAppService
         Check.NotNull(id, nameof(id));
         Check.NotNull(input.GateName, nameof(input.GateName));
         Check.NotNull(input.Status, nameof(input.Status));
+        Check.NotNull(input.CarBayId, nameof(input.CarBayId));
 
         var entity = await _repository.GetAsync(id);
 
+        entity.CarBayId = input.CarBayId;
         entity.GateName = input.GateName;
         entity.Status = input.Status;
 
@@ -82,5 +86,13 @@ public class QualityGateAppService : ApplicationService, IQualityGateAppService
         entity = await _repository.UpdateAsync(entity);
 
         return ObjectMapper.Map<QualityGate, QualityGateDto>(entity);
+    }
+
+    public async Task<List<QualityGateDto>> GetListByCarBayIdAsync(Guid carBayId)
+    {
+        var entities = await _repository.GetListAsync(x => x.CarBayId == carBayId);
+        return ObjectMapper.Map<List<QualityGate>, List<QualityGateDto>>(
+            entities.OrderBy(x => x.CreationTime).ToList()
+        );
     }
 }

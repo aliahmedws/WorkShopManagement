@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace WorkShopManagement.QualityGates;
 
@@ -12,4 +13,7 @@ public class UpdateQualityGateDto
 
     [Required]
     public string ConcurrencyStamp { get; set; } = default!;
+
+    [Required]
+    public Guid CarBayId { get; set; }
 }

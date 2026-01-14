@@ -22,7 +22,6 @@ public class CarBayManager : DomainService
         Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
-        Guid? qualityGateId = null,
         DateTime? dateTimeIn = null,
         DateTime? dateTimeOut = null,
         bool? isActive = null,
@@ -66,7 +65,6 @@ public class CarBayManager : DomainService
             priority,
             buildMaterialNumber,
             userId,
-            qualityGateId,
             dateTimeIn,
             dateTimeOut,
             isActive,
@@ -100,7 +98,6 @@ public class CarBayManager : DomainService
         Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
-        Guid? qualityGateId = null,
         DateTime? dateTimeIn = null,
         DateTime? dateTimeOut = null,
         bool? isActive = null,
@@ -141,7 +138,6 @@ public class CarBayManager : DomainService
             priority,
             buildMaterialNumber,
             userId,
-            qualityGateId,
             dateTimeIn,
             dateTimeOut,
             isActive,
@@ -175,7 +171,6 @@ public class CarBayManager : DomainService
     Priority? priority,
     string? buildMaterialNumber,
     Guid? userId,
-    Guid? qualityGateId,
     DateTime? dateTimeIn,
     DateTime? dateTimeOut,
     bool? isActive,
@@ -204,7 +199,6 @@ public class CarBayManager : DomainService
 
         entity.SetBuildMaterialNumber(buildMaterialNumber);
         entity.SetUserId(userId);
-        entity.SetQualityGateId(qualityGateId);
 
         entity.SetDateTimeIn(dateTimeIn);
         entity.SetDateTimeOut(dateTimeOut);

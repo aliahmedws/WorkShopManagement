@@ -43,6 +43,14 @@ export class QualityGateService {
     { apiName: this.apiName,...config });
   
 
+  getListByCarBayId = (carBayId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, QualityGateDto[]>({
+      method: 'GET',
+      url: `/api/app/quality-gates/list-by-carBayId/${carBayId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   update = (input: UpdateQualityGateDto, id: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, QualityGateDto>({
       method: 'PUT',

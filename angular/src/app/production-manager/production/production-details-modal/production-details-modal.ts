@@ -15,7 +15,8 @@ import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
 import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2'; 
 import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.util';
-import { gateNameOptions, qualityGateStatusOptions } from 'src/app/proxy/quality-gates';
+import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
+import { finalize } from 'rxjs';
 
 
 @Component({
@@ -29,6 +30,7 @@ import { gateNameOptions, qualityGateStatusOptions } from 'src/app/proxy/quality
 export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
   private readonly carService = inject(CarService)
+  private readonly qualityGateService = inject(QualityGateService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
@@ -55,8 +57,16 @@ export class ProductionDetailsModal {
   carNotes = '';
 
   Priority = Priority;
+
+  //GateQuality
   GateName = gateNameOptions;
   QualityGateStatus = qualityGateStatusOptions;
+  selectedStatusByGate: Record<number, number> = {}; // gateValue -> statusValue
+  openGateValue: number | null = null;
+
+  // persistence state
+  private gateByName: Record<number, QualityGateDto | null> = {}; // gateNameValue -> dto
+  savingGate: Record<number, boolean> = {}; // gateNameValue -> boolean
 
   form?: FormGroup;
 
@@ -108,12 +118,55 @@ export class ProductionDetailsModal {
   private loadDetails(): void {
     if (!this.carId) return;
 
-    // IMPORTANT: this must exist in proxy (recommended)
     this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
       this.details = res;
       this.buildForm();
+
+      this.loadQualityGates();
     });
   }
+
+  loadQualityGates() {
+  const carBayId = this.details?.id;
+  if (!carBayId) return;
+
+  this.qualityGateService.getListByCarBayId(carBayId).subscribe({
+      next: (list) => this.applyQualityGates(list ?? []),
+      error: () => this.applyQualityGates([]),
+    });
+}
+
+ applyQualityGates(list: QualityGateDto[]) {
+  // Reset maps
+  this.gateByName = {};
+  this.selectedStatusByGate = {};
+
+  // Store existing gates
+  for (const g of list) {
+    const gateNameVal = g.gateName as unknown as number;
+    if (!gateNameVal) continue;
+
+    this.gateByName[gateNameVal] = g;
+
+    const statusVal = g.status as unknown as number;
+    if (statusVal) {
+      this.selectedStatusByGate[gateNameVal] = statusVal;
+    }
+  }
+
+  // Optional: default any missing gates to OPEN
+  // (so UI always shows a selected status)
+  const openVal = QualityGateStatus.OPEN as unknown as number;
+
+  for (const opt of this.GateName) {
+    const gateNameVal = opt.value as unknown as number;
+    if (!this.selectedStatusByGate[gateNameVal]) {
+      this.selectedStatusByGate[gateNameVal] = openVal;
+      this.gateByName[gateNameVal] = null; // not created yet
+    }
+  }
+}
+
 
   openListItem(cl: any): void {
   if (!this.carId) return;
@@ -262,15 +315,11 @@ moveToAwaitingTransportProduction() {
   // Model
   const model =
     (this.details as any)?.modelName ||
-    // (this.selectedCar as any)?.modelName ||
-    // (this.selectedCar as any)?.model ||
     '';
 
   // Owner
   const owner =
     this.details?.ownerName ||
-    // (this.selectedCar as any)?.ownerName ||
-    // (this.selectedCar as any)?.owner ||
     'Dealer Stock';
 
   const color =
@@ -285,7 +334,6 @@ moveToAwaitingTransportProduction() {
     (this.details as CarBayDto)?.modelImagePath;
 
   if (!image) {
-    // If image is mandatory for v2, stop here (otherwise it will open but show broken image)
     return;
   }
 
@@ -300,4 +348,111 @@ moveToAwaitingTransportProduction() {
 
   VehicleStickerV2Util.openInNewTab(item);
   }
+
+
+  //GateQuality
+   setStatus(gateValue: number, statusValue: number): void {
+    this.selectedStatusByGate[gateValue] = statusValue;
+     this.upsertQualityGate(gateValue, statusValue);
+    this.closeGateMenu();
+  }
+
+  upsertQualityGate(gateValue: number, statusValue: number) {
+  const carBayId = this.details?.id;
+  if (!carBayId) return;
+
+  if (this.savingGate[gateValue]) return;
+  this.savingGate[gateValue] = true;
+
+  const existing = this.gateByName[gateValue];
+
+  // UPDATE
+  if (existing?.id) {
+    const dto: UpdateQualityGateDto = {
+      gateName: gateValue,
+      status: statusValue,
+      carBayId: carBayId,
+      concurrencyStamp: existing.concurrencyStamp, // required
+    };
+
+    this.qualityGateService
+      .update(dto, existing.id)
+      .pipe(finalize(() => (this.savingGate[gateValue] = false)))
+      .subscribe({
+        next: (updated) => {
+          this.gateByName[gateValue] = updated ?? null;
+        },
+        error: () => {
+          // optional: revert UI by reloading
+          this.loadQualityGates();
+        },
+      });
+
+    return;
+  }
+
+  // CREATE
+  const createDto: CreateQualityGateDto = {
+    gateName: gateValue,
+    status: statusValue,
+    carBayId: carBayId,
+  };
+
+  this.qualityGateService
+    .create(createDto)
+    .pipe(finalize(() => (this.savingGate[gateValue] = false)))
+    .subscribe({
+      next: (created) => {
+        this.gateByName[gateValue] = created ?? null;
+      },
+      error: () => {
+        // optional: revert UI by reloading
+        this.loadQualityGates();
+      },
+    });
+}
+
+
+  isSelected(gateValue: number, statusValue: number): boolean {
+    return this.selectedStatusByGate[gateValue] === statusValue;
+  }
+
+  dotClass(statusValue: number): string {
+    switch (statusValue) {
+      case 1: return 'dot-passed';
+      case 2: return 'dot-major';
+      case 3: return 'dot-minor';
+      case 4: return 'dot-open';
+      case 5: return 'dot-reset';
+      default: return 'dot-reset';
+    }
+  }
+  
+  toggleGate(gateValue: number): void {
+    this.openGateValue = this.openGateValue === gateValue ? null : gateValue;
+  }
+
+  closeGateMenu(): void {
+    this.openGateValue = null;
+  }
+
+  gateBtnClass(gateValue: number): string {
+  const statusValue = this.selectedStatusByGate[gateValue];
+
+  switch (statusValue) {
+    case QualityGateStatus.PASSED:
+      return 'gate-passed';
+    case QualityGateStatus.CONDITIONALPASSEDMAJOR:
+      return 'gate-major';
+    case QualityGateStatus.CONDITIONALPASSEDMINOR:
+      return 'gate-minor';
+    case QualityGateStatus.OPEN:
+      return 'gate-open';
+    case QualityGateStatus.RESET:
+      return 'gate-reset';
+    default:
+      return 'gate-reset';
+  }
+}
+
 }

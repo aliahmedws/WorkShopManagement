@@ -12,4 +12,5 @@ public interface IQualityGateAppService : IApplicationService
     Task<QualityGateDto> UpdateAsync(UpdateQualityGateDto input, Guid id);
     Task DeleteAsync(Guid id);
     Task<List<QualityGateDto>> GetListAsync();
+    Task<List<QualityGateDto>> GetListByCarBayIdAsync(Guid carBayId);
 }
