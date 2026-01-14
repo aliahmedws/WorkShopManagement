@@ -248,23 +248,23 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         var queryable = await _repository.WithDetailsAsync();
 
         var items = await AsyncExecuter.ToListAsync(
-            queryable.Include(x => x.RadioOptions)
+            queryable.Include(x => x.RadioOptions!.OrderByDescending(n => n.Name))
                 .Where(x => x.CheckListId == checkListId)
                 .OrderBy(x => x.Position)
         );
 
         var dtos = ObjectMapper.Map<List<ListItem>, List<ListItemDto>>(items);
 
-        //foreach (var dto in dtos)
-        //{
-        //    var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
-        //    {
-        //        EntityId = dto.Id,
-        //        EntityType = EntityType.ListItem
-        //    });
+        foreach (var dto in dtos)
+        {
+            var attachments = await _entityAttachmentAppService.GetListAsync(new GetEntityAttachmentListDto
+            {
+                EntityId = dto.Id,
+                EntityType = EntityType.ListItem
+            });
 
-        //    dto.EntityAttachments = attachments!;
-        //}
+            dto.EntityAttachments = attachments!;
+        }
 
         return dtos;
     }

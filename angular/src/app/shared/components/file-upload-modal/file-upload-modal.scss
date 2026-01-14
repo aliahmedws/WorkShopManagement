@@ -1,0 +1,30 @@
+.upload-dropzone {
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 22px;
+  text-align: center;
+  cursor: pointer;
+  background: #fafafa;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--brand-primary-light);
+    background: #f0f9ff;
+  }
+
+  &.dragging {
+    border-color: var(--brand-primary-light);
+    background: #eff6ff;
+    transform: scale(1.01);
+  }
+}
+
+.upload-icon {
+  font-size: 38px;
+  color: var(--brand-primary);
+  margin-bottom: 10px;
+}
+
+.upload-text {
+  color: var(--brand-secondary);
+}
