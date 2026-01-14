@@ -1,6 +1,7 @@
 import type { FullAuditedEntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
 import type { ListItemDto } from '../list-items/models';
+import type { CheckListProgressStatus } from './check-list-progress-status.enum';
 import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
 
 export interface CheckListDto extends FullAuditedEntityDto<string> {
@@ -13,6 +14,7 @@ export interface CheckListDto extends FullAuditedEntityDto<string> {
   concurrencyStamp?: string;
   entityAttachments: EntityAttachmentDto[];
   listItems: ListItemDto[];
+  progressStatus?: CheckListProgressStatus;
 }
 
 export interface CreateCheckListDto {

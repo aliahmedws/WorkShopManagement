@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Data;
+using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.CarBayItems;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CarBays;
@@ -27,11 +29,17 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     public async Task<CarBayDto> GetAsync(Guid id)
     {
         var entity = await _repository.GetCarBayDetailsWithIdAsync(id);
+        if (entity.CarBay == null) throw new UserFriendlyException("CarBay is empty");
 
-        if(entity == null)
-            throw new UserFriendlyException("CarBay is empty");
+        var dto = ObjectMapper.Map<CarBay, CarBayDto>(entity.CarBay);
 
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
+        dto.CheckLists?.ForEach(cl =>
+        {
+            entity.Progress.TryGetValue(cl.Id, out var progressStatus);
+            cl.ProgressStatus = progressStatus;
+        });
+
+        return dto;
     }
 
     public async Task<PagedResultDto<CarBayDto>> GetListAsync(GetCarBayListDto input)

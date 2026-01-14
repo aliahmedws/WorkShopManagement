@@ -12,9 +12,10 @@ public class CheckListDto : FullAuditedEntityDto<Guid>
     public int Position { get; set; }
     public Guid CarModelId { get; set; }
     public bool? EnableIssueItems { get; set; }
-    public bool? EnableTags { get; set; } 
+    public bool? EnableTags { get; set; }
     public bool? EnableCheckInReport { get; set; }
     public string ConcurrencyStamp { get; set; } = default!;
     public List<EntityAttachmentDto?> EntityAttachments { get; set; } = [];
     public List<ListItemDto> ListItems { get; set; } = new();
+    public CheckListProgressStatus ProgressStatus { get; set; }
 }

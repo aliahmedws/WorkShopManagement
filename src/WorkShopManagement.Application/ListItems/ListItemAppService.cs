@@ -264,10 +264,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
                 EntityType = EntityType.ListItem
             });
 
-        //    dto.EntityAttachments = attachments!;
-        //}
-        dtos.ForEach(dto =>
-        {
+            dto.EntityAttachments = attachments!;
+
             dto.RadioOptions = dto.RadioOptions?
                 .OrderBy(x =>
                 {
@@ -281,7 +279,8 @@ public class ListItemAppService : ApplicationService, IListItemAppService
                 })
                 .ThenBy(x => x.Name)
                 .ToList();
-        });
+        }
+
         return dtos;
     }
 

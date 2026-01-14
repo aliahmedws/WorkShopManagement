@@ -1,4 +1,7 @@
+import { CheckList } from "src/app/check-list/check-list";
+import { CarBayItemDto } from "src/app/proxy/car-bay-items";
 import { AvvStatus } from "src/app/proxy/car-bays";
+import { CheckListDto, CheckListProgressStatus } from "src/app/proxy/check-lists";
 import { IssueStatus } from "src/app/proxy/issues";
 import { RecallStatus } from "src/app/proxy/recalls";
 
@@ -47,4 +50,19 @@ export function mapAvvStatusColor(status: AvvStatus | null): string | '' {
     if (!status) return DEFAULT_COLOR;
 
     return 'success';
+}
+
+export function mapCheckListProgressStatusColor(progressStatus: CheckListProgressStatus): string | '' {
+    if (!progressStatus) return DEFAULT_COLOR;
+
+    switch (progressStatus) {
+        case CheckListProgressStatus.InProgress:
+            return 'warning';
+
+        case CheckListProgressStatus.Completed:
+            return 'success';
+
+        default:
+            return DEFAULT_COLOR;
+    }
 }

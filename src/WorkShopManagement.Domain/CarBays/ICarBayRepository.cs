@@ -9,7 +9,7 @@ public interface ICarBayRepository : IRepository<CarBay, Guid>
 {
     Task<CarBay?> FindActiveByCarIdAsync(Guid carId);
     Task<CarBay?> FindActiveByBayIdAsync(Guid bayId);
-    Task<CarBay?> GetCarBayDetailsWithIdAsync(Guid id);
+    Task<CarBayDetails> GetCarBayDetailsWithIdAsync(Guid id);
     Task<List<CarBay>> GetListAsync(
         int skipCount = 0,
         int maxResultCount = 10,

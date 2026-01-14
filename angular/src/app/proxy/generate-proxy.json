@@ -17936,6 +17936,22 @@
         }
       ]
     },
+    "WorkShopManagement.CarBays.ClockInStatus": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "NotClockedIn",
+        "ClockedIn",
+        "ClockedOut"
+      ],
+      "enumValues": [
+        1,
+        2,
+        3
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
     "WorkShopManagement.CarBays.CreateCarBayDto": {
       "baseType": null,
       "isEnum": false,
@@ -21023,8 +21039,36 @@
           "minimum": null,
           "maximum": null,
           "regex": null
+        },
+        {
+          "name": "ProgressStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.CheckLists.CheckListProgressStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
         }
       ]
+    },
+    "WorkShopManagement.CheckLists.CheckListProgressStatus": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Pending",
+        "InProgress",
+        "Completed"
+      ],
+      "enumValues": [
+        0,
+        1,
+        2
+      ],
+      "genericArguments": null,
+      "properties": null
     },
     "WorkShopManagement.CheckLists.CreateCheckListDto": {
       "baseType": null,
@@ -24913,6 +24957,42 @@
           "jsonName": null,
           "type": "WorkShopManagement.Issues.IssueStatus?",
           "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClockInTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClockOutTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClockInStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.ClockInStatus",
+          "typeSimple": "enum",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
