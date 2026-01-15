@@ -52,17 +52,22 @@
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [maxWidth]="140">
+                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [maxWidth]="120">
                         <ng-template let-row="row" ngx-datatable-cell-template>
-                            {{ row.isSeparator ? ('::Yes' | abpLocalization) : ('::No' | abpLocalization) }}
+                            <div class="text-center">
+                                <span [class.text-success]="row.isSeparator" [class.text-danger]="!row.isSeparator">
+                                    <i class="fas" [class.fa-check]="row.isSeparator"
+                                        [class.fa-times]="!row.isSeparator"></i>
+                                </span>
+                            </div>
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::IsAttachmentRequired' | abpLocalization" [maxWidth]="200">
+                    <!-- <ngx-datatable-column [name]="'::IsAttachmentRequired' | abpLocalization" [maxWidth]="200">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             {{ row.isAttachmentRequired ? ('::Yes' | abpLocalization) : ('::No' | abpLocalization) }}
                         </ng-template>
-                    </ngx-datatable-column>
+                    </ngx-datatable-column> -->
 
                     <ngx-datatable-column [name]="'::Images' | abpLocalization" [sortable]="false" [width]="160">
                         <ng-template let-row="row" ngx-datatable-cell-template>
@@ -133,7 +138,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-6">
+                <!-- <div class="col-12 col-md-6">
                     <div class="form-check mt-1">
                         <input class="form-check-input" type="checkbox" formControlName="isAttachmentRequired"
                             id="isAttachmentRequired" />
@@ -141,7 +146,7 @@
                             {{ '::IsAttachmentRequired' | abpLocalization }}
                         </label>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Attachments -->
                 <div class="col-12">
@@ -152,11 +157,12 @@
 
             </div>
 
-            <hr class="my-3" />
-
             <!-- Radio Options only when list-item exists -->
             <!-- Radio Options only when list-item exists -->
             <div class="row g-2" *ngIf="selected?.id">
+                <div class="col-12">
+                    <hr class="my-3" />
+                </div>
                 <div class="col-12">
                     <div class="d-flex align-items-center justify-content-between">
                         <h6 class="m-0">{{ '::RadioOptions' | abpLocalization }}</h6>
