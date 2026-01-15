@@ -57,7 +57,8 @@ public class WorkShopManagementDbMigrationService : ITransientDependency
 
         if (MultiTenancyConsts.IsEnabled)
         {
-            
+
+#pragma warning disable CS0162 // Unreachable code detected
             var tenants = await _tenantRepository.GetListAsync(includeDetails: true);
 
             var migratedDatabaseSchemas = new HashSet<string>();
@@ -86,6 +87,7 @@ public class WorkShopManagementDbMigrationService : ITransientDependency
             }
 
             Logger.LogInformation("Successfully completed all database migrations.");
+#pragma warning restore CS0162 // Unreachable code detected
         }
         Logger.LogInformation("You can safely end this process...");
     }

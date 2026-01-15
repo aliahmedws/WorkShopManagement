@@ -8,7 +8,7 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var myGroup = context.AddGroup(WorkShopManagementPermissions.GroupName);
+        var myGroup = context.AddGroup(WorkShopManagementPermissions.GroupName, L("Permission:WorkShopManagement"));
 
         var bayPermissions = myGroup.AddPermission(WorkShopManagementPermissions.Bays.Default, L("Permission:Bays"));
         bayPermissions.AddChild(WorkShopManagementPermissions.Bays.SetIsActive, L("Permission:SetIsActive"));
