@@ -12,7 +12,7 @@ public class CreateLogisticsDetailDto
     public Guid CarId { get; set; }
 
     [Required]
-    public Port Port { get; set; } = Port.Bne;
+    public Port Port { get; set; }
 
     [StringLength(LogisticsDetailConsts.MaxBookingNumberLength)]
     public string? BookingNumber { get; set; }

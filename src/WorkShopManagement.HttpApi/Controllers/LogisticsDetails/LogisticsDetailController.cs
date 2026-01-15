@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -15,6 +16,7 @@ namespace WorkShopManagement.Controllers.LogisticsDetails
     public class LogisticsDetailController(ILogisticsDetailAppService logisticsDetailAppService)
     : WorkShopManagementController, ILogisticsDetailAppService
     {
+
         [HttpPost]
         public Task<LogisticsDetailDto> CreateAsync(CreateLogisticsDetailDto input)
         {
@@ -48,10 +50,24 @@ namespace WorkShopManagement.Controllers.LogisticsDetails
             return logisticsDetailAppService.GetListAsync(input, filter, carId);
         }
 
+
         [HttpPut("{id}")]
         public Task<LogisticsDetailDto> UpdateAsync(Guid id, UpdateLogisticsDetailDto input)
         {
             return logisticsDetailAppService.UpdateAsync(id, input);
+        }
+
+
+        [HttpPost("{id}/submit-cre")]
+        public Task<LogisticsDetailDto> SubmitCreStatusAsync(Guid id)
+        {
+            return logisticsDetailAppService.SubmitCreStatusAsync(id);
+        }
+
+        [HttpPost("{id}/add-or-update-deliver-details")]
+        public Task<LogisticsDetailDto> AddOrUpdateDeliverDetailsAsync(Guid id, AddOrUpdateDeliverDetailDto input)
+        {
+            return logisticsDetailAppService.AddOrUpdateDeliverDetailsAsync(id, input);
         }
     }
 }

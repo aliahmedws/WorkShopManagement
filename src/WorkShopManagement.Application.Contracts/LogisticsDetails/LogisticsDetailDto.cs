@@ -10,17 +10,16 @@ namespace WorkShopManagement.LogisticsDetails
     public class LogisticsDetailDto : FullAuditedEntityDto<Guid>
     {
         public Guid CarId { get; set; }
-
+        public Port Port { get; set; }
         public string? BookingNumber { get; set; }
-        public string? ClearingAgent { get; set; }
-        public string? ClearanceRemarks { get; set; }
-        public DateTime? ClearanceDate { get; set; }
 
         public CreStatus CreStatus { get; set; }
         public DateTime? CreSubmissionDate { get; set; }
-
         public string? RsvaNumber { get; set; }
-        public Port Port { get; set; }
+
+        public string? ClearingAgent { get; set; }
+        public string? ClearanceRemarks { get; set; }
+        public DateTime? ClearanceDate { get; set; }
 
         public DateTime? ActualPortArrivalDate { get; set; }
         public DateTime? ActualScdArrivalDate { get; set; }

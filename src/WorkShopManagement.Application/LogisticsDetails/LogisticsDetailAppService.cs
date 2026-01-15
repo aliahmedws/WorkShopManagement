@@ -18,15 +18,18 @@ namespace WorkShopManagement.LogisticsDetails
         private readonly ILogisticsDetailRepository _logisticsRepository;
         private readonly IRepository<Car, Guid> _carRepository;
         private readonly IEntityAttachmentService _entityAttachmentService;
+        private readonly LogisticsDetailManager _logisticsDetailManager;
 
         public LogisticsDetailAppService(
             ILogisticsDetailRepository logisticsRepository,
             IRepository<Car, Guid> carRepository,
-            IEntityAttachmentService entityAttachmentService)
+            IEntityAttachmentService entityAttachmentService,
+            LogisticsDetailManager logisticsDetailManager)
         {
             _logisticsRepository = logisticsRepository;
             _carRepository = carRepository;
             _entityAttachmentService=entityAttachmentService;
+            _logisticsDetailManager = logisticsDetailManager;
         }
 
         public async Task<LogisticsDetailDto> GetAsync(Guid id)
@@ -95,65 +98,45 @@ namespace WorkShopManagement.LogisticsDetails
         [Authorize(WorkShopManagementPermissions.LogisticsDetails.Create)]     
         public async Task<LogisticsDetailDto> CreateAsync(CreateLogisticsDetailDto input)
         {
-            // Ensure car exists
-            var carExists = await _carRepository.AnyAsync(x => x.Id == input.CarId);
-            if (!carExists)
-            {
-                throw new UserFriendlyException("Car not found.");
-            }
-
-            var entity = new LogisticsDetail(
-                id: GuidGenerator.Create(),
+            
+            var logisticDetail = await _logisticsDetailManager.CreateAsync(
                 carId: input.CarId,
                 port: input.Port,
                 bookingNumber: input.BookingNumber
             );
-
-            entity = await _logisticsRepository.InsertAsync(entity, autoSave: true);
+             
+            logisticDetail = await _logisticsRepository.InsertAsync(logisticDetail, autoSave: true);
 
             // --- CREATE EntityAttachment 
             await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
             {
                 EntityType = EntityType.LogisticsDetail,
-                EntityId = entity.Id,
+                EntityId = logisticDetail.Id,
                 TempFiles = input.TempFiles
             });
             // --- create end
 
-            return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
+            return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(logisticDetail);
         }
 
         [Authorize(WorkShopManagementPermissions.LogisticsDetails.Edit)] 
         public async Task<LogisticsDetailDto> UpdateAsync(Guid id, UpdateLogisticsDetailDto input)
         {
-            var entity = await _logisticsRepository.GetAsync(id, includeDetails: true);     // TODO: use FirstOrDefaultAsync and check for null to throw not found exception
-
-            var carExists = await _carRepository.AnyAsync(x => x.Id == input.CarId);
-            if (!carExists)
-            {
-                throw new UserFriendlyException("Car not found.");
-            }
-
-            var other = await _logisticsRepository.FindByCarIdAsync(input.CarId, includeDetails: false, asNoTracking: true);
-            if (other is not null && other.Id != entity.Id)
-            {
-                throw new BusinessException(WorkShopManagementDomainErrorCodes.DuplicateRecordWithPropertyName)
-                    .WithData("PropertyName", nameof(LogisticsDetail.CarId))
-                    .WithData("Value", input.CarId);
-            }
-            
-            entity.SetPort(input.Port);
-            entity.SetBookingNumber(input.BookingNumber);
-            entity.SetCreDetails(input.RsvaNumber, input.CreSubmissionDate);
-            entity.SetClearanceDetails(input.ClearingAgent, input.ClearanceRemarks, input.ClearanceDate);
-            entity.SetActualArrivals(input.ActualPortArrivalDate, input.ActualScdArrivalDate);
-            entity.SetDeliverDetails(confirmedDeliverDate: input.ConfirmedDeliverDate,
-                deliverNotes: input.DeliverNotes,
-                deliverTo: input.DeliverTo,
-                transportDestination: input.TransportDestination);
+            var entity = await _logisticsDetailManager.UpdateAsync(
+                id: id,
+                port: input.Port,
+                bookingNumber: input.BookingNumber,
+                creStatus: input.CreStatus,
+                creSubmissionDate: input.CreSubmissionDate,
+                rsvaNumber: input.RsvaNumber,
+                clearingAgent: input.ClearingAgent,
+                clearanceRemarks: input.ClearanceRemarks,
+                clearanceDate: input.ClearanceDate,
+                actualPortArrivalDate:  input.ActualPortArrivalDate,
+                actualScdArrivalDate: input.ActualScdArrivalDate
+            );
 
             await _logisticsRepository.UpdateAsync(entity, autoSave: true);
-
             await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
@@ -166,7 +149,30 @@ namespace WorkShopManagement.LogisticsDetails
             return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
         }
 
-        [Authorize(WorkShopManagementPermissions.LogisticsDetails.Delete)]      
+        [Authorize(WorkShopManagementPermissions.LogisticsDetails.Edit)]
+        public async Task<LogisticsDetailDto> SubmitCreStatusAsync(Guid id)
+        {
+            var entity = await _logisticsDetailManager.SubmitCreStatus(id);
+            await _logisticsRepository.UpdateAsync(entity, autoSave: true);
+            return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
+        }
+
+        [Authorize(WorkShopManagementPermissions.LogisticsDetails.Edit)]
+        public async Task<LogisticsDetailDto> AddOrUpdateDeliverDetailsAsync(Guid id, AddOrUpdateDeliverDetailDto input)
+        {
+            var entity = await _logisticsDetailManager.AddOrUpdateDeliverDetailsAsync(
+                id: id,
+                confirmedDeliverDate: input.ConfirmedDeliverDate,
+                deliverNotes: input.DeliverNotes,
+                deliverTo: input.DeliverTo,
+                transportDestination: input.TransportDestination
+                );
+
+            await _logisticsRepository.UpdateAsync(entity, autoSave: true);
+            return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
+        }
+
+        [Authorize(WorkShopManagementPermissions.LogisticsDetails.Delete)]
         public async Task DeleteAsync(Guid id)
         {
             await _logisticsRepository.DeleteAsync(id);

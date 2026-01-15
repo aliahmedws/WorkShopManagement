@@ -1,4 +1,5 @@
-<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()" [options]="modalOptions">
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()"
+    [options]="modalOptions">
     <ng-template #abpHeader>
         <h3 class="modal-title">{{ (isEdit ? '::EditEstimate' : '::NewEstimate') | abpLocalization }}</h3>
     </ng-template>
@@ -6,33 +7,46 @@
     <ng-template #abpBody>
         <form [formGroup]="form" (ngSubmit)="save()" *ngIf="form">
             <div class="row g-3">
+
+                @if(isEdit)
+                {
+                <div class="alert alert-info justify-content-center align-items-center d-flex">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <small class="">{{ '::DateCannotBeChangedInEdit' | abpLocalization }}</small>
+
+                </div>
+                }
+
                 <div class="col-12 col-md-6">
                     <label class="form-label required">{{ '::EtaPort' | abpLocalization }}</label>
-                    <input class="form-control" formControlName="etaPort" ngbDatepicker #d1="ngbDatepicker" (click)="d1.toggle()" />
-                    <small *ngIf="isEdit" class="text-muted">{{ '::DateCannotBeChangedInEdit' | abpLocalization }}</small>
+                    <input class="form-control" formControlName="etaPort" ngbDatepicker #d1="ngbDatepicker"
+                        (click)="d1.toggle()" />
                 </div>
-                
+
                 <div class="col-12 col-md-6">
                     <label class="form-label required">{{ '::EtaScd' | abpLocalization }}</label>
-                    <input class="form-control" formControlName="etaScd" ngbDatepicker #d2="ngbDatepicker" (click)="d2.toggle()" />
+                    <input class="form-control" formControlName="etaScd" ngbDatepicker #d2="ngbDatepicker"
+                        (click)="d2.toggle()" />
                 </div>
 
                 <div class="col-12">
                     <label class="form-label">{{ '::Notes' | abpLocalization }}</label>
-                    <textarea class="form-control" formControlName="notes" rows="3"></textarea>
+                    <textarea class="form-control" formControlName="notes" rows="4"></textarea>
                 </div>
 
                 <div class="col-12">
                     <label class="form-label">{{ '::Attachments' | abpLocalization }}</label>
-                    <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles"></app-file-upload>
+                    <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles"
+                        [(existingFiles)]="existingFiles"></app-file-upload>
                 </div>
             </div>
         </form>
     </ng-template>
 
     <ng-template #abpFooter>
-        <button type="button" class="btn btn-secondary" (click)="close()">{{ '::Cancel' | abpLocalization }}</button>
-        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid || loading">
+        <button type="button" class="btn btn-outline-secondary me-2 px-3" (click)="close()">{{ '::Cancel' |
+            abpLocalization }}</button>
+        <button type="button" class="btn btn-primary px-3" (click)="save()" [disabled]="form.invalid || loading">
             <i class="fa fa-save me-1"></i> {{ '::Save' | abpLocalization }}
         </button>
     </ng-template>

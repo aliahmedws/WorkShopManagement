@@ -12,23 +12,24 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
 
 @Component({
   selector: 'app-awaiting-transport',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, AvvStatusModal],
   templateUrl: './awaiting-transport.html',
   styleUrl: './awaiting-transport.scss'
 })
 export class AwaitingTransport {
- private readonly carService = inject(CarService);
- private readonly confirm = inject(ConfirmationHelperService);
+  private readonly carService = inject(CarService);
+  private readonly confirm = inject(ConfirmationHelperService);
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService)
 
 
   form!: FormGroup;
-  avvForm!: FormGroup;
+  // avvForm!: FormGroup;
   estReleaseForm!: FormGroup;
   StorageLocation = StorageLocation;
 
@@ -49,7 +50,7 @@ export class AwaitingTransport {
   selectedCarBay = {} as CarBayDto;
 
   priority = Priority;
-  aVVStatusOptions = avvStatusOptions;
+  // aVVStatusOptions = avvStatusOptions;
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
@@ -75,77 +76,52 @@ export class AwaitingTransport {
     this.isCheckInModalVisible = true;
   }
 
-   openAvvModal(car: CarDto): void {
+  openAvvModal(car: CarDto): void {
     this.selectedCar = car;
-
-    this.avvForm = this.fb.group({
-      avvStatus: [car.avvStatus ?? null, [Validators.required]],
-    });
-
     this.isAvvModalVisible = true;
   }
 
   openEstReleaseModal(car: CarDto): void {
-  this.selectedCar = car;
+    this.selectedCar = car;
 
-  const dateValue = car.deliverDate ? this.toDateInputValue(car.deliverDate) : null;
+    const dateValue = car.deliverDate ? this.toDateInputValue(car.deliverDate) : null;
 
-  this.estReleaseForm = this.fb.group({
-    estimatedReleaseDate: [dateValue],
-  });
+    this.estReleaseForm = this.fb.group({
+      estimatedReleaseDate: [dateValue],
+    });
 
-  this.isEstReleaseModalVisible = true;
-}
-
-closeEstReleaseModal(): void {
-  this.isEstReleaseModalVisible = false;
-  this.estReleaseForm = undefined as any;
-}
-
-  closeAvvModal(): void {
-    this.isAvvModalVisible = false;
-    this.avvForm = undefined as any;
+    this.isEstReleaseModalVisible = true;
   }
 
-  saveAvvStatus(): void {
-    if (!this.selectedCar?.id) return;
-
-    this.avvForm.markAllAsTouched();
-    if (this.avvForm.invalid) return;
-
-    const avvStatus = this.avvForm.value.avvStatus;
-
-    this.carService.updateAvvStatus(this.selectedCar.id, { avvStatus }).subscribe(() => {
-      this.isAvvModalVisible = false;
-      this.toaster.success('::AVVStatusUpdated', '::Success');
-      this.list.get();
-    });
+  closeEstReleaseModal(): void {
+    this.isEstReleaseModalVisible = false;
+    this.estReleaseForm = undefined as any;
   }
 
   saveEstRelease(): void {
-  if (!this.selectedCar?.id) return;
+    if (!this.selectedCar?.id) return;
 
-  const dateStr = this.estReleaseForm.value.estimatedReleaseDate as string | null;
-  if (!dateStr) return;
+    const dateStr = this.estReleaseForm.value.estimatedReleaseDate as string | null;
+    if (!dateStr) return;
 
-  const estimatedReleaseDate = new Date(dateStr);
+    const estimatedReleaseDate = new Date(dateStr);
     this.carService.updateEstimatedRelease(this.selectedCar.id, estimatedReleaseDate.toISOString()).subscribe(() => {
       this.isEstReleaseModalVisible = false;
       this.toaster.success('::EstimatedReleaseDateUpdated', '::Success');
       this.list.get();
     });
-}
+  }
 
-dispatched(carId: string){
-  this.confirm.confirmAction('::ConfirmDispatchedMessage', '::ConfirmDispatchedTitle').subscribe(status => {
-    if (status !== Confirmation.Status.confirm) return;
+  dispatched(carId: string) {
+    this.confirm.confirmAction('::ConfirmDispatchedMessage', '::ConfirmDispatchedTitle').subscribe(status => {
+      if (status !== Confirmation.Status.confirm) return;
 
-    this.carService.changeStage(carId, { targetStage: Stage.Dispatched }).subscribe(() => {
-      this.toaster.success('::CarDispatchedSuccessfully', '::Success');
-      this.list.get();
+      this.carService.changeStage(carId, { targetStage: Stage.Dispatched }).subscribe(() => {
+        this.toaster.success('::CarDispatchedSuccessfully', '::Success');
+        this.list.get();
+      });
     });
-  });
-}
+  }
 
 
   private toDateInputValue(date: string | Date): string {

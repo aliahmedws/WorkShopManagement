@@ -102,9 +102,9 @@ export class CarCreateEditModal {
       modelId: [dto?.modelId ?? null, [Validators.required]],
       modelYear: [dto?.modelYear, [Validators.required, Validators.min(1800)]],
 
-      dueDate: [dto?.dueDate ? new Date(dto?.dueDate) : null],
-      deliverDate: [dto?.deliverDate ? new Date(dto?.deliverDate) : null],
-      startDate: [dto?.startDate ? new Date(dto?.startDate) : null],
+      // dueDate: [dto?.dueDate ? new Date(dto?.dueDate) : null],
+      // deliverDate: [dto?.deliverDate ? new Date(dto?.deliverDate) : null],
+      // startDate: [dto?.startDate ? new Date(dto?.startDate) : null],
 
       notes: [dto?.notes ?? null, Validators.maxLength(4000)],
       missingParts: [dto?.missingParts ?? null, Validators.maxLength(4000)],

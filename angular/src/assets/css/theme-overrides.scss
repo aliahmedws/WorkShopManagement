@@ -1388,7 +1388,7 @@ lpx-footer {
     .alert-heading { color: var(--accent-warning); }
   }
 
-  &.alert-info {
+  &.alert-info, .alert-info .icon {
     background-color: var(--accent-info-light);
     color: var(--accent-info);
 

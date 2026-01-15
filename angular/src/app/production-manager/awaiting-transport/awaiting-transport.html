@@ -62,24 +62,17 @@
                     {{ value | date:'shortDate' }}
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="locationStatus"
-                [maxWidth]="120"></ngx-datatable-column>
+            <!-- <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="locationStatus"
+                [maxWidth]="120"></ngx-datatable-column> -->
 
-            <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus"
-                [maxWidth]="120">
+            <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus" [maxWidth]="120">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <button
-                        type="button"
-                        class="btn btn-link p-0"
-                        (click)="openAvvModal(row)"
-                        style="cursor: pointer;"
-                        >
-                    <ng-container
-                        *ngIf="row?.avvStatus !== null && row?.avvStatus !== undefined; else dash">
-                        {{ ("::Enum:AvvStatus." + row.avvStatus) | abpLocalization }}
-                    </ng-container>
+                    <button type="button" class="btn btn-link p-0" (click)="openAvvModal(row)" style="cursor: pointer;">
+                        <ng-container *ngIf="row?.avvStatus !== null && row?.avvStatus !== undefined; else dash">
+                            {{ ("::Enum:AvvStatus." + row.avvStatus) | abpLocalization }}
+                        </ng-container>
 
-                    <ng-template #dash>-</ng-template>
+                        <ng-template #dash>-</ng-template>
                     </button>
                 </ng-template>
             </ngx-datatable-column>
@@ -107,16 +100,16 @@
             <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate" [maxWidth]="120">
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <button type="button" class="btn btn-link p-0" (click)="openEstReleaseModal(row)">
-                    <span class="text-decoration-underline">
-                        {{ value ? (value | date:'shortDate') : '-' }}
-                    </span>
+                        <span class="text-decoration-underline">
+                            {{ value ? (value | date:'shortDate') : '-' }}
+                        </span>
                     </button>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"
+            <!-- <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"
                 [maxWidth]="150"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::ClearingAgent' | abpLocalization" prop="clearingAgent"
-                [maxWidth]="150"></ngx-datatable-column>
+                [maxWidth]="150"></ngx-datatable-column> -->
 
             <ngx-datatable-column [name]="'::Modified' | abpLocalization" prop="lastModificationTime" [maxWidth]="100">
                 <ng-template let-value="value" ngx-datatable-cell-template>
@@ -128,56 +121,57 @@
     </div>
 </div>
 
-<abp-modal [(visible)]="isAvvModalVisible" [options]="{ size: 'md' }">
-  <ng-template #abpHeader>
-    {{ '::UpdateAvvStatus' | abpLocalization }}
-  </ng-template>
+<!-- <abp-modal [(visible)]="isAvvModalVisible" [options]="{ size: 'md' }">
+    <ng-template #abpHeader>
+        {{ '::UpdateAvvStatus' | abpLocalization }}
+    </ng-template>
 
-  <ng-template #abpBody>
-    <form *ngIf="avvForm" [formGroup]="avvForm" class="row g-3">
-      <div class="col-12">
-        <nz-select
-          nzAllowClear
-          nzSize="large"
-          class="w-100"
-          formControlName="avvStatus"
-          [nzPlaceHolder]="'::Select' | abpLocalization"
-        >
-          <nz-option *ngFor="let option of aVVStatusOptions" [nzLabel]="('::Enum:AvvStatus.' + option.value | abpLocalization)" [nzValue]="option.value"></nz-option>
-        </nz-select>
-      </div>
-    </form>
-  </ng-template>
+    <ng-template #abpBody>
+        <form *ngIf="avvForm" [formGroup]="avvForm" class="row g-3">
+            <div class="col-12">
+                <nz-select nzAllowClear nzSize="large" class="w-100" formControlName="avvStatus"
+                    [nzPlaceHolder]="'::Select' | abpLocalization">
+                    <nz-option *ngFor="let option of aVVStatusOptions"
+                        [nzLabel]="('::Enum:AvvStatus.' + option.value | abpLocalization)"
+                        [nzValue]="option.value"></nz-option>
+                </nz-select>
+            </div>
+        </form>
+    </ng-template>
 
-  <ng-template #abpFooter>
-    <button type="button" class="btn btn-primary" [disabled]="!avvForm || avvForm.invalid" (click)="saveAvvStatus()">
-       <i class="fas fa-save me-1"></i>
-        {{ '::Save' | abpLocalization }}
-    </button>
-  </ng-template>
-</abp-modal>
+    <ng-template #abpFooter>
+        <button type="button" class="btn btn-primary" [disabled]="!avvForm || avvForm.invalid"
+            (click)="saveAvvStatus()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal> -->
 
 <abp-modal [(visible)]="isEstReleaseModalVisible" [options]="{ size: 'md' }">
-  <ng-template #abpHeader>
-    {{ '::EstimatedRelease' | abpLocalization }}
-  </ng-template>
+    <ng-template #abpHeader>
+        {{ '::EstimatedRelease' | abpLocalization }}
+    </ng-template>
 
-  <ng-template #abpBody>
-    <form *ngIf="estReleaseForm" [formGroup]="estReleaseForm" class="row g-3">
-      <div class="col-12">
-        <input type="date" class="form-control" formControlName="estimatedReleaseDate" />
-      </div>
-    </form>
-  </ng-template>
+    <ng-template #abpBody>
+        <form *ngIf="estReleaseForm" [formGroup]="estReleaseForm" class="row g-3">
+            <div class="col-12">
+                <input type="date" class="form-control" formControlName="estimatedReleaseDate" />
+            </div>
+        </form>
+    </ng-template>
 
-  <ng-template #abpFooter>
-    <button type="button" class="btn btn-primary" [disabled]="!estReleaseForm" (click)="saveEstRelease()">
-      <i class="fas fa-save me-1"></i>
-      {{ '::Save' | abpLocalization }}
-    </button>
-  </ng-template>
+    <ng-template #abpFooter>
+        <button type="button" class="btn btn-primary" [disabled]="!estReleaseForm" (click)="saveEstRelease()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
 </abp-modal>
 
 <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" />
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()">
-    </app-check-in-report-modal>
+</app-check-in-report-modal>
+<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selectedCar?.id" [currentStatus]="selectedCar?.avvStatus"
+    (statusUpdated)="list.get()">
+</app-avv-status-modal>

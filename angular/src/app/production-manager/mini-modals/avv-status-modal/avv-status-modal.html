@@ -1,0 +1,28 @@
+<abp-modal [(visible)]="visible" [options]="{ size: 'md' }" (visibleChange)="close()">
+    <ng-template #abpHeader>
+        {{ '::UpdateAvvStatus' | abpLocalization }}
+    </ng-template>
+
+    <ng-template #abpBody>
+        <form *ngIf="form" [formGroup]="form" class="row g-3">
+            <div class="col-12">
+                <nz-select nzAllowClear nzSize="large" class="w-100" formControlName="avvStatus"
+                    [nzPlaceHolder]="'::Select' | abpLocalization">
+                    <nz-option *ngFor="let option of aVVStatusOptions"
+                        [nzLabel]="('::Enum:AvvStatus.' + option.value | abpLocalization)" [nzValue]="option.value">
+                    </nz-option>
+                </nz-select>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <button abpClose type="button" class="btn btn-outline-secondary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button type="button" class="btn btn-primary px-3" [disabled]="!form || form.invalid" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

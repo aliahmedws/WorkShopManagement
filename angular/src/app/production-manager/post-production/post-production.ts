@@ -10,10 +10,11 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
+import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
 
 @Component({
   selector: 'app-post-production',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal,  AvvStatusModal],
   templateUrl: './post-production.html',
   styleUrl: './post-production.scss',
 })
@@ -49,6 +50,7 @@ export class PostProduction {
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
+  isAvvModalVisible = false;
   // ngOnInit(): void {
   //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
   //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
@@ -127,5 +129,10 @@ onStageChanged(carId: string) {
   this.list.get();
   this.toaster.success('::SuccessfullyMovedToNextStage', '::Success');
 }
+
+openAvvModal(car: CarDto): void {
+    this.selectedCar = car;
+    this.isAvvModalVisible = true;
+  }
 
 }

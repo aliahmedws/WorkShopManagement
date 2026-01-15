@@ -32,7 +32,7 @@
                     {{ value | date:'shortDate' }}
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="locationStatus"
+            <ngx-datatable-column [name]="'::Port' | abpLocalization" prop="car.logisticsDetails.port"
                 [maxWidth]="120"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [maxWidth]="80" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>

@@ -3,6 +3,6 @@
     public enum CreStatus
     {
         Pending = 1,
-        Submitted = 3,
+        Submitted = 2,
     }
 }

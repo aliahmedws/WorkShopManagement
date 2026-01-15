@@ -471,7 +471,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.RsvaNumber).HasMaxLength(LogisticsDetailConsts.MaxRsvaNumberLength);
 
             b.Property(x => x.DeliverTo).HasMaxLength(LogisticsDetailConsts.MaxDeliverToLength);
-            b.Property(x => x.DeliverNotes).HasMaxLength(LogisticsDetailConsts.MaxConfirmedDeliverDateNotesLength);
+            b.Property(x => x.DeliverNotes).HasMaxLength(LogisticsDetailConsts.MaxDeliverNotesLength);
             b.Property(x => x.TransportDestination).HasMaxLength(LogisticsDetailConsts.MaxTransportDestinationLength);
 
             //b.HasOne<Car>()

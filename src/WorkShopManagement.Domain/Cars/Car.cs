@@ -19,24 +19,18 @@ namespace WorkShopManagement.Cars;
 [Audited]
 public class Car : FullAuditedAggregateRoot<Guid>
 {
-    // ToDo: VIN Duplicate Exception Handling
-    public string Vin { get; private set; } = default!;         // TODO: unique index
+    public string Vin { get; private set; } = default!;    
     public string Color { get; private set; } = default!;
     public Guid OwnerId { get; private set; }
     public Guid ModelId { get; private set; }
     public int ModelYear { get; private set; }
-
-    //--- storing make, trim for Image api 
-    //public string? Make { get; private set; }           // To Review this
-    //public string? Trim { get; private set; }           // To Review this
-    //public string? Model { get; private set; }           // To Review this
 
     public string? Cnc { get; private set; }
     public string? CncFirewall { get; private set; }
     public string? CncColumn { get; private set; }
 
     public DateTime? DueDate { get; private set; }              
-    public DateTime? DeliverDate { get; private set; }          //
+    public DateTime? DeliverDate { get; private set; }          
     public DateTime? StartDate { get; private set; }            // Manufacture Start Date
     public DateTime? DueDateUpdated { get; private set; }
 
@@ -83,7 +77,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
         string? notes = null,
         string? missingParts = null,
 
-        StorageLocation? storageLocation = null,
+        //StorageLocation? storageLocation = null,
 
         string? buildMaterialNumber = null,
         int? angleBailment = null,
@@ -102,7 +96,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
         SetCnc(cnc, cncFirewall, cncColumn);
         SetSchedule(dueDate, deliverDate, startDate);
         SetNotes(notes, missingParts);
-        SetStorageLocation(storageLocation);
+        //SetStorageLocation(storageLocation);
         SetBuildMaterialNumber(buildMaterialNumber);
         SetAngleBailment(angleBailment);
         SetAvvStatus(avvStatus);
@@ -185,9 +179,9 @@ public class Car : FullAuditedAggregateRoot<Guid>
         Stage = stage.EnsureDefined(nameof(Stage));
     }
 
-    public void SetStorageLocation(StorageLocation? storageLocation)
+    public void SetStorageLocation(StorageLocation storageLocation)        // Review this can car storage location be set to null (IF we remove from constructor)
     {
-        StorageLocation = storageLocation;
+        StorageLocation = storageLocation.EnsureDefined(nameof(StorageLocation));
     }
 
     public void SetBuildMaterialNumber(string? buildMaterialNumber)

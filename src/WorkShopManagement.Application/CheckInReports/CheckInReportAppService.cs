@@ -61,14 +61,17 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             reportStatus: input.ReportStatus
 
         );
-
+  
         if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
         {
+
             if (car.Stage == Stage.Incoming)
             {
-                car = await _carManager.ChangeStageAsync(car.Id, Stage.ExternalWarehouse, input.StorageLocation);
+                car = await _carManager.ChangeStorageLocation(car, input.StorageLocation.Value);
+                car = await _carRepository.UpdateAsync(car);    // not savinng in car manager
             }
-            car = await _carRepository.UpdateAsync(car);
+
+            
         }
 
         report = await _checkInReportRepository.InsertAsync(report, autoSave: true);
@@ -80,15 +83,15 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
     public async Task<CheckInReportDto?> GetByCarIdAsync(Guid carId)
     {
         var report = await _checkInReportRepository.GetByCarIdAsync(carId);
-        //await _checkInReportRepository.EnsurePropertyLoadedAsync(report, x => x.Car);
 
-        if (report != null)
+        if(report == null)
         {
-            var dto = ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
-            return dto;
+            return null;
         }
-        
-        return null;
+
+        var dto = ObjectMapper.Map<CheckInReport, CheckInReportDto>(report);
+        return dto;
+  
     }
 
     public async Task<CheckInReportDto> GetAsync(Guid checkInReportId)
@@ -114,6 +117,7 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
     {
         var report = await _checkInReportRepository.GetAsync(id);
 
+        // Remove this from her (make manager)
         var car = await _carRepository.GetAsync(report.CarId);
         if (car == null)
             throw new UserFriendlyException("CheckInReport:CarNotFound").WithData("CarId", report.CarId);
@@ -128,15 +132,12 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         report.SetSpecs(input.MaxTowingCapacity, input.Emission, input.TyreLabel);
         report.SetStatus(input.ReportStatus);
 
-        if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
+        if (input.StorageLocation.HasValue  && car!.StorageLocation != input.StorageLocation)   //  && car!.StorageLocation != input.StorageLocation check in car 
         {
-            car.SetStorageLocation(input.StorageLocation);
-            if (car.Stage == Stage.Incoming)
-            {
-                car = await _carManager.ChangeStageAsync(car.Id, Stage.ExternalWarehouse, input.StorageLocation);
-            }
-            car = await _carRepository.UpdateAsync(car);
+            car = await _carManager.ChangeStorageLocation(car, input.StorageLocation.Value);
+            car = await _carRepository.UpdateAsync(car, autoSave: true);
         }
+
 
         await _checkInReportRepository.UpdateAsync(report, autoSave: true);
 

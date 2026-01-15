@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Port, portOptions } from 'src/app/proxy/cars';
+import { CreStatus, creStatusOptions, Port, portOptions } from 'src/app/proxy/cars';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { LogisticsDetailService, LogisticsDetailDto, UpdateLogisticsDetailDto, CreateLogisticsDetailDto } from 'src/app/proxy/logistics-details';
@@ -38,6 +38,7 @@ export class LogisticsDetailsCreateEdit implements OnInit {
 
   // Enums
   portOptions = portOptions;
+  creStatusOptions = creStatusOptions;
 
   // Attachments
   tempFiles: FileAttachmentDto[] = [];
@@ -98,6 +99,7 @@ export class LogisticsDetailsCreateEdit implements OnInit {
       bookingNumber: [dto?.bookingNumber ?? null, [Validators.maxLength(64)]],
 
       // --- Update Fields ---
+      creStatus: [dto?.creStatus ?? CreStatus.Pending],
       rsvaNumber: [dto?.rsvaNumber ?? null, [Validators.maxLength(64)]],
       creSubmissionDate: [dto?.creSubmissionDate ? new Date(dto.creSubmissionDate) : null],
 
@@ -107,11 +109,6 @@ export class LogisticsDetailsCreateEdit implements OnInit {
 
       actualPortArrivalDate: [dto?.actualPortArrivalDate ? new Date(dto.actualPortArrivalDate) : null],
       actualScdArrivalDate: [dto?.actualScdArrivalDate ? new Date(dto.actualScdArrivalDate) : null],
-
-      deliverTo: [dto?.deliverTo ?? null, [Validators.maxLength(128)]],
-      transportDestination: [dto?.transportDestination ?? null, [Validators.maxLength(128)]],
-      confirmedDeliverDate: [dto?.confirmedDeliverDate ? new Date(dto.confirmedDeliverDate) : null],
-      deliverNotes: [dto?.deliverNotes ?? null, [Validators.maxLength(2000)]],
     });
 
     this.tempFiles = [];

@@ -4,6 +4,7 @@ using Volo.Abp;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.Cars;
+using WorkShopManagement.Extensions;
 using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
 
 namespace WorkShopManagement.LogisticsDetails
@@ -16,10 +17,10 @@ namespace WorkShopManagement.LogisticsDetails
         public string? ClearingAgent { get; private set; }
         public string? ClearanceRemarks { get; private set; }
         public DateTime? ClearanceDate { get; private set; }
-        public CreStatus CreStatus { get; private set; } = CreStatus.Pending;       // TODO: Will be needed only if enforce attachment for cre as well. 
+        public CreStatus CreStatus { get; private set; } = CreStatus.Pending;      
         public DateTime? CreSubmissionDate { get; private set; }
         public string? RsvaNumber { get; private set; } = default!;
-        public Port Port { get; private set; } = Port.Bne;                          // Destination Port (BNE Port)
+        public Port Port { get; private set; }                      // Destination Port (BNE Port)
         public DateTime? ActualPortArrivalDate { get; private set; }
         public DateTime? ActualScdArrivalDate { get; private set; }
 
@@ -37,29 +38,19 @@ namespace WorkShopManagement.LogisticsDetails
         public LogisticsDetail(
             Guid id,
             Guid carId,
-            Port port = Port.Bne,
+            Port port,
             string? bookingNumber = null
         ) : base(id)
         {
-            SetCarId(carId);
+            CarId = Check.NotDefaultOrNull<Guid>(carId, nameof(carId));
             SetPort(port);
             SetBookingNumber(bookingNumber);
         }
 
-        public void SetCarId(Guid carId)
-        {
-            if (carId == Guid.Empty)
-            {
-                throw new BusinessException(WorkShopManagementDomainErrorCodes.LogisticsEmptyCarId)
-                    .WithData(nameof(carId), carId);
-            }
-
-            CarId = Check.NotNull(carId, nameof(carId));
-        }
 
         public void SetPort(Port port)
         {
-            Port = Check.NotNull(port, nameof(port));
+            Port = port.EnsureDefined(nameof(Port));
         }
 
         public void SetBookingNumber(string? bookingNumber)
@@ -93,17 +84,18 @@ namespace WorkShopManagement.LogisticsDetails
         }
 
         // Todo: Add methods in manager.
-        public void SetCreDetails(string? rsvaNumber, DateTime? creSubmissionDate)
+        internal void SetCreDetails(string? rsvaNumber, DateTime? creSubmissionDate)
         {
             SetRsvaNumber(rsvaNumber);
             SetCreSubmissionDate(creSubmissionDate);
         }
-        public void SetCreStatus(CreStatus creStatus)
+        internal void SetCreStatus(CreStatus creStatus)
         {
+            creStatus.EnsureDefined(nameof(CreStatus));
             CreStatus = creStatus;
         }
 
-        public void SetActualArrivals(DateTime? actualPortArrivalDate, DateTime? actualScdArrivalDate)
+        internal void SetActualArrivals(DateTime? actualPortArrivalDate, DateTime? actualScdArrivalDate)
         {
             if (actualPortArrivalDate.HasValue && actualScdArrivalDate.HasValue &&
                 actualScdArrivalDate.Value < actualPortArrivalDate.Value)
@@ -118,7 +110,7 @@ namespace WorkShopManagement.LogisticsDetails
         }
 
         // Todo: Add methods in manager.
-        public void SetDeliverDetails(DateTime? confirmedDeliverDate, string? deliverNotes, string? deliverTo, string? transportDestination  )
+        internal void SetDeliverDetails(DateTime? confirmedDeliverDate, string? deliverNotes, string? deliverTo, string? transportDestination  )
         {
             SetConfirmedDeliverDate(confirmedDeliverDate);
             SetDeliverNotes(deliverNotes);
@@ -137,7 +129,7 @@ namespace WorkShopManagement.LogisticsDetails
             DeliverNotes = DomainCheck.TrimOptional(
                 deliverNotes,
                 nameof(deliverNotes),
-                maxLength: LogisticsDetailConsts.MaxConfirmedDeliverDateNotesLength
+                maxLength: LogisticsDetailConsts.MaxDeliverNotesLength
             );
         }
 

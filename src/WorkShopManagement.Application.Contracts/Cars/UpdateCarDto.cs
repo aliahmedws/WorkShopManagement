@@ -47,7 +47,7 @@ public class UpdateCarDto
     [StringLength(CarConsts.MaxMissingPartsLength)]
     public string? MissingParts { get; set; }
 
-    public StorageLocation? StorageLocation { get; set; }
+    //public StorageLocation? StorageLocation { get; set; }
 
     [StringLength(CarConsts.MaxBuildMaterialNumberLength)]
     public string? BuildMaterialNumber { get; set; }

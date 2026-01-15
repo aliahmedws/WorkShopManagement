@@ -184,7 +184,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             input.StartDate,
             input.Notes,
             input.MissingParts,
-            input.StorageLocation,
+            //input.StorageLocation,
             input.BuildMaterialNumber,
             input.AngleBailment,
             input.AvvStatus,
@@ -342,8 +342,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     }
     public async Task<CarDto> ChangeStageAsync(Guid id, ChangeCarStageDto input)
     {
-        var car = await _carRepository.GetAsync(id);
-        await _carManager.ChangeStageAsync(car.Id, input.TargetStage, input.StorageLocation);
+        //var car = await _carRepository.GetAsync(id); // Get is working in manager
+        var car = await _carManager.ChangeStageAsync(id, input.TargetStage);
 
         car = await _carRepository.UpdateAsync(car, autoSave: true);
 

@@ -9,6 +9,7 @@ import { CheckInReportDto, CheckInReportService, CreateCheckInReportDto, UpdateC
 import { CarDto, CarService, UpdateCarDto } from 'src/app/proxy/cars';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { Stage } from 'src/app/proxy/cars/stages';
+import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 
 @Component({
   selector: 'app-check-in-report-modal',
@@ -22,13 +23,13 @@ export class CheckInReportModal {
   private fb = inject(FormBuilder);
   private service = inject(CheckInReportService);
   private readonly carService = inject(CarService);
-  private toaster = inject(ToasterService);
+  private toaster = inject(ToasterHelperService);
   private readonly confirm = inject(ConfirmationHelperService);
 
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
-  
+
   @Input() car: CarDto;
   @Output() submit = new EventEmitter<void>();
 
@@ -50,7 +51,7 @@ export class CheckInReportModal {
 
   constructor() {
     // Initialize empty form to avoid null errors before data loads
-    this.buildForm(); 
+    this.buildForm();
   }
 
   public get() {
@@ -64,27 +65,27 @@ export class CheckInReportModal {
   }
 
   private buildForm(dto?: CheckInReportDto) {
-    
+
     // Helper to format Date for <input type="date"> (YYYY-MM-DD)
     // const formatDate = (dateStr?: string) => dateStr ? dateStr.split('T')[0] : null;
     const carStorage = this.car ? this.car.storageLocation : null;
 
     this.form = this.fb.group({
       // carId: [this.carId, Validators.required],
-      avcStickerCut: [dto?.avcStickerCut ?? null], 
+      avcStickerCut: [dto?.avcStickerCut ?? null],
       avcStickerPrinted: [dto?.avcStickerPrinted ?? null],
       compliancePlatePrinted: [dto?.compliancePlatePrinted ?? null],
       // complianceDate: [formatDate(dto?.complianceDate)], 
 
       buildYear: [dto?.buildYear ?? null],
       buildMonth: [dto?.buildMonth ?? null],
-      
+
       entryKms: [dto?.entryKms ?? null],
       engineNumber: [dto?.engineNumber ?? null],
 
       frontGwar: [dto?.frontGwar ?? null],
       rearGwar: [dto?.rearGwar ?? null],
-      frontMoterNumber: [dto?.frontMoterNumber ?? null],
+      frontMotorNumber: [dto?.frontMoterNumber ?? null],
       rearMotorNumber: [dto?.rearMotorNumber ?? null],
       emission: [dto?.emission ?? null],
       maxTowingCapacity: [dto?.maxTowingCapacity ?? null],
@@ -94,45 +95,24 @@ export class CheckInReportModal {
       storageLocation: [dto?.storageLocation ?? carStorage],
       concurrencyStamp: [dto?.concurrencyStamp ?? null],
     });
-    
+
   }
 
   save() {
     if (this.form.invalid) { return; }
 
-
     const formValue = this.form.value;
+    const sl = formValue?.storageLocation;
 
-
-    const request$ = this.existingReport && this.existingReport.id
+    const request$ = this.existingReport?.id
       ? this.service.update(this.existingReport.id, formValue as UpdateCheckInReportDto)
       : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.car.id });
 
-    request$.subscribe({
-    next: () => {
-      this.confirm
-        .confirmAction('::ConfirmMoveToExternalWarehouseMessage', '::ConfirmMoveToExternalWarehouseTitle')
-        .subscribe((status: Confirmation.Status) => {
-          if (status !== Confirmation.Status.confirm) {
-            this.submit.emit();
-            this.close();
-            return;
-          }
-
-          this.carService.changeStage(this.car.id, { targetStage: Stage.ExternalWarehouse }).subscribe({
-            next: () => {
-              this.toaster.success('::SuccessfullyMovedToExternalWarehouse');
-              this.submit.emit();
-              this.close();
-            },
-            error: () => {
-              this.submit.emit();
-              this.close();
-            },
-          });
-        });
-    },
-  });
+    request$.subscribe( () => {
+      this.toaster.createdOrUpdated(this.car.id);
+      this.submit.emit();
+      this.close();
+    });
   }
 
   close() {

@@ -21,13 +21,13 @@ namespace WorkShopManagement.CheckInReports
         public double? RearGwar { get; set; }
         public string? FrontMoterNumber { get; set; }
         public string? RearMotorNumber { get; set; }
-        public double MaxTowingCapacity { get; set; }
+        public double? MaxTowingCapacity { get; set; }
         public string? Emission { get; set; }
         public string? TyreLabel { get; set; }
         //public string? RsvaImportApproval { get; set; }
         public string? ReportStatus { get; set; }
         public string? ConcurrencyStamp { get; set; }
-        public string? CreatorName { get; set; }            // From Audit
+        //public string? CreatorName { get; set; }            // From Audit
 
         public Guid CarId { get; set; }
         // Car Details
@@ -37,7 +37,7 @@ namespace WorkShopManagement.CheckInReports
         // Car - CarModel Details
         //public string ModelName { get; set; } = default!;
 
-        //public CarDto Car { get; set; } = default!;
+        public CarDto? Car { get; set; } = default!;
 
 
     }

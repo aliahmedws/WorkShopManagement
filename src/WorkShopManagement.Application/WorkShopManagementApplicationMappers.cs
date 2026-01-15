@@ -187,8 +187,14 @@ public partial class RecallMapper : MapperBase<Recall, RecallDto>
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
 public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInReport, CheckInReportDto>
 {
+    [MapProperty("Car.StorageLocation", nameof(CheckInReportDto.StorageLocation))]
     public override partial CheckInReportDto Map(CheckInReport source);
+    [MapProperty("Car.StorageLocation", nameof(CheckInReportDto.StorageLocation))]
     public override partial void Map(CheckInReport source, CheckInReportDto destination);
+
+    // Add this so Mapperly can generate mapping for the nested property
+    public partial CarDto Map(Car source);
+    public partial void Map(Car source, CarDto destination);
 
 }
 

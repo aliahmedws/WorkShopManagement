@@ -1,155 +1,193 @@
 <abp-page>
-    <app-topbar-layout>
-
-        <div topbarLeft class="d-flex align-items-center">
-            <h3 class="mb-0">
-                {{  '::Logistics' | abpLocalization }}
-                <span *ngIf="vin" class="text-muted fs-5 ms-2">- {{ vin }}</span>
-            </h3>
-        </div>
-
-        <div topbarActions>
-            <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
-                <i class="fa fa-arrow-left me-1"></i> {{ '::BackToCars' | abpLocalization }}
-            </button>
-        </div>
+    <app-topbar-layout titleKey="Menu:Logistics" showBackButton (onBack)="goBack()">
 
         <div class="card">
             <div class="card-body">
 
-                <div *ngIf="loading" class="text-center py-4">
+                @if (loading) {
+                <div class="text-center py-4">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
+                }
 
-                <form *ngIf="!loading && form" [formGroup]="form" (ngSubmit)="save()">
+                @if (!loading && form) {
+                <form [formGroup]="form" (ngSubmit)="save()">
 
-                    <h6 class="text-primary mb-3">{{ '::BasicInformation' | abpLocalization }}</h6>
+                    <h5 class="text-primary mb-3">{{ '::BasicInformation' | abpLocalization }}</h5>
                     <div class="row g-3">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6 form-group">
                             <label class="form-label required">{{ '::Port' | abpLocalization }}</label>
                             <nz-select formControlName="port" nzAllowClear nzSize="large" class="w-100">
-                                <nz-option *ngFor="let option of portOptions"
-                                    [nzLabel]="('::Enum:Port.' + option.value) | abpLocalization"
+                                @for (option of portOptions; track option.value) {
+                                <nz-option [nzLabel]="('::Enum:Port.' + option.value) | abpLocalization"
                                     [nzValue]="option.value">
                                 </nz-option>
+                                }
                             </nz-select>
                         </div>
 
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6 form-group">
                             <label class="form-label">{{ '::BookingNumber' | abpLocalization }}</label>
                             <input class="form-control" formControlName="bookingNumber" />
                         </div>
                     </div>
 
-                    <ng-container *ngIf="isEditMode">
-                        <hr class="my-4">
+                    @if (isEditMode) {
+                    <hr class="my-4">
 
-                        <h6 class="text-primary mb-4">{{ '::LogisticsTimeline' | abpLocalization }}</h6>
+                    <h5 class="text-primary mb-4">{{ '::LogisticsTimeline' | abpLocalization }}</h5>
 
-                        <div class="px-2 pb-2">
-                            <nz-steps [nzCurrent]="currentStep" nzSize="small" nzLabelPlacement="vertical">
+                    <div class="px-2 pb-2">
+                        <nz-steps [nzCurrent]="currentStep" nzSize="small" nzLabelPlacement="vertical">
 
-                                <nz-step [nzTitle]="'::CreDetails' | abpLocalization" [nzIcon]="iconCre"
-                                    [nzDescription]="descCre"></nz-step>
-                                <nz-step [nzTitle]="('::PortArrival' | abpLocalization)" [nzIcon]="iconPort"
-                                    [nzDescription]="descPort"></nz-step>
-                                <nz-step [nzTitle]="'::Clearance' | abpLocalization" [nzIcon]="iconClearance"
-                                    [nzDescription]="descClearance"></nz-step>
-                                <nz-step [nzTitle]="'::ScdArrival' | abpLocalization" [nzIcon]="iconScd"
-                                    [nzDescription]="descScd"></nz-step>
-                                <nz-step [nzTitle]="'::Delivery' | abpLocalization" [nzIcon]="iconDeliver"
-                                    [nzDescription]="descDeliver"></nz-step>
+                            <nz-step [nzTitle]="'::CreDetails' | abpLocalization" [nzIcon]="iconCre"
+                                [nzDescription]="descCre"></nz-step>
+                            <nz-step [nzTitle]="('::PortArrival' | abpLocalization)" [nzIcon]="iconPort"
+                                [nzDescription]="descPort"></nz-step>
+                            <nz-step [nzTitle]="'::Clearance' | abpLocalization" [nzIcon]="iconClearance"
+                                [nzDescription]="descClearance"></nz-step>
+                            <nz-step [nzTitle]="'::ScdArrival' | abpLocalization" [nzIcon]="iconScd"
+                                [nzDescription]="descScd"></nz-step>
+                        </nz-steps>
+                    </div>
 
-                            </nz-steps>
+                    <ng-template #iconCre><i class="fas fa-file-contract"></i></ng-template>
+                    <ng-template #iconPort><i class="fas fa-ship"></i></ng-template>
+                    <ng-template #iconClearance><i class="fas fa-stamp"></i></ng-template>
+                    <ng-template #iconScd><i class="fas fa-warehouse"></i></ng-template>
+                    <ng-template #iconDeliver><i class="fas fa-flag-checkered"></i></ng-template>
+
+                    <ng-template #descCre>
+                        <div class="mt-1 small-date">
+                            @if (form.get('creSubmissionDate')?.value) {
+                            <span>
+                                {{ form.get('creSubmissionDate')?.value | date:'mediumDate' }}
+                            </span>
+                            } @else {
+                            <ng-container *ngTemplateOutlet="pending"></ng-container>
+                            }
                         </div>
+                    </ng-template>
 
-                        <ng-template #iconCre><i class="fas fa-file-contract"></i></ng-template>
-                        <ng-template #iconPort><i class="fas fa-ship"></i></ng-template>
-                        <ng-template #iconClearance><i class="fas fa-stamp"></i></ng-template>
-                        <ng-template #iconScd><i class="fas fa-warehouse"></i></ng-template>
-                        <ng-template #iconDeliver><i class="fas fa-flag-checkered"></i></ng-template>
+                    <ng-template #descPort>
+                        <div class="mt-1 d-flex flex-column small-date">
+                            @if (latestEstimate?.etaPort && (!form.get('actualPortArrivalDate')?.value ||
+                            form.get('actualPortArrivalDate')?.value)) {
+                            <span class="text-muted">
+                                Est: {{ latestEstimate?.etaPort | date:'dd/MM/yy' }}
+                            </span>
+                            }
+                            @if (form.get('actualPortArrivalDate')?.value) {
+                            <span class="fw-bold text-success">
+                                Act: {{ form.get('actualPortArrivalDate')?.value | date:'dd/MM/yy' }}
+                            </span>
+                            }
+                            @if (!latestEstimate?.etaPort && !form.get('actualPortArrivalDate')?.value) {
+                            <span>-</span>
+                            }
+                        </div>
+                    </ng-template>
 
-                        <ng-template #descCre>
-                            <div class="mt-1 small-date">
-                                <span *ngIf="form.get('creSubmissionDate')?.value; else pending">
-                                    {{ form.get('creSubmissionDate')?.value | date:'mediumDate' }}
-                                </span>
+                    <ng-template #descClearance>
+                        <div class="mt-1 small-date">
+                            @if (form.get('clearanceDate')?.value) {
+                            <span>
+                                {{ form.get('clearanceDate')?.value | date:'mediumDate' }}
+                            </span>
+                            } @else {
+                            <ng-container *ngTemplateOutlet="pending"></ng-container>
+                            }
+                        </div>
+                    </ng-template>
+
+                    <ng-template #descScd>
+                        <div class="mt-1 d-flex flex-column small-date">
+                            @if (latestEstimate?.etaScd) {
+                            <span class="text-muted">
+                                Est: {{ latestEstimate?.etaScd | date:'dd/MM/yy' }}
+                            </span>
+                            }
+                            @if (form.get('actualScdArrivalDate')?.value) {
+                            <span class="fw-bold text-success">
+                                Act: {{ form.get('actualScdArrivalDate')?.value | date:'dd/MM/yy' }}
+                            </span>
+                            }
+                            @if (!latestEstimate?.etaScd && !form.get('actualScdArrivalDate')?.value) {
+                            <span>-</span>
+                            }
+                        </div>
+                    </ng-template>
+
+                    <ng-template #pending>
+                        <span class="text-muted fst-italic" style="font-size: 0.75rem;">{{ '::Pending' | abpLocalization
+                            }}</span>
+                    </ng-template>
+                    }
+
+                    @if (isEditMode) {
+
+
+
+
+                    <div class="form-group">
+                        <hr class="my-4">
+                        <h5 class="text-primary mb-3">{{ '::CreDetails' | abpLocalization }}</h5>
+                        <div class="row g-3 mb-3">
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label required">{{ '::CreStatus' | abpLocalization }}</label>
+                                <nz-select formControlName="creStatus" nzAllowClear nzSize="large" class="w-100">
+                                    @for (option of creStatusOptions; track option.value) {
+                                    <nz-option [nzLabel]="('::Enum:CreStatus.' + option.value) | abpLocalization"
+                                        [nzValue]="option.value">
+                                    </nz-option>
+                                    }
+                                </nz-select>
                             </div>
-                        </ng-template>
 
-                        <ng-template #descPort>
-                            <div class="mt-1 d-flex flex-column small-date">
-                                <span class="text-muted"
-                                    *ngIf="latestEstimate?.etaPort && (!form.get('actualPortArrivalDate')?.value || form.get('actualPortArrivalDate')?.value)">
-                                    Est: {{ latestEstimate?.etaPort | date:'dd/MM/yy' }}
-                                </span>
-                                <span class="fw-bold text-success" *ngIf="form.get('actualPortArrivalDate')?.value">
-                                    Act: {{ form.get('actualPortArrivalDate')?.value | date:'dd/MM/yy' }}
-                                </span>
-                                <span
-                                    *ngIf="!latestEstimate?.etaPort && !form.get('actualPortArrivalDate')?.value">-</span>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">{{ '::RsvaNumber' | abpLocalization }}</label>
+                                <input class="form-control" formControlName="rsvaNumber" />
                             </div>
-                        </ng-template>
-
-                        <ng-template #descClearance>
-                            <div class="mt-1 small-date">
-                                <span *ngIf="form.get('clearanceDate')?.value; else pending">
-                                    {{ form.get('clearanceDate')?.value | date:'mediumDate' }}
-                                </span>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">{{ '::CreSubmissionDate' | abpLocalization }}</label>
+                                <input #crePicker="ngbDatepicker" class="form-control"
+                                    formControlName="creSubmissionDate" ngbDatepicker (click)="crePicker.toggle()" />
                             </div>
-                        </ng-template>
+                        </div>
+                    </div>
 
-                        <ng-template #descScd>
-                            <div class="mt-1 d-flex flex-column small-date">
-                                <span class="text-muted" *ngIf="latestEstimate?.etaScd">
-                                    Est: {{ latestEstimate?.etaScd | date:'dd/MM/yy' }}
-                                </span>
-                                <span class="fw-bold text-success" *ngIf="form.get('actualScdArrivalDate')?.value">
-                                    Act: {{ form.get('actualScdArrivalDate')?.value | date:'dd/MM/yy' }}
-                                </span>
-                                <span
-                                    *ngIf="!latestEstimate?.etaScd && !form.get('actualScdArrivalDate')?.value">-</span>
-                            </div>
-                        </ng-template>
+                    <ng-container>
 
-                        <ng-template #descDeliver>
-                            <div class="mt-1 small-date">
-                                <span *ngIf="form.get('confirmedDeliverDate')?.value; else pending">
-                                    {{ form.get('confirmedDeliverDate')?.value | date:'mediumDate' }}
-                                </span>
-                            </div>
-                        </ng-template>
-
-                        <ng-template #pending>
-                            <span class="text-muted fst-italic" style="font-size: 0.75rem;">{{ '::Pending' |
-                                abpLocalization }}</span>
-                        </ng-template>
-                    </ng-container>
-
-                    <ng-container *ngIf="isEditMode">
                         <hr class="my-4">
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="text-primary m-0">{{ '::ArrivalEstimates' | abpLocalization }}</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-3 ">
+                            <h5 class="text-primary m-0">{{ '::ArrivalEstimates' | abpLocalization }}</h5>
                             <div>
-                                <button *ngIf="!latestEstimate" type="button" class="btn btn-sm btn-primary"
-                                    (click)="addFirstEstimate()">
+                                @if (!latestEstimate) {
+                                <button type="button" class="btn btn-sm btn-primary" (click)="addFirstEstimate()">
                                     <i class="fa fa-plus me-1"></i> {{ '::AddEta' | abpLocalization }}
                                 </button>
-                                <button *ngIf="latestEstimate" type="button" class="btn btn-sm btn-outline-info"
+                                }
+                                @if (latestEstimate) {
+                                <button type="button" class="btn btn-sm btn-outline-info"
                                     (click)="viewEstimateHistory()">
                                     <i class="fa fa-history me-1"></i> {{ '::ViewHistory' | abpLocalization }}
                                 </button>
+                                }
                             </div>
                         </div>
 
-                        <div *ngIf="!latestEstimate" class="alert alert-light border">
+                        @if (!latestEstimate) {
+                        <div class="alert alert-light border">
                             <small class="text-muted">{{ '::NoEstimateAvailable' | abpLocalization }}</small>
                         </div>
+                        }
 
-                        <div *ngIf="latestEstimate" class="card border shadow-sm">
+                        @if (latestEstimate) {
+                        <div class="card border shadow-sm">
                             <div class="card-body p-2">
                                 <div class="row align-items-center gx-3">
                                     <div class="col-auto border-end pe-3">
@@ -177,25 +215,13 @@
                                 </div>
                             </div>
                         </div>
+                        }
                     </ng-container>
 
-                    <ng-container *ngIf="isEditMode">
+
+                    <div class="form-group">
                         <hr class="my-4">
-
-                        <h6 class="text-primary mb-3">{{ '::CreDetails' | abpLocalization }}</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <label class="form-label">{{ '::RsvaNumber' | abpLocalization }}</label>
-                                <input class="form-control" formControlName="rsvaNumber" />
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <label class="form-label">{{ '::CreSubmissionDate' | abpLocalization }}</label>
-                                <input #crePicker="ngbDatepicker" class="form-control"
-                                    formControlName="creSubmissionDate" ngbDatepicker (click)="crePicker.toggle()" />
-                            </div>
-                        </div>
-
-                        <h6 class="text-primary mb-3">{{ '::ClearanceDetails' | abpLocalization }}</h6>
+                        <h5 class="text-primary mb-3">{{ '::ClearanceDetails' | abpLocalization }}</h5>
                         <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <label class="form-label">{{ '::ClearingAgent' | abpLocalization }}</label>
@@ -211,8 +237,11 @@
                                 <textarea class="form-control" formControlName="clearanceRemarks" rows="2"></textarea>
                             </div>
                         </div>
+                    </div>
 
-                        <h6 class="text-primary mb-3">{{ '::ArrivalInformation' | abpLocalization }}</h6>
+                    <div class="form-group">
+                        <hr class="my-4">
+                        <h5 class="text-primary mb-3">{{ '::ArrivalInformation' | abpLocalization }}</h5>
                         <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <label class="form-label">{{ '::ActualPortArrivalDate' | abpLocalization }}</label>
@@ -227,35 +256,14 @@
                                     (click)="scdArrPicker.toggle()" />
                             </div>
                         </div>
-
-                        <h6 class="text-primary mb-3">{{ '::DeliveryInformation' | abpLocalization }}</h6>
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-4">
-                                <label class="form-label">{{ '::DeliverTo' | abpLocalization }}</label>
-                                <input class="form-control" formControlName="deliverTo" />
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <label class="form-label">{{ '::TransportDestination' | abpLocalization }}</label>
-                                <input class="form-control" formControlName="transportDestination" />
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <label class="form-label">{{ '::ConfirmedDeliverDate' | abpLocalization }}</label>
-                                <input #delConfPicker="ngbDatepicker" class="form-control"
-                                    formControlName="confirmedDeliverDate" ngbDatepicker
-                                    (click)="delConfPicker.toggle()" />
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">{{ '::DeliverNotes' | abpLocalization }}</label>
-                                <textarea class="form-control" formControlName="deliverNotes" rows="2"></textarea>
-                            </div>
-                        </div>
-                    </ng-container>
+                    </div>
+                    }
 
                     <hr class="my-4">
-                    <h6 class="text-primary mb-3">{{ '::Attachments' | abpLocalization }}</h6>
+                    <h5 class="text-primary">{{ '::Attachments' | abpLocalization }}</h5>
+                    <p class="text-muted">{{ '::LogisticsAttachments.Help' | abpLocalization }}</p>
                     <div class="mb-3">
-                        <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles"
-                            size="small">
+                        <app-file-upload [multiple]="true" [(tempFiles)]="tempFiles" [(existingFiles)]="existingFiles">
                         </app-file-upload>
                     </div>
 
@@ -270,6 +278,7 @@
                     </div>
 
                 </form>
+                }
             </div>
         </div>
 

@@ -12,6 +12,9 @@ namespace WorkShopManagement.LogisticsDetails
         Task<PagedResultDto<LogisticsDetailDto>> GetListAsync(PagedAndSortedResultRequestDto input, string? filter = null, Guid? carId = null);
         Task<LogisticsDetailDto> CreateAsync(CreateLogisticsDetailDto input);
         Task<LogisticsDetailDto> UpdateAsync(Guid id, UpdateLogisticsDetailDto input);
+
+        Task<LogisticsDetailDto> SubmitCreStatusAsync(Guid id);
+        Task<LogisticsDetailDto> AddOrUpdateDeliverDetailsAsync(Guid id, AddOrUpdateDeliverDetailDto input);
         Task DeleteAsync(Guid id);
     }   
 }

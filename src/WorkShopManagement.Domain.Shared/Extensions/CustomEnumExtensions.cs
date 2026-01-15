@@ -13,4 +13,5 @@ public static class CustomEnumExtensions
         }
         return value;
     }
+
 }

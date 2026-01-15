@@ -61,10 +61,11 @@
 
     "Enum:Stage.1": "Incoming Vehicle",
     "Enum:Stage.2": "Dealer Warehouse (External)",
-    "Enum:Stage.3": "Production",
-    "Enum:Stage.4": "Post-Production",
-    "Enum:Stage.5": "Awaiting Transport",
-    "Enum:Stage.6": "Dispatched",
+    "Enum:Stage.3": "SCD Warehouse",
+    "Enum:Stage.4": "Production",
+    "Enum:Stage.5": "Post-Production",
+    "Enum:Stage.6": "Awaiting Transport",
+    "Enum:Stage.7": "Dispatched",
     "Enum:Priority.1": "Low",
     "Enum:Priority.2": "Medium",
     "Enum:Priority.3": "High",
@@ -454,8 +455,20 @@
     "ApiResponse": "API Response",
     "Response": "Response",
     "EditVehicle": "Edit Vehicle",
-    "NewVehicle" : "New Vehicle",
+    "NewVehicle": "New Vehicle",
     "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
-    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully"
+    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully",
+    "LogisticsAttachments.Help": "Add CRE attachments or any other attachments related to car logistics here.",
+    "Menu:Logistics": "Logistics",
+    "CreStatus": "CRE Status",
+    "Enum:CreStatus.2": "Submitted",
+    "Enum:CreStatus.1": "Pending",
+    "NoImagesFound": "No images found for this VIN.",
+    "FetchingImages": "Fetching Images",
+    "NewEstimate": "New Estimate",
+    "EditEstimate": "Edit Estimate",
+    "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available."
+
+
   }
 }
