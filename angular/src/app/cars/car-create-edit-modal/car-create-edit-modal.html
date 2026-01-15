@@ -16,13 +16,11 @@
         <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'"
             role="alert">
             <h4 class="alert-heading">
-                {{ (external.success ? '::Car.VinQuery.SuccessTitle' : '::Car.VinQuery.FailedTitle') | abpLocalization
-                }}
+                {{ (external.success ? '::Car.VinQuery.SuccessTitle' : '::Car.VinQuery.FailedTitle') | abpLocalization }}
             </h4>
 
             <p class="mb-1">
-                {{ (external.success ? '::Car.VinQuery.SuccessMessage' : '::Car.VinQuery.FailedMessage') |
-                abpLocalization }}
+                {{ (external.success ? '::Car.VinQuery.SuccessMessage' : '::Car.VinQuery.FailedMessage') | abpLocalization }}
             </p>
 
             @if (external.success) {
@@ -163,27 +161,27 @@
 
 
             <!-- Delivery Information -->
-            <div class="row g-2">
+            <!-- <div class="row g-2">
                 <div class="col-12 col-lg-3">
                     <h5 class="text-dark">{{ '::Delivery' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
-                        <!-- START DATE -->
+                        START DATE
                         <div class="col-12 col-md-4 form-group">
                             <label class="form-label">{{ '::StartDate' | abpLocalization }}</label>
                             <input #startDatepicker="ngbDatepicker" class="form-control" name="startDate"
                                 formControlName="startDate" ngbDatepicker (click)="startDatepicker.toggle()" />
                         </div>
 
-                        <!-- Deliver DATE -->
+                        Deliver DATE
                         <div class="col-12 col-md-4 form-group">
                             <label class="form-label">{{ '::DeliverDate' | abpLocalization }}</label>
                             <input #deliverDatepicker="ngbDatepicker" class="form-control" name="deliverDate"
                                 formControlName="deliverDate" ngbDatepicker (click)="deliverDatepicker.toggle()" />
                         </div>
 
-                        <!-- DUE DATE -->
+                        DUE DATE
                         <div class="col-12 col-md-4 form-group">
                             <label class="form-label">{{ '::DueDate' | abpLocalization }}</label>
                             <input #dueDatepicker="ngbDatepicker" class="form-control" name="dueDate"
@@ -194,7 +192,7 @@
                 <div class="col-12">
                     <hr>
                 </div>
-            </div>
+            </div> -->
             <!-- Delivery Information -->
 
             <!-- Additional Information -->

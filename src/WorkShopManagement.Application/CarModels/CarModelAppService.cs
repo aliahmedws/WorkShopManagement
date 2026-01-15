@@ -7,10 +7,13 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CarModels;
 
 [RemoteService(isEnabled: false)]
+[Authorize(WorkShopManagementPermissions.CarModels.Default)]
 public class CarModelAppService : ApplicationService, ICarModelAppService
 {
     private readonly IRepository<CarModel, Guid> _repository;

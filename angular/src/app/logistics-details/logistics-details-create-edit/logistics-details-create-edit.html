@@ -168,7 +168,7 @@
                             <div>
                                 @if (!latestEstimate) {
                                 <button type="button" class="btn btn-sm btn-primary" (click)="addFirstEstimate()">
-                                    <i class="fa fa-plus me-1"></i> {{ '::AddEta' | abpLocalization }}
+                                    <i class="fas fa-plus me-1"></i> {{ '::AddEta' | abpLocalization }}
                                 </button>
                                 }
                                 @if (latestEstimate) {
@@ -181,8 +181,9 @@
                         </div>
 
                         @if (!latestEstimate) {
-                        <div class="alert alert-light border">
-                            <small class="text-muted">{{ '::NoEstimateAvailable' | abpLocalization }}</small>
+                        <div class="alert alert-info">
+                            <i class="fas fa-circle-info me-2"></i>
+                            <small>{{ '::NoEstimateAvailable' | abpLocalization }}</small>
                         </div>
                         }
 

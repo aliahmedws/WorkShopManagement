@@ -1,0 +1,31 @@
+<div ngbDropdown container="body" class="d-inline-block">
+    <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true" ngbDropdownToggle>
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+    </button>
+    <div ngbDropdownMenu>
+        @if (showEdit) {
+        <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem (click)="editCar()">
+            {{ '::Edit' | abpLocalization }}
+        </button>
+        }
+        @if (showImage) {
+        <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem (click)="openImages()">
+            {{ '::Images' | abpLocalization }}
+        </button>
+        }
+        @if (showLogistics) {
+        <button *abpPermission="'WorkShopManagement.LogisticsDetails'" ngbDropdownItem (click)="manageLogistics()">
+            {{ '::Logistics' | abpLocalization }}
+        </button>
+        }
+        @if (showIssue) {
+        <button *abpPermission="'WorkShopManagement.Issues'" ngbDropdownItem (click)="openIssues()">
+            {{ '::Issues' | abpLocalization }}
+        </button>
+        }
+    </div>
+</div>
+
+<app-car-create-edit-modal [(visible)]="isCarEditModalVisible" [carId]="stage?.id" (submit)="emitChange()" />
+<app-car-images-modal [(visible)]="isImageModalVisible" [car]="stage" (submit)="emitChange()" />
+<app-issue-modal [(visible)]="isIssueModalVisible" [carId]="stage?.id"></app-issue-modal>

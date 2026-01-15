@@ -19,7 +19,6 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         carPermissions.AddChild(WorkShopManagementPermissions.Cars.Delete, L("Permission:Delete"));
 
         var carModelsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarModels.Default, L("Permission:CarModels"));
-        var vehiclesPermission = myGroup.AddPermission(WorkShopManagementPermissions.Vehicles.Default, L("Permission:Vehicles"));
 
         var checkListsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CheckLists.Default, L("Permission:CheckLists"));
         checkListsPermission.AddChild(WorkShopManagementPermissions.CheckLists.Create, L("Permission:CheckLists.Create"));

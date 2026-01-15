@@ -23,11 +23,6 @@ public static class WorkShopManagementPermissions
         public const string Default = GroupName + ".CarModels";
     }
 
-    public static class Vehicles
-    {
-        public const string Default = GroupName + ".Vehicles";
-    }
-
     public static class CheckLists
     {
         public const string Default = GroupName + ".CheckLists";
@@ -110,5 +105,4 @@ public static class WorkShopManagementPermissions
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
     }
-
 }

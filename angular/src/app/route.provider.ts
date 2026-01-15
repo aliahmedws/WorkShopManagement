@@ -39,7 +39,7 @@ function configureRoutes() {
       iconClass: 'fas fa-tags',
       order: 4,
       layout: eLayoutType.application,
-      requiredPolicy: 'WorkShopManagement.Vehicles',
+      requiredPolicy: 'WorkShopManagement.CarModels',
     },
     {
       path: '/bays',

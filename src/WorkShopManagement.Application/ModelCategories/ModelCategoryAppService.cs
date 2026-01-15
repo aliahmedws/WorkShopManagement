@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -7,10 +8,12 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.ModelCategories;
 
 [RemoteService(isEnabled: false)]
+[Authorize(WorkShopManagementPermissions.CarModels.Default)]
 public class ModelCategoryAppService : ApplicationService, IModelCategoryAppService
 {
     private readonly IRepository<ModelCategory, Guid> _repository;

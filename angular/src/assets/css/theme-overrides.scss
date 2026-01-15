@@ -1288,7 +1288,7 @@ label[required]::after {
 }
 
 .ngx-actions-btn {
-    --btn-size: 25px;
+    --btn-size: 22px;
 
     width: var(--btn-size);
     height: var(--btn-size);
@@ -1304,7 +1304,7 @@ label[required]::after {
     color: var(--brand-secondary);
     padding: 0;
     line-height: 1;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
 
     cursor: pointer;
     transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
@@ -1444,3 +1444,16 @@ lpx-footer {
     border-right-width: 1px !important; 
 }
 // --- to fix above
+
+.card {
+    border-radius: var(--bs-border-radius);
+}
+
+.datatable-header-cell,
+.datatable-body-cell .datatable-body-cell-label {
+    font-size: 0.82rem;
+}
+
+i.link {
+    cursor: pointer;
+}

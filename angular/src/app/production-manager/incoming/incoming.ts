@@ -1,15 +1,16 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarService, CarDto, GetCarListInput } from 'src/app/proxy/cars';
+import { CarService, CarDto } from 'src/app/proxy/cars';
 import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { ProductionActions } from "../production-actions/production-actions";
 
 @Component({
   selector: 'app-incoming',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions],
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss'
 })
@@ -35,32 +36,30 @@ export class Incoming {
     this.isRecallModalVisible = true;
   }
 
-  openCheckInModal(car: CarDto  ): void {
+  openCheckInModal(car: CarDto): void {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
   }
 
   openNotesModal(car: CarDto): void {
-  this.selectedCar = car;
+    this.selectedCar = car;
 
-  this.notesForm = this.fb.group({
-    notes: [car.notes ?? ''],
-  });
+    this.notesForm = this.fb.group({
+      notes: [car.notes ?? ''],
+    });
 
-  this.isNotesModalVisible = true;
-}
+    this.isNotesModalVisible = true;
+  }
 
-saveNotes(): void {
-  if (!this.selectedCar?.id) return;
+  saveNotes(): void {
+    if (!this.selectedCar?.id) return;
 
-  const notes = this.notesForm.value.notes as string;
+    const notes = this.notesForm.value.notes as string;
 
-  this.carService.updateNotes(this.selectedCar.id, notes).subscribe(() => {
-    this.toaster.success('::NotesUpdatedSuccessfully', '::Success');
-    this.isNotesModalVisible = false;
-    this.list.get();
-  });
-}
-
-  
+    this.carService.updateNotes(this.selectedCar.id, notes).subscribe(() => {
+      this.toaster.success('::NotesUpdatedSuccessfully', '::Success');
+      this.isNotesModalVisible = false;
+      this.list.get();
+    });
+  }
 }

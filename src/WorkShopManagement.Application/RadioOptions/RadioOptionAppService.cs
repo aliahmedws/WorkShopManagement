@@ -12,7 +12,7 @@ using WorkShopManagement.Permissions;
 namespace WorkShopManagement.RadioOptions;
 
 [RemoteService(IsEnabled = false)]
-[Authorize(WorkShopManagementPermissions.RadioOptions.Delete)]
+[Authorize(WorkShopManagementPermissions.RadioOptions.Default)]
 public class RadioOptionAppService : ApplicationService, IRadioOptionAppService
 {
     private readonly IRepository<RadioOption, Guid> _repository;

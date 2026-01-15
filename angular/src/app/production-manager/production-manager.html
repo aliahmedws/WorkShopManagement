@@ -1,68 +1,35 @@
 <abp-page>
     <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
 
-        <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true" (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;" >
+        <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
+            (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
 
             <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization">
-                <div class="p-3">
-                    <app-incoming [cars]="cars" [(filters)]="filters" [list]="list"></app-incoming>
-                </div>
+                <app-incoming [cars]="cars" [(filters)]="filters" [list]="list"></app-incoming>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.2' | abpLocalization">
-                <div class="p-3">
-                    <app-external-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-external-warehouse>
-                </div>
+                <app-external-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-external-warehouse>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.3' | abpLocalization">
-                <div class="">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-scd-warehouse [cars]="cars" [(filters)]="filters" [list]="list" ></app-scd-warehouse>
-                        </div>
-                    </div>
-                </div>
+                <app-scd-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-scd-warehouse>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-                <div class="">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-production  [filters]="filters" ></app-production>
-                        </div>
-                    </div>
-                </div>
+                <app-production [filters]="filters"></app-production>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
-                <div class="">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-post-production [cars]="cars" [filters]="filters" [list]="list"></app-post-production>
-                        </div>
-                    </div>
-                </div>
+                <app-post-production [cars]="cars" [filters]="filters" [list]="list"></app-post-production>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.6' | abpLocalization">
-                <div class="">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-awaiting-transport [cars]="cars" [(filters)]="filters" [list]="list"></app-awaiting-transport>
-                        </div>
-                    </div>
-                </div>
+                <app-awaiting-transport [cars]="cars" [(filters)]="filters" [list]="list"></app-awaiting-transport>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.7' | abpLocalization">
-                <div class="">
-                    <div class="card">
-                        <div class="card-body">
-                            <app-dispatched [cars]="cars" [(filters)]="filters" [list]="list"></app-dispatched>
-                        </div>
-                    </div>
-                </div>
+                <app-dispatched [cars]="cars" [(filters)]="filters" [list]="list"></app-dispatched>
             </nz-tab>
 
         </nz-tabs>

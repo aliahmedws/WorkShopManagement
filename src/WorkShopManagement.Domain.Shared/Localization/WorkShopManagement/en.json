@@ -29,7 +29,6 @@
     "Permission:CheckInReports.Delete": "Delete",
 
     "Permission:CarModels": "Vehicle Models",
-    "Permission:Vehicles": "Vehicles Model",
     "Permission:CheckLists": "Check Lists",
     "Permission:CheckLists.Create": "Create",
     "Permission:CheckLists.Edit": "Edit",
@@ -467,6 +466,7 @@
     "Enum:CreStatus.1": "Pending",
     "NoImagesFound": "No images found for this VIN.",
     "FetchingImages": "Fetching Images",
+    "FetchImages": "Fetch Images",
     "NewEstimate": "New Estimate",
     "EditEstimate": "Edit Estimate",
     "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available."
