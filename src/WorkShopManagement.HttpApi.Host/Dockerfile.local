@@ -3,7 +3,7 @@ USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081
 
-COPY bin/Release/net10.0/publish/ app/
+COPY . .
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
