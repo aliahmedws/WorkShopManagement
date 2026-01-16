@@ -502,6 +502,7 @@ moveToAwaitingTransportProduction() {
 
   openCriticalImages(): void {
   const cl = (this.details as CarBayDto)?.checkLists?.[0]; // replace with your actual checklist source
+  if (!cl?.id) return;
 
   this.criticalImagesVisible = true;
 }
