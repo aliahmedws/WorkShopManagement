@@ -4,10 +4,12 @@ import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachm
 import { UploadFileService } from './upload-files.service';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 import { NzImageModule } from 'ng-zorro-antd/image';
+import { SignedNzImageSrcDirective } from '../../services/signed-urls/signed-nz-image-src.directive';
+import { SignedHrefDirective } from '../../services/signed-urls/signed-href.directive';
 
 @Component({
   selector: 'app-file-upload',
-  imports: [CommonModule, NzImageModule],
+  imports: [CommonModule, NzImageModule, SignedNzImageSrcDirective, SignedHrefDirective],
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.scss'
 })

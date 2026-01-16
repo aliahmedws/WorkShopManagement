@@ -13,38 +13,31 @@ namespace WorkShopManagement.EntityAttachments.FileAttachments.TempFiles;
 
 public class TempFileManager : DomainService
 {
-    private readonly IBlobContainer<TempFileContainer> _tempContainer;
-    private readonly BlobStorageOptions _options;
+    private readonly IBlobContainer _container;
+    private readonly GoogleStorageOptions _options;
 
-    public TempFileManager(
-        IBlobContainer<TempFileContainer> tempContainer,
-        IOptions<BlobStorageOptions> options
-    )
+    public TempFileManager(IOptions<GoogleStorageOptions> options, IBlobContainer container)
     {
-        _tempContainer = tempContainer;
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+        _container = container;
     }
 
-    public async Task<FileAttachment> SaveAsync(
-        MemoryStream fileStream,
-        string originalFileName,
-        CancellationToken ct = default)
+    public async Task<FileAttachment> SaveAsync(MemoryStream fileStream, string originalFileName, CancellationToken ct = default)
     {
         if (fileStream == null || fileStream.Length == 0)
         {
             throw new BusinessException(WorkShopManagementDomainErrorCodes.EmptyFile);
         }
-        FileHelper.ValidateFileName(originalFileName);
 
+        FileHelper.ValidateFileName(originalFileName);
         var ext = FileHelper.ValidateFileExtension(originalFileName);
 
         var ts = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
-        var id = Guid.NewGuid().ToString("N");
+        var id = Guid.NewGuid().ToString("N").ToUpperInvariant();
 
         var blobName = $"{ts}_{id}{ext}";
 
-
-        await _tempContainer.SaveAsync(blobName, fileStream, overrideExisting: true, cancellationToken: ct);
+        await _container.SaveAsync(BuildBlobPath(blobName), fileStream, overrideExisting: true, cancellationToken: ct);
 
         var url = BuildBlobUrl(blobName);
         return new FileAttachment(originalFileName, blobName, url);
@@ -53,48 +46,39 @@ public class TempFileManager : DomainService
     public async Task<Stream> GetAsync(string tempBlobName, CancellationToken ct = default)
     {
         FileHelper.ValidateFileName(tempBlobName);
-        return await _tempContainer.GetAsync(tempBlobName, cancellationToken: ct);
-       
+        return await _container.GetAsync(BuildBlobPath(tempBlobName), cancellationToken: ct);
     }
 
     public async Task<byte[]> GetAllBytesAsync(string tempBlobName, CancellationToken ct = default)
     {
         FileHelper.ValidateFileName(tempBlobName);
-        return await _tempContainer.GetAllBytesAsync(tempBlobName, cancellationToken: ct);
+        return await _container.GetAllBytesAsync(BuildBlobPath(tempBlobName), cancellationToken: ct);
     }
 
-    public async Task DeleteAsync(string tempBlobName, CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(string tempBlobName, CancellationToken ct = default)
     {
         FileHelper.ValidateFileNameWithExtension(tempBlobName);
+        return await _container.DeleteAsync(BuildBlobPath(tempBlobName), cancellationToken: ct);
+    }
 
-        await _tempContainer.DeleteAsync(tempBlobName, cancellationToken: ct);
+    public string BuildBlobPath(string tempBlobName)
+    {
+        return _options.TempPrefix.EnsureEndsWith('/') + tempBlobName;
     }
 
     public string BuildBlobUrl(string tempBlobName)
     {
-        var containerName = BlobContainerNameAttribute.GetContainerName<TempFileContainer>();
-        var test = GetContainerPath();
-        var baseUrl = _options.BaseUrl;
-        var basePath = _options.BasePath;
-        return $"{baseUrl}/{basePath}/{containerName}/{tempBlobName}".Replace("\\", "/");
-    }
-
-    public string GetContainerPath()
-    {
-        var containerName = BlobContainerNameAttribute.GetContainerName<TempFileContainer>();
-        var basePath = _options.BasePath;
-        var fullPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", basePath, containerName);
-
-        return Path.GetFullPath(fullPath);
+        return $"{_options.ContainerPath.EnsureEndsWith('/')}{BuildBlobPath(tempBlobName)}".Replace("\\", "/");
     }
 
     public async Task<int> CleanupOldFilesAsync(TimeSpan retention, CancellationToken ct = default)   // read retention from config later
     {
-        var tempDir = GetContainerPath();
+        var tempDir = _options.ContainerPath.EnsureEndsWith('/') + _options.TempPrefix;
 
         if (!Directory.Exists(tempDir))
         {
             // No directory = nothing to clean. This is not an error.
+#pragma warning disable CA1873 // Avoid potentially expensive logging
             Logger.LogDebug("TempFileManager.CleanupOldFiles:Temp directory not found: {TempDir}", tempDir);
             return 0;
         }
@@ -121,7 +105,7 @@ public class TempFileManager : DomainService
                 continue;
             }
 
-            var tsParts = fileName.Substring(0, underScoreIndex);
+            var tsParts = fileName[..underScoreIndex];
             if (!TryParseTimestamp(tsParts, out var fileTsUtc))
             {
                 parseFailedCount++;
@@ -136,7 +120,7 @@ public class TempFileManager : DomainService
 
             try
             {
-                bool deleted = await _tempContainer.DeleteAsync(fileName, cancellationToken: ct);
+                bool deleted = await _container.DeleteAsync(fileName, cancellationToken: ct);
                 deletedCount++;
             }
             catch (Exception ex)

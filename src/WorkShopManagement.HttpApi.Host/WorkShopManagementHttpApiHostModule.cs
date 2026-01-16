@@ -30,7 +30,6 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.BlobStoring;
-using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
@@ -56,8 +55,7 @@ namespace WorkShopManagement;
     typeof(WorkShopManagementEntityFrameworkCoreModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpBlobStoringFileSystemModule)
+    typeof(AbpAspNetCoreSerilogModule)
     )]
 public class WorkShopManagementHttpApiHostModule : AbpModule
 {

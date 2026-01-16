@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
-using Volo.Abp.BlobStoring.Database.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
@@ -20,19 +20,18 @@ using WorkShopManagement.CarBays;
 using WorkShopManagement.CarModels;
 using WorkShopManagement.Cars;
 using WorkShopManagement.CheckInReports;
-using WorkShopManagement.VinInfos;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.Issues;
 using WorkShopManagement.ListItems;
+using WorkShopManagement.LogisticsDetails;
+using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
 using WorkShopManagement.ModelCategories;
 using WorkShopManagement.QualityGates;
 using WorkShopManagement.RadioOptions;
 using WorkShopManagement.Recalls;
-using WorkShopManagement.LogisticsDetails;
-using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
-using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using WorkShopManagement.VinInfos;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -118,7 +117,6 @@ public class WorkShopManagementDbContext :
         builder.ConfigureIdentity();
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
-        builder.ConfigureBlobStoring();
 
         /* Configure your own tables/entities inside here */
         builder.Entity<EntityAttachment>(b =>
