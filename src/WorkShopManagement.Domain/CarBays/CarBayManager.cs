@@ -282,6 +282,6 @@ public class CarBayManager : DomainService
             entity.ClockIn(time);
         }
 
-        return await _carBayRepository.UpdateAsync(entity);
+        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
     }
 }

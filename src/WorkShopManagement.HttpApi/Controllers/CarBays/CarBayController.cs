@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -39,6 +40,12 @@ public class CarBayController : AbpController, ICarBayAppService
     public async Task<CarBayDto> GetAsync(Guid id)
     {
         return await _service.GetAsync(id);
+    }
+
+    [HttpGet("critical-images/{carBayId}")]
+    public async Task<List<string>> GetCarBayItemImagesAsync(Guid carBayId)
+    {
+       return await _service.GetCarBayItemImagesAsync(carBayId);
     }
 
     [HttpGet]

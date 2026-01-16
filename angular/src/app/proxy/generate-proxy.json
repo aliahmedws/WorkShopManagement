@@ -2158,6 +2158,23 @@
                     "type": "WorkShopManagement.CarBays.CarBayDto",
                     "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
                   }
+                },
+                {
+                  "name": "GetCarBayItemImagesAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carBayId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<System.String>",
+                    "typeSimple": "[string]"
+                  }
                 }
               ]
             }
@@ -2270,6 +2287,43 @@
               "returnValue": {
                 "type": "WorkShopManagement.CarBays.CarBayDto",
                 "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
+            },
+            "GetCarBayItemImagesAsyncByCarBayId": {
+              "uniqueName": "GetCarBayItemImagesAsyncByCarBayId",
+              "name": "GetCarBayItemImagesAsync",
+              "httpMethod": "GET",
+              "url": "api/app/car-bays/critical-images/{carBayId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carBayId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carBayId",
+                  "name": "carBayId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<System.String>",
+                "typeSimple": "[string]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"

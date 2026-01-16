@@ -71,6 +71,12 @@
                     <span class="checklist-name">
                       {{ cl.name }}
                     </span>
+
+                    @if (cl.progressStatus) {
+                      <span class="badge badge-sm bg-{{mapCheckListProgressStatusColor(cl.progressStatus)}} rounded-pill ms-auto">
+                        {{ ('::Enum:CheckListProgressStatus.' + cl.progressStatus) | abpLocalization }}
+                      </span>
+                    }
                   </div>
                 </div>
 
@@ -135,7 +141,7 @@
               <!-- TOP BUTTONS (overlay) -->
               <div class="position-absolute top-0 start-0 p-3">
 
-                <button type="button" class="btn btn-sm btn-primary px-4">
+                <button type="button" class="btn btn-sm btn-primary px-4" (click)="openCriticalImages()">
                   {{'::CriticalImages' | abpLocalization}}
                 </button>
 
@@ -289,8 +295,9 @@
   </ng-template>
 
   <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="carId"> </app-issue-modal>
-  <app-checklist-items-modal #checkListItemsModal></app-checklist-items-modal>
+  <app-checklist-items-modal #checkListItemsModal (saved)="onChecklistSaved()"></app-checklist-items-modal>
   <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
   <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls>
-
+  <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
+</app-critical-images-modal>
 </abp-modal>

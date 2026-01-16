@@ -156,4 +156,9 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         var entity = await _manager.ToggleClockAsync(id, time);
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
+
+    public async Task<List<string>> GetCarBayItemImagesAsync(Guid carBayId)
+    {
+        return await _repository.GetCarBayItemImages(carBayId);
+    }
 }

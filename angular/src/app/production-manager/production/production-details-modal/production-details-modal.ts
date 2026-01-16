@@ -18,12 +18,15 @@ import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.ut
 import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
 import { finalize } from 'rxjs';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
+import { CheckListDto, checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
+import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { CriticalImagesModal } from './critical-images-modal/critical-images-modal';
 
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, Recalls],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, Recalls, CriticalImagesModal],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -47,8 +50,11 @@ export class ProductionDetailsModal {
   allowMovetoPostProduction = true;
   allowMovetoAwaitingTransport = true;
   isRecallModalVisible = false; 
+  criticalImagesVisible = false;
 
   clockInStatusOptions = clockInStatusOptions;
+  checkListProgressStatus = checkListProgressStatusOptions;
+  mapCheckListProgressStatusColor = mapCheckListProgressStatusColor;
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
@@ -251,7 +257,6 @@ private buildBayLabel(bayName?: string | null): string {
       if (status !== Confirmation.Status.confirm) return;
 
       this.movingStage = true;
-
       this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
         next: () => {
           this.movingStage = false;
@@ -304,7 +309,7 @@ moveToAwaitingTransportProduction() {
       date: StickerGeneratorUtil.formatDate(new Date()), // or manufactureStartDate if you want
       model: this.details?.modelName ?? '',
       flags: '(BNE)',         // hardcoded
-      colour: (this.selectedCar as any)?.colour || (this.selectedCar as any)?.color || '',
+      colour: this.selectedCar?.color || '',
       name: this.details?.ownerName ?? 'Dealer Stock',
     };
 
@@ -490,5 +495,17 @@ moveToAwaitingTransportProduction() {
     complete: () => (this.clockSaving = false),
   });
 }
+
+  onChecklistSaved(): void {
+    this.loadDetails();
+  }
+
+  openCriticalImages(): void {
+  const cl = (this.details as CarBayDto)?.checkLists?.[0]; // replace with your actual checklist source
+
+  this.criticalImagesVisible = true;
+}
+
+
 
 }

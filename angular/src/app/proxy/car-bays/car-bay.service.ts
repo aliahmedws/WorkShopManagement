@@ -36,6 +36,14 @@ export class CarBayService {
     { apiName: this.apiName,...config });
   
 
+  getCarBayItemImages = (carBayId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, string[]>({
+      method: 'GET',
+      url: `/api/app/car-bays/critical-images/${carBayId}`,
+    },
+    { apiName: this.apiName,...config });
+  
+
   getList = (input: GetCarBayListDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, PagedResultDto<CarBayDto>>({
       method: 'GET',

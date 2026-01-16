@@ -166,8 +166,6 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     [Authorize(WorkShopManagementPermissions.Cars.Edit)]
     public async Task<CarDto> UpdateAsync(Guid id, UpdateCarDto input)
     {
-
-
         var ownerId = await ResolveOrCreateOwnerAsync(input.OwnerId, input.Owner);
         var car = await _carManager.UpdateAsync(
             id,
@@ -345,7 +343,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         //var car = await _carRepository.GetAsync(id); // Get is working in manager
         var car = await _carManager.ChangeStageAsync(id, input.TargetStage);
 
-        car = await _carRepository.UpdateAsync(car, autoSave: true);
+        car = await _carRepository.UpdateAsync(car);
 
         return ObjectMapper.Map<Car, CarDto>(car);
     }

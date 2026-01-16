@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
@@ -13,4 +14,5 @@ public interface ICarBayAppService : IApplicationService
     Task<CarBayDto> UpdateAsync(Guid id, UpdateCarBayDto input);
     Task DeleteAsync(Guid id);
    Task<CarBayDto> ToggleClockAsync(Guid id, DateTime? time = null);
+    Task<List<string>> GetCarBayItemImagesAsync(Guid carBayId);
 }

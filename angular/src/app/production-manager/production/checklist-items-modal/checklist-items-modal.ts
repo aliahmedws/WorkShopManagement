@@ -20,6 +20,7 @@ export class CheckListItemsModal {
 
   visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() saved = new EventEmitter<void>();
 
   @ViewChild('uploadModal') uploadModal!: FileUploadModal;
 
@@ -244,6 +245,7 @@ export class CheckListItemsModal {
           for (const li of this.items) {
           if (!li?.id || li.isSeparator === true) continue;
           this.tempFilesByListItemId[li.id] = [];
+          this.saved.emit();
           this.close();
         }
       }
