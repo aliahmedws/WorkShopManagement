@@ -114,6 +114,150 @@ namespace WorkShopManagement.External.CarsXe
         [JsonPropertyName("exterior_color")]
         public List<string>? ExteriorColor { get; set; }
 
+        [JsonPropertyName("size")]
+        public string? Size { get; set; }
+
+        [JsonPropertyName("category")]
+        public string? Category { get; set; }
+
+        [JsonPropertyName("engine_size")]
+        public string? EngineSize { get; set; }
+
+        [JsonPropertyName("transmission_short")]
+        public string? TransmissionShort { get; set; }
+
+        [JsonPropertyName("transmission_type")]
+        public string? TransmissionType { get; set; }
+
+        [JsonPropertyName("transmission_speeds")]
+        public string? TransmissionSpeeds { get; set; }
+
+        [JsonPropertyName("anti_brake_system")]
+        public string? AntiBrakeSystem { get; set; }
+
+        [JsonPropertyName("steering_type")]
+        public string? SteeringType { get; set; }
+
+        [JsonPropertyName("gross_vehicle_weight_rating")]
+        public string? GrossVehicleWeightRating { get; set; }
+
+        [JsonPropertyName("invoice_price")]
+        public string? InvoicePrice { get; set; }
+
+        [JsonPropertyName("delivery_charges")]
+        public string? DeliveryCharges { get; set; }
+
+        [JsonPropertyName("manufacturer_suggested_retail_price")]
+        public string? ManufacturerSuggestedRetailPrice { get; set; }
+
+        [JsonPropertyName("front_brake_type")]
+        public string? FrontBrakeType { get; set; }
+
+        [JsonPropertyName("rear_brake_type")]
+        public string? RearBrakeType { get; set; }
+
+        [JsonPropertyName("turning_diameter")]
+        public string? TurningDiameter { get; set; }
+
+        [JsonPropertyName("front_suspension")]
+        public string? FrontSuspension { get; set; }
+
+        [JsonPropertyName("rear_suspension")]
+        public string? RearSuspension { get; set; }
+
+        [JsonPropertyName("front_spring_type")]
+        public string? FrontSpringType { get; set; }
+
+        [JsonPropertyName("rear_spring_type")]
+        public string? RearSpringType { get; set; }
+
+        [JsonPropertyName("tires")]
+        public string? Tires { get; set; }
+
+        [JsonPropertyName("front_headroom")]
+        public string? FrontHeadroom { get; set; }
+
+        [JsonPropertyName("rear_headroom")]
+        public string? RearHeadroom { get; set; }
+
+        [JsonPropertyName("front_legroom")]
+        public string? FrontLegroom { get; set; }
+
+        [JsonPropertyName("rear_legroom")]
+        public string? RearLegroom { get; set; }
+
+        [JsonPropertyName("front_shoulder_room")]
+        public string? FrontShoulderRoom { get; set; }
+
+        [JsonPropertyName("rear_shoulder_room")]
+        public string? RearShoulderRoom { get; set; }
+
+        [JsonPropertyName("front_hip_room")]
+        public string? FrontHipRoom { get; set; }
+
+        [JsonPropertyName("rear_hip_room")]
+        public string? RearHipRoom { get; set; }
+
+        [JsonPropertyName("curb_weight_manual")]
+        public string? CurbWeightManual { get; set; }
+
+        [JsonPropertyName("ground_clearance")]
+        public string? GroundClearance { get; set; }
+
+        [JsonPropertyName("track_front")]
+        public string? TrackFront { get; set; }
+
+        [JsonPropertyName("track_rear")]
+        public string? TrackRear { get; set; }
+
+        [JsonPropertyName("cargo_length")]
+        public string? CargoLength { get; set; }
+
+        [JsonPropertyName("width_at_wheelwell")]
+        public string? WidthAtWheelwell { get; set; }
+
+        [JsonPropertyName("width_at_wall")]
+        public string? WidthAtWall { get; set; }
+
+        [JsonPropertyName("depth")]
+        public string? Depth { get; set; }
+
+        [JsonPropertyName("optional_seating")]
+        public string? OptionalSeating { get; set; }
+
+        [JsonPropertyName("passenger_volume")]
+        public string? PassengerVolume { get; set; }
+
+        [JsonPropertyName("cargo_volume")]
+        public string? CargoVolume { get; set; }
+
+        [JsonPropertyName("cargo_volume_seats_in_place")]
+        public string? CargoVolumeSeatsInPlace { get; set; }
+
+        [JsonPropertyName("maximum_cargo_volume")]
+        public string? MaximumCargoVolume { get; set; }
+
+        [JsonPropertyName("standard_towing")]
+        public string? StandardTowing { get; set; }
+
+        [JsonPropertyName("maximum_towing")]
+        public string? MaximumTowing { get; set; }
+
+        [JsonPropertyName("standard_payload")]
+        public string? StandardPayload { get; set; }
+
+        [JsonPropertyName("maximum_payload")]
+        public string? MaximumPayload { get; set; }
+
+        [JsonPropertyName("maximum_gvwr")]
+        public string? MaximumGvwr { get; set; }
+
+        [JsonPropertyName("vehicle_class")]
+        public string? VehicleClass { get; set; }
+
+        [JsonPropertyName("vehicle_rating")]
+        public string? VehicleRating { get; set; }
+
         // Catches any extra fields like "invoice_price" or new fields added by API later
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? ExtraAttributes { get; set; }

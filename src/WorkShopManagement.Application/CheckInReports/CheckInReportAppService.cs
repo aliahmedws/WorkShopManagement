@@ -51,9 +51,9 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
             complianceDate: input.ComplianceDate,
             entryKms: input.EntryKms,
             engineNumber: input.EngineNumber,
-            frontGwar: input.FrontGwar,
-            rearGwar: input.RearGwar,
-            frontMotorNumber: input.FrontMoterNumber,
+            frontGawr: input.FrontGawr,
+            rearGawr: input.RearGawr,
+            frontMotorNumber: input.FrontMotorNumber,
             rearMotorNumber: input.RearMotorNumber,
             maxTowingCapacity: input.MaxTowingCapacity,
             emission: input.Emission,
@@ -127,8 +127,8 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
         report.SetCompliance(input.CompliancePlatePrinted, input.ComplianceDate);
         report.SetEntryKms(input.EntryKms);
         report.SetEngineNumber(input.EngineNumber);
-        report.SetGwars(input.FrontGwar, input.RearGwar);
-        report.SetMotorNumbers(input.FrontMoterNumber, input.RearMotorNumber);
+        report.SetGawrs(input.FrontGawr, input.RearGawr);
+        report.SetMotorNumbers(input.FrontMotorNumber, input.RearMotorNumber);
         report.SetSpecs(input.MaxTowingCapacity, input.Emission, input.TyreLabel);
         report.SetStatus(input.ReportStatus);
 

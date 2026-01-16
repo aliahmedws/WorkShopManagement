@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WorkShopManagement.CheckInReports;
+﻿namespace WorkShopManagement.CheckInReports;
 
 public static class CheckInReportConsts
 {
     public const int MaxLength = 256;
     public const string CreationTimeDesc = "CreationTime desc";
+
 
     public static string GetNormalizedSorting(string? sorting)
     {

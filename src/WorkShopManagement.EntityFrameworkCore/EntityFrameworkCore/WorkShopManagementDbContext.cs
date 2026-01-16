@@ -317,11 +317,11 @@ public class WorkShopManagementDbContext :
  
             b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.FrontMoterNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
-            //b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.ReportStatus).HasMaxLength(CheckInReportConsts.MaxLength);
+
             b.Property(x => x.CarId).IsRequired();
             b.HasOne(x => x.Car).WithOne().HasForeignKey<CheckInReport>(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
 
