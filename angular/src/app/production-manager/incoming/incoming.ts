@@ -9,10 +9,11 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionActions } from "../production-actions/production-actions";
 import { NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap'; 
 import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
+import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 
 @Component({
   selector: 'app-incoming',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal, CarNotesModal],
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss',
    providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
@@ -23,14 +24,11 @@ export class Incoming {
   @Input() list: ListService;
   @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
-  private readonly fb = inject(FormBuilder);
-  private readonly carService = inject(CarService);
-  private readonly toaster = inject(ToasterHelperService);
-
-  notesForm!: FormGroup;
-
   @ViewChild('estReleaseModal', { static: true })
   estReleaseModal!: EstReleaseModal;
+
+  @ViewChild('notesModal', { static: true })
+  notesModal!: CarNotesModal;
 
   selectedCar = {} as CarDto;
   isRecallModalVisible = false;
@@ -47,38 +45,27 @@ export class Incoming {
     this.isCheckInModalVisible = true;
   }
 
-  openNotesModal(car: CarDto): void {
-    this.selectedCar = car;
-
-    this.notesForm = this.fb.group({
-      notes: [car.notes ?? ''],
-    });
-
-    this.isNotesModalVisible = true;
-  }
-
-  saveNotes(): void {
-    if (!this.selectedCar?.id) return;
-
-    const notes = this.notesForm.value.notes as string;
-
-    this.carService.updateNotes(this.selectedCar.id, notes).subscribe(() => {
-      this.toaster.success('::NotesUpdatedSuccessfully', '::Success');
-      this.isNotesModalVisible = false;
-      this.list.get();
-    });
-  }
-
   openEstReleaseModal(row: CarDto): void {
-  if (!row?.id) return;
-  this.estReleaseModal.open(row.id, row.deliverDate ?? null);
-}
-
-onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
-  const row = this.cars.items?.find(x => x.id === e.carId);
-  if (row) {
-    (row as any).deliverDate = e.date;
+    if (!row?.id) return;
+    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
   }
-  this.list.get();
-}
+
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date;
+    }
+    this.list.get();
+  }
+
+   openNotesModal(row: CarDto): void {
+    if (!row?.id) return;
+    this.notesModal.open(row.id, row.notes);
+  }
+
+  onNotesSaved(e: { carId: string; notes: string }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) row.notes = e.notes;
+    this.list.get();
+  }
 }

@@ -52,8 +52,6 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <!-- <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
-                [sortable]="false"></ngx-datatable-column> -->
             <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate">
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <div class="d-flex align-items-center gap-2">
@@ -85,23 +83,5 @@
 
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal>
     <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
+    <app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
 </div>
-
-<abp-modal [(visible)]="isNotesModalVisible" [options]="{ size: 'lg' }">
-    <ng-template #abpHeader>
-        {{ '::Notes' | abpLocalization }}
-    </ng-template>
-
-    <ng-template #abpBody>
-        <form *ngIf="notesForm" [formGroup]="notesForm">
-            <textarea class="form-control" rows="8" formControlName="notes"></textarea>
-        </form>
-    </ng-template>
-
-    <ng-template #abpFooter>
-        <button type="button" class="btn btn-primary" [disabled]="!notesForm" (click)="saveNotes()">
-            <i class="fas fa-save me-1"></i>
-            {{ '::Save' | abpLocalization }}
-        </button>
-    </ng-template>
-</abp-modal>
