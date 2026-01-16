@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260116144535_PersistKeysToDbContext")]
+    partial class PersistKeysToDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2511,10 +2514,10 @@ namespace WorkShopManagement.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ExtraProperties");
 
-                    b.Property<string>("FrontGawr")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("FrontGwar")
+                        .HasColumnType("float");
 
-                    b.Property<string>("FrontMotorNumber")
+                    b.Property<string>("FrontMoterNumber")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -2532,11 +2535,11 @@ namespace WorkShopManagement.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("LastModifierId");
 
-                    b.Property<string>("MaxTowingCapacity")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("MaxTowingCapacity")
+                        .HasColumnType("float");
 
-                    b.Property<string>("RearGawr")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("RearGwar")
+                        .HasColumnType("float");
 
                     b.Property<string>("RearMotorNumber")
                         .HasMaxLength(256)
