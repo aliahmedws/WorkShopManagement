@@ -496,7 +496,7 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
     private async Task<int> SeedBaysAsync()
     {
         var desired = Enumerable.Range(1, 20)
-            .Select(i => new Bay(_guid.Create(), $"Bay {i}", false))
+            .Select(i => new Bay(_guid.Create(), $"Bay {i}", true))
             .ToList();
 
         var q = await _bayRepo.GetQueryableAsync();
