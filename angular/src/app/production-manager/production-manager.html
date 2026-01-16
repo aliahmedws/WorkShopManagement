@@ -35,7 +35,7 @@
         </nz-tabs>
 
         @if (selectedIndex === 3) {
-            <app-production [filters]="filters"></app-production>
+            <app-production [filters]="filters" (refreshRequested)="list.get()"></app-production>
         }
 
     </app-topbar-layout>

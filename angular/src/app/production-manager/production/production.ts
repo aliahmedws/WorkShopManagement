@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
@@ -18,6 +18,8 @@ import { mapIssueStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/
 })
 export class Production implements OnInit {
   @Input() filters = {} as GetCarListInput;
+  @Output() refreshRequested = new EventEmitter<void>();
+
 
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: StageBayDto[] = [];
@@ -99,5 +101,10 @@ getStageCar(carId: string) {
 
   getIssueColor(bay: StageBayDto): string {
     return mapIssueStatusColor(bay?.issueStatus);
+  }
+
+  onDetailsClosed(): void {
+    this.reloadActiveBays();
+    this.refreshRequested.emit();
   }
 }

@@ -52,6 +52,7 @@ export class ProductionDetailsModal {
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
+  @Output() closed = new EventEmitter<void>();
 
   private readonly confirm = inject(ConfirmationHelperService);
 
@@ -118,6 +119,8 @@ export class ProductionDetailsModal {
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
+
+    this.closed.emit();
   }
 
   private loadDetails(): void {
