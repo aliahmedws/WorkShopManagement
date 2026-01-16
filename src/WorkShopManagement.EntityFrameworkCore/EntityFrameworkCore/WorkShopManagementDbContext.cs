@@ -32,6 +32,7 @@ using WorkShopManagement.RadioOptions;
 using WorkShopManagement.Recalls;
 using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.LogisticsDetails.ArrivalEstimates;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace WorkShopManagement.EntityFrameworkCore;
 
@@ -41,7 +42,8 @@ namespace WorkShopManagement.EntityFrameworkCore;
 public class WorkShopManagementDbContext :
     AbpDbContext<WorkShopManagementDbContext>,
     ITenantManagementDbContext,
-    IIdentityDbContext
+    IIdentityDbContext,
+    IDataProtectionKeyContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
 
@@ -93,6 +95,9 @@ public class WorkShopManagementDbContext :
     public DbSet<Issue> Issues { get; set; }
     public DbSet<ArrivalEstimate> ArrivalEstimates { get; set; }
     public DbSet<LogisticsDetail> LogisticsDetails { get; set; }
+
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+
     public WorkShopManagementDbContext(DbContextOptions<WorkShopManagementDbContext> options)
         : base(options)
     {
@@ -317,11 +322,11 @@ public class WorkShopManagementDbContext :
  
             b.Property(x => x.Emission).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.EngineNumber).HasMaxLength(CheckInReportConsts.MaxLength);
-            b.Property(x => x.FrontMoterNumber).HasMaxLength(CheckInReportConsts.MaxLength);
+            b.Property(x => x.FrontMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.RearMotorNumber).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.TyreLabel).HasMaxLength(CheckInReportConsts.MaxLength);
-            //b.Property(x => x.RsvaImportApproval).HasMaxLength(CheckInReportConsts.MaxLength);
             b.Property(x => x.ReportStatus).HasMaxLength(CheckInReportConsts.MaxLength);
+
             b.Property(x => x.CarId).IsRequired();
             b.HasOne(x => x.Car).WithOne().HasForeignKey<CheckInReport>(x => x.CarId).OnDelete(DeleteBehavior.Restrict);
 
@@ -501,6 +506,12 @@ public class WorkShopManagementDbContext :
             b.HasIndex(x => x.LogisticsDetailId);
         });
 
+        builder.Entity<DataProtectionKey>(b =>
+        {
+            b.ToTable(WorkShopManagementConsts.DbTablePrefix + "DataProtectionKeys", WorkShopManagementConsts.DbSchema);
+            b.ConfigureByConvention();
 
+            b.HasKey(x => x.Id);
+        });
     }
 }

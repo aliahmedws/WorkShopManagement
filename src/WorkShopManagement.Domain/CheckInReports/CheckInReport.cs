@@ -20,13 +20,12 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
     public string? Emission { get; set; }
     public string? EngineNumber { get; set; }
     public int? EntryKms { get; set; }
-    public double? FrontGwar { get; set; }
-    public string? FrontMoterNumber { get; set; }
-    public double? RearGwar { get; set; }
+    public string? FrontGawr { get; set; }
+    public string? FrontMotorNumber { get; set; }
+    public string? RearGawr { get; set; }
     public string? RearMotorNumber { get; set; }
-    public double? MaxTowingCapacity { get; set; }
+    public string? MaxTowingCapacity { get; set; }
     public string? TyreLabel { get; set; }
-    //public string? RsvaImportApproval { get; set; }         //TODO: move it to car
     public string? ReportStatus { get; set; }
 
     public Guid CarId { get; set; }
@@ -48,11 +47,11 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         DateTime? complianceDate = null,
         int? entryKms = null,
         string? engineNumber = null,
-        double? frontGwar = null,
-        double? rearGwar = null,
+        string? frontGawr = null,
+        string? rearGawr = null,
         string? frontMotorNumber = null,
         string? rearMotorNumber = null,
-        double? maxTowingCapacity = null,
+        string? maxTowingCapacity = null,
         string? emission = null,
         string? tyreLabel = null,
         //string? rsvaImportApproval = null,
@@ -65,7 +64,7 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         SetCompliance(compliancePlatePrinted, complianceDate);
         SetEntryKms(entryKms);
         SetEngineNumber(engineNumber);
-        SetGwars(frontGwar, rearGwar);
+        SetGawrs(frontGawr, rearGawr);
         SetMotorNumbers(frontMotorNumber,rearMotorNumber);
         SetSpecs(maxTowingCapacity, emission, tyreLabel);
         //SetRsva(rsvaImportApproval);
@@ -102,7 +101,7 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         }
         else
         {
-            buildMonth = null;
+            BuildYear = null;
         }
 
     }
@@ -135,67 +134,29 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         EngineNumber = DomainCheck.TrimOptional(engineNumber, nameof(EngineNumber), CheckInReportConsts.MaxLength);
     }
 
-    public void SetGwars(double? frontGwar, double? rearGwar)
+    public void SetGawrs(string? frontGawr, string? rearGawr)
     {
-        if (frontGwar.HasValue)
-        {
-            if (frontGwar < 0)
-            {
-                throw new BusinessException("CheckInReport:InvalidFrontGwar")
-                    .WithData("FrontGwar", frontGwar.Value);
-            }
-            FrontGwar = frontGwar;
-        }
-        else
-        {
-            FrontGwar = null;
-        }
-
-
-        if (rearGwar.HasValue)
-        {
-            if (rearGwar < 0)
-            {
-                throw new BusinessException("CheckInReport:InvalidRearGwar")
-                    .WithData("RearGwar", rearGwar.Value);
-            }
-            RearGwar = rearGwar;
-        }
-        else
-        {
-            RearGwar = null;
-        }
+        FrontGawr = DomainCheck.TrimOptional(frontGawr, nameof(FrontGawr), CheckInReportConsts.MaxLength);
+        RearGawr = DomainCheck.TrimOptional(rearGawr, nameof(RearGawr), CheckInReportConsts.MaxLength);
     }
     public void SetMotorNumbers(string? frontMotorNumber, string? rearMotorNumber)
     {
-        FrontMoterNumber = DomainCheck.TrimOptional(frontMotorNumber, nameof(FrontMoterNumber), CheckInReportConsts.MaxLength);
+        FrontMotorNumber = DomainCheck.TrimOptional(frontMotorNumber, nameof(FrontMotorNumber), CheckInReportConsts.MaxLength);
         RearMotorNumber = DomainCheck.TrimOptional(rearMotorNumber, nameof(RearMotorNumber), CheckInReportConsts.MaxLength);
     }
 
 
-    public void SetSpecs(double? maxTowingCapacity, string? emission, string? tyreLabel)
+    public void SetSpecs(string? maxTowingCapacity, string? emission, string? tyreLabel)
     {
-        if (maxTowingCapacity.HasValue && maxTowingCapacity < 0)
-        {
-            throw new BusinessException("CheckInReport:InvalidMaxTowingCapacity")
-                .WithData("MaxTowingCapacity", maxTowingCapacity);
-        }
-
-        MaxTowingCapacity = maxTowingCapacity;
+        MaxTowingCapacity = DomainCheck.TrimOptional(maxTowingCapacity, nameof(MaxTowingCapacity), CheckInReportConsts.MaxLength);
         Emission = DomainCheck.TrimOptional(emission, nameof(Emission), CheckInReportConsts.MaxLength);
         TyreLabel = DomainCheck.TrimOptional(tyreLabel, nameof(TyreLabel), CheckInReportConsts.MaxLength);
     }
-
-    //public void SetRsva(string? rsvaImportApproval)
-    //{
-    //    RsvaImportApproval = DomainCheck.TrimOptional(rsvaImportApproval, nameof(RsvaImportApproval), CheckInReportConsts.MaxLength);
-    //}
 
     public void SetStatus(string? status)
     {
         ReportStatus = DomainCheck.TrimOptional(status, nameof(ReportStatus), CheckInReportConsts.MaxLength);
     }
-
 
     public void UpdateCore(
         int? buildYear = null,
@@ -206,11 +167,11 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         ChoiceOptions? compliancePlatePrinted = null,
         int? entryKms = null,
         string? engineNumber = null,
-        double? frontGwar = null,
-        double? rearGwar = null,
+        string? frontGawr = null,
+        string? rearGawr = null,
         string? frontMotorNumber = null,
         string? rearMotorNumber = null,
-        double? maxTowingCapacity = null,
+        string? maxTowingCapacity = null,
         string? emission = null,
         string? tyreLabel = null,
         //string? rsvaImportApproval = null,
@@ -222,7 +183,7 @@ public class CheckInReport : FullAuditedAggregateRoot<Guid>
         SetCompliance(compliancePlatePrinted, complianceDate);
         SetEntryKms(entryKms);
         SetEngineNumber(engineNumber);
-        SetGwars(frontGwar, rearGwar);
+        SetGawrs(frontGawr, rearGawr);
         SetMotorNumbers(frontMotorNumber, rearMotorNumber);
         SetSpecs(maxTowingCapacity, emission, tyreLabel);
         //SetRsva(rsvaImportApproval);
