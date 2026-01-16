@@ -1,6 +1,6 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Confirmation } from '@abp/ng.theme.shared';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReport } from 'src/app/check-in-reports/check-in-report';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
@@ -13,10 +13,12 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { ProductionActions } from '../production-actions/production-actions';
+import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
 
 @Component({
   selector: 'app-scd-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal],
   templateUrl: './scd-warehouse.html',
   styleUrl: './scd-warehouse.scss'
 })
@@ -52,10 +54,9 @@ export class ScdWarehouse {
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
-  // ngOnInit(): void {
-  //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-  //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  // }
+  
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
 
   loadBays() {
     if (!this.bayOptions.length) {
@@ -126,5 +127,19 @@ export class ScdWarehouse {
   openCheckInModal(car: CarDto): void {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
+  }
+
+  openEstReleaseModal(row: CarDto): void {
+    if (!row?.id) return;
+    const existing = row.deliverDate ? new Date(row.deliverDate) : null; // ✅ string -> Date
+    this.estReleaseModal.open(row.id, existing);
+  }
+
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date ? e.date.toISOString() : null; // ✅ Date -> string
+    }
+    this.list.get();
   }
 }

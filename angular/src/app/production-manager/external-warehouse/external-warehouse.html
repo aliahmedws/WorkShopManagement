@@ -82,7 +82,6 @@
         </ngx-datatable>
 
     </div>
-    <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
 </div>
 <abp-modal [(visible)]="isAssignModalVisible" [options]="{ size: 'md' }">
     <ng-template #abpHeader>
@@ -131,5 +130,6 @@
     </ng-template>
 
     <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" />
+    <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal>
 </abp-modal>
