@@ -3,6 +3,16 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
     <div ngbDropdownMenu>
+        @if (showBayDetails) {
+            <button
+                ngbDropdownItem
+                (click)="openBayDetails()"
+                [disabled]="bayLabel === '-'"
+            >
+                 {{ bayLabel }}
+            </button>
+            <div class="dropdown-divider"></div>
+        }
         @if (showEdit) {
         <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem (click)="editCar()">
             {{ '::Edit' | abpLocalization }}

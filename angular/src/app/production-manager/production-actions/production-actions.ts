@@ -22,9 +22,12 @@ export class ProductionActions {
   @Input() showLogistics: boolean = true;
   @Input() showIssue: boolean = true;
   @Input() showManageBay = true;
-
+  
   @Output() assignBay = new EventEmitter<string>(); // carId
   @Input() showAssignBay = true; 
+
+  @Input() showBayDetails = true;
+  @Output() bayDetails = new EventEmitter<CarDto>();
 
   readonly Stage = Stage;
 
@@ -57,9 +60,13 @@ export class ProductionActions {
     this.change.emit();
   }
 
-    get canManageBay(): boolean {
+  get canManageBay(): boolean {
     const s = this.stage?.stage;
     return s === Stage.ExternalWarehouse || s === Stage.ScdWarehouse;
+  }
+
+   get bayLabel(): string {
+    return (this.stage as CarDto)?.bayName ?? '-';
   }
 
   get canAssignBay(): boolean {
@@ -70,5 +77,10 @@ export class ProductionActions {
   requestAssignBay(): void {
     if (!this.stage?.id) return;
     this.assignBay.emit(this.stage.id);
+  }
+
+  openBayDetails(): void {
+    if (!this.stage) return;
+    this.bayDetails.emit(this.stage);
   }
 }

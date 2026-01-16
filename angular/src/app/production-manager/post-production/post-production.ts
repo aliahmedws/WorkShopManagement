@@ -1,5 +1,5 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, viewChild, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayService, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
@@ -11,17 +11,21 @@ import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.ser
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
+import { ProductionActions } from '../production-actions/production-actions';
+import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
 
 @Component({
   selector: 'app-post-production',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal,  AvvStatusModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionDetailsModal, AvvStatusModal, ProductionActions, EstReleaseModal],
   templateUrl: './post-production.html',
   styleUrl: './post-production.scss',
 })
 export class PostProduction {
   @ViewChild('detailsModal') detailsModal!: ProductionDetailsModal; //Bay
+  
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
 
-// private readonly carService = inject(CarService);
   private readonly carBayService = inject(CarBayService)
   private readonly lookupService = inject(LookupService);
   private readonly fb = inject(FormBuilder);
@@ -130,9 +134,22 @@ onStageChanged(carId: string) {
   this.toaster.success('::SuccessfullyMovedToNextStage', '::Success');
 }
 
-openAvvModal(car: CarDto): void {
+  openAvvModal(car: CarDto): void {
     this.selectedCar = car;
     this.isAvvModalVisible = true;
+  }
+  
+  openEstReleaseModal(row: CarDto): void {
+    if (!row?.id) return;
+    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
+  }
+
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date;
+    }
+    this.list.get();
   }
 
 }
