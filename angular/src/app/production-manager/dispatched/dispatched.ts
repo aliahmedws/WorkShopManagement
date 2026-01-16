@@ -1,5 +1,5 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
@@ -9,24 +9,25 @@ import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
 import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { ProductionActions } from '../production-actions/production-actions';
+import { AvvStatusModal } from "../mini-modals/avv-status-modal/avv-status-modal";
+import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
 
 @Component({
   selector: 'app-dispatched',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, AvvStatusModal, EstReleaseModal],
   templateUrl: './dispatched.html',
   styleUrl: './dispatched.scss'
 })
 export class Dispatched {
-private readonly carService = inject(CarService);
-  private readonly lookupService = inject(LookupService);
-  private readonly fb = inject(FormBuilder);
-  private readonly toaster = inject(ToasterHelperService)
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
 
+  private readonly lookupService = inject(LookupService);
 
   form!: FormGroup;
-  avvForm!: FormGroup;
-  estReleaseForm!: FormGroup;
   StorageLocation = StorageLocation;
+  isAvvModalVisible = false;
 
   @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
 
@@ -37,9 +38,7 @@ private readonly carService = inject(CarService);
   selectedCar = {} as CarDto;
   selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
 
-  isEstReleaseModalVisible = false;
   isAssignModalVisible = false;
-  isAvvModalVisible = false;
 
   bayOptions: GuidLookupDto[] = [];
   selectedCarBay = {} as CarBayDto;
@@ -71,72 +70,22 @@ private readonly carService = inject(CarService);
     this.isCheckInModalVisible = true;
   }
 
-   openAvvModal(car: CarDto): void {
+openAvvModal(car: CarDto): void {
     this.selectedCar = car;
-
-    this.avvForm = this.fb.group({
-      avvStatus: [car.avvStatus ?? null, [Validators.required]],
-    });
-
     this.isAvvModalVisible = true;
   }
 
-  openEstReleaseModal(car: CarDto): void {
-  this.selectedCar = car;
-
-  const dateValue = car.deliverDate ? this.toDateInputValue(car.deliverDate) : null;
-
-  this.estReleaseForm = this.fb.group({
-    estimatedReleaseDate: [dateValue],
-  });
-
-  this.isEstReleaseModalVisible = true;
-}
-
-closeEstReleaseModal(): void {
-  this.isEstReleaseModalVisible = false;
-  this.estReleaseForm = undefined as any;
-}
-
-  closeAvvModal(): void {
-    this.isAvvModalVisible = false;
-    this.avvForm = undefined as any;
+   openEstReleaseModal(row: CarDto): void {
+    if (!row?.id) return;
+    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
   }
 
-  saveAvvStatus(): void {
-    if (!this.selectedCar?.id) return;
-
-    this.avvForm.markAllAsTouched();
-    if (this.avvForm.invalid) return;
-
-    const avvStatus = this.avvForm.value.avvStatus;
-
-    this.carService.updateAvvStatus(this.selectedCar.id, { avvStatus }).subscribe(() => {
-      this.isAvvModalVisible = false;
-      this.toaster.success('::AVVStatusUpdated', '::Success');
-      this.list.get();
-    });
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date;
+    }
+    this.list.get();
   }
 
-  saveEstRelease(): void {
-  if (!this.selectedCar?.id) return;
-
-  const dateStr = this.estReleaseForm.value.estimatedReleaseDate as string | null;
-  if (!dateStr) return;
-
-  const estimatedReleaseDate = new Date(dateStr);
-    this.carService.updateEstimatedRelease(this.selectedCar.id, estimatedReleaseDate.toISOString()).subscribe(() => {
-      this.isEstReleaseModalVisible = false;
-      this.toaster.success('::EstimatedReleaseDateUpdated', '::Success');
-      this.list.get();
-    });
-}
-
-  private toDateInputValue(date: string | Date): string {
-    const d = new Date(date);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  }
 }
