@@ -2,10 +2,10 @@ import { mapEnumToOptions } from '@abp/ng.core';
 
 export enum Port {
   Bne = 1,
-  syd = 2,
-  mel = 3,
-  per = 4,
-  other = 5,
+  Syd = 2,
+  Mel = 3,
+  Per = 4,
+  Other = 5,
 }
 
 export const portOptions = mapEnumToOptions(Port);

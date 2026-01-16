@@ -23,6 +23,11 @@
             {{ '::Issues' | abpLocalization }}
         </button>
         }
+        @if (showAssignBay && canAssignBay) {
+        <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem (click)="requestAssignBay()">
+            {{ '::AssignToBay' | abpLocalization }}
+        </button>
+        }   
     </div>
 </div>
 

@@ -12,12 +12,13 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { ProductionActions } from '../production-actions/production-actions';
 
 
 
 @Component({
   selector: 'app-external-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions],
   templateUrl: './external-warehouse.html',
   styleUrl: './external-warehouse.scss'
 })

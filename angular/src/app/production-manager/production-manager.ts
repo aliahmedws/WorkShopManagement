@@ -21,7 +21,6 @@ import { ScdWarehouse } from './scd-warehouse/scd-warehouse';
   providers: [ListService],
 })
 export class ProductionManager implements OnInit {
-  
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   public readonly list = inject(ListService);

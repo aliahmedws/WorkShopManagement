@@ -4,6 +4,7 @@ import { CarCreateEditModal } from 'src/app/cars/car-create-edit-modal/car-creat
 import { CarImagesModal } from 'src/app/cars/car-images-modal/car-images-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
 import { CarDto } from 'src/app/proxy/cars';
+import { Stage } from 'src/app/proxy/cars/stages';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
 @Component({
@@ -20,6 +21,12 @@ export class ProductionActions {
   @Input() showImage: boolean = true;
   @Input() showLogistics: boolean = true;
   @Input() showIssue: boolean = true;
+  @Input() showManageBay = true;
+
+  @Output() assignBay = new EventEmitter<string>(); // carId
+  @Input() showAssignBay = true; 
+
+  readonly Stage = Stage;
 
   private router = inject(Router);
 
@@ -48,5 +55,20 @@ export class ProductionActions {
 
   emitChange() {
     this.change.emit();
+  }
+
+    get canManageBay(): boolean {
+    const s = this.stage?.stage;
+    return s === Stage.ExternalWarehouse || s === Stage.ScdWarehouse;
+  }
+
+  get canAssignBay(): boolean {
+    const s = this.stage?.stage;
+    return s === Stage.ExternalWarehouse || s === Stage.ScdWarehouse;
+  }
+
+  requestAssignBay(): void {
+    if (!this.stage?.id) return;
+    this.assignBay.emit(this.stage.id);
   }
 }

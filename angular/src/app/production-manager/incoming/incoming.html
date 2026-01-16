@@ -55,10 +55,21 @@
             <!-- <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
                 [sortable]="false"></ngx-datatable-column> -->
             <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    {{ value | date:'shortDate' }}
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div class="d-flex align-items-center gap-2">
+                    <span>{{ value | date:'shortDate' }}</span>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0"
+                        (click)="openEstReleaseModal(row)"
+                        [title]="'::EstimatedRelease' | abpLocalization">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                    </div>
                 </ng-template>
             </ngx-datatable-column>
+
             <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::ClearingAgent' | abpLocalization" prop="clearingAgent"></ngx-datatable-column>
 
@@ -72,8 +83,8 @@
     </div>
     <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" />
 
-    <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()">
-    </app-check-in-report-modal>
+    <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal>
+    <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
 </div>
 
 <abp-modal [(visible)]="isNotesModalVisible" [options]="{ size: 'lg' }">

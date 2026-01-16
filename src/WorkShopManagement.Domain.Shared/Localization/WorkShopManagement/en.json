@@ -459,6 +459,7 @@
     "NewVehicle": "New Vehicle",
     "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
     "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully",
+    "EnterNotes": "Enter Notes",
     "LogisticsAttachments.Help": "Add CRE attachments or any other attachments related to car logistics here.",
     "Menu:Logistics": "Logistics",
     "CreStatus": "CRE Status",
@@ -469,7 +470,8 @@
     "FetchImages": "Fetch Images",
     "NewEstimate": "New Estimate",
     "EditEstimate": "Edit Estimate",
-    "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available."
+    "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available.",
+    "EstimatedReleaseUpdatedSuccessfully": "Est. Release Updated Successfully"
 
 
   }

@@ -5803,6 +5803,48 @@
                   }
                 },
                 {
+                  "name": "SubmitCreStatusAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+                  }
+                },
+                {
+                  "name": "AddOrUpdateDeliverDetailsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                      "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+                  }
+                },
+                {
                   "name": "DeleteAsync",
                   "parametersOnMethod": [
                     {
@@ -6115,6 +6157,100 @@
                   "jsonName": null,
                   "type": "WorkShopManagement.LogisticsDetails.UpdateLogisticsDetailDto",
                   "typeSimple": "WorkShopManagement.LogisticsDetails.UpdateLogisticsDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "SubmitCreStatusAsyncById": {
+              "uniqueName": "SubmitCreStatusAsyncById",
+              "name": "SubmitCreStatusAsync",
+              "httpMethod": "POST",
+              "url": "api/app/logistics-details/{id}/submit-cre",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "AddOrUpdateDeliverDetailsAsyncByIdAndInput": {
+              "uniqueName": "AddOrUpdateDeliverDetailsAsyncByIdAndInput",
+              "name": "AddOrUpdateDeliverDetailsAsync",
+              "httpMethod": "POST",
+              "url": "api/app/logistics-details/{id}/add-or-update-deliver-details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -19821,7 +19957,7 @@
       ],
       "enumValues": [
         1,
-        3
+        2
       ],
       "genericArguments": null,
       "properties": null
@@ -19945,10 +20081,10 @@
       "isEnum": true,
       "enumNames": [
         "Bne",
-        "syd",
-        "mel",
-        "per",
-        "other"
+        "Syd",
+        "Mel",
+        "Per",
+        "Other"
       ],
       "enumValues": [
         1,
@@ -19966,6 +20102,7 @@
       "enumNames": [
         "Incoming",
         "ExternalWarehouse",
+        "ScdWarehouse",
         "Production",
         "PostProduction",
         "AwaitingTransport",
@@ -19977,7 +20114,8 @@
         3,
         4,
         5,
-        6
+        6,
+        7
       ],
       "genericArguments": null,
       "properties": null
@@ -20196,18 +20334,6 @@
           "isRequired": false,
           "minLength": 0,
           "maxLength": 4000,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "StorageLocation",
-          "jsonName": null,
-          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
-          "typeSimple": "enum?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
           "minimum": null,
           "maximum": null,
           "regex": null
@@ -20452,8 +20578,8 @@
         {
           "name": "MaxTowingCapacity",
           "jsonName": null,
-          "type": "System.Double",
-          "typeSimple": "number",
+          "type": "System.Double?",
+          "typeSimple": "number?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20510,18 +20636,6 @@
           "regex": null
         },
         {
-          "name": "CreatorName",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "CarId",
           "jsonName": null,
           "type": "System.Guid",
@@ -20538,6 +20652,18 @@
           "jsonName": null,
           "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
           "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Car",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.CarDto",
+          "typeSimple": "WorkShopManagement.Cars.CarDto",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25284,6 +25410,63 @@
         }
       ]
     },
+    "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ConfirmedDeliverDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeliverNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeliverTo",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 128,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TransportDestination",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 128,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "WorkShopManagement.LogisticsDetails.ArrivalEstimates.ArrivalEstimateDto": {
       "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
       "isEnum": false,
@@ -25544,46 +25727,22 @@
           "regex": null
         },
         {
+          "name": "Port",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "BookingNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearingAgent",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearanceRemarks",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearanceDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25628,10 +25787,34 @@
           "regex": null
         },
         {
-          "name": "Port",
+          "name": "ClearingAgent",
           "jsonName": null,
-          "type": "WorkShopManagement.Cars.Port",
-          "typeSimple": "enum",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClearanceRemarks",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClearanceDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25745,10 +25928,10 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "CarId",
+          "name": "Port",
           "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
           "isRequired": true,
           "minLength": null,
           "maxLength": null,
@@ -25758,6 +25941,42 @@
         },
         {
           "name": "BookingNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.CreStatus",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreSubmissionDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RsvaNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -25805,42 +26024,6 @@
           "regex": null
         },
         {
-          "name": "CreSubmissionDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RsvaNumber",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 64,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Port",
-          "jsonName": null,
-          "type": "WorkShopManagement.Cars.Port",
-          "typeSimple": "enum",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "ActualPortArrivalDate",
           "jsonName": null,
           "type": "System.DateTime?",
@@ -25860,54 +26043,6 @@
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "DeliverTo",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 128,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ConfirmedDeliverDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "DeliverNotes",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 1024,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "TransportDestination",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 128,
           "minimum": null,
           "maximum": null,
           "regex": null
