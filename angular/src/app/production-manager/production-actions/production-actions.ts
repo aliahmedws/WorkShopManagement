@@ -29,6 +29,9 @@ export class ProductionActions {
   @Input() showBayDetails = true;
   @Output() bayDetails = new EventEmitter<CarDto>();
 
+  @Input() showDispatched = false;               // turn on only on AwaitingTransport page
+  @Output() dispatched = new EventEmitter<string>();
+
   readonly Stage = Stage;
 
   private router = inject(Router);
@@ -78,6 +81,12 @@ export class ProductionActions {
     if (!this.stage?.id) return;
     this.assignBay.emit(this.stage.id);
   }
+
+  requestDispatched(): void {
+    if (!this.stage?.id) return;
+    this.dispatched.emit(this.stage.id);
+  }
+  
 
   openBayDetails(): void {
     if (!this.stage) return;

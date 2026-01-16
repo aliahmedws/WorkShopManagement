@@ -1,6 +1,6 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Confirmation } from '@abp/ng.theme.shared';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayService, CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
@@ -13,23 +13,26 @@ import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
+import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
+import { ProductionActions } from '../production-actions/production-actions';
 
 @Component({
   selector: 'app-awaiting-transport',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, AvvStatusModal],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, AvvStatusModal, EstReleaseModal, ProductionActions],
   templateUrl: './awaiting-transport.html',
   styleUrl: './awaiting-transport.scss'
 })
 export class AwaitingTransport {
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
+  
   private readonly carService = inject(CarService);
   private readonly confirm = inject(ConfirmationHelperService);
   private readonly lookupService = inject(LookupService);
-  private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService)
 
 
   form!: FormGroup;
-  // avvForm!: FormGroup;
   estReleaseForm!: FormGroup;
   StorageLocation = StorageLocation;
 
@@ -42,7 +45,6 @@ export class AwaitingTransport {
   selectedCar = {} as CarDto;
   selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
 
-  isEstReleaseModalVisible = false;
   isAssignModalVisible = false;
   isAvvModalVisible = false;
 
@@ -50,7 +52,6 @@ export class AwaitingTransport {
   selectedCarBay = {} as CarBayDto;
 
   priority = Priority;
-  // aVVStatusOptions = avvStatusOptions;
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
@@ -81,36 +82,19 @@ export class AwaitingTransport {
     this.isAvvModalVisible = true;
   }
 
-  openEstReleaseModal(car: CarDto): void {
-    this.selectedCar = car;
-
-    const dateValue = car.deliverDate ? this.toDateInputValue(car.deliverDate) : null;
-
-    this.estReleaseForm = this.fb.group({
-      estimatedReleaseDate: [dateValue],
-    });
-
-    this.isEstReleaseModalVisible = true;
+   openEstReleaseModal(row: CarDto): void {
+    if (!row?.id) return;
+    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
   }
 
-  closeEstReleaseModal(): void {
-    this.isEstReleaseModalVisible = false;
-    this.estReleaseForm = undefined as any;
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date;
+    }
+    this.list.get();
   }
 
-  saveEstRelease(): void {
-    if (!this.selectedCar?.id) return;
-
-    const dateStr = this.estReleaseForm.value.estimatedReleaseDate as string | null;
-    if (!dateStr) return;
-
-    const estimatedReleaseDate = new Date(dateStr);
-    this.carService.updateEstimatedRelease(this.selectedCar.id, estimatedReleaseDate.toISOString()).subscribe(() => {
-      this.isEstReleaseModalVisible = false;
-      this.toaster.success('::EstimatedReleaseDateUpdated', '::Success');
-      this.list.get();
-    });
-  }
 
   dispatched(carId: string) {
     this.confirm.confirmAction('::ConfirmDispatchedMessage', '::ConfirmDispatchedTitle').subscribe(status => {
@@ -123,12 +107,4 @@ export class AwaitingTransport {
     });
   }
 
-
-  private toDateInputValue(date: string | Date): string {
-    const d = new Date(date);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  }
 }

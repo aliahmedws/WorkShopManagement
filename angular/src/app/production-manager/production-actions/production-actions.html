@@ -6,12 +6,24 @@
         @if (showBayDetails) {
             <button
                 ngbDropdownItem
+                *abpPermission="'WorkShopManagement.Cars.Create'"
                 (click)="openBayDetails()"
                 [disabled]="bayLabel === '-'"
             >
                  {{ bayLabel }}
             </button>
             <div class="dropdown-divider"></div>
+        }
+
+        @if (showDispatched) {
+        <button
+            ngbDropdownItem
+            *abpPermission="'WorkShopManagement.Cars.Edit'"
+            (click)="requestDispatched()"
+        >
+            {{ '::Dispatched' | abpLocalization }}
+        </button>
+        <div class="dropdown-divider"></div>
         }
         @if (showEdit) {
         <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem (click)="editCar()">
