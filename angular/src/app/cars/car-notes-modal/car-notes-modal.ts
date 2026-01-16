@@ -19,14 +19,10 @@ export class CarNotesModal {
   saving = false;
 
   carId?: string;
-
   form?: FormGroup;
 
-  /** emitted after successful save (so parent can refresh list/details) */
-  @Output() saved = new EventEmitter<string>();
-
-  /** for two-way binding if you want it */
-  @Output() visibleChange = new EventEmitter<boolean>();
+  /** emitted after successful save so parent can update UI */
+  @Output() saved = new EventEmitter<{ carId: string; notes: string }>();
 
   open(carId: string, existingNotes?: string | null): void {
     this.carId = carId;
@@ -36,12 +32,10 @@ export class CarNotesModal {
     });
 
     this.visible = true;
-    this.visibleChange.emit(true);
   }
 
   close(): void {
     this.visible = false;
-    this.visibleChange.emit(false);
     this.carId = undefined;
     this.form = undefined;
     this.saving = false;
@@ -53,14 +47,17 @@ export class CarNotesModal {
     const notes = (this.form.value?.notes ?? '') as string;
 
     this.saving = true;
+
     this.carService.updateNotes(this.carId, notes).subscribe({
       next: () => {
-        this.saving = false;
         this.toaster.success('::NotesUpdatedSuccessfully', '::Success');
-        this.saved.emit(this.carId!);
+        this.saved.emit({ carId: this.carId!, notes });
         this.close();
       },
       error: () => {
+        this.saving = false;
+      },
+      complete: () => {
         this.saving = false;
       },
     });

@@ -5,13 +5,29 @@
 
   <ng-template #abpBody>
     <form *ngIf="form" [formGroup]="form">
-      <textarea class="form-control" rows="14" formControlName="notes"></textarea>
+      <textarea
+        class="form-control"
+        rows="14"
+        formControlName="notes"
+        [readonly]="saving"
+        [attr.placeholder]="'::EnterNotes' | abpLocalization"
+        autofocus
+      ></textarea>
+
+      <!-- <div class="text-muted small mt-2">
+        {{ '::NotesHint' | abpLocalization }}
+      </div> -->
     </form>
   </ng-template>
 
   <ng-template #abpFooter>
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="close()"
+        [disabled]="saving"
+      >
         {{ '::Close' | abpLocalization }}
       </button>
 

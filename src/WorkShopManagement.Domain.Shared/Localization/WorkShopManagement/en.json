@@ -454,8 +454,9 @@
     "ApiResponse": "API Response",
     "Response": "Response",
     "EditVehicle": "Edit Vehicle",
-    "NewVehicle" : "New Vehicle",
+    "NewVehicle": "New Vehicle",
     "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
-    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully"
+    "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully",
+    "EnterNotes": "Enter Notes"
   }
 }
