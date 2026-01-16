@@ -119,9 +119,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public void ClockIn(DateTime clockInTime)
     {
-        if (ClockInStatus == ClockInStatus.ClockedIn)
-            throw new UserFriendlyException("CarBay already clocked in.");
-
         ClockInTime = clockInTime;
         ClockOutTime = null;
         ClockInStatus = ClockInStatus.ClockedIn;
@@ -143,7 +140,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     {
         ClockInTime = null;
         ClockOutTime = null;
-        ClockInStatus = ClockInStatus.NotClockedIn;
+        ClockInStatus = ClockInStatus.ClockedOut;
     }
 
 }

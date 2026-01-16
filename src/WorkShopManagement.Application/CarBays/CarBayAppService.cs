@@ -151,23 +151,9 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockInAsync(Guid id, DateTime? clockInTime)
+    public async Task<CarBayDto> ToggleClockAsync(Guid id, DateTime? time = null)
     {
-        var entity = await _manager.ClockInAsync(id, clockInTime);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
-    }
-
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockOutAsync(Guid id, DateTime? clockOutTime)
-    {
-        var entity = await _manager.ClockOutAsync(id, clockOutTime);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
-    }
-
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ResetClockAsync(Guid id)
-    {
-        var entity = await _manager.ResetClockAsync(id);
+        var entity = await _manager.ToggleClockAsync(id, time);
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 }

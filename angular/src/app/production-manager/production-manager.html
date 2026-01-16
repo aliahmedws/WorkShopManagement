@@ -17,7 +17,7 @@
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-                <app-production [filters]="filters"></app-production>
+                
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
@@ -33,6 +33,10 @@
             </nz-tab>
 
         </nz-tabs>
+
+        @if (selectedIndex === 3) {
+            <app-production [filters]="filters"></app-production>
+        }
 
     </app-topbar-layout>
 </abp-page>

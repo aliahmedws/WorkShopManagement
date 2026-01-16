@@ -471,7 +471,10 @@
     "NewEstimate": "New Estimate",
     "EditEstimate": "Edit Estimate",
     "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available.",
-    "EstimatedReleaseUpdatedSuccessfully": "Est. Release Updated Successfully"
+    "EstimatedReleaseUpdatedSuccessfully": "Est. Release Updated Successfully",
+    "ClockOut": "Clock Out",
+    "ClockedOutSuccessfully": "Clocked Out Successfully",
+    "ClockedInSuccessfully": "Clocked In Successfully"
 
 
   }

@@ -12,7 +12,5 @@ public interface ICarBayAppService : IApplicationService
     Task<CarBayDto> CreateAsync(CreateCarBayDto input);
     Task<CarBayDto> UpdateAsync(Guid id, UpdateCarBayDto input);
     Task DeleteAsync(Guid id);
-    Task<CarBayDto> ClockInAsync(Guid id, DateTime? clockInTime);
-    Task<CarBayDto> ClockOutAsync(Guid id, DateTime? clockOutTime);
-    Task<CarBayDto> ResetClockAsync(Guid id);
+   Task<CarBayDto> ToggleClockAsync(Guid id, DateTime? time = null);
 }

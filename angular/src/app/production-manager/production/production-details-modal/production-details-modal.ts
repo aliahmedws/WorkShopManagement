@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
+import { CarBayDto, CarBayService, ClockInStatus, clockInStatusOptions, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
 import { CarDto, CarService } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
@@ -41,11 +41,14 @@ export class ProductionDetailsModal {
   @ViewChild(IssueModal) issueModal!: IssueModal;
 
   visible = false;
+  clockSaving = false;
   movingStage = false;
   isIssueModalVisible = false;
   allowMovetoPostProduction = true;
   allowMovetoAwaitingTransport = true;
   isRecallModalVisible = false; 
+
+  clockInStatusOptions = clockInStatusOptions;
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
@@ -311,29 +314,15 @@ moveToAwaitingTransportProduction() {
   }
 
   printVehicleStickerV2(): void {
-  const vin = this.details?.carVin || (this.selectedCar as any)?.vin;
+  const vin = this.details?.carVin || (this.selectedCar as CarDto)?.vin;
   if (!vin) return;
 
   // Model
-  const model =
-    (this.details as any)?.modelName ||
-    '';
-
-  // Owner
-  const owner =
-    this.details?.ownerName ||
-    'Dealer Stock';
-
-  const color =
-    (this.details as any)?.color ||
-    (this.selectedCar as CarDto)?.color ||
-    '';
-
-  // Dealer (you said hardcode BNE for now)
+  const model = (this.details as any)?.modelName || '';
+  const owner =  this.details?.ownerName || 'Dealer Stock';
+  const color = (this.selectedCar as CarDto)?.color || '';
   const dealer = 'BNE';
-
-  const image =
-    (this.details as CarBayDto)?.modelImagePath;
+  const image = (this.details as CarBayDto)?.modelImagePath;
 
   if (!image) {
     return;
@@ -457,6 +446,46 @@ moveToAwaitingTransportProduction() {
     default:
       return 'gate-reset';
   }
+}
+
+  get clockStatus(): ClockInStatus {
+  return ((this.details)?.clockInStatus ?? ClockInStatus.NotClockedIn) as ClockInStatus;
+}
+
+  get clockButtonKey(): string {
+    return this.clockStatus === ClockInStatus.ClockedIn ? '::ClockOut' : '::ClockIn';
+  }
+
+  clockToggle(): void {
+  const carBayId = this.details?.id;
+  if (!carBayId || this.clockSaving) return;
+
+  const wasClockedIn =
+    Number(this.details?.clockInStatus) === ClockInStatus.ClockedIn;
+
+  const nowIso = new Date().toISOString();
+
+  this.clockSaving = true;
+
+  this.carBayService.toggleClock(carBayId, nowIso).subscribe({
+    next: (updated) => {
+      if (!this.details) return;
+
+      this.details = {
+        ...this.details,
+        clockInStatus: updated?.clockInStatus ?? this.details.clockInStatus,
+        clockInTime: updated?.clockInTime ?? this.details.clockInTime,
+        clockOutTime: updated?.clockOutTime ?? this.details.clockOutTime,
+      } as CarBayDto;
+
+      this.toaster.success(
+        wasClockedIn ? '::ClockedOutSuccessfully' : '::ClockedInSuccessfully',
+        '::Success'
+      );
+    },
+    error: () => {},
+    complete: () => (this.clockSaving = false),
+  });
 }
 
 }

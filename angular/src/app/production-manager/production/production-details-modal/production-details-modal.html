@@ -188,8 +188,14 @@
                       {{'::Move to Awaiting Transport' | abpLocalization }}
                     </button>
 
-                    <button type="button" class="btn btn-sm btn-primary px-4">
-                      {{ '::ClockIn' | abpLocalization }}
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary px-4"
+                      (click)="clockToggle()"
+                      [disabled]="!details?.id || clockSaving"
+                    >
+                      <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
+                      {{ clockButtonKey | abpLocalization }}
                     </button>
                   </div>
                 </div>
