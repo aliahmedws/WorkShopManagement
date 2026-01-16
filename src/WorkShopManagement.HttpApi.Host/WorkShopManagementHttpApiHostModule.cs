@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -87,6 +88,10 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
                 serverBuilder.AddProductionEncryptionAndSigningCertificate("authserver.pfx", configuration["AuthServer:CertificatePassPhrase"]!, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
                 serverBuilder.SetIssuer(new Uri(configuration["AuthServer:Authority"]!));
             });
+
+            context.Services
+                .AddDataProtection()
+                .PersistKeysToDbContext<WorkShopManagementDbContext>();
         }
     }
 
