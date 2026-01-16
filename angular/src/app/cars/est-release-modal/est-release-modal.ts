@@ -3,13 +3,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { CarService } from 'src/app/proxy/cars';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
+import { NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-est-release-modal',
   standalone: true,
   imports: [...SHARED_IMPORTS],
   templateUrl: './est-release-modal.html',
-  styleUrl: './est-release-modal.scss'
+  styleUrl: './est-release-modal.scss',
+  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
 })
 export class EstReleaseModal {
   private readonly fb = inject(FormBuilder);

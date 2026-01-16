@@ -23,9 +23,6 @@
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName"
                 [maxWidth]="150"></ngx-datatable-column>
-
-            <!-- <ngx-datatable-column [name]="'::ModelYear' | abpLocalization"
-                        prop="modelYear"></ngx-datatable-column> -->
             <ngx-datatable-column [name]="'::Model' | abpLocalization" prop="modelName"
                 [maxWidth]="550"></ngx-datatable-column>
             <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color"
@@ -57,9 +54,19 @@
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
                 [sortable]="false"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate" [maxWidth]="120">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    {{ value | date:'shortDate' }}
+            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <div class="d-flex align-items-center gap-2">
+                    <span>{{ value | date:'shortDate' }}</span>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-link p-0"
+                        (click)="openEstReleaseModal(row)"
+                        [title]="'::EstimatedRelease' | abpLocalization">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                    </div>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"
@@ -75,6 +82,7 @@
         </ngx-datatable>
 
     </div>
+    <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
 </div>
 <abp-modal [(visible)]="isAssignModalVisible" [options]="{ size: 'md' }">
     <ng-template #abpHeader>
@@ -83,15 +91,6 @@
 
     <ng-template #abpBody>
         <form *ngIf="form" [formGroup]="form" class="row g-3">
-
-            <!-- Manufacture Start Date -->
-            <!-- <div class="col-12 col-md-12">
-                <label class="form-label fw-semibold">
-                    {{ '::ManufactureStartDate' | abpLocalization }}
-                </label>
-
-                <input type="date" class="form-control" formControlName="manufactureStartDate" />
-            </div> -->
 
             <!-- Bay -->
             <div class="col-12 col-md-12">
@@ -132,7 +131,5 @@
     </ng-template>
 
     <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" />
-
-    <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()">
-    </app-check-in-report-modal>
+    <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal>
 </abp-modal>

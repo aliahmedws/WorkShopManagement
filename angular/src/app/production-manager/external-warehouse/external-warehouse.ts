@@ -1,6 +1,6 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
 import { Confirmation } from '@abp/ng.theme.shared';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { CarBayDto, CarBayService, CreateCarBayDto, Priority, priorityOptions } from 'src/app/proxy/car-bays';
@@ -13,12 +13,13 @@ import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionActions } from '../production-actions/production-actions';
+import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
 
 
 
 @Component({
   selector: 'app-external-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions],
+  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal],
   templateUrl: './external-warehouse.html',
   styleUrl: './external-warehouse.scss'
 })
@@ -54,6 +55,9 @@ export class ExternalWarehouse {
 
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
+
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
   // ngOnInit(): void {
   //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
   //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
@@ -129,4 +133,19 @@ export class ExternalWarehouse {
     this.selectedCar = car;
     this.isCheckInModalVisible = true;
   }
+
+  openEstReleaseModal(row: CarDto): void {
+    if (!row?.id) return;
+    const existing = row.deliverDate ? new Date(row.deliverDate) : null; // ✅ string -> Date
+    this.estReleaseModal.open(row.id, existing);
+  }
+
+  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
+    const row = this.cars.items?.find(x => x.id === e.carId);
+    if (row) {
+      (row as any).deliverDate = e.date ? e.date.toISOString() : null; // ✅ Date -> string
+    }
+    this.list.get();
+  }
+
 }
