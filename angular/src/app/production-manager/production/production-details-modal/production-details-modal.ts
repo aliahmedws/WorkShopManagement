@@ -12,7 +12,7 @@ import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
 import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
-import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2'; 
+import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2';
 import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.util';
 import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
 import { finalize } from 'rxjs';
@@ -45,11 +45,11 @@ export class ProductionDetailsModal {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   clockSaving = false;
-  movingStage = false;
+  movingStage = false;      
   isIssueModalVisible = false;
-  @Input() allowMovetoPostProduction = true;
-  @Input() allowMovetoAwaitingTransport = true;
-  isRecallModalVisible = false; 
+  // @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
+  // @Input() allowMovetoAwaitingTransport = true;
+  isRecallModalVisible = false;
   criticalImagesVisible = false;
 
   clockInStatusOptions = clockInStatusOptions;
@@ -71,14 +71,14 @@ export class ProductionDetailsModal {
   Priority = Priority;
 
   //GateQuality
-  GateName = gateNameOptions;
-  QualityGateStatus = qualityGateStatusOptions;
-  selectedStatusByGate: Record<number, number> = {}; // gateValue -> statusValue
-  openGateValue: number | null = null;
+  GateName = gateNameOptions;           // MOVE TO GATE
+  QualityGateStatus = qualityGateStatusOptions; // MOVE TO GATE
+  selectedStatusByGate: Record<number, number> = {}; // gateValue -> statusValue  // MOVE TO GATE
+  openGateValue: number | null = null;  // MOVE TO GATE
 
   // persistence state
-  private gateByName: Record<number, QualityGateDto | null> = {}; // gateNameValue -> dto
-  savingGate: Record<number, boolean> = {}; // gateNameValue -> boolean
+  private gateByName: Record<number, QualityGateDto | null> = {}; // gateNameValue -> dto // MOVE TO GATE
+  savingGate: Record<number, boolean> = {}; // gateNameValue -> boolean // MOVE TO GATE
 
   form?: FormGroup;
 
@@ -109,12 +109,12 @@ export class ProductionDetailsModal {
 
 
   private loadCarNotes(): void {
-  if (!this.carId) return;
+    if (!this.carId) return;
 
-  this.carService.get(this.carId).subscribe((car: CarDto) => {
-    this.carNotes = car.notes ?? '';
-  });
-}
+    this.carService.get(this.carId).subscribe((car: CarDto) => {
+      this.carNotes = car.notes ?? '';
+    });
+  }
 
   close(): void {
     this.visible = false;
@@ -123,8 +123,8 @@ export class ProductionDetailsModal {
     this.form = undefined;
     this.carId = undefined;
 
-    this.allowMovetoPostProduction = true;
-    this.allowMovetoAwaitingTransport = true;
+    // this.allowMovetoPostProduction = true;
+    // this.allowMovetoAwaitingTransport = true;
 
     this.closed.emit();
   }
@@ -136,73 +136,73 @@ export class ProductionDetailsModal {
       this.details = res;
       this.buildForm();
 
-      this.loadQualityGates();
+      this.loadQualityGates();  // MOVE TO GATE
     });
   }
 
-  loadQualityGates() {
-  const carBayId = this.details?.id;
-  if (!carBayId) return;
+  loadQualityGates() {  // MOVE TO GATE
+    const carBayId = this.details?.id;
+    if (!carBayId) return;
 
-  this.qualityGateService.getListByCarBayId(carBayId).subscribe({
+    this.qualityGateService.getListByCarBayId(carBayId).subscribe({
       next: (list) => this.applyQualityGates(list ?? []),
       error: () => this.applyQualityGates([]),
     });
-}
-
- applyQualityGates(list: QualityGateDto[]) {
-  // Reset maps
-  this.gateByName = {};
-  this.selectedStatusByGate = {};
-
-  // Store existing gates
-  for (const g of list) {
-    const gateNameVal = g.gateName as unknown as number;
-    if (!gateNameVal) continue;
-
-    this.gateByName[gateNameVal] = g;
-
-    const statusVal = g.status as unknown as number;
-    if (statusVal) {
-      this.selectedStatusByGate[gateNameVal] = statusVal;
-    }
   }
 
-  // Optional: default any missing gates to OPEN
-  // (so UI always shows a selected status)
-  const openVal = QualityGateStatus.OPEN as unknown as number;
+  applyQualityGates(list: QualityGateDto[]) {   // MOVE TO GATE
+    // Reset maps
+    this.gateByName = {};
+    this.selectedStatusByGate = {};
 
-  for (const opt of this.GateName) {
-    const gateNameVal = opt.value as unknown as number;
-    if (!this.selectedStatusByGate[gateNameVal]) {
-      this.selectedStatusByGate[gateNameVal] = openVal;
-      this.gateByName[gateNameVal] = null; // not created yet
+    // Store existing gates
+    for (const g of list) {
+      const gateNameVal = g.gateName as unknown as number;
+      if (!gateNameVal) continue;
+
+      this.gateByName[gateNameVal] = g;
+
+      const statusVal = g.status as unknown as number;
+      if (statusVal) {
+        this.selectedStatusByGate[gateNameVal] = statusVal;
+      }
+    }
+
+    // Optional: default any missing gates to OPEN
+    // (so UI always shows a selected status)
+    const openVal = QualityGateStatus.OPEN as unknown as number;
+
+    for (const opt of this.GateName) {
+      const gateNameVal = opt.value as unknown as number;
+      if (!this.selectedStatusByGate[gateNameVal]) {
+        this.selectedStatusByGate[gateNameVal] = openVal;
+        this.gateByName[gateNameVal] = null; // not created yet
+      }
     }
   }
-}
 
 
   openListItem(cl: any): void {
-  if (!this.carId) return;
-  if (!cl?.id) return;
+    if (!this.carId) return;
+    if (!cl?.id) return;
 
-  this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
+    this.checkListItemsModal.open(this.details?.id!, cl.id, cl.name);
   }
 
- openNotes(): void {
-  if (!this.carId) return;
-  this.carNotesModal.open(this.carId, this.carNotes);
+  openNotes(): void {
+    if (!this.carId) return;
+    this.carNotesModal.open(this.carId, this.carNotes);
   }
 
   onNotesSaved(_: string) {
-  this.carNotes = this.carNotesModal.form?.value?.notes ?? '';
+    this.carNotes = this.carNotesModal.form?.value?.notes ?? '';
   }
 
   openIssues(): void {
     debugger;
-  if (!this.carId) return;
+    if (!this.carId) return;
 
-  this.isIssueModalVisible = true; // ✅ THIS IS CORRECT
+    this.isIssueModalVisible = true; // ✅ THIS IS CORRECT
   }
 
   goToLogistics() {
@@ -215,14 +215,14 @@ export class ProductionDetailsModal {
       queryParams: { carId, vin }
     });
     // this.close();
-}
+  }
 
 
   private buildForm(): void {
     this.form = this.fb.group({
     });
   }
-  
+
 
   vinLast6(v?: string | null): string {
     if (!v) return '-';
@@ -230,72 +230,72 @@ export class ProductionDetailsModal {
   }
 
   private normalizeBay(bayName?: string | null): string {
-  if (!bayName) return '';
-  // "Bay 10" -> "10"
-  return bayName.replace(/^bay\s*/i, '').trim();
-}
+    if (!bayName) return '';
+    // "Bay 10" -> "10"
+    return bayName.replace(/^bay\s*/i, '').trim();
+  }
 
-private buildBayLabel(bayName?: string | null): string {
-  if (!bayName) return '';
+  private buildBayLabel(bayName?: string | null): string {
+    if (!bayName) return '';
 
-  // Accept "Bay 8" OR "8" and always output "Bay 8"
-  const n = bayName.toString().replace(/^bay\s*/i, '').trim();
-  return n ? `Bay ${n}` : '';
-}
+    // Accept "Bay 8" OR "8" and always output "Bay 8"
+    const n = bayName.toString().replace(/^bay\s*/i, '').trim();
+    return n ? `Bay ${n}` : '';
+  }
 
 
- moveToPostProduction() {
-  const carId = this.details?.carId;
-  if (!carId || this.movingStage) return;
+  moveToPostProduction() {
+    const carId = this.details?.carId;
+    if (!carId || this.movingStage) return;
 
-  this.confirm
-    .confirmAction(
-      '::ConfirmMoveToPostProductionMessage',
-      '::ConfirmMoveToPostProductionTitle'
-    )
-    .subscribe((status: Confirmation.Status) => {
-      if (status !== Confirmation.Status.confirm) return;
+    this.confirm
+      .confirmAction(
+        '::ConfirmMoveToPostProductionMessage',
+        '::ConfirmMoveToPostProductionTitle'
+      )
+      .subscribe((status: Confirmation.Status) => {
+        if (status !== Confirmation.Status.confirm) return;
 
-      this.movingStage = true;
-      this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
-        next: () => {
-          this.movingStage = false;
-          this.close();
-          this.stageChanged.emit(carId);
-        },
-        error: () => {
-          this.movingStage = false;
-        },
+        this.movingStage = true;
+        this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
+          next: () => {
+            this.movingStage = false;
+            this.close();
+            this.stageChanged.emit(carId);
+          },
+          error: () => {
+            this.movingStage = false;
+          },
+        });
       });
-    });
-}
+  }
 
-moveToAwaitingTransportProduction() {
-  const carId = this.details?.carId;
-  if (!carId || this.movingStage) return;
+  moveToAwaitingTransportProduction() {
+    const carId = this.details?.carId;
+    if (!carId || this.movingStage) return;
 
-  this.confirm
-    .confirmAction(
-      '::ConfirmMoveToAwaitingTransport',
-      '::ConfirmMoveToAwaitingTitle'
-    )
-    .subscribe((status: Confirmation.Status) => {
-      if (status !== Confirmation.Status.confirm) return;
+    this.confirm
+      .confirmAction(
+        '::ConfirmMoveToAwaitingTransport',
+        '::ConfirmMoveToAwaitingTitle'
+      )
+      .subscribe((status: Confirmation.Status) => {
+        if (status !== Confirmation.Status.confirm) return;
 
-      this.movingStage = true;
+        this.movingStage = true;
 
-      this.carService.changeStage(carId, { targetStage: Stage.AwaitingTransport }).subscribe({
-        next: () => {
-          this.movingStage = false;
-          this.close();
-          this.stageChanged.emit(carId);
-        },
-        error: () => {
-          this.movingStage = false;
-        },
+        this.carService.changeStage(carId, { targetStage: Stage.AwaitingTransport }).subscribe({
+          next: () => {
+            this.movingStage = false;
+            this.close();
+            this.stageChanged.emit(carId);
+          },
+          error: () => {
+            this.movingStage = false;
+          },
+        });
       });
-    });
-}
+  }
 
   printProductionSticker(): void {
     const fullVin = this.details?.carVin || (this.selectedCar as any)?.vin;
@@ -322,102 +322,104 @@ moveToAwaitingTransportProduction() {
   }
 
   printVehicleStickerV2(): void {
-  const vin = this.details?.carVin || (this.selectedCar as CarDto)?.vin;
-  if (!vin) return;
+    const vin = this.details?.carVin || (this.selectedCar as CarDto)?.vin;
+    if (!vin) return;
 
-  // Model
-  const model = (this.details as any)?.modelName || '';
-  const owner =  this.details?.ownerName || 'Dealer Stock';
-  const color = (this.selectedCar as CarDto)?.color || '';
-  const dealer = 'BNE';
-  const image = (this.details as CarBayDto)?.modelImagePath;
+    // Model
+    const model = (this.details as any)?.modelName || '';
+    const owner = this.details?.ownerName || 'Dealer Stock';
+    const color = (this.selectedCar as CarDto)?.color || '';
+    const dealer = 'BNE';
+    const image = (this.details as CarBayDto)?.modelImagePath;
 
-  if (!image) {
-    return;
+    if (!image) {
+      return;
+    }
+
+    const item: VehicleStickerV2Item = {
+      vin,
+      color,
+      dealer,
+      image,
+      model,
+      owner,
+    };
+
+    VehicleStickerV2Util.openInNewTab(item);
   }
 
-  const item: VehicleStickerV2Item = {
-    vin,
-    color,
-    dealer,
-    image,
-    model,
-    owner,
-  };
 
-  VehicleStickerV2Util.openInNewTab(item);
-  }
-
-
-  //GateQuality
-   setStatus(gateValue: number, statusValue: number): void {
+  //GateQuality // MOVE TO GATE
+  setStatus(gateValue: number, statusValue: number): void {
     this.selectedStatusByGate[gateValue] = statusValue;
-     this.upsertQualityGate(gateValue, statusValue);
+    this.upsertQualityGate(gateValue, statusValue);
     this.closeGateMenu();
   }
 
+  // MOVE TO GATE
   upsertQualityGate(gateValue: number, statusValue: number) {
-  const carBayId = this.details?.id;
-  if (!carBayId) return;
+    const carBayId = this.details?.id;
+    if (!carBayId) return;
 
-  if (this.savingGate[gateValue]) return;
-  this.savingGate[gateValue] = true;
+    if (this.savingGate[gateValue]) return;
+    this.savingGate[gateValue] = true;
 
-  const existing = this.gateByName[gateValue];
+    const existing = this.gateByName[gateValue];
 
-  // UPDATE
-  if (existing?.id) {
-    const dto: UpdateQualityGateDto = {
+    // UPDATE
+    if (existing?.id) {
+      const dto: UpdateQualityGateDto = {
+        gateName: gateValue,
+        status: statusValue,
+        carBayId: carBayId,
+        concurrencyStamp: existing.concurrencyStamp, // required
+      };
+
+      this.qualityGateService
+        .update(dto, existing.id)
+        .pipe(finalize(() => (this.savingGate[gateValue] = false)))
+        .subscribe({
+          next: (updated) => {
+            this.gateByName[gateValue] = updated ?? null;
+            this.toaster.success('::QualityGateUpdatedSuccessfully', '::Success');
+          },
+          error: () => {
+            // optional: revert UI by reloading
+            this.loadQualityGates();
+          },
+        });
+
+      return;
+    }
+
+    // CREATE
+    const createDto: CreateQualityGateDto = {
       gateName: gateValue,
       status: statusValue,
       carBayId: carBayId,
-      concurrencyStamp: existing.concurrencyStamp, // required
     };
 
     this.qualityGateService
-      .update(dto, existing.id)
+      .create(createDto)
       .pipe(finalize(() => (this.savingGate[gateValue] = false)))
       .subscribe({
-        next: (updated) => {
-          this.gateByName[gateValue] = updated ?? null;
-          this.toaster.success('::QualityGateUpdatedSuccessfully', '::Success');
+        next: (created) => {
+          this.gateByName[gateValue] = created ?? null;
+          this.toaster.success('::QualityGateCreatedSuccessfully', '::Success');
         },
         error: () => {
           // optional: revert UI by reloading
           this.loadQualityGates();
         },
       });
-
-    return;
   }
 
-  // CREATE
-  const createDto: CreateQualityGateDto = {
-    gateName: gateValue,
-    status: statusValue,
-    carBayId: carBayId,
-  };
-
-  this.qualityGateService
-    .create(createDto)
-    .pipe(finalize(() => (this.savingGate[gateValue] = false)))
-    .subscribe({
-      next: (created) => {
-        this.gateByName[gateValue] = created ?? null;
-        this.toaster.success('::QualityGateCreatedSuccessfully', '::Success');
-      },
-      error: () => {
-        // optional: revert UI by reloading
-        this.loadQualityGates();
-      },
-    });
-}
-
-
+// MOVE TO GATE
   isSelected(gateValue: number, statusValue: number): boolean {
     return this.selectedStatusByGate[gateValue] === statusValue;
   }
 
+  // MOVE TO GATE
   dotClass(statusValue: number): string {
     switch (statusValue) {
       case 1: return 'dot-passed';
@@ -428,84 +430,87 @@ moveToAwaitingTransportProduction() {
       default: return 'dot-reset';
     }
   }
-  
+
+  // MOVE TO GATE
   toggleGate(gateValue: number): void {
     this.openGateValue = this.openGateValue === gateValue ? null : gateValue;
   }
 
+  // MOVE TO GATE
   closeGateMenu(): void {
     this.openGateValue = null;
   }
 
+  // MOVE TO GATE
   gateBtnClass(gateValue: number): string {
-  const statusValue = this.selectedStatusByGate[gateValue];
+    const statusValue = this.selectedStatusByGate[gateValue];
 
-  switch (statusValue) {
-    case QualityGateStatus.PASSED:
-      return 'gate-passed';
-    case QualityGateStatus.CONDITIONALPASSEDMAJOR:
-      return 'gate-major';
-    case QualityGateStatus.CONDITIONALPASSEDMINOR:
-      return 'gate-minor';
-    case QualityGateStatus.OPEN:
-      return 'gate-open';
-    case QualityGateStatus.RESET:
-      return 'gate-reset';
-    default:
-      return 'gate-reset';
+    switch (statusValue) {
+      case QualityGateStatus.PASSED:
+        return 'gate-passed';
+      case QualityGateStatus.CONDITIONALPASSEDMAJOR:
+        return 'gate-major';
+      case QualityGateStatus.CONDITIONALPASSEDMINOR:
+        return 'gate-minor';
+      case QualityGateStatus.OPEN:
+        return 'gate-open';
+      case QualityGateStatus.RESET:
+        return 'gate-reset';
+      default:
+        return 'gate-reset';
+    }
   }
-}
 
   get clockStatus(): ClockInStatus {
-  return ((this.details)?.clockInStatus ?? ClockInStatus.NotClockedIn) as ClockInStatus;
-}
+    return ((this.details)?.clockInStatus ?? ClockInStatus.NotClockedIn) as ClockInStatus;
+  }
 
   get clockButtonKey(): string {
     return this.clockStatus === ClockInStatus.ClockedIn ? '::ClockOut' : '::ClockIn';
   }
 
   clockToggle(): void {
-  const carBayId = this.details?.id;
-  if (!carBayId || this.clockSaving) return;
+    const carBayId = this.details?.id;
+    if (!carBayId || this.clockSaving) return;
 
-  const wasClockedIn =
-    Number(this.details?.clockInStatus) === ClockInStatus.ClockedIn;
+    const wasClockedIn =
+      Number(this.details?.clockInStatus) === ClockInStatus.ClockedIn;
 
-  const nowIso = new Date().toISOString();
+    const nowIso = new Date().toISOString();
 
-  this.clockSaving = true;
+    this.clockSaving = true;
 
-  this.carBayService.toggleClock(carBayId, nowIso).subscribe({
-    next: (updated) => {
-      if (!this.details) return;
+    this.carBayService.toggleClock(carBayId, nowIso).subscribe({
+      next: (updated) => {
+        if (!this.details) return;
 
-      this.details = {
-        ...this.details,
-        clockInStatus: updated?.clockInStatus ?? this.details.clockInStatus,
-        clockInTime: updated?.clockInTime ?? this.details.clockInTime,
-        clockOutTime: updated?.clockOutTime ?? this.details.clockOutTime,
-      } as CarBayDto;
+        this.details = {
+          ...this.details,
+          clockInStatus: updated?.clockInStatus ?? this.details.clockInStatus,
+          clockInTime: updated?.clockInTime ?? this.details.clockInTime,
+          clockOutTime: updated?.clockOutTime ?? this.details.clockOutTime,
+        } as CarBayDto;
 
-      this.toaster.success(
-        wasClockedIn ? '::ClockedOutSuccessfully' : '::ClockedInSuccessfully',
-        '::Success'
-      );
-    },
-    error: () => {},
-    complete: () => (this.clockSaving = false),
-  });
-}
+        this.toaster.success(
+          wasClockedIn ? '::ClockedOutSuccessfully' : '::ClockedInSuccessfully',
+          '::Success'
+        );
+      },
+      error: () => { },
+      complete: () => (this.clockSaving = false),
+    });
+  }
 
   onChecklistSaved(): void {
     this.loadDetails();
   }
 
   openCriticalImages(): void {
-  const cl = (this.details as CarBayDto)?.checkLists?.[0]; // replace with your actual checklist source
-  if (!cl?.id) return;
+    const cl = (this.details as CarBayDto)?.checkLists?.[0]; // replace with your actual checklist source
+    if (!cl?.id) return;
 
-  this.criticalImagesVisible = true;
-}
+    this.criticalImagesVisible = true;
+  }
 
 
 

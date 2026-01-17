@@ -1,117 +1,64 @@
 <div class="card">
     <div class="card-body">
-        <ngx-datatable [rows]="cars.items" [count]="cars.totalCount" [list]="list" default>
+        <ngx-datatable [rows]="stages.items" [count]="stages.totalCount" [list]="list" default>
             <ngx-datatable-column [sortable]="false" [maxWidth]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <app-production-actions
-                        [stage]="row"
-                        [showDispatched]="true"
-                        [showAssignBay]="false"
-                        [showBayDetails]="false"
-                         (dispatched)="dispatched($event)"
-                        (change)="list?.get()"
-                    ></app-production-actions>
+                    <app-production-actions [stage]="row" [showBayDetails]="true"
+                        (change)="list?.get()"></app-production-actions>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vin" [maxWidth]="150">
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                    <div class=" align-items-center d-flex">
-                        <a type="button" class="text-primary text-decoration-underline" style="cursor: pointer;"
-                            (click)="openCheckInModal(row)">
+                    <div class="align-items-center d-flex">
+                        <a type="button" class="text-primary clickable" (click)="openCheckInModal(row)">
                             <strong>{{ value | slice:-6 }}</strong>
                         </a>
-                        <a class="btn btn-link" [href]="'https://tracking.ausev.com.au/stock?q=' + row.vin"
-                            target="_blank">
-                            <i class="fas fa-book"></i>
-                        </a>
+                        <small>
+                            <a class="ms-1" [href]="'https://tracking.ausev.com.au/stock?q=' + row.vin" target="_blank">
+                                <i class="fas fa-external-link"></i>
+                            </a>
+                        </small>
                     </div>
 
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName"
-                [maxWidth]="150"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName" [maxWidth]="150">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.ownerName | uppercase }}
+                </ng-template>
+            </ngx-datatable-column>
 
-            <!-- <ngx-datatable-column [name]="'::ModelYear' | abpLocalization"
-                        prop="modelYear"></ngx-datatable-column> -->
             <ngx-datatable-column [name]="'::Model' | abpLocalization" prop="modelName"
                 [maxWidth]="550"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color"
-                [maxWidth]="150"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd" [maxWidth]="120">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    {{ value | date:'shortDate' }}
+            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color" [maxWidth]="150">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.color | uppercase }}
                 </ng-template>
             </ngx-datatable-column>
-            <!-- <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="locationStatus"
-                [maxWidth]="120"></ngx-datatable-column> -->
-
-            <ngx-datatable-column
-                [name]="'::AVV' | abpLocalization"
-                prop="avvStatus"
-                [maxWidth]="140"
-                [sortable]="false"
-                >
+            <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus" [maxWidth]="140"
+                [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="d-flex align-items-center gap-2">
-                    <span>
-                        <ng-container *ngIf="row?.avvStatus !== null && row?.avvStatus !== undefined; else dash">
-                        {{ ("::Enum:AvvStatus." + row.avvStatus) | abpLocalization }}
-                        </ng-container>
-                        <ng-template #dash>-</ng-template>
-                    </span>
-
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-link p-0"
-                        (click)="openAvvModal(row)"
-                        [title]="'::AVV' | abpLocalization"
-                    >
-                        <i class="fas fa-pen"></i>
-                    </button>
+                    <div class="text-center badge bg-{{mapAvvStatus(row)}} link" (click)="openAvvModal(row)">
+                        {{ row?.avvStatus ? (("::Enum:AvvStatus." + row.avvStatus) | abpLocalization) : 'AVV' }}
                     </div>
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [maxWidth]="80" [sortable]="false">
+
+            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [maxWidth]="65" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="text-center">
+                    <div class="text-center text-{{getRecallColor(row)}}">
                         <i class="fas fa-bullhorn link" (click)="openRecallModal(row)"></i>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-
-            <ngx-datatable-column [name]="'::StorageLocation' | abpLocalization" prop="storageLocation"
-                [maxWidth]="120">
+            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false"
+                [maxWidth]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <ng-container
-                        *ngIf="row?.storageLocation !== null && row?.storageLocation !== undefined; else dash">
-                        {{ ("::Enum:StorageLocation." + row.storageLocation) | abpLocalization }}
-                    </ng-container>
 
-                    <ng-template #dash>-</ng-template>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Accessories' | abpLocalization" [maxWidth]="100"
-                [sortable]="false"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="deliverDate">
-                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                    <div class="d-flex align-items-center gap-2">
-                    <span>{{ value | date:'shortDate' }}</span>
-
-                    <button
-                        type="button"
-                        class="btn btn-sm btn-link p-0"
-                        (click)="openEstReleaseModal(row)"
-                        [title]="'::EstimatedRelease' | abpLocalization">
-                        <i class="fas fa-calendar-alt"></i>
-                    </button>
+                    <div class="text-center text-{{getEstRelease(row)}}">
+                        <i class="fas fa-calendar-alt link" (click)="openEstReleaseModal(row)"></i>
                     </div>
-                </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column [name]="'::Modified' | abpLocalization" prop="lastModificationTime" [maxWidth]="100">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    {{ value | date:'shortDate' }}
                 </ng-template>
             </ngx-datatable-column>
         </ngx-datatable>
@@ -119,8 +66,10 @@
     </div>
 </div>
 
-<!-- <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" /> -->
-<app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
-<!-- <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal> -->
-<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selectedCar?.id" [currentStatus]="selectedCar?.avvStatus"(statusUpdated)="list.get()">
-</app-avv-status-modal>
+
+<!-- MODALS -->
+
+<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
+    (statusUpdated)="list.get()"></app-avv-status-modal>
+<app-est-release-modal #estReleaseModal (saved)="list.get()"></app-est-release-modal>
+<app-recalls [(visible)]="isRecallModalVisible" [carId]="selected?.carId" (submit)="list?.get()" />

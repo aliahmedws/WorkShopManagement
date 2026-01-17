@@ -5,7 +5,6 @@ import {
   inject,
   Input,
   Output,
-  viewChild,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -156,14 +155,6 @@ export class PostProduction {
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
     this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
-  }
-
-  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
-    // const row = this.stages.items?.find(x => x.id === e.carId);
-    // if (row) {
-    //   (row as any).deliverDate = e.date;
-    // }
-    // this.list.get();
   }
 
   getRecallColor(row: StageDto): string {

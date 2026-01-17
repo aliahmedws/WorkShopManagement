@@ -171,13 +171,6 @@ export class ExternalWarehouse {
     this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
   }
 
-  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
-    const row = this.stages.items?.find(x => x.carId === e.carId);
-    if (row) {
-      (row as any).deliverDate = e.date;
-    }
-    this.list.get();
-  }
 
   openNotesModal(row: StageDto): void {
     if (!row?.carId) return;

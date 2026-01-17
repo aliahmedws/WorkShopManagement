@@ -116,6 +116,6 @@
 
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
         (submit)="list?.get()"></app-check-in-report-modal>
-    <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
+    <app-est-release-modal #estReleaseModal (saved)="list?.get()"></app-est-release-modal>
     <app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
     <!-- MODALS END  -->

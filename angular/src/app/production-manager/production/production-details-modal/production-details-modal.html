@@ -1,4 +1,5 @@
-<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()" [options]="{ size: 'xl' }">
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()"
+  [options]="{ size: 'xl' }">
   <!-- Header -->
   <ng-template #abpHeader>
     <div class="d-flex align-items-center justify-content-between w-100">
@@ -73,9 +74,10 @@
                     </span>
 
                     @if (cl.progressStatus) {
-                      <span class="badge badge-sm bg-{{mapCheckListProgressStatusColor(cl.progressStatus)}} rounded-pill ms-auto">
-                        {{ ('::Enum:CheckListProgressStatus.' + cl.progressStatus) | abpLocalization }}
-                      </span>
+                    <span
+                      class="badge badge-sm bg-{{mapCheckListProgressStatusColor(cl.progressStatus)}} rounded-pill ms-auto">
+                      {{ ('::Enum:CheckListProgressStatus.' + cl.progressStatus) | abpLocalization }}
+                    </span>
                     }
                   </div>
                 </div>
@@ -108,27 +110,23 @@
                 <div class="col-12 col-sm-3" *ngFor="let g of GateName">
                   <div class="position-relative w-100" (click)="$event.stopPropagation()">
                     <!-- button -->
-                    <button
-                      class="btn btn-sm w-100 d-flex align-items-center justify-content-between gate-btn"
-                      type="button"
-                      [ngClass]="gateBtnClass(g.value)"
-                      (click)="toggleGate(g.value)"
-                    >
+                    <button class="btn btn-sm w-100 d-flex align-items-center justify-content-between gate-btn"
+                      type="button" [ngClass]="gateBtnClass(g.value)" (click)="toggleGate(g.value)">
                       <span>{{ ('::Enum:GateName.' + g.value) | abpLocalization }}</span>
                       <i class="fa fa-caret-down ms-2"></i>
                     </button>
 
-                    
+
                     <!-- menu -->
                     <div *abpPermission="'WorkShopManagement.QualityGates.Create'">
-                        <div class="gate-menu" *ngIf="openGateValue === g.value" >
-                      <button  type="button" class="gate-item d-flex align-items-center gap-2 w-100"
-                        *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
-                        [class.active]="isSelected(g.value, s.value)">
-                        <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
-                        <span>{{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}</span>
-                      </button>
-                    </div>
+                      <div class="gate-menu" *ngIf="openGateValue === g.value">
+                        <button type="button" class="gate-item d-flex align-items-center gap-2 w-100"
+                          *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
+                          [class.active]="isSelected(g.value, s.value)">
+                          <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
+                          <span>{{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -194,12 +192,8 @@
                       {{'::Move to Awaiting Transport' | abpLocalization }}
                     </button>
 
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-primary px-4"
-                      (click)="clockToggle()"
-                      [disabled]="!details?.id || clockSaving"
-                    >
+                    <button type="button" class="btn btn-sm btn-primary px-4" (click)="clockToggle()"
+                      [disabled]="!details?.id || clockSaving">
                       <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
                       {{ clockButtonKey | abpLocalization }}
                     </button>
@@ -299,5 +293,5 @@
   <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
   <!-- <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls> -->
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
-</app-critical-images-modal>
+  </app-critical-images-modal>
 </abp-modal>

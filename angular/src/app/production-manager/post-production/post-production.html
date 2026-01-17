@@ -67,9 +67,9 @@
 </div>
 
 
+<!-- MODALS -->
 
 <app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
     (statusUpdated)="list.get()"></app-avv-status-modal>
-<app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
+<app-est-release-modal #estReleaseModal (saved)="list.get()"></app-est-release-modal>
 <app-recalls [(visible)]="isRecallModalVisible" [carId]="selected?.carId" (submit)="list?.get()" />
-<!-- <app-recalls [(visible)]="isRecallModalVisible" [carId]="selected.carId" (submit)="list?.get()" /> -->
