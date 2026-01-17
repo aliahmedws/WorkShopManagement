@@ -100,5 +100,5 @@
 </div>
 
 <!-- your grid / bay cards html stays the same -->
-
-<app-production-details-modal #detailsModal (stageChanged)="onStageChanged($event)" (closed)="onDetailsClosed()"></app-production-details-modal>
+<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="carId" (stageChanged)="onStageChanged()" (closed)="onDetailsClosed()"></app-production-details-modal>
+<!-- <app-production-details-modal #detailsModal (stageChanged)="onStageChanged($event)" (closed)="onDetailsClosed()"></app-production-details-modal> -->

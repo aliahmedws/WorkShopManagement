@@ -15,7 +15,7 @@ import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-moda
 
 @Component({
   selector: 'app-dispatched',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, AvvStatusModal, EstReleaseModal],
+  imports: [...SHARED_IMPORTS, ProductionActions, AvvStatusModal, EstReleaseModal],
   templateUrl: './dispatched.html',
   styleUrl: './dispatched.scss'
 })

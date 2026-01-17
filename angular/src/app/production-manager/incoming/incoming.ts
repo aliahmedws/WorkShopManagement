@@ -10,19 +10,21 @@ import { ProductionActions } from "../production-actions/production-actions";
 import { NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap'; 
 import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
+import {  StageDto } from 'src/app/proxy/stages';
+import { mapCreStatusColor, mapEstReleaseStatusColor, mapIssueStatusColor, mapNoteStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 
 @Component({
   selector: 'app-incoming',
   imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal, CarNotesModal],
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss',
-   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
+  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
 })
 export class Incoming {
   @Input() filters: any = {};
   @Output() filtersChange = new EventEmitter<any>();
   @Input() list: ListService;
-  @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
+  @Input() stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
 
   @ViewChild('estReleaseModal', { static: true })
   estReleaseModal!: EstReleaseModal;
@@ -30,42 +32,73 @@ export class Incoming {
   @ViewChild('notesModal', { static: true })
   notesModal!: CarNotesModal;
 
-  selectedCar = {} as CarDto;
+  selected = {} as StageDto;
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
 
-  openRecallModal(car: CarDto): void {
-    this.selectedCar = car;
+  isOpenIssueModal = false; // To Do Later
+
+
+  // COMMON MODALS
+
+  openRecallModal(car: StageDto): void {
+    this.selected = car;
     this.isRecallModalVisible = true;
   }
 
-  openCheckInModal(car: CarDto): void {
-    this.selectedCar = car;
+  openCheckInModal(car: StageDto): void {
+    this.selected = car;
     this.isCheckInModalVisible = true;
   }
 
-  openEstReleaseModal(row: CarDto): void {
-    if (!row?.id) return;
-    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
+  openEstReleaseModal(row: StageDto): void {
+    if (!row?.carId) return;
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
   }
 
   onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
-    const row = this.cars.items?.find(x => x.id === e.carId);
+    const row = this.stages.items?.find(x => x.carId === e.carId);
     if (row) {
       (row as any).deliverDate = e.date;
     }
     this.list.get();
   }
 
-   openNotesModal(row: CarDto): void {
-    if (!row?.id) return;
-    this.notesModal.open(row.id, row.notes);
+  openNotesModal(row: StageDto): void {
+    if (!row?.carId) return;
+    this.notesModal.open(row.carId, row.notes);
+  }
+
+  openIssueModal() {
+    this.isOpenIssueModal = true;
   }
 
   onNotesSaved(e: { carId: string; notes: string }): void {
-    const row = this.cars.items?.find(x => x.id === e.carId);
+    const row = this.stages.items?.find(x => x.carId === e.carId);
     if (row) row.notes = e.notes;
     this.list.get();
   }
+
+  getRecallColor(row: StageDto): string {
+      return mapRecallStatusColor(row?.recallStatus);
+  }
+
+  getNoteColor(row: StageDto): string {
+      return mapNoteStatusColor(row?.notes);
+  }
+
+  getEstRelease(row: StageDto): string {
+    return mapEstReleaseStatusColor(row?.estimatedRelease);
+  }
+
+  getCreStatusColor(row: StageDto): string {
+    return mapCreStatusColor(row?.creStatus);
+  }
+
+  getIssueStatusColor(row: StageDto): string {
+    return mapIssueStatusColor(row?.issueStatus)
+  }
+
+  
 }

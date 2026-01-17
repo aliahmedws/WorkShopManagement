@@ -1,4 +1,4 @@
-<abp-modal [(visible)]="visible" [options]="{ size: 'xl' }">
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()" [options]="{ size: 'xl' }">
   <!-- Header -->
   <ng-template #abpHeader>
     <div class="d-flex align-items-center justify-content-between w-100">
@@ -297,7 +297,7 @@
   <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="carId"> </app-issue-modal>
   <app-checklist-items-modal #checkListItemsModal (saved)="onChecklistSaved()"></app-checklist-items-modal>
   <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
-  <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls>
+  <!-- <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls> -->
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
 </app-critical-images-modal>
 </abp-modal>

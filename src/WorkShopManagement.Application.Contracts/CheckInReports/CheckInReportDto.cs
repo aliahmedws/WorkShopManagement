@@ -33,7 +33,7 @@ namespace WorkShopManagement.CheckInReports
         public StorageLocation? StorageLocation { get; set; }
 
         // Car - CarModel Details
-        public CarDto? Car { get; set; } = default!;
+        //public CarDto? Car { get; set; } = default!;
 
 
     }

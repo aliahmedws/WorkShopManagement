@@ -18,7 +18,7 @@ import { ProductionActions } from '../production-actions/production-actions';
 
 @Component({
   selector: 'app-awaiting-transport',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, AvvStatusModal, EstReleaseModal, ProductionActions],
+  imports: [...SHARED_IMPORTS, AvvStatusModal, EstReleaseModal, ProductionActions],
   templateUrl: './awaiting-transport.html',
   styleUrl: './awaiting-transport.scss'
 })

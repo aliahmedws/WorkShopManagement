@@ -27,6 +27,7 @@ public class StageDto
     public DateTime? EtaScd { get; set; }
     public RecallStatus? RecallStatus { get; set; }
     public IssueStatus? IssueStatus { get; set; }
+    public Priority? Priority { get; set; }
     public Guid? CarBayId { get; set; }
     public Guid? BayId { get; set; }
 }

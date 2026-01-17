@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { CarBayDto, CarBayService, ClockInStatus, clockInStatusOptions, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
@@ -10,7 +10,6 @@ import { Confirmation } from '@abp/ng.theme.shared';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
-import { Recalls } from "src/app/recalls/recalls";
 import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
 import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2'; 
@@ -18,7 +17,7 @@ import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.ut
 import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
 import { finalize } from 'rxjs';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
-import { CheckListDto, checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
+import { checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
 import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 import { CriticalImagesModal } from './critical-images-modal/critical-images-modal';
 
@@ -26,7 +25,7 @@ import { CriticalImagesModal } from './critical-images-modal/critical-images-mod
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, Recalls, CriticalImagesModal],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -43,12 +42,13 @@ export class ProductionDetailsModal {
   @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
   @ViewChild(IssueModal) issueModal!: IssueModal;
 
-  visible = false;
+  @Input() visible = false;
+  @Output() visibleChange = new EventEmitter<boolean>();
   clockSaving = false;
   movingStage = false;
   isIssueModalVisible = false;
-  allowMovetoPostProduction = true;
-  allowMovetoAwaitingTransport = true;
+  @Input() allowMovetoPostProduction = true;
+  @Input() allowMovetoAwaitingTransport = true;
   isRecallModalVisible = false; 
   criticalImagesVisible = false;
 
@@ -56,7 +56,7 @@ export class ProductionDetailsModal {
   checkListProgressStatus = checkListProgressStatusOptions;
   mapCheckListProgressStatusColor = mapCheckListProgressStatusColor;
 
-  @Output() visibleChange = new EventEmitter<boolean>();
+  // @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
 
@@ -64,7 +64,7 @@ export class ProductionDetailsModal {
 
   selectedCar?: CarDto;
 
-  carId?: string;
+  @Input() carId?: string;
   details?: CarBayDto;
   carNotes = '';
 
@@ -82,13 +82,13 @@ export class ProductionDetailsModal {
 
   form?: FormGroup;
 
-  open(id: string, allowMoveToPostProduction = true, allowMovetoAwaitingTransport = true): void {
-    this.carId = id;
-    this.allowMovetoPostProduction = allowMoveToPostProduction;
-    this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
+  open(): void {
+    // this.carId = id;
+    // this.allowMovetoPostProduction = allowMoveToPostProduction;
+    // this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
 
-    this.visible = true;
-    this.visibleChange.emit(true);
+    // this.visible = true;
+    // this.visibleChange.emit(true);
     this.loadDetails();
     this.loadCarNotes();
     this.loadSelectedCar();

@@ -22,10 +22,8 @@ import { SpecAttributesDto, SpecsResponseDto } from 'src/app/proxy/external/cars
 export class CheckInReportModal {
 
   private fb = inject(FormBuilder);
-  private service = inject(CheckInReportService);
-  private readonly carService = inject(CarService);
+  private service = inject(CheckInReportService); 
   private toaster = inject(ToasterHelperService);
-  private readonly confirm = inject(ConfirmationHelperService);
 
   private readonly lookupService = inject(LookupService);
 
@@ -33,7 +31,8 @@ export class CheckInReportModal {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  @Input() car: CarDto;
+  @Input() carId?: string;
+  @Input() carVin?: string;
   @Output() submit = new EventEmitter<void>();
 
   specAttributes: SpecAttributesDto | null = null;
@@ -60,7 +59,7 @@ export class CheckInReportModal {
   public get() {
     this.specAttributes = {} as SpecAttributesDto;
     
-    this.service.getByCarId(this.car.id)
+    this.service.getByCarId(this.carId)
       .subscribe((res: CheckInReportDto) => {
         this.existingReport = res
         this.buildForm(this.existingReport);
@@ -69,7 +68,7 @@ export class CheckInReportModal {
   }
 
   fetchSpecs() {
-    this.lookupService.getExternalSpecsResponse(this.car.vin).subscribe((res: SpecsResponseDto) => {
+    this.lookupService.getExternalSpecsResponse(this.carVin).subscribe((res: SpecsResponseDto) => {
       if (res && res.success) {
         this.specAttributes = res.attributes;
 
@@ -84,7 +83,7 @@ export class CheckInReportModal {
   }
 
   private buildForm(dto?: CheckInReportDto) {
-    const carStorage = this.car ? this.car.storageLocation : null;
+    // const carStorage = this.existingReport.car ? this.existingReport.car.storageLocation : null;
 
     this.form = this.fb.group({
       // carId: [this.carId, Validators.required],
@@ -108,7 +107,7 @@ export class CheckInReportModal {
       tyreLabel: [dto?.tyreLabel ?? (this.specAttributes?.tires ?? null)],
       // rsvaImportApproval: [dto?.rsvaImportApproval ?? null],
       reportStatus: [dto?.reportStatus ?? null],
-      storageLocation: [dto?.storageLocation ?? carStorage],
+      storageLocation: [dto?.storageLocation ?? null],
       concurrencyStamp: [dto?.concurrencyStamp ?? null],
     });
 
@@ -121,10 +120,10 @@ export class CheckInReportModal {
 
     const request$ = this.existingReport?.id
       ? this.service.update(this.existingReport.id, formValue as UpdateCheckInReportDto)
-      : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.car.id });
+      : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.carId });
 
     request$.subscribe(() => {
-      this.toaster.createdOrUpdated(this.car.id);
+      this.toaster.createdOrUpdated(this.carId);
       this.submit.emit();
       this.close();
     });

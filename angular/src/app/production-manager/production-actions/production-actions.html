@@ -3,27 +3,21 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
     <div ngbDropdownMenu>
+        @if (showAssignBay) {
+        <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem (click)="isAssignBayVisible = true">
+            {{ '::AssignToBay' | abpLocalization }}
+        </button>
+        }
         @if (showBayDetails) {
-            <button
-                ngbDropdownItem
-                *abpPermission="'WorkShopManagement.Cars.Create'"
-                (click)="openBayDetails()"
-                [disabled]="bayLabel === '-'"
-            >
-                 {{ bayLabel }}
-            </button>
-            <div class="dropdown-divider"></div>
+        <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Create'" (click)="isProductionDetailVisible = true">
+            {{ '::Bay' | abpLocalization }}
+        </button>
         }
 
         @if (showDispatched) {
-        <button
-            ngbDropdownItem
-            *abpPermission="'WorkShopManagement.Cars.Edit'"
-            (click)="requestDispatched()"
-        >
+        <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Edit'" (click)="requestDispatched()">
             {{ '::Dispatched' | abpLocalization }}
         </button>
-        <div class="dropdown-divider"></div>
         }
         @if (showEdit) {
         <button *abpPermission="'WorkShopManagement.Cars.Edit'" ngbDropdownItem (click)="editCar()">
@@ -45,14 +39,11 @@
             {{ '::Issues' | abpLocalization }}
         </button>
         }
-        @if (showAssignBay && canAssignBay) {
-        <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem (click)="requestAssignBay()">
-            {{ '::AssignToBay' | abpLocalization }}
-        </button>
-        }   
     </div>
 </div>
 
-<app-car-create-edit-modal [(visible)]="isCarEditModalVisible" [carId]="stage?.id" (submit)="emitChange()" />
-<app-car-images-modal [(visible)]="isImageModalVisible" [car]="stage" (submit)="emitChange()" />
-<app-issue-modal [(visible)]="isIssueModalVisible" [carId]="stage?.id"></app-issue-modal>
+<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="stage?.carId" (stageChanged)="emitChange()"></app-production-details-modal>
+<app-car-create-edit-modal [(visible)]="isCarEditModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
+<app-car-images-modal [(visible)]="isImageModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
+<app-issue-modal [(visible)]="isIssueModalVisible" [carId]="stage?.carId"></app-issue-modal>
+<app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="emitChange()"></app-assign-bay>

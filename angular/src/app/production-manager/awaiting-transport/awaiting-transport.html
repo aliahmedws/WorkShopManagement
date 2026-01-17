@@ -119,8 +119,8 @@
     </div>
 </div>
 
-<app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" />
+<!-- <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="list?.get()" /> -->
 <app-est-release-modal #estReleaseModal (saved)="onEstReleaseSaved($event)"></app-est-release-modal>
-<app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal>
+<!-- <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [car]="selectedCar" (submit)="list?.get()"></app-check-in-report-modal> -->
 <app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selectedCar?.id" [currentStatus]="selectedCar?.avvStatus"(statusUpdated)="list.get()">
 </app-avv-status-modal>

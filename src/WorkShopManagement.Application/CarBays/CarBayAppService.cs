@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Data;
-using Volo.Abp.Domain.Repositories;
-using WorkShopManagement.CarBayItems;
+using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CarBays;
@@ -17,13 +17,17 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
     private readonly CarBayManager _manager;
+    private readonly CarManager _carManager;
 
     public CarBayAppService(
         ICarBayRepository repository,
-        CarBayManager manager)
+        CarBayManager manager,
+        CarManager carManager
+        )
     {
         _repository = repository;
         _manager = manager;
+        _carManager = carManager;
     }
 
     public async Task<CarBayDto> GetAsync(Guid id)
@@ -99,6 +103,8 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.CanProgress,
             input.JobCardCompleted
         );
+
+        await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
 
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
