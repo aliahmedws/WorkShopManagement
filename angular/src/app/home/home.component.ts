@@ -17,7 +17,6 @@ export class HomeComponent {
       "assets/images/slider/slider4.jpg",
       "assets/images/slider/slider5.avif"
     ];
-  effect = 'scrollx';
 
   private authService = inject(AuthService);
 
