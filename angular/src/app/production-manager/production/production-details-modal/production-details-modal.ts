@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
+import { CarBayDto, CarBayService, ClockInStatus, clockInStatusOptions, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
 import { CarDto, CarService } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
@@ -10,7 +10,6 @@ import { Confirmation } from '@abp/ng.theme.shared';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
-import { Recalls } from "src/app/recalls/recalls";
 import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
 import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2'; 
@@ -18,12 +17,15 @@ import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.ut
 import { CreateQualityGateDto, gateNameOptions, QualityGateDto, QualityGateService, QualityGateStatus, qualityGateStatusOptions, UpdateQualityGateDto } from 'src/app/proxy/quality-gates';
 import { finalize } from 'rxjs';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
+import { checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
+import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { CriticalImagesModal } from './critical-images-modal/critical-images-modal';
 
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, Recalls],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -40,21 +42,29 @@ export class ProductionDetailsModal {
   @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
   @ViewChild(IssueModal) issueModal!: IssueModal;
 
-  visible = false;
+  @Input() visible = false;
+  @Output() visibleChange = new EventEmitter<boolean>();
+  clockSaving = false;
   movingStage = false;
   isIssueModalVisible = false;
-  allowMovetoPostProduction = true;
-  allowMovetoAwaitingTransport = true;
+  @Input() allowMovetoPostProduction = true;
+  @Input() allowMovetoAwaitingTransport = true;
   isRecallModalVisible = false; 
+  criticalImagesVisible = false;
 
-  @Output() visibleChange = new EventEmitter<boolean>();
+  clockInStatusOptions = clockInStatusOptions;
+  checkListProgressStatus = checkListProgressStatusOptions;
+  mapCheckListProgressStatusColor = mapCheckListProgressStatusColor;
+
+  // @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
+  @Output() closed = new EventEmitter<void>();
 
   private readonly confirm = inject(ConfirmationHelperService);
 
   selectedCar?: CarDto;
 
-  carId?: string;
+  @Input() carId?: string;
   details?: CarBayDto;
   carNotes = '';
 
@@ -72,13 +82,13 @@ export class ProductionDetailsModal {
 
   form?: FormGroup;
 
-  open(id: string, allowMoveToPostProduction = true, allowMovetoAwaitingTransport = true): void {
-    this.carId = id;
-    this.allowMovetoPostProduction = allowMoveToPostProduction;
-    this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
+  open(): void {
+    // this.carId = id;
+    // this.allowMovetoPostProduction = allowMoveToPostProduction;
+    // this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
 
-    this.visible = true;
-    this.visibleChange.emit(true);
+    // this.visible = true;
+    // this.visibleChange.emit(true);
     this.loadDetails();
     this.loadCarNotes();
     this.loadSelectedCar();
@@ -115,6 +125,8 @@ export class ProductionDetailsModal {
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
+
+    this.closed.emit();
   }
 
   private loadDetails(): void {
@@ -245,7 +257,6 @@ private buildBayLabel(bayName?: string | null): string {
       if (status !== Confirmation.Status.confirm) return;
 
       this.movingStage = true;
-
       this.carService.changeStage(carId, { targetStage: Stage.PostProduction }).subscribe({
         next: () => {
           this.movingStage = false;
@@ -298,7 +309,7 @@ moveToAwaitingTransportProduction() {
       date: StickerGeneratorUtil.formatDate(new Date()), // or manufactureStartDate if you want
       model: this.details?.modelName ?? '',
       flags: '(BNE)',         // hardcoded
-      colour: (this.selectedCar as any)?.colour || (this.selectedCar as any)?.color || '',
+      colour: this.selectedCar?.color || '',
       name: this.details?.ownerName ?? 'Dealer Stock',
     };
 
@@ -311,29 +322,15 @@ moveToAwaitingTransportProduction() {
   }
 
   printVehicleStickerV2(): void {
-  const vin = this.details?.carVin || (this.selectedCar as any)?.vin;
+  const vin = this.details?.carVin || (this.selectedCar as CarDto)?.vin;
   if (!vin) return;
 
   // Model
-  const model =
-    (this.details as any)?.modelName ||
-    '';
-
-  // Owner
-  const owner =
-    this.details?.ownerName ||
-    'Dealer Stock';
-
-  const color =
-    (this.details as any)?.color ||
-    (this.selectedCar as CarDto)?.color ||
-    '';
-
-  // Dealer (you said hardcode BNE for now)
+  const model = (this.details as any)?.modelName || '';
+  const owner =  this.details?.ownerName || 'Dealer Stock';
+  const color = (this.selectedCar as CarDto)?.color || '';
   const dealer = 'BNE';
-
-  const image =
-    (this.details as CarBayDto)?.modelImagePath;
+  const image = (this.details as CarBayDto)?.modelImagePath;
 
   if (!image) {
     return;
@@ -458,5 +455,58 @@ moveToAwaitingTransportProduction() {
       return 'gate-reset';
   }
 }
+
+  get clockStatus(): ClockInStatus {
+  return ((this.details)?.clockInStatus ?? ClockInStatus.NotClockedIn) as ClockInStatus;
+}
+
+  get clockButtonKey(): string {
+    return this.clockStatus === ClockInStatus.ClockedIn ? '::ClockOut' : '::ClockIn';
+  }
+
+  clockToggle(): void {
+  const carBayId = this.details?.id;
+  if (!carBayId || this.clockSaving) return;
+
+  const wasClockedIn =
+    Number(this.details?.clockInStatus) === ClockInStatus.ClockedIn;
+
+  const nowIso = new Date().toISOString();
+
+  this.clockSaving = true;
+
+  this.carBayService.toggleClock(carBayId, nowIso).subscribe({
+    next: (updated) => {
+      if (!this.details) return;
+
+      this.details = {
+        ...this.details,
+        clockInStatus: updated?.clockInStatus ?? this.details.clockInStatus,
+        clockInTime: updated?.clockInTime ?? this.details.clockInTime,
+        clockOutTime: updated?.clockOutTime ?? this.details.clockOutTime,
+      } as CarBayDto;
+
+      this.toaster.success(
+        wasClockedIn ? '::ClockedOutSuccessfully' : '::ClockedInSuccessfully',
+        '::Success'
+      );
+    },
+    error: () => {},
+    complete: () => (this.clockSaving = false),
+  });
+}
+
+  onChecklistSaved(): void {
+    this.loadDetails();
+  }
+
+  openCriticalImages(): void {
+  const cl = (this.details as CarBayDto)?.checkLists?.[0]; // replace with your actual checklist source
+  if (!cl?.id) return;
+
+  this.criticalImagesVisible = true;
+}
+
+
 
 }

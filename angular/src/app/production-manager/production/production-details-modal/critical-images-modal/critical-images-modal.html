@@ -1,0 +1,49 @@
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" [options]="{ size: 'xl' }">
+
+  <ng-template #abpHeader>
+    <div class="fw-bold">{{ '::CriticalImages' | abpLocalization }}</div>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <div class="p-2">
+
+      <div *ngIf="loading" class="text-center text-muted py-5">
+        {{ '::Loading...' | abpLocalization }}
+      </div>
+
+      <ng-container *ngIf="!loading">
+        <!-- no images -->
+        <div *ngIf="images.length === 0">
+          <div class="text-center py-5 text-muted">
+            <i class="fa fa-images fa-3x mb-3"></i>
+            <p>{{ '::NoImagesFound' | abpLocalization }}</p>
+        </div>
+        </div>
+
+        <!-- images -->
+        <ng-container *ngIf="images.length > 0">
+          <div class="d-flex flex-wrap gap-4 justify-content-center p-2">
+            @for (url of images; track url) {
+            <div
+              class="position-relative border rounded p-1 d-flex align-items-center justify-content-center transition-all">
+
+              <img nz-image [nzSrc]="url" class="rounded" alt="Car Image"
+                style="width: auto; height: 100px; object-fit: contain; min-width: 150px;" />
+
+
+            </div>
+            }
+          </div>
+        </ng-container>
+      </ng-container>
+
+    </div>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      {{ '::Close' | abpLocalization }}
+    </button>
+  </ng-template>
+
+</abp-modal>

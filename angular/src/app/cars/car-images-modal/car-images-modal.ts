@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CarDto, CarService } from 'src/app/proxy/cars';
+import { StageDto } from 'src/app/proxy/stages';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
@@ -16,9 +17,11 @@ export class CarImagesModal {
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
-  @Input() car = {} as CarDto;
+  @Input() carId = '';
 
   @Output() submit = new EventEmitter<void>();
+
+  selectedCar = {} as CarDto;
 
   selectedImage: string | null = null;
   images: string[] = [];
@@ -34,8 +37,12 @@ export class CarImagesModal {
   };
 
   init(): void {
+    this.carService.get(this.carId).subscribe((car) => {
+      this.selectedCar = car;
+    });
+  
     this.images = [];
-    this.selectedImage = this.car.imageLink || null;
+    this.selectedImage = this.selectedCar.imageLink || null;
 
     // Only fetch automatically if there is no image saved yet
     if (!this.selectedImage) {
@@ -58,7 +65,7 @@ export class CarImagesModal {
   getCarImages(): void {
     this.images = [];
     this.loading = true;
-    this.carService.getExternalCarImages(this.car.id!).subscribe((res) => {
+    this.carService.getExternalCarImages(this.carId!).subscribe((res) => {
       this.images = res;
       this.loading = false;
     });
@@ -69,7 +76,7 @@ save(): void {
   if (!this.selectedImage) return;
 
   this.saving = true;
-  this.carService.saveCarImage(this.car.id, this.selectedImage).subscribe(() => {
+  this.carService.saveCarImage(this.carId, this.selectedImage).subscribe(() => {
       this.toaster.createdOrUpdated('::CarImageSaved');
       this.saving = false;
 

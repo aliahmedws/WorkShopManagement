@@ -1,6 +1,8 @@
 <abp-modal [visible]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3> {{ '::CheckInReport' | abpLocalization }} <span>{{ " - " + car.vin }} </span> </h3>
+        <h3> {{ '::CheckInReport' | abpLocalization }} 
+            <span>{{ " - " + carVin }} </span>
+        </h3>
     </ng-template>
 
     <ng-template #abpBody>
@@ -147,12 +149,12 @@
     </ng-template>
 
     <ng-template #abpFooter>
-        <button type="button" class="btn btn-outline-primary me-2">
+        <!-- <button type="button" class="btn btn-outline-primary me-2">
             {{ '::AvcStickers' | abpLocalization }}
         </button>
         <button type="button" class="btn btn-outline-primary me-4">
             {{ '::AvcStickersNew' | abpLocalization }}
-        </button>
+        </button> -->
         <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>

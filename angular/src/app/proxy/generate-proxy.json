@@ -2135,7 +2135,7 @@
                   }
                 },
                 {
-                  "name": "ClockInAsync",
+                  "name": "ToggleClockAsync",
                   "parametersOnMethod": [
                     {
                       "name": "id",
@@ -2146,11 +2146,11 @@
                       "defaultValue": null
                     },
                     {
-                      "name": "clockInTime",
+                      "name": "time",
                       "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
                       "type": "System.DateTime?",
                       "typeSimple": "string?",
-                      "isOptional": false,
+                      "isOptional": true,
                       "defaultValue": null
                     }
                   ],
@@ -2160,35 +2160,10 @@
                   }
                 },
                 {
-                  "name": "ClockOutAsync",
+                  "name": "GetCarBayItemImagesAsync",
                   "parametersOnMethod": [
                     {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    },
-                    {
-                      "name": "clockOutTime",
-                      "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
-                      "type": "System.DateTime?",
-                      "typeSimple": "string?",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "WorkShopManagement.CarBays.CarBayDto",
-                    "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
-                  }
-                },
-                {
-                  "name": "ResetClockAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
+                      "name": "carBayId",
                       "typeAsString": "System.Guid, System.Private.CoreLib",
                       "type": "System.Guid",
                       "typeSimple": "string",
@@ -2197,128 +2172,14 @@
                     }
                   ],
                   "returnValue": {
-                    "type": "WorkShopManagement.CarBays.CarBayDto",
-                    "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
+                    "type": "System.Collections.Generic.List<System.String>",
+                    "typeSimple": "[string]"
                   }
                 }
               ]
             }
           ],
           "actions": {
-            "ClockInAsyncByIdAndClockInTime": {
-              "uniqueName": "ClockInAsyncByIdAndClockInTime",
-              "name": "ClockInAsync",
-              "httpMethod": "POST",
-              "url": "api/app/car-bays/{id}/clock-in",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "clockInTime",
-                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "clockInTime",
-                  "name": "clockInTime",
-                  "jsonName": null,
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "WorkShopManagement.CarBays.CarBayDto",
-                "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
-            },
-            "ClockOutAsyncByIdAndClockOutTime": {
-              "uniqueName": "ClockOutAsyncByIdAndClockOutTime",
-              "name": "ClockOutAsync",
-              "httpMethod": "POST",
-              "url": "api/app/car-bays/{id}/clock-out",
-              "supportedVersions": [],
-              "parametersOnMethod": [
-                {
-                  "name": "id",
-                  "typeAsString": "System.Guid, System.Private.CoreLib",
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null
-                },
-                {
-                  "name": "clockOutTime",
-                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
-                  "isOptional": false,
-                  "defaultValue": null
-                }
-              ],
-              "parameters": [
-                {
-                  "nameOnMethod": "id",
-                  "name": "id",
-                  "jsonName": null,
-                  "type": "System.Guid",
-                  "typeSimple": "string",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": [],
-                  "bindingSourceId": "Path",
-                  "descriptorName": ""
-                },
-                {
-                  "nameOnMethod": "clockOutTime",
-                  "name": "clockOutTime",
-                  "jsonName": null,
-                  "type": "System.DateTime?",
-                  "typeSimple": "string?",
-                  "isOptional": false,
-                  "defaultValue": null,
-                  "constraintTypes": null,
-                  "bindingSourceId": "ModelBinding",
-                  "descriptorName": ""
-                }
-              ],
-              "returnValue": {
-                "type": "WorkShopManagement.CarBays.CarBayDto",
-                "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
-              },
-              "allowAnonymous": null,
-              "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
-            },
             "CreateAsyncByInput": {
               "uniqueName": "CreateAsyncByInput",
               "name": "CreateAsync",
@@ -2426,6 +2287,43 @@
               "returnValue": {
                 "type": "WorkShopManagement.CarBays.CarBayDto",
                 "typeSimple": "WorkShopManagement.CarBays.CarBayDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
+            },
+            "GetCarBayItemImagesAsyncByCarBayId": {
+              "uniqueName": "GetCarBayItemImagesAsyncByCarBayId",
+              "name": "GetCarBayItemImagesAsync",
+              "httpMethod": "GET",
+              "url": "api/app/car-bays/critical-images/{carBayId}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carBayId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carBayId",
+                  "name": "carBayId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<System.String>",
+                "typeSimple": "[string]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
@@ -2539,11 +2437,11 @@
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.CarBays.ICarBayAppService"
             },
-            "ResetClockAsyncById": {
-              "uniqueName": "ResetClockAsyncById",
-              "name": "ResetClockAsync",
+            "ToggleClockAsyncByIdAndTime": {
+              "uniqueName": "ToggleClockAsyncByIdAndTime",
+              "name": "ToggleClockAsync",
               "httpMethod": "POST",
-              "url": "api/app/car-bays/{id}/reset-clock",
+              "url": "api/app/car-bays/{id}/toggle-clock",
               "supportedVersions": [],
               "parametersOnMethod": [
                 {
@@ -2552,6 +2450,14 @@
                   "type": "System.Guid",
                   "typeSimple": "string",
                   "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "time",
+                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": true,
                   "defaultValue": null
                 }
               ],
@@ -2566,6 +2472,18 @@
                   "defaultValue": null,
                   "constraintTypes": [],
                   "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "time",
+                  "name": "time",
+                  "jsonName": null,
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
                   "descriptorName": ""
                 }
               ],
@@ -5803,6 +5721,48 @@
                   }
                 },
                 {
+                  "name": "SubmitCreStatusAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+                  }
+                },
+                {
+                  "name": "AddOrUpdateDeliverDetailsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                      "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+                  }
+                },
+                {
                   "name": "DeleteAsync",
                   "parametersOnMethod": [
                     {
@@ -6115,6 +6075,100 @@
                   "jsonName": null,
                   "type": "WorkShopManagement.LogisticsDetails.UpdateLogisticsDetailDto",
                   "typeSimple": "WorkShopManagement.LogisticsDetails.UpdateLogisticsDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "SubmitCreStatusAsyncById": {
+              "uniqueName": "SubmitCreStatusAsyncById",
+              "name": "SubmitCreStatusAsync",
+              "httpMethod": "POST",
+              "url": "api/app/logistics-details/{id}/submit-cre",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.LogisticsDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "AddOrUpdateDeliverDetailsAsyncByIdAndInput": {
+              "uniqueName": "AddOrUpdateDeliverDetailsAsyncByIdAndInput",
+              "name": "AddOrUpdateDeliverDetailsAsync",
+              "httpMethod": "POST",
+              "url": "api/app/logistics-details/{id}/add-or-update-deliver-details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "id",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "id",
+                  "name": "id",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -18172,6 +18226,42 @@
           "regex": null
         },
         {
+          "name": "ClockInTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClockOutTime",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClockInStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.ClockInStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "CheckLists",
           "jsonName": null,
           "type": "[WorkShopManagement.CheckLists.CheckListDto]",
@@ -19821,7 +19911,7 @@
       ],
       "enumValues": [
         1,
-        3
+        2
       ],
       "genericArguments": null,
       "properties": null
@@ -19945,10 +20035,10 @@
       "isEnum": true,
       "enumNames": [
         "Bne",
-        "syd",
-        "mel",
-        "per",
-        "other"
+        "Syd",
+        "Mel",
+        "Per",
+        "Other"
       ],
       "enumValues": [
         1,
@@ -19966,6 +20056,7 @@
       "enumNames": [
         "Incoming",
         "ExternalWarehouse",
+        "ScdWarehouse",
         "Production",
         "PostProduction",
         "AwaitingTransport",
@@ -19977,7 +20068,8 @@
         3,
         4,
         5,
-        6
+        6,
+        7
       ],
       "genericArguments": null,
       "properties": null
@@ -20201,18 +20293,6 @@
           "regex": null
         },
         {
-          "name": "StorageLocation",
-          "jsonName": null,
-          "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
-          "typeSimple": "enum?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "BuildMaterialNumber",
           "jsonName": null,
           "type": "System.String",
@@ -20402,10 +20482,10 @@
           "regex": null
         },
         {
-          "name": "FrontGwar",
+          "name": "FrontGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20414,10 +20494,10 @@
           "regex": null
         },
         {
-          "name": "RearGwar",
+          "name": "RearGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20426,7 +20506,7 @@
           "regex": null
         },
         {
-          "name": "FrontMoterNumber",
+          "name": "FrontMotorNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -20452,8 +20532,8 @@
         {
           "name": "MaxTowingCapacity",
           "jsonName": null,
-          "type": "System.Double",
-          "typeSimple": "number",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20499,18 +20579,6 @@
         },
         {
           "name": "ConcurrencyStamp",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "CreatorName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -20852,10 +20920,10 @@
           "regex": null
         },
         {
-          "name": "FrontGwar",
+          "name": "FrontGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20864,10 +20932,10 @@
           "regex": null
         },
         {
-          "name": "RearGwar",
+          "name": "RearGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -20876,7 +20944,7 @@
           "regex": null
         },
         {
-          "name": "FrontMoterNumber",
+          "name": "FrontMotorNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -20902,8 +20970,8 @@
         {
           "name": "MaxTowingCapacity",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -21077,10 +21145,10 @@
           "regex": null
         },
         {
-          "name": "FrontGwar",
+          "name": "FrontGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -21089,10 +21157,10 @@
           "regex": null
         },
         {
-          "name": "RearGwar",
+          "name": "RearGawr",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -21101,7 +21169,7 @@
           "regex": null
         },
         {
-          "name": "FrontMoterNumber",
+          "name": "FrontMotorNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -21127,8 +21195,8 @@
         {
           "name": "MaxTowingCapacity",
           "jsonName": null,
-          "type": "System.Double?",
-          "typeSimple": "number?",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -22072,6 +22140,582 @@
           "jsonName": "exterior_color",
           "type": "[System.String]",
           "typeSimple": "[string]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Size",
+          "jsonName": "size",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Category",
+          "jsonName": "category",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EngineSize",
+          "jsonName": "engine_size",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TransmissionShort",
+          "jsonName": "transmission_short",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TransmissionType",
+          "jsonName": "transmission_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TransmissionSpeeds",
+          "jsonName": "transmission_speeds",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "AntiBrakeSystem",
+          "jsonName": "anti_brake_system",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "SteeringType",
+          "jsonName": "steering_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "GrossVehicleWeightRating",
+          "jsonName": "gross_vehicle_weight_rating",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "InvoicePrice",
+          "jsonName": "invoice_price",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeliveryCharges",
+          "jsonName": "delivery_charges",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ManufacturerSuggestedRetailPrice",
+          "jsonName": "manufacturer_suggested_retail_price",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontBrakeType",
+          "jsonName": "front_brake_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearBrakeType",
+          "jsonName": "rear_brake_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TurningDiameter",
+          "jsonName": "turning_diameter",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontSuspension",
+          "jsonName": "front_suspension",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearSuspension",
+          "jsonName": "rear_suspension",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontSpringType",
+          "jsonName": "front_spring_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearSpringType",
+          "jsonName": "rear_spring_type",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Tires",
+          "jsonName": "tires",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontHeadroom",
+          "jsonName": "front_headroom",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearHeadroom",
+          "jsonName": "rear_headroom",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontLegroom",
+          "jsonName": "front_legroom",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearLegroom",
+          "jsonName": "rear_legroom",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontShoulderRoom",
+          "jsonName": "front_shoulder_room",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearShoulderRoom",
+          "jsonName": "rear_shoulder_room",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "FrontHipRoom",
+          "jsonName": "front_hip_room",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RearHipRoom",
+          "jsonName": "rear_hip_room",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CurbWeightManual",
+          "jsonName": "curb_weight_manual",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "GroundClearance",
+          "jsonName": "ground_clearance",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TrackFront",
+          "jsonName": "track_front",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TrackRear",
+          "jsonName": "track_rear",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CargoLength",
+          "jsonName": "cargo_length",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "WidthAtWheelwell",
+          "jsonName": "width_at_wheelwell",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "WidthAtWall",
+          "jsonName": "width_at_wall",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Depth",
+          "jsonName": "depth",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OptionalSeating",
+          "jsonName": "optional_seating",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PassengerVolume",
+          "jsonName": "passenger_volume",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CargoVolume",
+          "jsonName": "cargo_volume",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CargoVolumeSeatsInPlace",
+          "jsonName": "cargo_volume_seats_in_place",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaximumCargoVolume",
+          "jsonName": "maximum_cargo_volume",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "StandardTowing",
+          "jsonName": "standard_towing",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaximumTowing",
+          "jsonName": "maximum_towing",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "StandardPayload",
+          "jsonName": "standard_payload",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaximumPayload",
+          "jsonName": "maximum_payload",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "MaximumGvwr",
+          "jsonName": "maximum_gvwr",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "VehicleClass",
+          "jsonName": "vehicle_class",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "VehicleRating",
+          "jsonName": "vehicle_rating",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25284,6 +25928,63 @@
         }
       ]
     },
+    "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "ConfirmedDeliverDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeliverNotes",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 1024,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "DeliverTo",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 128,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TransportDestination",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 128,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "WorkShopManagement.LogisticsDetails.ArrivalEstimates.ArrivalEstimateDto": {
       "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
       "isEnum": false,
@@ -25544,46 +26245,22 @@
           "regex": null
         },
         {
+          "name": "Port",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "BookingNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearingAgent",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearanceRemarks",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ClearanceDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25628,10 +26305,34 @@
           "regex": null
         },
         {
-          "name": "Port",
+          "name": "ClearingAgent",
           "jsonName": null,
-          "type": "WorkShopManagement.Cars.Port",
-          "typeSimple": "enum",
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClearanceRemarks",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ClearanceDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -25745,10 +26446,10 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "CarId",
+          "name": "Port",
           "jsonName": null,
-          "type": "System.Guid",
-          "typeSimple": "string",
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
           "isRequired": true,
           "minLength": null,
           "maxLength": null,
@@ -25758,6 +26459,42 @@
         },
         {
           "name": "BookingNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.CreStatus",
+          "typeSimple": "enum",
+          "isRequired": true,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreSubmissionDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RsvaNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -25805,42 +26542,6 @@
           "regex": null
         },
         {
-          "name": "CreSubmissionDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RsvaNumber",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 64,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Port",
-          "jsonName": null,
-          "type": "WorkShopManagement.Cars.Port",
-          "typeSimple": "enum",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
           "name": "ActualPortArrivalDate",
           "jsonName": null,
           "type": "System.DateTime?",
@@ -25860,54 +26561,6 @@
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "DeliverTo",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 128,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ConfirmedDeliverDate",
-          "jsonName": null,
-          "type": "System.DateTime?",
-          "typeSimple": "string?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "DeliverNotes",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 1024,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "TransportDestination",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": 0,
-          "maxLength": 128,
           "minimum": null,
           "maximum": null,
           "regex": null
@@ -27272,6 +27925,18 @@
           "name": "IssueStatus",
           "jsonName": null,
           "type": "WorkShopManagement.Issues.IssueStatus?",
+          "typeSimple": "enum?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "Priority",
+          "jsonName": null,
+          "type": "WorkShopManagement.CarBays.Priority?",
           "typeSimple": "enum?",
           "isRequired": false,
           "minLength": null,

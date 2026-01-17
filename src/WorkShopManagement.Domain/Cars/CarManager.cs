@@ -17,15 +17,19 @@ namespace WorkShopManagement.Cars
         private readonly ICarRepository _carRepository;
         private readonly ILogisticsDetailRepository _logisticsDetailRepository;
         private readonly ICarBayRepository _carBayRepository;
+        private readonly CarBayManager _carBayManager;
 
         public CarManager(
             ICarRepository carRepository,
             ILogisticsDetailRepository logisticsDetailRepository,
-            ICarBayRepository carBayRepository)
+            ICarBayRepository carBayRepository,
+            CarBayManager carBayManager
+            )
         {
             _carRepository = carRepository;
             _logisticsDetailRepository = logisticsDetailRepository;
             _carBayRepository = carBayRepository;
+            _carBayManager = carBayManager;
         }
 
         /// <summary>
@@ -203,9 +207,15 @@ namespace WorkShopManagement.Cars
             if (oldStage == Stage.Production &&  targetStage == Stage.PostProduction)
             {
                 var activeBay = await _carBayRepository.FindActiveByCarIdAsync(car.Id);
-
+                
                 if (activeBay != null)
+                {
                     activeBay.SetIsActive(false);
+                    if (activeBay.ClockInStatus == ClockInStatus.ClockedIn)
+                    {
+                        await _carBayManager.ToggleClockAsync(activeBay.Id, Clock.ConvertToUserTime(Clock.Now));
+                    }
+                }
                 //await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);
             }
 

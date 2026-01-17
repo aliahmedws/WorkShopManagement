@@ -5,23 +5,23 @@
             (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
 
             <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization">
-                <app-incoming [cars]="cars" [(filters)]="filters" [list]="list"></app-incoming>
+                <app-incoming [stages]="stages" [(filters)]="filters" [list]="list"></app-incoming>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.2' | abpLocalization">
-                <app-external-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-external-warehouse>
+                <app-external-warehouse [stages]="stages" [(filters)]="filters" [list]="list"></app-external-warehouse>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.3' | abpLocalization">
-                <app-scd-warehouse [cars]="cars" [(filters)]="filters" [list]="list"></app-scd-warehouse>
+                <app-scd-warehouse [stages]="stages" [(filters)]="filters" [list]="list"></app-scd-warehouse>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-                <app-production [filters]="filters"></app-production>
+                
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
-                <app-post-production [cars]="cars" [filters]="filters" [list]="list"></app-post-production>
+                <app-post-production [stages]="stages" [filters]="filters" [list]="list"></app-post-production>
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.6' | abpLocalization">
@@ -33,6 +33,10 @@
             </nz-tab>
 
         </nz-tabs>
+
+        @if (selectedIndex === 3) {
+            <app-production [filters]="filters" (refreshRequested)="list.get()"></app-production>
+        }
 
     </app-topbar-layout>
 </abp-page>

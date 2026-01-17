@@ -1,11 +1,10 @@
-import { CheckList } from "src/app/check-list/check-list";
-import { CarBayItemDto } from "src/app/proxy/car-bay-items";
 import { AvvStatus } from "src/app/proxy/car-bays";
-import { CheckListDto, CheckListProgressStatus } from "src/app/proxy/check-lists";
+import { CreStatus } from "src/app/proxy/cars";
+import { CheckListProgressStatus } from "src/app/proxy/check-lists";
 import { IssueStatus } from "src/app/proxy/issues";
 import { RecallStatus } from "src/app/proxy/recalls";
 
-const DEFAULT_COLOR = 'dark';
+const DEFAULT_COLOR = 'secondary';
 
 export function mapIssueStatusColor(status: IssueStatus | null): string | '' {
     if (!status) return DEFAULT_COLOR;
@@ -39,6 +38,39 @@ export function mapRecallStatusColor(status: RecallStatus | null): string | '' {
             return 'danger';
 
         case RecallStatus.Completed:
+            return 'success';
+
+        default:
+            return DEFAULT_COLOR;
+    }
+}
+
+export function mapNoteStatusColor(note: string | null): string {
+    if(!note) return DEFAULT_COLOR;
+
+    return 'success';
+}
+
+export function mapAvvStatus(avvStatus: AvvStatus | null): string {
+    if(!avvStatus) return DEFAULT_COLOR;
+
+    return 'success';
+}
+
+export function mapEstReleaseStatusColor(estReleased: string | null): string {
+    if(!estReleased) return DEFAULT_COLOR;
+
+    return 'success';
+}
+
+export function mapCreStatusColor(status: CreStatus | null): string {
+    if(!status) return DEFAULT_COLOR;
+
+    switch (status) {
+        case CreStatus.Pending:
+            return 'danger';
+
+        case CreStatus.Submitted:
             return 'success';
 
         default:

@@ -2,7 +2,7 @@ import { mapEnumToOptions } from '@abp/ng.core';
 
 export enum CreStatus {
   Pending = 1,
-  Submitted = 3,
+  Submitted = 2,
 }
 
 export const creStatusOptions = mapEnumToOptions(CreStatus);

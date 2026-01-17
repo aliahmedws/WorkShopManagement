@@ -1,6 +1,8 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="modal-title">{{ '::Recalls' | abpLocalization }} <span>{{ " - " + car.vin }} </span></h3>
+        <h3 class="modal-title">{{ '::Recalls' | abpLocalization }} 
+            <!-- <span>{{ " - " + carVin }} </span> -->
+        </h3>
     </ng-template>
 
     <ng-template #abpBody>

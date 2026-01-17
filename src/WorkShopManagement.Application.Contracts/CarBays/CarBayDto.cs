@@ -57,6 +57,9 @@ public class CarBayDto : EntityDto<Guid>
     public string? ModelCategoryName { get; set; }
 
     public string? ModelImagePath { get; set; }
+    public DateTime? ClockInTime { get;  set; }
+    public DateTime? ClockOutTime { get;  set; }
+    public ClockInStatus ClockInStatus { get;  set; }
 
     public List<CheckListDto> CheckLists { get; set; } = new();
 

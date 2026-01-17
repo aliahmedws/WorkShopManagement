@@ -202,4 +202,21 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
            .OrderBy(sorting);
 
     }
+
+    public async Task<List<string>> GetCarBayItemImages(Guid carBayId)
+    {
+        var ctx = await GetDbContextAsync();
+
+        //List<Guid> itemIds = [];
+
+        var itemIds = await ctx.CarBayItems
+            .Where(x => x.CarBayId == carBayId)
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        return await ctx.EntityAttachments
+            .Where(ea => ea.EntityType == EntityAttachments.EntityType.CarBayItem && itemIds.Contains(ea.EntityId))
+            .Select(ea => ea.Attachment.Path)
+            .ToListAsync();
+    }
 }
