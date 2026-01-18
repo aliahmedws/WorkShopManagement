@@ -57,7 +57,6 @@ export class Recalls {
   }
 
   get(): void {
-    debugger;
     this.loading = true;
     this.mode = 'db';
 

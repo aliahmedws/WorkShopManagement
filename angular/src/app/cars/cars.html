@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <app-car-images-modal [(visible)]="isImageModalVisible" [car]="selectedCar" (submit)="list?.get()" />
+        <app-car-images-modal [(visible)]="isImageModalVisible" [carId]="selectedId" (submit)="list?.get()" />
         <app-car-create-edit-modal [(visible)]="isModalVisible" [carId]="selectedId" (submit)="list?.get()" />
         <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="selectedId"></app-issue-modal>
     </app-topbar-layout>

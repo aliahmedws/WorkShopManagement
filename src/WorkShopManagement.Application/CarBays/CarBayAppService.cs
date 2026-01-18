@@ -37,6 +37,13 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 
         var dto = ObjectMapper.Map<CarBay, CarBayDto>(entity.CarBay);
 
+        // TEMP Fix for car images display instead from modal ---
+        var carImageLink = entity?.CarBay?.Car?.ImageLink;
+        if (!string.IsNullOrWhiteSpace(carImageLink))
+        {
+            dto.ModelImagePath = carImageLink;
+        }
+
         dto.CheckLists?.ForEach(cl =>
         {
             entity.Progress.TryGetValue(cl.Id, out var progressStatus);

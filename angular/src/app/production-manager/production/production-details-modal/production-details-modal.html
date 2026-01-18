@@ -156,10 +156,15 @@
               </div>
 
               <!-- IMAGE AREA -->
-              <div class="d-flex align-items-center justify-content-center" style="min-height: 520px;">
+              <div class="d-flex align-items-center justify-content-center mb-3" style="min-height: 520px;">
                 <ng-container *ngIf="details.modelImagePath; else noImage">
-                  <img nz-image class="img-fluid" [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
-                    style="max-height: 500px; object-fit: contain;" />
+                  <!-- <img nz-image class="" [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
+                    style="max-height: 500px; object-fit: contain; "
+                    
+                    /> -->
+                  <img nz-image [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
+                    style="height: 300px; object-fit: contain; min-width: 300px;"
+                    />
                 </ng-container>
 
                 <ng-template #noImage>
@@ -171,10 +176,9 @@
               <div class="position-absolute bottom-0 end-0 p-3">
                 <div class="d-flex flex-column align-items-end gap-2">
 
-                  <!-- status text -->
-                  <div class="text-muted small">
-                    {{ '::Notcurrentlyclockedin.' | abpLocalization }}
-                  </div>
+
+
+
 
                   <!-- buttons row -->
                   <div class="d-flex flex-wrap justify-content-end gap-2">
@@ -198,6 +202,29 @@
                       {{ clockButtonKey | abpLocalization }}
                     </button>
                   </div>
+
+                  <!-- CLOCK IN TIME -->
+                  <!-- @if(clockStatus == ClockInStatus.NotClockedIn)  FROM get clockin ts method -->
+                  @if(details?.clockInStatus == ClockInStatus.NotClockedIn)
+                  {
+                  <!-- status text -->
+                  <small>
+                    {{ '::Notcurrentlyclockedin.' | abpLocalization }}
+                  </small>
+                  }
+
+                  @if(details?.clockInStatus == ClockInStatus.ClockedIn)
+                  {
+                  <small>
+                    Clocked In: {{ details?.clockInTime}}
+                  </small>
+                  } 
+                  @if(details?.clockInStatus == ClockInStatus.ClockedOut  )
+                  {
+                  <small>
+                    Clocked Out: {{ details?.clockOutTime}}
+                  </small>
+                  }
                 </div>
               </div>
             </div>
@@ -291,7 +318,7 @@
   <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="carId"> </app-issue-modal>
   <app-checklist-items-modal #checkListItemsModal (saved)="onChecklistSaved()"></app-checklist-items-modal>
   <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
-  <!-- <app-recalls [(visible)]="isRecallModalVisible" [car]="selectedCar" (submit)="loadSelectedCar()"></app-recalls> -->
+  <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" (submit)="loadSelectedCar()"></app-recalls>
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
   </app-critical-images-modal>
 </abp-modal>

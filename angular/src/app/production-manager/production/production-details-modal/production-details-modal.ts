@@ -20,12 +20,13 @@ import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.ser
 import { checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
 import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 import { CriticalImagesModal } from './critical-images-modal/critical-images-modal';
+import { Recalls } from 'src/app/recalls/recalls';
 
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal, Recalls],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -47,8 +48,8 @@ export class ProductionDetailsModal {
   clockSaving = false;
   movingStage = false;      
   isIssueModalVisible = false;
-  // @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
-  // @Input() allowMovetoAwaitingTransport = true;
+  @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
+  @Input() allowMovetoAwaitingTransport = true;
   isRecallModalVisible = false;
   criticalImagesVisible = false;
 
@@ -69,6 +70,7 @@ export class ProductionDetailsModal {
   carNotes = '';
 
   Priority = Priority;
+  ClockInStatus = ClockInStatus
 
   //GateQuality
   GateName = gateNameOptions;           // MOVE TO GATE
@@ -103,7 +105,7 @@ export class ProductionDetailsModal {
   }
 
   openRecalls(): void {
-    if (!this.selectedCar?.id) return;
+    if (!this.carId) return;
     this.isRecallModalVisible = true;
   }
 
@@ -123,8 +125,8 @@ export class ProductionDetailsModal {
     this.form = undefined;
     this.carId = undefined;
 
-    // this.allowMovetoPostProduction = true;
-    // this.allowMovetoAwaitingTransport = true;
+    this.allowMovetoPostProduction = true;
+    this.allowMovetoAwaitingTransport = true;
 
     this.closed.emit();
   }
