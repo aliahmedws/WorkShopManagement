@@ -74,7 +74,12 @@ export class PostProduction {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isAvvModalVisible = false;
-  isIssueModalVisible = false;
+  
+  issueModalVisible: Record<string, boolean> = {};
+  openIssueModal(row: any): void {
+    if (!row?.carId) return;
+    this.issueModalVisible[row.carId] = true;
+  }
 
   loadBays() {
     if (!this.bayOptions.length) {

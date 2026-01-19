@@ -260,13 +260,13 @@
                   @if(details?.clockInStatus == ClockInStatus.ClockedIn)
                   {
                   <small>
-                    Clocked In: {{ details?.clockInTime}}
+                    Clocked In: {{ details?.clockInTime | shortDateTime }}
                   </small>
                   } 
                   @if(details?.clockInStatus == ClockInStatus.ClockedOut  )
                   {
                   <small>
-                    Clocked Out: {{ details?.clockOutTime}}
+                    Clocked Out: {{ details?.clockOutTime | shortDateTime }}
                   </small>
                   }
                 </div>

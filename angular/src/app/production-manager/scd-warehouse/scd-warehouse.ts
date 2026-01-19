@@ -27,110 +27,113 @@ import { mapRecallStatusColor, mapNoteStatusColor, mapEstReleaseStatusColor, map
 })
 export class ScdWarehouse {
   private readonly carService = inject(CarService);
-    private readonly confirm = inject(ConfirmationHelperService);
-    private readonly carBayService = inject(CarBayService);
-    private readonly lookupService = inject(LookupService);
-    private readonly fb = inject(FormBuilder);
-    private readonly toaster = inject(ToasterHelperService);
-  
-    //====== ASSIGN MODAL DEFINITIONS
-  
-    selectedCarBay = {} as CarBayDto;   // to review later
-  
-  
-    // ====== ASSIGN MODAL ^
-  
-    @Input() filters: any = {};
-    @Output() filtersChange = new EventEmitter<any>();
-    @Input() list: ListService;
-    @Input() stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
-  
-    @ViewChild('estReleaseModal', { static: true })
-    estReleaseModal!: EstReleaseModal;
-  
-    @ViewChild('notesModal', { static: true })
-    notesModal!: CarNotesModal;
-  
-    selected = {} as StageDto;
-    isRecallModalVisible = false;
-    isCheckInModalVisible = false;
-    isNotesModalVisible = false;
-  
-    isIssueModalVisible = false;
+  private readonly confirm = inject(ConfirmationHelperService);
+  private readonly carBayService = inject(CarBayService);
+  private readonly lookupService = inject(LookupService);
+  private readonly fb = inject(FormBuilder);
+  private readonly toaster = inject(ToasterHelperService);
 
-  
-    // StorageLocation = StorageLocation;
-  
-    // @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
-  
-    // @Input() filters: any = {};
-    // @Output() filtersChange = new EventEmitter<any>();
-    // @Input() list: ListService;
-  
-    // selectedCar = {} as CarDto;
-    // selectedId?: string; // REMOVE THIS. Instead send the whole CarDto object
-    // isRecallModalVisible = false;
-    // isCheckInModalVisible = false;
-  
-    // @ViewChild('estReleaseModal', { static: true })
-    // estReleaseModal!: EstReleaseModal;
-    // // ngOnInit(): void {
-    // //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-    // //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-    // // }
-  
-    // =============== ASSIGN BAY MODAL v
-  
-    
-  
-    // -----^ ASSIGN BAY MODAL END ^===========
-  
-    // ========COMMON MODALS
-    openRecallModal(car: StageDto): void {
-      this.selected = car;
-      this.isRecallModalVisible = true;
-    }
-  
-    openCheckInModal(car: StageDto): void {
-      this.selected = car;
-      this.isCheckInModalVisible = true;
-    }
-  
-    openEstReleaseModal(row: StageDto): void {
-      if (!row?.carId) return;
-      this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
-    }
-  
-    openNotesModal(row: StageDto): void {
-      if (!row?.carId) return;
-      this.notesModal.open(row.carId, row.notes);
-    }
-  
-  
-    onNotesSaved(e: { carId: string; notes: string }): void {
-      const row = this.stages.items?.find(x => x.carId === e.carId);
-      if (row) row.notes = e.notes;
-      this.list.get();
-    }
-  
-    // =======COLOR MAPPING
-    getRecallColor(row: StageDto): string {
-        return mapRecallStatusColor(row?.recallStatus);
-    }
-  
-    getNoteColor(row: StageDto): string {
-        return mapNoteStatusColor(row?.notes);
-    }
-  
-    getEstRelease(row: StageDto): string {
-      return mapEstReleaseStatusColor(row?.estimatedRelease);
-    }
-  
-    getCreStatusColor(row: StageDto): string {
-      return mapCreStatusColor(row?.creStatus);
-    }
-  
-    mapIssueStatusColor(row: StageDto): string {
-      return mapIssueStatusColor(row?.issueStatus);
-    }
+  //====== ASSIGN MODAL DEFINITIONS
+
+  selectedCarBay = {} as CarBayDto;   // to review later
+
+
+  // ====== ASSIGN MODAL ^
+
+  @Input() filters: any = {};
+  @Output() filtersChange = new EventEmitter<any>();
+  @Input() list: ListService;
+  @Input() stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
+
+  @ViewChild('estReleaseModal', { static: true })
+  estReleaseModal!: EstReleaseModal;
+
+  @ViewChild('notesModal', { static: true })
+  notesModal!: CarNotesModal;
+
+  selected = {} as StageDto;
+  isRecallModalVisible = false;
+  isCheckInModalVisible = false;
+  isNotesModalVisible = false;
+
+  issueModalVisible: Record<string, boolean> = {};
+  openIssueModal(row: any): void {
+    if (!row?.carId) return;
+    this.issueModalVisible[row.carId] = true;
+  }
+
+  // StorageLocation = StorageLocation;
+
+  // @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
+
+  // @Input() filters: any = {};
+  // @Output() filtersChange = new EventEmitter<any>();
+  // @Input() list: ListService;
+
+  // selectedCar = {} as CarDto;
+  // selectedId?: string; // REMOVE THIS. Instead send the whole CarDto object
+  // isRecallModalVisible = false;
+  // isCheckInModalVisible = false;
+
+  // @ViewChild('estReleaseModal', { static: true })
+  // estReleaseModal!: EstReleaseModal;
+  // // ngOnInit(): void {
+  // //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
+  // //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
+  // // }
+
+  // =============== ASSIGN BAY MODAL v
+
+
+
+  // -----^ ASSIGN BAY MODAL END ^===========
+
+  // ========COMMON MODALS
+  openRecallModal(car: StageDto): void {
+    this.selected = car;
+    this.isRecallModalVisible = true;
+  }
+
+  openCheckInModal(car: StageDto): void {
+    this.selected = car;
+    this.isCheckInModalVisible = true;
+  }
+
+  openEstReleaseModal(row: StageDto): void {
+    if (!row?.carId) return;
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+  }
+
+  openNotesModal(row: StageDto): void {
+    if (!row?.carId) return;
+    this.notesModal.open(row.carId, row.notes);
+  }
+
+
+  onNotesSaved(e: { carId: string; notes: string }): void {
+    const row = this.stages.items?.find(x => x.carId === e.carId);
+    if (row) row.notes = e.notes;
+    this.list.get();
+  }
+
+  // =======COLOR MAPPING
+  getRecallColor(row: StageDto): string {
+    return mapRecallStatusColor(row?.recallStatus);
+  }
+
+  getNoteColor(row: StageDto): string {
+    return mapNoteStatusColor(row?.notes);
+  }
+
+  getEstRelease(row: StageDto): string {
+    return mapEstReleaseStatusColor(row?.estimatedRelease);
+  }
+
+  getCreStatusColor(row: StageDto): string {
+    return mapCreStatusColor(row?.creStatus);
+  }
+
+  mapIssueStatusColor(row: StageDto): string {
+    return mapIssueStatusColor(row?.issueStatus);
+  }
 }
