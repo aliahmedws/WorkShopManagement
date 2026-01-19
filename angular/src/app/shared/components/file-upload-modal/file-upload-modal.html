@@ -1,13 +1,13 @@
 <!-- Trigger button (inside component) -->
-<button
+<!-- <button
   type="button"
   [class]="buttonClass"
   [disabled]="disabled"
   (click)="open()"
   [title]="buttonTitle"
->
-  <i [class]="buttonIcon" aria-hidden="true"></i>
-</button>
+> -->
+  <i class="link text-primary" [class]="buttonIcon" aria-hidden="true" (click)="open()"></i>
+<!-- </button> -->
 
 <!-- Modal -->
 <abp-modal [(visible)]="visible" [options]="{ size: modalSize }">

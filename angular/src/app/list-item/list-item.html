@@ -11,8 +11,8 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [list]="list" default>
-                    <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+                <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [columnMode]="'force'" [list]="list" default>
+                    <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <div ngbDropdown container="body" class="d-inline-block">
                                 <button class="ngx-actions-btn" data-toggle="dropdown" aria-haspopup="true"
@@ -33,11 +33,11 @@
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position"
+                    <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position" [canAutoResize]="false" [width]="100"
                         [maxWidth]="120"></ngx-datatable-column>
                     <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::CommentType' | abpLocalization">
+                    <ngx-datatable-column [name]="'::CommentType' | abpLocalization" [canAutoResize]="false" [width]="150">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <ng-container *ngIf="row?.commentType != null; else noValue">
                                 {{ ('::Enum:CommentType.' + row.commentType) | abpLocalization }}
@@ -52,7 +52,7 @@
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [maxWidth]="120">
+                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [canAutoResize]="false" [width]="120">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <div class="text-center">
                                 <span [class.text-success]="row.isSeparator" [class.text-danger]="!row.isSeparator">
@@ -69,7 +69,7 @@
                         </ng-template>
                     </ngx-datatable-column> -->
 
-                    <ngx-datatable-column [name]="'::Images' | abpLocalization" [sortable]="false" [width]="160">
+                    <ngx-datatable-column [name]="'::Images' | abpLocalization" [sortable]="false">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <div class="d-flex gap-2 flex-wrap" *ngIf="row?.entityAttachments?.length">
                                 <ng-container *ngFor="let ea of row.entityAttachments">

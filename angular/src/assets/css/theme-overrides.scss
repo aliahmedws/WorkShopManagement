@@ -765,8 +765,8 @@ a:active {
     color: var(--text-primary);
 }
 
-.table tbody tr:hover {
-    background-color: #{color.change($brand-tertiary-light, $alpha: 0.15)};
+.table tbody tr:not(.table-light):hover {
+    background-color: #00000003;
 }
 
 /* Forms */
@@ -1452,6 +1452,12 @@ lpx-footer {
 .datatable-header-cell,
 .datatable-body-cell .datatable-body-cell-label {
     font-size: 0.82rem;
+}
+
+.table td {
+    font-size: 0.82rem;
+    padding: 0.3rem 1rem !important;
+    vertical-align: middle;
 }
 
 i.link,

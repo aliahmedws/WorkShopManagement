@@ -1,13 +1,13 @@
 <div class="card">
     <div class="card-body">
-        <ngx-datatable [rows]="stages.items" [count]="stages.totalCount" [list]="list" default>
-            <ngx-datatable-column [sortable]="false" [maxWidth]="50">
+        <ngx-datatable [rows]="stages.items" [count]="stages.totalCount" [list]="list" [columnMode]="'force'" default>
+            <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <app-production-actions [stage]="row" [showBayDetails]="true" [showAssignBay]="true"
-                        (change)="list?.get()"></app-production-actions>
+                        (change)="list?.get()" [(isIssueModalVisible)]="isIssueModalVisible"></app-production-actions>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vin" [maxWidth]="150">
+            <ngx-datatable-column [name]="'::Vin' | abpLocalization" prop="vin" [canAutoResize]="false" [width]="150">
                 <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
                     <div class="align-items-center d-flex">
                         <a type="button" class="text-primary clickable" (click)="openCheckInModal(row)">
@@ -22,20 +22,19 @@
 
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName" [maxWidth]="150">
+            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName" [canAutoResize]="false" [width]="200">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     {{ row.ownerName | uppercase }}
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::Model' | abpLocalization" prop="modelName"
-                [maxWidth]="550"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color" [maxWidth]="150">
+            <ngx-datatable-column [name]="'::Model' | abpLocalization" prop="modelName"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color" [canAutoResize]="false" [width]="150">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     {{ row.color | uppercase }}
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus" [maxWidth]="140"
+            <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus" [canAutoResize]="false" [width]="140"
                 [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center badge bg-{{mapAvvStatus(row)}} link" (click)="openAvvModal(row)">
@@ -45,19 +44,25 @@
             </ngx-datatable-column>
 
 
-            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [maxWidth]="65" [sortable]="false">
+            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [canAutoResize]="false" [width]="65" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center text-{{getRecallColor(row)}}">
                         <i class="fas fa-bullhorn link" (click)="openRecallModal(row)"></i>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false"
-                [maxWidth]="100">
+            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false" [canAutoResize]="false" [width]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
 
                     <div class="text-center text-{{getEstRelease(row)}}">
                         <i class="fas fa-calendar-alt link" (click)="openEstReleaseModal(row)"></i>
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false" [canAutoResize]="false" [width]="70">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div class="text-center text-{{mapIssueStatusColor(row)}}">
+                        <i class="fas fa-triangle-exclamation link" (click)="isIssueModalVisible = true"></i>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
@@ -73,3 +78,5 @@
     (statusUpdated)="list.get()"></app-avv-status-modal>
 <app-est-release-modal #estReleaseModal (saved)="list.get()"></app-est-release-modal>
 <app-recalls [(visible)]="isRecallModalVisible" [carId]="selected?.carId" (submit)="list?.get()" />
+<app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
+        (submit)="list?.get()"></app-check-in-report-modal>

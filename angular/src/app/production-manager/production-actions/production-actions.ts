@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CarCreateEditModal } from 'src/app/cars/car-create-edit-modal/car-create-edit-modal';
 import { CarImagesModal } from 'src/app/cars/car-images-modal/car-images-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
@@ -28,12 +28,15 @@ export class ProductionActions {
   @Input() showDispatched = false;
 
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   isCarEditModalVisible: boolean = false;
   isImageModalVisible: boolean = false;
-  isIssueModalVisible: boolean = false;
   isAssignBayVisible: boolean = false;
   isProductionDetailVisible: boolean = false;
+
+  @Input() isIssueModalVisible: boolean = false;
+  @Output() isIssueModalVisibleChange = new EventEmitter<boolean>();
 
   editCar() {
     this.isCarEditModalVisible = true;
@@ -44,8 +47,9 @@ export class ProductionActions {
   }
 
   manageLogistics() {
+    const tab = this.route.snapshot.queryParams?.tab;
     this.router.navigate(['/logistics-details'], {
-      queryParams: { carId: this.stage?.carId, vin: this.stage?.vin },
+      queryParams: { carId: this.stage?.carId, vin: this.stage?.vin, returnUrl: window.location.pathname, tab: tab },
     });
   }
 

@@ -166,7 +166,7 @@ namespace WorkShopManagement.Cars
 
             // TO CHECK?? If car has same stage. simply update storage location 
 
-            if (storageLocation.Equals(StorageLocation.K2) || storageLocation.Equals(StorageLocation.TerrenceRd))
+            if (storageLocation.Equals(StorageLocation.K2) || storageLocation.Equals(StorageLocation.TerrenceRoad))
             {
                 // move to SCD Warehouse Stage
                 car = await ChangeStageAsync(car, Stage.ScdWarehouse);
