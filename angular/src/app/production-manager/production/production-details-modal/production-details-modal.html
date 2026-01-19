@@ -176,7 +176,15 @@
               <div class="position-absolute bottom-0 end-0 p-3">
                 <div class="d-flex flex-column align-items-end gap-2">
                   <!-- buttons row -->
+                    
                   <div class="d-flex flex-wrap justify-content-end gap-2">
+                     <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary px-4"
+                      (click)="openAssignBay()"
+                      [disabled]="movingStage || !details?.carId">
+                      {{ '::AssignToBay' | abpLocalization }}
+                    </button>
                      <div class="btn-group" ngbDropdown>
                     <button
                       type="button"
@@ -192,7 +200,7 @@
                       type="button"
                       (click)="moveToPostProduction()"
                       [disabled]="movingStage || !details?.carId || !allowMovetoPostProduction">
-                      {{ '::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
+                      {{ '::Post Production' | abpLocalization }}
                     </button>
 
                     <button
@@ -200,14 +208,14 @@
                       type="button"
                       (click)="moveToAwaitingTransportProduction()"
                       [disabled]="movingStage || !details?.carId || !allowMovetoAwaitingTransport">
-                      {{ '::Move to Awaiting Transport' | abpLocalization }}
+                      {{ '::Awaiting Transport' | abpLocalization }}
                     </button>
                     <button
                       ngbDropdownItem
                       type="button"
                       (click)="moveToDispatched()"
                       [disabled]="movingStage || !details?.carId">
-                      {{ '::Move to Dispatched' | abpLocalization }}
+                      {{ '::Dispatched' | abpLocalization }}
                     </button>
                   </div>
                   </div>
@@ -357,4 +365,9 @@
   <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" (submit)="loadSelectedCar()"></app-recalls>
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
   </app-critical-images-modal>
+  <app-assign-bay 
+  [(visible)]="isAssignBayVisible" 
+  [selected]="getSelectedStageDto()"
+  (submit)="onAssignBaySubmit()">
+</app-assign-bay>
 </abp-modal>
