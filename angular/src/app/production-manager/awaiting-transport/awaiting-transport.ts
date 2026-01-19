@@ -16,7 +16,7 @@ import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal
 import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
 import { ProductionActions } from '../production-actions/production-actions';
 import { StageDto } from 'src/app/proxy/stages';
-import { mapRecallStatusColor, mapEstReleaseStatusColor, mapAvvStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { mapRecallStatusColor, mapEstReleaseStatusColor, mapAvvStatusColor, mapIssueStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 
 @Component({
@@ -58,6 +58,7 @@ export class AwaitingTransport {
     isRecallModalVisible = false;
     isCheckInModalVisible = false;
     isAvvModalVisible = false;
+    isIssueModalVisible = false;
   
     loadBays() {
       if (!this.bayOptions.length) {
@@ -156,4 +157,7 @@ export class AwaitingTransport {
       return mapAvvStatusColor(row?.avvStatus);
     }
 
+    mapIssueStatusColor(row: StageDto): string {
+      return mapIssueStatusColor(row?.issueStatus);
+    }
 }

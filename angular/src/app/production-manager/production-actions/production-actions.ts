@@ -31,10 +31,12 @@ export class ProductionActions {
 
   isCarEditModalVisible: boolean = false;
   isImageModalVisible: boolean = false;
-  isIssueModalVisible: boolean = false;
   isAssignBayVisible: boolean = false;
   isProductionDetailVisible: boolean = false;
 
+  @Input() isIssueModalVisible: boolean = false;
+  @Output() isIssueModalVisibleChange = new EventEmitter<boolean>();
+  
   editCar() {
     this.isCarEditModalVisible = true;
   }

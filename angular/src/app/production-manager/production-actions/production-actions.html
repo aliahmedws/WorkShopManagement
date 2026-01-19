@@ -45,5 +45,5 @@
 <app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="stage?.carId" (stageChanged)="emitChange()"></app-production-details-modal>
 <app-car-create-edit-modal [(visible)]="isCarEditModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
 <app-car-images-modal [(visible)]="isImageModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
-<app-issue-modal [(visible)]="isIssueModalVisible" [carId]="stage?.carId"></app-issue-modal>
+<app-issue-modal [(visible)]="isIssueModalVisible" (visibleChange)="isIssueModalVisibleChange.emit($event)" [carId]="stage?.carId" (submit)="emitChange()"></app-issue-modal>
 <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="emitChange()"></app-assign-bay>

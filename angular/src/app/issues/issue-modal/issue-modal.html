@@ -1,4 +1,4 @@
-<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()"
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()" (disappear)="disappear()"
     [options]="modalOptions">
     <ng-template #abpHeader>
         @if (car?.vin) {
