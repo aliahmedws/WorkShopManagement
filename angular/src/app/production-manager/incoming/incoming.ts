@@ -36,8 +36,7 @@ export class Incoming {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
-
-  isOpenIssueModal = false; // To Do Later
+  isIssueModalVisible = false;
 
 
   // COMMON MODALS
@@ -59,10 +58,6 @@ export class Incoming {
   openNotesModal(row: StageDto): void {
     if (!row?.carId) return;
     this.notesModal.open(row.carId, row.notes);
-  }
-
-  openIssueModal() {
-    this.isOpenIssueModal = true;
   }
 
   onNotesSaved(e: { carId: string; notes: string }): void {
@@ -87,8 +82,8 @@ export class Incoming {
     return mapCreStatusColor(row?.creStatus);
   }
 
-  getIssueStatusColor(row: StageDto): string {
-    return mapIssueStatusColor(row?.issueStatus)
+  mapIssueStatusColor(row: StageDto): string {
+    return mapIssueStatusColor(row?.issueStatus);
   }
 
   

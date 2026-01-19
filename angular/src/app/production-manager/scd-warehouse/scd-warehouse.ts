@@ -56,7 +56,8 @@ export class ScdWarehouse {
     isCheckInModalVisible = false;
     isNotesModalVisible = false;
   
-    isOpenIssueModal = false; // To Do Later
+    isIssueModalVisible = false;
+
   
     // StorageLocation = StorageLocation;
   
@@ -105,9 +106,6 @@ export class ScdWarehouse {
       this.notesModal.open(row.carId, row.notes);
     }
   
-    openIssueModal() {
-      this.isOpenIssueModal = true;
-    }
   
     onNotesSaved(e: { carId: string; notes: string }): void {
       const row = this.stages.items?.find(x => x.carId === e.carId);
@@ -132,7 +130,7 @@ export class ScdWarehouse {
       return mapCreStatusColor(row?.creStatus);
     }
   
-    getIssueStatusColor(row: StageDto): string {
-      return mapIssueStatusColor(row?.issueStatus)
+    mapIssueStatusColor(row: StageDto): string {
+      return mapIssueStatusColor(row?.issueStatus);
     }
 }
