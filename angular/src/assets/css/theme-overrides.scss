@@ -203,13 +203,6 @@ $accent-info-light: #eef6f6;
     --lpx-container-active-text: #ffffff;
     --lpx-text-white: #ffffff;
     --lpx-text-grey: #d1d2d5;
-
-     /* Quality Gate colors (mapped to existing theme tokens) */
-    --qg-passed: var(--accent-success);
-    --qg-major:  var(--accent-danger);
-    --qg-minor:  var(--accent-warning);
-    --qg-open:   var(--accent-info);
-    --qg-reset:  var(--brand-secondary);
 }
 
 /* 3) Light vs dark tweaks (keep brand same) */
