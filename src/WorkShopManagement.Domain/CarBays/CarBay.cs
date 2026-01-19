@@ -78,6 +78,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     }
 
     public void SetPriority(Priority? priority) => Priority = priority;
+    public void SetBayId(Guid bayId) => BayId = bayId;
     public void SetBuildMaterialNumber(string? buildMaterialNumber) => BuildMaterialNumber = buildMaterialNumber?.Trim();
     public void SetUserId(Guid? userId) => UserId = userId;
     public void SetDateTimeIn(DateTime? dateTimeIn) => DateTimeIn = dateTimeIn;

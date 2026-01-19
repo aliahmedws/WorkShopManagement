@@ -19,7 +19,7 @@ export interface CreateArrivalEstimateDto {
 }
 
 export interface UpdateArrivalEstimateDto {
-  notes: string;
+  notes?: string;
   entityAttachments: EntityAttachmentDto[];
   tempFiles: FileAttachmentDto[];
 }

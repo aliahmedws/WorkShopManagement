@@ -118,5 +118,4 @@ export interface UpdateCarBayDto {
   pulseNumber?: string;
   canProgress?: boolean;
   jobCardCompleted?: boolean;
-  concurrencyStamp: string;
 }

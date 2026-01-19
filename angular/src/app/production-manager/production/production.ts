@@ -112,7 +112,7 @@ export class Production implements OnInit {
 
   onDetailsClosed(): void {
     this.reloadActiveBays();
-    this.refreshRequested.emit();
+    // this.refreshRequested.emit();
   }
 
   onDeleteClick(bay: StageBayDto, ev: MouseEvent) {
@@ -127,7 +127,7 @@ export class Production implements OnInit {
       this.carBayService.delete(bay.carBayId).subscribe(() => {
         this.toaster.deleted();
         this.reloadActiveBays();
-        this.refreshRequested.emit();
+        // this.refreshRequested.emit();
       });
     });
   }

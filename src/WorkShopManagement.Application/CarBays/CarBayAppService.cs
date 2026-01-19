@@ -125,6 +125,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     {
         var entity = await _manager.UpdateAsync(
             id,
+            input.BayId,
             input.Priority,
             input.BuildMaterialNumber,
             input.UserId,
@@ -153,10 +154,11 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
-        if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
-        {
-            entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
-        }
+        //if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
+        //{
+        //    entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+        //}
+        await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
 
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }

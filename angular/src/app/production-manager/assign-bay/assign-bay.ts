@@ -1,7 +1,7 @@
 import { Confirmation } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { priorityOptions, Priority, CreateCarBayDto, CarBayService } from 'src/app/proxy/car-bays';
+import { priorityOptions, Priority, CreateCarBayDto, CarBayService, UpdateCarBayDto } from 'src/app/proxy/car-bays';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { StageDto } from 'src/app/proxy/stages';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
@@ -63,6 +63,21 @@ export class AssignBay {
         if (status !== Confirmation.Status.confirm) return;
 
         const { bayId, priority } = this.form.value;
+
+        if(this.selected.carBayId) {
+          const updateInput: UpdateCarBayDto = {
+            carId: this.selected.carId!,
+            bayId,
+            priority,
+            isActive: true
+          }
+
+          this.carBayService.update(this.selected.carBayId, updateInput).subscribe(() => {
+            this.submit.emit();
+            this.close();
+          });
+          return;
+        }
 
         const input: CreateCarBayDto = {
           carId: this.selected.carId!,
