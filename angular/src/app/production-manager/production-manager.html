@@ -29,13 +29,13 @@
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.7' | abpLocalization">
-                <app-dispatched [cars]="cars" [(filters)]="filters" [list]="list"></app-dispatched>
+                <app-dispatched [stages]="stages" [(filters)]="filters" [list]="list"></app-dispatched>
             </nz-tab>
 
         </nz-tabs>
 
         @if (selectedIndex === 3) {
-            <app-production [filters]="filters" (refreshRequested)="list.get()"></app-production>
+            <app-production [filters]="filters"></app-production>
         }
 
     </app-topbar-layout>

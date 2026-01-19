@@ -47,6 +47,8 @@ export class ExternalWarehouse {
 
   isAssignModalVisible = false;
   selectedCarBay = {} as CarBayDto;   // to review later
+  isIssueModalVisible = false;
+
 
 
   // ====== ASSIGN MODAL ^
@@ -67,7 +69,6 @@ export class ExternalWarehouse {
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
 
-  isOpenIssueModal = false; // To Do Later
 
   // StorageLocation = StorageLocation;
 
@@ -177,9 +178,6 @@ export class ExternalWarehouse {
     this.notesModal.open(row.carId, row.notes);
   }
 
-  openIssueModal() {
-    this.isOpenIssueModal = true;
-  }
 
   onNotesSaved(e: { carId: string; notes: string }): void {
     const row = this.stages.items?.find(x => x.carId === e.carId);
@@ -206,5 +204,9 @@ export class ExternalWarehouse {
 
   getIssueStatusColor(row: StageDto): string {
     return mapIssueStatusColor(row?.issueStatus)
+  }
+
+  mapIssueStatusColor(row: StageDto): string {
+    return mapIssueStatusColor(row?.issueStatus);
   }
 }

@@ -24,7 +24,9 @@ import {
   mapRecallStatusColor,
   mapEstReleaseStatusColor,
   mapAvvStatus as mapAvvStatusColor,
+  mapIssueStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
+import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 
 @Component({
   selector: 'app-post-production',
@@ -33,7 +35,8 @@ import {
     AvvStatusModal,
     ProductionActions,
     EstReleaseModal,
-    Recalls
+    Recalls,
+    CheckInReportModal
   ],
   templateUrl: './post-production.html',
   styleUrl: './post-production.scss',
@@ -71,6 +74,7 @@ export class PostProduction {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isAvvModalVisible = false;
+  isIssueModalVisible = false;
 
   loadBays() {
     if (!this.bayOptions.length) {
@@ -167,5 +171,9 @@ export class PostProduction {
 
   mapAvvStatus(row: StageDto): string {
     return mapAvvStatusColor(row?.avvStatus);
+  }
+
+  mapIssueStatusColor(row: StageDto): string {
+    return mapIssueStatusColor(row?.issueStatus);
   }
 }

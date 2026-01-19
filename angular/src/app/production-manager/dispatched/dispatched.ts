@@ -2,7 +2,7 @@ import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
+import { CarBayDto, CarBayService, CreateCarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
 import { CarService, CarDto } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
@@ -12,80 +12,149 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionActions } from '../production-actions/production-actions';
 import { AvvStatusModal } from "../mini-modals/avv-status-modal/avv-status-modal";
 import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
+import { StageDto } from 'src/app/proxy/stages';
+import { mapRecallStatusColor, mapEstReleaseStatusColor, mapAvvStatusColor, mapIssueStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 
 @Component({
   selector: 'app-dispatched',
-  imports: [...SHARED_IMPORTS, ProductionActions, AvvStatusModal, EstReleaseModal],
+  imports: [...SHARED_IMPORTS, AvvStatusModal, EstReleaseModal, ProductionActions, Recalls, CheckInReportModal],
   templateUrl: './dispatched.html',
   styleUrl: './dispatched.scss'
 })
 export class Dispatched {
-  @ViewChild('estReleaseModal', { static: true })
-  estReleaseModal!: EstReleaseModal;
-
-  private readonly lookupService = inject(LookupService);
-
-  form!: FormGroup;
-  StorageLocation = StorageLocation;
-  isAvvModalVisible = false;
-
-  @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
-
-  @Input() filters: any = {};
-  @Output() filtersChange = new EventEmitter<any>();
-  @Input() list: ListService;
-
-  selectedCar = {} as CarDto;
-  selectedId?: string;            // REMOVE THIS. Instead send the whole CarDto object
-
-  isAssignModalVisible = false;
-
-  bayOptions: GuidLookupDto[] = [];
-  selectedCarBay = {} as CarBayDto;
-
-  priority = Priority;
-  aVVStatusOptions = avvStatusOptions;
-
-  isRecallModalVisible = false;
-  isCheckInModalVisible = false;
-
-
-  loadBays() {
-    if (!this.bayOptions.length) {
-      this.lookupService
-        .getBays()
-        .subscribe(res => {
+ @ViewChild('detailsModal') detailsModal!: ProductionDetailsModal; //Bay
+  
+    @ViewChild('estReleaseModal', { static: true })
+    estReleaseModal!: EstReleaseModal;
+  
+    private readonly carBayService = inject(CarBayService);
+    private readonly lookupService = inject(LookupService);
+    private readonly fb = inject(FormBuilder);
+    private readonly toaster = inject(ToasterHelperService);
+  
+    form!: FormGroup;
+    StorageLocation = StorageLocation;
+  
+    @Input() stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
+  
+    @Input() filters: any = {};
+    @Output() filtersChange = new EventEmitter<any>();
+    @Input() list: ListService;
+  
+    selected = {} as StageDto;
+    selectedId?: string; // REMOVE THIS. Instead send the whole CarDto object
+  
+    isAssignModalVisible = false;
+  
+    bayOptions: GuidLookupDto[] = [];
+    selectedCarBay = {} as CarBayDto;
+  
+    priority = Priority;
+  
+    isRecallModalVisible = false;
+    isCheckInModalVisible = false;
+    isAvvModalVisible = false;
+    isIssueModalVisible = false;
+  
+    loadBays() {
+      if (!this.bayOptions.length) {
+        this.lookupService.getBays().subscribe(res => {
           this.bayOptions = res;
-        })
+        });
+      }
     }
-  }
-
-  openRecallModal(car: CarDto): void {
-    this.selectedCar = car;
-    this.isRecallModalVisible = true;
-  }
-
-  openCheckInModal(car: CarDto): void {
-    this.selectedCar = car;
-    this.isCheckInModalVisible = true;
-  }
-
-openAvvModal(car: CarDto): void {
-    this.selectedCar = car;
-    this.isAvvModalVisible = true;
-  }
-
-   openEstReleaseModal(row: CarDto): void {
-    if (!row?.id) return;
-    this.estReleaseModal.open(row.id, row.deliverDate ?? null);
-  }
-
-  onEstReleaseSaved(e: { carId: string; date: Date | null }): void {
-    const row = this.cars.items?.find(x => x.id === e.carId);
-    if (row) {
-      (row as any).deliverDate = e.date;
+  
+    private buildForm(): void {
+      this.form = this.fb.group({
+        manufactureStartDate: [
+          this.selectedCarBay.manufactureStartDate || null,
+          [Validators.required],
+        ],
+        bayId: [this.selectedCarBay.bayId || null, [Validators.required]],
+        priority: [this.selectedCarBay.priority || Priority.Medium, [Validators.required]],
+      });
     }
-    this.list.get();
-  }
+  
+    openAssignModal(carId: string): void {
+      this.selectedId = carId;
+      this.loadBays();
+      this.buildForm();
+      this.isAssignModalVisible = true;
+    }
+  
+    closeAssignModal(): void {
+      this.isAssignModalVisible = false;
+      // this.selectedCarBay = {};
+      this.selectedId = undefined;
+    }
+  
+    assignToBay(): void {
+      if (!this.selectedId) return;
+  
+      this.form.markAllAsTouched();
+      if (this.form.invalid) return;
+  
+      const { manufactureStartDate, bayId, priority } = this.form.value;
+  
+      const input: CreateCarBayDto = {
+        carId: this.selectedId,
+        bayId,
+        priority,
+        isActive: true,
+        manufactureStartDate,
+      };
+  
+      this.carBayService.create(input).subscribe(() => {
+        this.toaster.assign();
+        this.isAssignModalVisible = false;
+        this.list.get();
+      });
+    }
+  
+    openRecallModal(stage: StageDto): void {
+      this.selected = stage;
+      this.isRecallModalVisible = true;
+    }
+  
+    openCheckInModal(stage: StageDto): void {
+      this.selected = stage;
+      this.isCheckInModalVisible = true;
+    }
+  
+    openProductionDetails(row: CarDto): void {
+      if (!row.id) return;
+      // this.detailsModal.open(row.id, false, true);
+    }
+  
+    onStageChanged(carId: string) {
+      this.list.get();
+      this.toaster.success('::SuccessfullyMovedToNextStage', '::Success');
+    }
+  
+    openAvvModal(stage: StageDto): void {
+      this.selected = stage;
+      this.isAvvModalVisible = true;
+    }
+  
+    openEstReleaseModal(row: StageDto): void {
+      if (!row?.carId) return;
+      this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    }
+  
+    getRecallColor(row: StageDto): string {
+      return mapRecallStatusColor(row?.recallStatus);
+    }
+  
+    getEstRelease(row: StageDto): string {
+      return mapEstReleaseStatusColor(row?.estimatedRelease);
+    }
+  
+    mapAvvStatus(row: StageDto): string {
+      return mapAvvStatusColor(row?.avvStatus);
+    }
 
+    mapIssueStatusColor(row: StageDto): string {
+      return mapIssueStatusColor(row?.issueStatus);
+    }
 }

@@ -4,7 +4,7 @@
             <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <app-production-actions [stage]="row" [showAssignBay]="false" [showBayDetails]="false"
-                        (change)="list?.get()"></app-production-actions>
+                        (change)="list?.get()" [(isIssueModalVisible)]="isIssueModalVisible"></app-production-actions>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Vin' | abpLocalization" [canAutoResize]="false" [width]="150" prop="vin">
@@ -21,27 +21,33 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName" [canAutoResize]="false" [width]="200"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Owner' | abpLocalization" prop="ownerName" [canAutoResize]="false"
+                [width]="200">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    {{ value | uppercase }}
+                </ng-template>
+            </ngx-datatable-column>
 
             <ngx-datatable-column [name]="'::Model' | abpLocalization" prop="modelName">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <span abpEllipsis>{{ row.modelName }}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color" [canAutoResize]="false" [width]="150">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    <span>{{ row.color | uppercase }}</span>
+            <ngx-datatable-column [name]="'::Color' | abpLocalization" prop="color" [canAutoResize]="false"
+                [width]="150">
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                    <span>{{ value | uppercase }}</span>
                 </ng-template>
 
             </ngx-datatable-column>
 
             <!-- INCOMING / WAREHOUSE -->
-            <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd">
+            <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd" [sortable]="false">
                 <ng-template let-value="value" ngx-datatable-cell-template>
                     {{ value | date:'shortDate' }}
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Port' | abpLocalization" prop="port">
+            <ngx-datatable-column [name]="'::Port' | abpLocalization" prop="port" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     {{ row?.port ? ('::Enum:Port.' + row.port | abpLocalization) : '-' }}
                 </ng-template>
@@ -58,14 +64,16 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column> -->
-            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [canAutoResize]="false" [width]="65" [sortable]="false">
+            <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [canAutoResize]="false" [width]="65"
+                [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center text-{{getRecallColor(row)}}">
                         <i class="fas fa-bullhorn link" (click)="openRecallModal(row)"></i>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Notes' | abpLocalization" [canAutoResize]="false" [width]="65" [sortable]="false">
+            <ngx-datatable-column [name]="'::Notes' | abpLocalization" [canAutoResize]="false" [width]="65"
+                [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center text-{{getNoteColor(row)}}">
                         <i class="fas fa-message link" (click)="openNotesModal(row)"></i>
@@ -73,7 +81,8 @@
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false" [canAutoResize]="false" [width]="100">
+            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false"
+                [canAutoResize]="false" [width]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
 
                     <div class="text-center text-{{getEstRelease(row)}}">
@@ -81,23 +90,31 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
+            <ngx-datatable-column [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false"
+                [canAutoResize]="false" [width]="70">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="badge bg-{{getCreStatusColor(row)}}">
-                        {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : '-' }}
+                    <div class="text-center text-{{mapIssueStatusColor(row)}}">
+                        <i class="fas fa-triangle-exclamation link" (click)="isIssueModalVisible = true"></i>
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-
+            <ngx-datatable-column [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div class="badge bg-{{getCreStatusColor(row)}}">
+                        {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : 'CRE' }}
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
             <!-- ---------- ACTIONS GROUP END --------- -->
 
             <!-- -----INCOMING / WAREHOUSE----- -->
-            <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization"
-                prop="bookingNumber"></ngx-datatable-column>
-            <ngx-datatable-column [name]="'::ClearingAgent' | abpLocalization"
-                prop="clearingAgent"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::BookingNumber' | abpLocalization" prop="bookingNumber"
+                [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'::ClearingAgent' | abpLocalization" prop="clearingAgent"
+                [sortable]="false"></ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::Modified' | abpLocalization" prop="lastModificationTime" [canAutoResize]="false" [width]="100">
+            <ngx-datatable-column [name]="'::Modified' | abpLocalization" prop="lastModificationTime"
+                [canAutoResize]="false" [width]="100">
                 <ng-template let-value="value" ngx-datatable-cell-template>
                     {{ value | date:'shortDate' }}
                 </ng-template>
