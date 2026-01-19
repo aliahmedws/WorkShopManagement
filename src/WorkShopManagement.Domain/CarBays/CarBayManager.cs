@@ -95,6 +95,7 @@ public class CarBayManager : DomainService
 
     public virtual async Task<CarBay> UpdateAsync(
         Guid id,
+        Guid bayId,
         Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
@@ -127,6 +128,7 @@ public class CarBayManager : DomainService
         await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
         await EnsureBayIsNotAlreadyActiveAsync(entity.BayId, isActive, ignoreId: null);
 
+        entity.SetBayId(bayId);
 
         //var existing = await _carBayRepository.FindByCarIdAsync(entity.CarId, entity.BayId);
 
@@ -235,6 +237,7 @@ public class CarBayManager : DomainService
         entity.SetJobCardCompleted(jobCardCompleted);
     }
 
+    //remove this if we want to reassign bay.
     private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
     {
         if (isActive != true)

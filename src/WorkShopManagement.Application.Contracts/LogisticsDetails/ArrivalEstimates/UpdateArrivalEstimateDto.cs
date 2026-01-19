@@ -8,7 +8,6 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
 {
     public class UpdateArrivalEstimateDto
     {
-        [Required]
 
         [StringLength(ArrivalEstimateConsts.MaxNotesLength)]
         public string? Notes { get; set; }

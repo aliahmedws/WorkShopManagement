@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
@@ -8,6 +17,8 @@ import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-
 import { StageBayDto, StageDto, StageService } from 'src/app/proxy/stages';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { mapIssueStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
+import { Confirmation } from '@abp/ng.theme.shared';
 
 @Component({
   selector: 'app-production',
@@ -20,12 +31,14 @@ export class Production implements OnInit {
   @Input() filters = {} as GetCarListInput;
   @Output() refreshRequested = new EventEmitter<void>();
 
-
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: StageBayDto[] = [];
   stages: StageDto[] = [];
 
   carId?: string;
+  carBayId?: string;
+
+  // bayId 
 
   Priority = Priority;
 
@@ -36,33 +49,22 @@ export class Production implements OnInit {
   constructor(
     private readonly lookupService: LookupService,
     private readonly carBayService: CarBayService,
-    private readonly stageService: StageService, 
+    private readonly stageService: StageService,
+    private readonly confimration: ConfirmationHelperService,
+    private readonly toaster: ToasterHelperService,
   ) {}
 
   ngOnInit(): void {
     this.lookupService.getBays().subscribe(res => (this.bayOptions = res || []));
     this.reloadActiveBays();
-    this.loadProductionStages();
   }
 
-  loadProductionStages(): void {
-  // this.stageService.getStage({
-  //   stage: Stage.Production,
-  //   skipCount: 0,
-  //   maxResultCount: 1000,
-  // } as any).subscribe(res => {
-  //   this.stages = res.items || [];
-  // });
-}
-
-getStageCar(carId: string) {
-  return this.stages.find(x => x.carId === carId);
-}
-
+  getStageCar(carId: string) {
+    return this.stages.find(x => x.carId === carId);
+  }
 
   reloadActiveBays(): void {
-
-    this.stageService.getBays().subscribe(res => this.activeCarBays = res || []);
+    this.stageService.getBays().subscribe(res => (this.activeCarBays = res || []));
     // this.carBayService.getList({ isActive: true, maxResultCount: 1000 } as any)
     //   .subscribe(res => (this.activeCarBays = res?.items || []));
   }
@@ -76,6 +78,7 @@ getStageCar(carId: string) {
     // const a = this.getAssignment(bay.id);
     if (!bay?.carId) return;
     this.carId = bay.carId;
+    // this.carBayId = bay.bayId;
     this.isProductionDetailVisible = true;
     // safest: detailsModal exists after view init because it's in template
     // this.detailsModal?.open(bay.carId, true, false);
@@ -109,6 +112,23 @@ getStageCar(carId: string) {
 
   onDetailsClosed(): void {
     this.reloadActiveBays();
-    this.refreshRequested.emit();
+    // this.refreshRequested.emit();
+  }
+
+  onDeleteClick(bay: StageBayDto, ev: MouseEvent) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    if (!bay?.carBayId) return;
+
+    this.confimration.confirmClearBay().subscribe(status => {
+      if (status !== Confirmation.Status.confirm) return;
+
+      this.carBayService.delete(bay.carBayId).subscribe(() => {
+        this.toaster.deleted();
+        this.reloadActiveBays();
+        // this.refreshRequested.emit();
+      });
+    });
   }
 }

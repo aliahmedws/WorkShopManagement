@@ -14,6 +14,13 @@ export const ACTION_CONFIRMATION_OPTIONS: Confirmation.Options = {
   icon: 'fas fa-circle-question text-warning',
 } as const;
 
+export const CLEAR_BAY_CONFIRMATION_OPTIONS: Confirmation.Options = {
+  yesText: '::Button:Confirm',
+  cancelText: '::Button:Cancel',
+  icon: 'fas fa-circle-xmark text-warning',
+} as const;
+
+
 @Injectable({ providedIn: 'root' })
 export class ConfirmationHelperService {
   constructor(private confirmation: ConfirmationService) { }
@@ -33,6 +40,16 @@ export class ConfirmationHelperService {
     titleKey: string,
     options: Confirmation.Options = ACTION_CONFIRMATION_OPTIONS
   ): Observable<Confirmation.Status> {
-    return this.confirmation.warn(messageKey, titleKey, options);
+  return this.confirmation.warn(messageKey, titleKey, options);
   }
+
+  confirmClearBay(): Observable<Confirmation.Status> {
+    return this.confirmation.warn(
+      '::ConfirmClearBayMessage',
+      '::ConfirmClearBayTitle',
+      CLEAR_BAY_CONFIRMATION_OPTIONS
+    );
+  }
+
+  
 }

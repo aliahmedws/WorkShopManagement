@@ -16,16 +16,19 @@ namespace WorkShopManagement.CarBays;
 public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
+    private readonly ICarRepository _carRepository;
     private readonly CarBayManager _manager;
     private readonly CarManager _carManager;
 
     public CarBayAppService(
         ICarBayRepository repository,
+        ICarRepository carRepository,
         CarBayManager manager,
         CarManager carManager
         )
     {
         _repository = repository;
+        _carRepository = carRepository;
         _manager = manager;
         _carManager = carManager;
     }
@@ -46,7 +49,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 
         dto.CheckLists?.ForEach(cl =>
         {
-            entity.Progress.TryGetValue(cl.Id, out var progressStatus);
+            entity!.Progress.TryGetValue(cl.Id, out var progressStatus);
             cl.ProgressStatus = progressStatus;
         });
 
@@ -80,6 +83,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Create)]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
+
         var entity = await _manager.CreateAsync(
             input.CarId,
             input.BayId,
@@ -121,6 +125,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     {
         var entity = await _manager.UpdateAsync(
             id,
+            input.BayId,
             input.Priority,
             input.BuildMaterialNumber,
             input.UserId,
@@ -149,10 +154,11 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
-        if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
-        {
-            entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
-        }
+        //if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
+        //{
+        //    entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+        //}
+        await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
 
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
@@ -160,7 +166,18 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _repository.DeleteAsync(id);
+        var carBay = await _repository.GetAsync(id);
+
+        //carBay.SetIsActive(false);
+        //carBay.SetDateTimeOut(Clock.Now); // optional: if you use this
+
+
+        var car = await _carRepository.GetAsync(carBay.CarId);
+        await _carManager.ChangeStageAsync(car, Stage.ScdWarehouse);
+
+        // make car bay in active 
+        await _repository.UpdateAsync(carBay, autoSave: true);            // to review
+
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]

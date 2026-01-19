@@ -80,6 +80,7 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.FileAttachments)
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.ModelCategory)
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.CheckLists)
+            .Include(x => x.Car).ThenInclude(x => x!.LogisticsDetail)
             .FirstOrDefaultAsync();
 
         var progressMap = new Dictionary<Guid, CheckListProgressStatus>();

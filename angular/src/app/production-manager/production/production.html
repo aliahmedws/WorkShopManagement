@@ -38,7 +38,7 @@
                                     </span>
 
                                     <button type="button" class="btn btn-sm btn-link text-danger p-0 bay-clear"
-                                        *ngIf="bay.bayId" (click)="onDelete(bay.bayId, $event)" aria-label="Clear bay"
+                                        *ngIf="bay.bayId" (click)="onDeleteClick(bay, $event)" aria-label="Clear bay"
                                         title="Clear bay">
                                         ✕
                                     </button>
@@ -100,5 +100,5 @@
 </div>
 
 <!-- your grid / bay cards html stays the same -->
-<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="carId" (stageChanged)="onStageChanged()" (closed)="onDetailsClosed()"></app-production-details-modal>
+<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="carId"  (stageChanged)="onStageChanged()" (closed)="onDetailsClosed()"></app-production-details-modal>
 <!-- <app-production-details-modal #detailsModal (stageChanged)="onStageChanged($event)" (closed)="onDetailsClosed()"></app-production-details-modal> -->

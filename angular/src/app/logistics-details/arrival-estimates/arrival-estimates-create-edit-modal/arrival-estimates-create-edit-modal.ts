@@ -108,7 +108,8 @@ export class ArrivalEstimatesCreateEditModal {
       });
     }
   }
-
+  
+  
   handleSuccess() {
     this.toaster.createdOrUpdated(this.isEdit ? '::SuccessfullyUpdated' : '::SuccessfullyCreated');
     this.loading = false;
@@ -118,6 +119,8 @@ export class ArrivalEstimatesCreateEditModal {
 
   close() {
     this.visible = false;
+    this.tempFiles = [];
+    this.existingFiles = [];
     this.visibleChange.emit(this.visible);
   }
 }

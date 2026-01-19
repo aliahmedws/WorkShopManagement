@@ -204,7 +204,7 @@ namespace WorkShopManagement.Cars
             var oldStage = car.Stage;
 
             // REVIEW THIS: 
-            if (oldStage == Stage.Production &&  targetStage == Stage.PostProduction)
+            if (oldStage == Stage.Production)
             {
                 var activeBay = await _carBayRepository.FindActiveByCarIdAsync(car.Id);
                 
@@ -216,11 +216,11 @@ namespace WorkShopManagement.Cars
                         await _carBayManager.ToggleClockAsync(activeBay.Id, Clock.ConvertToUserTime(Clock.Now));
                     }
                 }
-                //await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);
+                await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);            // 
             }
 
             car.SetStage(targetStage, logisticsDetail);
-            //await _carRepository.UpdateAsync(car, autoSave: true);
+            await _carRepository.UpdateAsync(car, autoSave: true);
 
             return car;
         }
