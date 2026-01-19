@@ -32,6 +32,8 @@ namespace WorkShopManagement.Cars
             _carBayManager = carBayManager;
         }
 
+
+
         /// <summary>
         /// Creates a new Car. Stage is always Incoming by design.
         /// </summary>
@@ -140,7 +142,7 @@ namespace WorkShopManagement.Cars
 
         public async Task<Car> ChangeStorageLocation(Car car, StorageLocation storageLocation)
         {
-            
+
             // validate storage location
             if (!Enum.IsDefined(storageLocation))
             {
@@ -175,17 +177,19 @@ namespace WorkShopManagement.Cars
                 car = await ChangeStageAsync(car, Stage.ExternalWarehouse);
             }
 
-                
-            
+
+
             car.SetStorageLocation(storageLocation);
             //await _carRepository.UpdateAsync(car, autoSave: true);
             return car;
 
         }
 
-      
         public async Task<Car> ChangeStageAsync(Car car, Stage targetStage)
         {
+            if (car.Stage == targetStage)
+                return car;
+
             // Only load logistics when the target stage requires it 
             LogisticsDetail? logisticsDetail = null;
             //logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(car.Id);
@@ -204,19 +208,22 @@ namespace WorkShopManagement.Cars
             var oldStage = car.Stage;
 
             // REVIEW THIS: 
-            if (oldStage == Stage.Production)
+            if (oldStage == Stage.Production && targetStage != Stage.Production)
             {
                 var activeBay = await _carBayRepository.FindActiveByCarIdAsync(car.Id);
-                
+
                 if (activeBay != null)
                 {
                     activeBay.SetIsActive(false);
+                    activeBay.SetDateTimeOut(Clock.Now);
+
                     if (activeBay.ClockInStatus == ClockInStatus.ClockedIn)
                     {
                         await _carBayManager.ToggleClockAsync(activeBay.Id, Clock.ConvertToUserTime(Clock.Now));
                     }
+                    await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);            // 
                 }
-                await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);            // 
+
             }
 
             car.SetStage(targetStage, logisticsDetail);
@@ -228,7 +235,7 @@ namespace WorkShopManagement.Cars
         /// <summary>
         /// Stage change with validation that may require LogisticsDetail.
         /// </summary>
-       
+
 
         private static void ValidateStageChange(Car car, Stage targetStage, LogisticsDetail? logisticsDetail)
         {
@@ -323,7 +330,6 @@ namespace WorkShopManagement.Cars
             car = await ChangeStageAsync(car, targetStage);
             return car;
         }
-
 
     }
 }

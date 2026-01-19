@@ -70,6 +70,7 @@ export class ProductionDetailsModal {
   selectedCar?: CarDto;
 
   @Input() carId?: string;
+  @Input() carBayId?: string;
   details?: CarBayDto;
   carNotes = '';
 
