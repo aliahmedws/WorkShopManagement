@@ -165,7 +165,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     {
         var carBay = await _repository.GetAsync(id);
 
-        carBay.SetIsActive(false);
+        //carBay.SetIsActive(false);
         //carBay.SetDateTimeOut(Clock.Now); // optional: if you use this
 
         await _repository.UpdateAsync(carBay, autoSave: true);

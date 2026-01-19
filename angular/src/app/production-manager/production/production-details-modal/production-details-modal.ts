@@ -301,6 +301,32 @@ export class ProductionDetailsModal {
       });
   }
 
+  moveToDispatched() {
+    const carId = this.details?.carId;
+    if (!carId || this.movingStage) return;
+
+    this.confirm
+      .confirmAction(
+        '::ConfirmMoveToDispatchedMessage',
+        '::ConfirmMoveToDispatched'
+      )
+      .subscribe((status: Confirmation.Status) => {
+        if (status !== Confirmation.Status.confirm) return;
+
+        this.movingStage = true;
+        this.carService.changeStage(carId, { targetStage: Stage.Dispatched }).subscribe({
+          next: () => {
+            this.movingStage = false;
+            this.close();
+            this.stageChanged.emit(carId);
+          },
+          error: () => {
+            this.movingStage = false;
+          },
+        });
+      });
+  }
+
   printProductionSticker(): void {
     const fullVin = this.details?.carVin || (this.selectedCar as any)?.vin;
     if (!fullVin) return;
