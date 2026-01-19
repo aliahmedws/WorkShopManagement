@@ -90,6 +90,7 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open(): void {
+    this.details = undefined;
     this.loadDetails();
     this.loadSelectedCar();
   }
@@ -110,9 +111,8 @@ export class ProductionDetailsModal {
   close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.details = undefined;
-    this.form = undefined;
-    this.carId = undefined;
+    // this.form = undefined;
+    // this.carId = undefined;
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
