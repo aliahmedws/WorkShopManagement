@@ -36,7 +36,7 @@ export class Production implements OnInit {
   stages: StageDto[] = [];
 
   carId?: string;
-  carBayId?: string;
+  // carBayId?: string;
 
   // bayId 
 

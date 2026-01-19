@@ -49,7 +49,7 @@ public class CarBayManager : DomainService
         Check.NotNull(carId, nameof(carId));
         Check.NotNull(bayId, nameof(bayId));
 
-        await EnsureNoOtherActiveBayForCarAsync(carId, isActive, ignoreId: null);
+        //await EnsureNoOtherActiveBayForCarAsync(carId, isActive, ignoreId: null);
         await EnsureBayIsNotAlreadyActiveAsync(bayId, isActive, ignoreId: null);
 
 
@@ -125,8 +125,8 @@ public class CarBayManager : DomainService
     {
         var entity = await _carBayRepository.GetAsync(id);
 
-        await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
-        await EnsureBayIsNotAlreadyActiveAsync(entity.BayId, isActive, ignoreId: null);
+        //await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
+        await EnsureBayIsNotAlreadyActiveAsync(bayId, isActive, ignoreId: null);
 
         entity.SetBayId(bayId);
 
@@ -238,21 +238,21 @@ public class CarBayManager : DomainService
     }
 
     //remove this if we want to reassign bay.
-    private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
-    {
-        if (isActive != true)
-            return;
+    //private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
+    //{
+    //    if (isActive != true)
+    //        return;
 
-        var active = await _carBayRepository.FindActiveByCarIdAsync(carId);
+    //    var active = await _carBayRepository.FindActiveByCarIdAsync(carId);
 
-        if (active == null)
-            return;
+    //    if (active == null)
+    //        return;
 
-        if (ignoreId.HasValue && active.Id == ignoreId.Value)
-            return;
+    //    if (ignoreId.HasValue && active.Id == ignoreId.Value)
+    //        return;
 
-        throw new UserFriendlyException("Car already has an active bay.");
-    }
+    //    throw new UserFriendlyException("Car already has an active bay.");
+    //}
 
     private async Task EnsureBayIsNotAlreadyActiveAsync(Guid bayId, bool? isActive, Guid? ignoreId)
     {
