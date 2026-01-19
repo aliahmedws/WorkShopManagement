@@ -122,9 +122,9 @@
                 <div class="form-group">
                     <label class="form-label">{{ '::CompliancePlatePrinted' | abpLocalization }}</label>
                     <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="compliancePlatePrinted">
-                        @for (option of choiceOptions; track option) {
-                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
-                            [nzValue]="option"></nz-option>
+                        @for (option of choiceOptions; track option.value) {
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option.value) | abpLocalization"
+                            [nzValue]="option.value"></nz-option>
                         }
                     </nz-select>
                 </div>
@@ -155,7 +155,7 @@
         <button type="button" class="btn btn-outline-primary me-4">
             {{ '::AvcStickersNew' | abpLocalization }}
         </button> -->
-        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+        <button abpClose type="button" class="btn btn-outline-secondary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
         <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">

@@ -47,10 +47,20 @@ public class BayAppService : ApplicationService, IBayAppService
         {
             items = await queryable.ToListAsync();
 
-            items = [.. items
-                .OrderBy(x => BayHelper.GetNamePrefix(x.Name))
-                .ThenBy(x => BayHelper.GetTrailingNumberOrMax(x.Name))
-                .ThenBy(x => x.Name)];
+            if (input.Sorting != null && input.Sorting.Contains("desc"))
+            {
+                items = [.. items
+                    .OrderByDescending(x => BayHelper.GetNamePrefix(x.Name))
+                    .ThenByDescending(x => BayHelper.GetTrailingNumberOrMax(x.Name))
+                    .ThenByDescending(x => x.Name)];
+            }
+            else
+            {
+                items = [.. items
+                    .OrderBy(x => BayHelper.GetNamePrefix(x.Name))
+                    .ThenBy(x => BayHelper.GetTrailingNumberOrMax(x.Name))
+                    .ThenBy(x => x.Name)];
+            }
         }
 
         var dtos = ObjectMapper.Map<List<Bay>, List<BayDto>>(items);

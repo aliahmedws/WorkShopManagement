@@ -47,7 +47,12 @@ export class ExternalWarehouse {
 
   isAssignModalVisible = false;
   selectedCarBay = {} as CarBayDto;   // to review later
-  isIssueModalVisible = false;
+  
+  issueModalVisible: Record<string, boolean> = {};
+  openIssueModal(row: any): void {
+    if (!row?.carId) return;
+    this.issueModalVisible[row.carId] = true;
+  }
 
 
 

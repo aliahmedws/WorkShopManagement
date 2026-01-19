@@ -70,6 +70,7 @@ export class ProductionDetailsModal {
   selectedCar?: CarDto;
 
   @Input() carId?: string;
+  @Input() carBayId?: string;
   details?: CarBayDto;
   carNotes = '';
 
@@ -89,6 +90,7 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open(): void {
+    this.details = undefined;
     this.loadDetails();
     this.loadSelectedCar();
   }
@@ -109,9 +111,8 @@ export class ProductionDetailsModal {
   close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
-    this.details = undefined;
-    this.form = undefined;
-    this.carId = undefined;
+    // this.form = undefined;
+    // this.carId = undefined;
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
@@ -120,7 +121,6 @@ export class ProductionDetailsModal {
   }
 
   private loadDetails(): void {
-    debugger;
     if (!this.carId) return;
 
     this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
@@ -190,7 +190,6 @@ export class ProductionDetailsModal {
   }
 
   openIssues(): void {
-    debugger;
     if (!this.carId) return;
 
     this.isIssueModalVisible = true; // ✅ THIS IS CORRECT
