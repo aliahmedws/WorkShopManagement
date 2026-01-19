@@ -19,6 +19,7 @@ public class GoogleStorageOptions
     public string FilesPrefix { get; set; } = default!;
     public string TempPrefix { get; set; } = default!;
     public double TempRetentionHours { get; set; } = default!;
+    public required int TempCleanupIntervalHours { get; set; }
 }
 
 public class ConfigureGoogleStorageOptions(IConfiguration configuration) : IConfigureOptions<GoogleStorageOptions>
@@ -76,6 +77,15 @@ public class ConfigureGoogleStorageOptions(IConfiguration configuration) : IConf
                 GoogleStorageOptions.ConfigurationKey,
                 typeof(GoogleStorageOptions),
                 [$"{nameof(options.TempRetentionHours)} must be greater than 0."]);
+        }
+
+        // Retention must be > 0 (or adjust if you want to allow 0 to mean "disabled")
+        if (options.TempCleanupIntervalHours <= 0)
+        {
+            throw new OptionsValidationException(
+                GoogleStorageOptions.ConfigurationKey,
+                typeof(GoogleStorageOptions),
+                [$"{nameof(options.TempCleanupIntervalHours)} must be greater than 0."]);
         }
     }
 }

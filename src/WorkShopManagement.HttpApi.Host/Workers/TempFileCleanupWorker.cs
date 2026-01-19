@@ -12,22 +12,22 @@ namespace WorkShopManagement.Workers
 {
     public class TempFileCleanupWorker : AsyncPeriodicBackgroundWorkerBase
     {
-        private readonly BlobStorageOptions _options;
+        private readonly GoogleStorageOptions _options;
         public TempFileCleanupWorker(
             AbpAsyncTimer timer,
             IServiceScopeFactory serviceScopeFactory,
-            IOptions<BlobStorageOptions> options
+            IOptions<GoogleStorageOptions> options
             ) : base (timer,serviceScopeFactory)
         {
             _options = options.Value ?? throw new ArgumentNullException(nameof(options));
 
-            var min = (int)_options.TempCleanupIntervalMinutes;
-            Timer.Period = (int)TimeSpan.FromMinutes(min).TotalMilliseconds; 
+            var h = (int)_options.TempCleanupIntervalHours;
+            Timer.Period = (int)TimeSpan.FromHours(h).TotalMilliseconds; 
         }
  
         protected override async Task DoWorkAsync(PeriodicBackgroundWorkerContext workerContext)
         {
-            var manager = workerContext .ServiceProvider.GetRequiredService<TempFileManager>();
+            var manager = workerContext.ServiceProvider.GetRequiredService<TempFileManager>();
             Logger.LogInformation("TempFileCleanupWorker started.");
 
             var deleted = await manager.CleanupOldFilesAsync();

@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -71,72 +75,92 @@ public class TempFileManager : DomainService
         return $"{_options.ContainerPath.EnsureEndsWith('/')}{BuildBlobPath(tempBlobName)}".Replace("\\", "/");
     }
 
-    public async Task<int> CleanupOldFilesAsync(TimeSpan retention, CancellationToken ct = default)   // read retention from config later
+    public async Task<int> CleanupOldFilesAsync(TimeSpan retention, CancellationToken ct = default)
     {
-        var tempDir = _options.ContainerPath.EnsureEndsWith('/') + _options.TempPrefix;
+        var bucket = _options.ContainerName;
 
-        if (!Directory.Exists(tempDir))
-        {
-            // No directory = nothing to clean. This is not an error.
-#pragma warning disable CA1873 // Avoid potentially expensive logging
-            Logger.LogDebug("TempFileManager.CleanupOldFiles:Temp directory not found: {TempDir}", tempDir);
-            return 0;
-        }
+        var prefix = "host/" + _options.TempPrefix.EnsureEndsWith('/');
 
         var cutoffUtc = DateTime.UtcNow - retention;
-
-        var files = Directory.EnumerateFiles(tempDir, "*", SearchOption.TopDirectoryOnly);
 
         var deletedCount = 0;
         var scannedCount = 0;
         var parseFailedCount = 0;
 
-        foreach (var file in files)
+        var values = new Dictionary<string, string>
+            {
+                { "type", "service_account" },
+                { "client_email", _options.ClientEmail },
+                { "private_key", _options.PrivateKey }
+            };
+
+        var credential = GoogleCredential.FromJson(JsonSerializer.Serialize(values));
+
+        if (credential.UnderlyingCredential is not ServiceAccountCredential saCred)
+            throw new InvalidOperationException("Invalid service account credentials. Check ClientEmail/PrivateKey.");
+
+        var storage = StorageClient.Create(credential);
+        var storageObjects = storage.ListObjects(_options.ContainerName, prefix);
+
+
+        foreach (var obj in storageObjects)
         {
             ct.ThrowIfCancellationRequested();
             scannedCount++;
-            var fileName = Path.GetFileName(file);
 
-            var underScoreIndex = fileName.IndexOf('_');
+            var objectName = obj.Name;
+            if (string.IsNullOrWhiteSpace(objectName) || !objectName.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                parseFailedCount++;
+                continue;
+            }
+            var fileNameOnly = objectName[prefix.Length..];
+
+            var underScoreIndex = fileNameOnly.IndexOf('_');
             if (underScoreIndex <= 0)
             {
                 parseFailedCount++;
-                Logger.LogWarning("TempFileManager.CleanupOldFiles: Skipping file with invalid name (no timestamp): {FileName}", fileName);
+                Logger.LogWarning("TempFileManager.CleanupOldFiles: Skipping object with invalid name (no timestamp): {ObjectName}", objectName);
                 continue;
             }
 
-            var tsParts = fileName[..underScoreIndex];
-            if (!TryParseTimestamp(tsParts, out var fileTsUtc))
+            var tsPart = fileNameOnly[..underScoreIndex];
+            if (!TryParseTimestamp(tsPart, out var fileTsUtc))
             {
                 parseFailedCount++;
-                Logger.LogWarning("TempFileManager.CleanupOldFiles: Skipping file with invalid timestamp: {FileName}", fileName);
+                Logger.LogWarning("TempFileManager.CleanupOldFiles: Skipping object with invalid timestamp: {ObjectName}", objectName);
                 continue;
             }
 
-            if (fileTsUtc.Date > cutoffUtc.Date)
+            if (fileTsUtc > cutoffUtc)
             {
-                continue; // not old enough
+                continue;
             }
 
             try
             {
-                bool deleted = await _container.DeleteAsync(fileName, cancellationToken: ct);
+                await storage.DeleteObjectAsync(bucket, objectName, cancellationToken: ct);
                 deletedCount++;
+            }
+            catch (Google.GoogleApiException ex) when (ex.Error?.Code == 404)
+            {
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "TempFileManager.CleanupOldFiles: Failed to delete temp file blob: {FileName}", fileName);
+                Logger.LogError(ex, "TempFileManager.CleanupOldFiles: Failed to delete temp object: {ObjectName}", objectName);
             }
-
         }
+
+#pragma warning disable CA1873 // Avoid potentially expensive logging
         Logger.LogInformation(
-            "TempFileManager.CleanupOldFiles: Temp cleanup completed. Scanned={Scanned}, Deleted={Deleted}, ParseFailed={ParseFailed}, CutoffUtc={CutoffUtc}, TempDir={TempDir}",
-            scannedCount, deletedCount, parseFailedCount, cutoffUtc, tempDir
-            );
+            "TempFileManager.CleanupOldFiles: Completed. Scanned={Scanned}, Deleted={Deleted}, ParseFailed={ParseFailed}, CutoffUtc={CutoffUtc}, Bucket={Bucket}, Prefix={Prefix}",
+            scannedCount, deletedCount, parseFailedCount, cutoffUtc, bucket, prefix
+        );
+#pragma warning restore CA1873 // Avoid potentially expensive logging
 
         return deletedCount;
     }
-    public async Task<int> CleanupOldFilesAsync(CancellationToken ct = default)   // read retention from config later
+    public async Task<int> CleanupOldFilesAsync(CancellationToken ct = default)  
     {
         var retenion = TimeSpan.FromHours(_options.TempRetentionHours);
 
@@ -150,7 +174,7 @@ public class TempFileManager : DomainService
             ts,
             "yyyyMMddHHmmssfff",
             CultureInfo.InvariantCulture,
-            DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
             out utc
         );
     }

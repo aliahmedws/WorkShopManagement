@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using Polly;
 using System;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
