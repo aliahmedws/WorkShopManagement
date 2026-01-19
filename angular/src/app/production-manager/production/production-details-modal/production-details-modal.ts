@@ -21,12 +21,14 @@ import { checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
 import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 import { CriticalImagesModal } from './critical-images-modal/critical-images-modal';
 import { Recalls } from 'src/app/recalls/recalls';
+import { AssignBay } from '../../assign-bay/assign-bay';
+import { StageDto } from 'src/app/proxy/stages';
 
 
 @Component({
   selector: 'app-production-details-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal, Recalls],
+  imports: [...SHARED_IMPORTS, CheckListItemsModal, CarNotesModal, IssueModal, CriticalImagesModal, Recalls, AssignBay],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
 })
@@ -48,6 +50,8 @@ export class ProductionDetailsModal {
   clockSaving = false;
   movingStage = false;      
   isIssueModalVisible = false;
+  isAssignBayVisible: boolean = false;
+
   @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
   @Input() allowMovetoAwaitingTransport = true;
 
@@ -525,6 +529,21 @@ export class ProductionDetailsModal {
     this.criticalImagesVisible = true;
   }
 
+openAssignBay(): void {
+  if (!this.carId) return;
+  this.isAssignBayVisible = true;
+}
 
+getSelectedStageDto(): StageDto {
+  return {
+    carId: this.details?.carId,
+    bayId: this.details?.bayId,
+    priority: this.details?.priority || Priority.Medium,
+  } as StageDto;
+}
 
+onAssignBaySubmit(): void {
+  this.loadDetails();
+  this.isAssignBayVisible = false;
+}
 }
