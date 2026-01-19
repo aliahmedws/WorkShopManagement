@@ -120,7 +120,6 @@ export class ProductionDetailsModal {
   }
 
   private loadDetails(): void {
-    debugger;
     if (!this.carId) return;
 
     this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
@@ -190,7 +189,6 @@ export class ProductionDetailsModal {
   }
 
   openIssues(): void {
-    debugger;
     if (!this.carId) return;
 
     this.isIssueModalVisible = true; // ✅ THIS IS CORRECT

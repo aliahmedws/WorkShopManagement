@@ -63,7 +63,7 @@ export class ArrivalEstimates implements OnInit {
 
   goBack() {
     if (this.carId) {
-      this.router.navigate(['/logistics-details'], { queryParams: { carId: this.carId } });
+      this.router.navigate(['/logistics-details'], { queryParamsHandling: 'merge' });
     } else {
       this.router.navigate(['/cars']);
     }

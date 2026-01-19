@@ -49,7 +49,7 @@ export class FileUploadModal {
 
   // Trigger button customization (so you can match your UI)
   @Input() buttonClass = 'btn btn-sm btn-outline-primary';
-  @Input() buttonIcon = 'fa fa-paperclip';
+  @Input() buttonIcon = 'fas fa-cloud-upload fa-lg';
   @Input() buttonTitle = 'Attachments';
   @Input({ transform: booleanAttribute }) disabled = false;
 

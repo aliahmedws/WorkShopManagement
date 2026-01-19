@@ -1,14 +1,4 @@
-// .checklist-table {
-//   max-height: calc(100vh - 260px);
-//   overflow: auto;
-// }
-
-thead.sticky-top {
-  top: 0;
-  z-index: 2;
-}
-
-.is-separator td {
-  background: #f7f7f7;
-  font-weight: 700;
+.checklist-table tbody tr td input.form-control-sm {
+  font-size: 0.7rem;
+  min-height: unset;
 }
