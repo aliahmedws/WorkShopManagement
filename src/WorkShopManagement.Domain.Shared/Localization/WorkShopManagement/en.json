@@ -477,8 +477,8 @@
     "EstimatedReleaseUpdatedSuccessfully": "Est. Release Updated Successfully",
     "ClockOut": "Clock Out",
     "ClockedOutSuccessfully": "Clocked Out Successfully",
-    "ClockedInSuccessfully": "Clocked In Successfully"
-
-
+    "ClockedInSuccessfully": "Clocked In Successfully",
+    "ConfirmClearBayTitle": "Clear bay",
+    "ConfirmClearBayMessage": "Are you sure you want to clear this bay? The car will be moved to SCD Warehouse."
   }
 }

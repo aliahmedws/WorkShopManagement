@@ -66,6 +66,7 @@ export class ProductionDetailsModal {
   selectedCar?: CarDto;
 
   @Input() carId?: string;
+  @Input() carBayId?: string;
   details?: CarBayDto;
   carNotes = '';
 
@@ -132,6 +133,7 @@ export class ProductionDetailsModal {
   }
 
   private loadDetails(): void {
+    debugger;
     if (!this.carId) return;
 
     this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {

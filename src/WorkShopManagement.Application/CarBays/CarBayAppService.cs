@@ -16,16 +16,19 @@ namespace WorkShopManagement.CarBays;
 public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
+    private readonly ICarRepository _carRepository;
     private readonly CarBayManager _manager;
     private readonly CarManager _carManager;
 
     public CarBayAppService(
         ICarBayRepository repository,
+        ICarRepository carRepository,
         CarBayManager manager,
         CarManager carManager
         )
     {
         _repository = repository;
+        _carRepository = carRepository;
         _manager = manager;
         _carManager = carManager;
     }
@@ -46,7 +49,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 
         dto.CheckLists?.ForEach(cl =>
         {
-            entity.Progress.TryGetValue(cl.Id, out var progressStatus);
+            entity!.Progress.TryGetValue(cl.Id, out var progressStatus);
             cl.ProgressStatus = progressStatus;
         });
 
@@ -160,7 +163,15 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _repository.DeleteAsync(id);
+        var carBay = await _repository.GetAsync(id);
+
+        carBay.SetIsActive(false);
+        //carBay.SetDateTimeOut(Clock.Now); // optional: if you use this
+
+        await _repository.UpdateAsync(carBay, autoSave: true);
+
+        var car = await _carRepository.GetAsync(carBay.CarId);
+        await _carManager.ChangeStageAsync(car, Stage.ScdWarehouse);
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
