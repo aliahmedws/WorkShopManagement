@@ -38,6 +38,8 @@ export class Production implements OnInit {
   carId?: string;
   carBayId?: string;
 
+  // bayId 
+
   Priority = Priority;
 
   isProductionDetailVisible = false;
@@ -55,17 +57,6 @@ export class Production implements OnInit {
   ngOnInit(): void {
     this.lookupService.getBays().subscribe(res => (this.bayOptions = res || []));
     this.reloadActiveBays();
-    this.loadProductionStages();
-  }
-
-  loadProductionStages(): void {
-    // this.stageService.getStage({
-    //   stage: Stage.Production,
-    //   skipCount: 0,
-    //   maxResultCount: 1000,
-    // } as any).subscribe(res => {
-    //   this.stages = res.items || [];
-    // });
   }
 
   getStageCar(carId: string) {
@@ -87,7 +78,7 @@ export class Production implements OnInit {
     // const a = this.getAssignment(bay.id);
     if (!bay?.carId) return;
     this.carId = bay.carId;
-    this.carBayId = bay.bayId;
+    // this.carBayId = bay.bayId;
     this.isProductionDetailVisible = true;
     // safest: detailsModal exists after view init because it's in template
     // this.detailsModal?.open(bay.carId, true, false);

@@ -18262,6 +18262,18 @@
           "regex": null
         },
         {
+          "name": "Port",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "CheckLists",
           "jsonName": null,
           "type": "[WorkShopManagement.CheckLists.CheckListDto]",

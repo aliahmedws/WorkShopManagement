@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { CarBayDto, CarBayService, ClockInStatus, clockInStatusOptions, Priority } from 'src/app/proxy/car-bays';
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
-import { CarDto, CarService } from 'src/app/proxy/cars';
+import { CarDto, CarService, Port } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { Confirmation } from '@abp/ng.theme.shared';
@@ -50,6 +50,7 @@ export class ProductionDetailsModal {
   isIssueModalVisible = false;
   @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
   @Input() allowMovetoAwaitingTransport = true;
+
   isRecallModalVisible = false;
   criticalImagesVisible = false;
 
@@ -57,7 +58,6 @@ export class ProductionDetailsModal {
   checkListProgressStatus = checkListProgressStatusOptions;
   mapCheckListProgressStatusColor = mapCheckListProgressStatusColor;
 
-  // @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageChanged = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
 
@@ -66,7 +66,6 @@ export class ProductionDetailsModal {
   selectedCar?: CarDto;
 
   @Input() carId?: string;
-  @Input() carBayId?: string;
   details?: CarBayDto;
   carNotes = '';
 
@@ -86,14 +85,7 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open(): void {
-    // this.carId = id;
-    // this.allowMovetoPostProduction = allowMoveToPostProduction;
-    // this.allowMovetoAwaitingTransport = allowMovetoAwaitingTransport;
-
-    // this.visible = true;
-    // this.visibleChange.emit(true);
     this.loadDetails();
-    this.loadCarNotes();
     this.loadSelectedCar();
   }
 
@@ -108,15 +100,6 @@ export class ProductionDetailsModal {
   openRecalls(): void {
     if (!this.carId) return;
     this.isRecallModalVisible = true;
-  }
-
-
-  private loadCarNotes(): void {
-    if (!this.carId) return;
-
-    this.carService.get(this.carId).subscribe((car: CarDto) => {
-      this.carNotes = car.notes ?? '';
-    });
   }
 
   close(): void {
@@ -338,7 +321,7 @@ export class ProductionDetailsModal {
       type: 'ASSY',           // hardcoded
       date: StickerGeneratorUtil.formatDate(new Date()), // or manufactureStartDate if you want
       model: this.details?.modelName ?? '',
-      flags: '(BNE)',         // hardcoded
+      flags: this.details?.port ? Port[this.details.port].toUpperCase() : '',         // hardcoded
       colour: this.selectedCar?.color || '',
       name: this.details?.ownerName ?? 'Dealer Stock',
     };

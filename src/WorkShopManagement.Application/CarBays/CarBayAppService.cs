@@ -83,6 +83,7 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Create)]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
+
         var entity = await _manager.CreateAsync(
             input.CarId,
             input.BayId,
@@ -168,10 +169,13 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         //carBay.SetIsActive(false);
         //carBay.SetDateTimeOut(Clock.Now); // optional: if you use this
 
-        await _repository.UpdateAsync(carBay, autoSave: true);
 
         var car = await _carRepository.GetAsync(carBay.CarId);
         await _carManager.ChangeStageAsync(car, Stage.ScdWarehouse);
+
+        // make car bay in active 
+        await _repository.UpdateAsync(carBay, autoSave: true);            // to review
+
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]

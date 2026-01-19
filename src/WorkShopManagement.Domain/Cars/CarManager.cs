@@ -216,7 +216,7 @@ namespace WorkShopManagement.Cars
                         await _carBayManager.ToggleClockAsync(activeBay.Id, Clock.ConvertToUserTime(Clock.Now));
                     }
                 }
-                await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);
+                await _carBayRepository.UpdateAsync(activeBay!, autoSave: true);            // 
             }
 
             car.SetStage(targetStage, logisticsDetail);
