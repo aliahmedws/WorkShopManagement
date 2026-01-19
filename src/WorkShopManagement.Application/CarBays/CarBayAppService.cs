@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Data;
-using Volo.Abp.Domain.Repositories;
-using WorkShopManagement.CarBayItems;
+using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.CarBays;
@@ -17,13 +17,17 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
     private readonly CarBayManager _manager;
+    private readonly CarManager _carManager;
 
     public CarBayAppService(
         ICarBayRepository repository,
-        CarBayManager manager)
+        CarBayManager manager,
+        CarManager carManager
+        )
     {
         _repository = repository;
         _manager = manager;
+        _carManager = carManager;
     }
 
     public async Task<CarBayDto> GetAsync(Guid id)
@@ -32,6 +36,13 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         if (entity.CarBay == null) throw new UserFriendlyException("CarBay is empty");
 
         var dto = ObjectMapper.Map<CarBay, CarBayDto>(entity.CarBay);
+
+        // TEMP Fix for car images display instead from modal ---
+        var carImageLink = entity?.CarBay?.Car?.ImageLink;
+        if (!string.IsNullOrWhiteSpace(carImageLink))
+        {
+            dto.ModelImagePath = carImageLink;
+        }
 
         dto.CheckLists?.ForEach(cl =>
         {
@@ -100,6 +111,8 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
+        await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
+
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
@@ -151,23 +164,14 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockInAsync(Guid id, DateTime? clockInTime)
+    public async Task<CarBayDto> ToggleClockAsync(Guid id, DateTime? time = null)
     {
-        var entity = await _manager.ClockInAsync(id, clockInTime);
+        var entity = await _manager.ToggleClockAsync(id, time);
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockOutAsync(Guid id, DateTime? clockOutTime)
+    public async Task<List<string>> GetCarBayItemImagesAsync(Guid carBayId)
     {
-        var entity = await _manager.ClockOutAsync(id, clockOutTime);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
-    }
-
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ResetClockAsync(Guid id)
-    {
-        var entity = await _manager.ResetClockAsync(id);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
+        return await _repository.GetCarBayItemImages(carBayId);
     }
 }

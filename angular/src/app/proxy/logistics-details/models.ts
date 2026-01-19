@@ -5,6 +5,13 @@ import type { CreStatus } from '../cars/cre-status.enum';
 import type { ArrivalEstimateDto } from './arrival-estimates/models';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
 
+export interface AddOrUpdateDeliverDetailDto {
+  confirmedDeliverDate?: string;
+  deliverNotes?: string;
+  deliverTo?: string;
+  transportDestination?: string;
+}
+
 export interface CreateLogisticsDetailDto {
   carId: string;
   port: Port;
@@ -14,14 +21,14 @@ export interface CreateLogisticsDetailDto {
 
 export interface LogisticsDetailDto extends FullAuditedEntityDto<string> {
   carId?: string;
+  port?: Port;
   bookingNumber?: string;
-  clearingAgent?: string;
-  clearanceRemarks?: string;
-  clearanceDate?: string;
   creStatus?: CreStatus;
   creSubmissionDate?: string;
   rsvaNumber?: string;
-  port?: Port;
+  clearingAgent?: string;
+  clearanceRemarks?: string;
+  clearanceDate?: string;
   actualPortArrivalDate?: string;
   actualScdArrivalDate?: string;
   deliverTo?: string;
@@ -33,20 +40,16 @@ export interface LogisticsDetailDto extends FullAuditedEntityDto<string> {
 }
 
 export interface UpdateLogisticsDetailDto {
-  carId: string;
+  port: Port;
   bookingNumber?: string;
+  creStatus: CreStatus;
+  creSubmissionDate?: string;
+  rsvaNumber?: string;
   clearingAgent?: string;
   clearanceRemarks?: string;
   clearanceDate?: string;
-  creSubmissionDate?: string;
-  rsvaNumber?: string;
-  port?: Port;
   actualPortArrivalDate?: string;
   actualScdArrivalDate?: string;
-  deliverTo?: string;
-  confirmedDeliverDate?: string;
-  deliverNotes?: string;
-  transportDestination?: string;
   entityAttachments: EntityAttachmentDto[];
   tempFiles: FileAttachmentDto[];
 }

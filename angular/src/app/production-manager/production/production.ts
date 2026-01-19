@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
 import { CarBayDto, CarBayService, Priority } from 'src/app/proxy/car-bays';
@@ -18,6 +18,8 @@ import { mapIssueStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/
 })
 export class Production implements OnInit {
   @Input() filters = {} as GetCarListInput;
+  @Output() refreshRequested = new EventEmitter<void>();
+
 
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: StageBayDto[] = [];
@@ -27,7 +29,9 @@ export class Production implements OnInit {
 
   Priority = Priority;
 
-  @ViewChild('detailsModal') detailsModal?: ProductionDetailsModal;
+  isProductionDetailVisible = false;
+
+  // @ViewChild('detailsModal') detailsModal?: ProductionDetailsModal;
 
   constructor(
     private readonly lookupService: LookupService,
@@ -71,9 +75,11 @@ getStageCar(carId: string) {
   onOpenBay(bay: StageBayDto): void {
     // const a = this.getAssignment(bay.id);
     if (!bay?.carId) return;
-
+    this.carId = bay.carId;
+    this.isProductionDetailVisible = true;
     // safest: detailsModal exists after view init because it's in template
-    this.detailsModal?.open(bay.carId, true, false);
+    // this.detailsModal?.open(bay.carId, true, false);
+    // this.
   }
 
   vinLast6(v?: string | null): string {
@@ -88,7 +94,7 @@ getStageCar(carId: string) {
 
   // trackByBayId = (_: number, bay: GuidLookupDto) => bay.id;
 
-  onStageChanged(carId: string) {
+  onStageChanged() {
     // this.activeCarBays = this.activeCarBays.filter(x => x.carId !== carId);
     this.reloadActiveBays();
   }
@@ -99,5 +105,10 @@ getStageCar(carId: string) {
 
   getIssueColor(bay: StageBayDto): string {
     return mapIssueStatusColor(bay?.issueStatus);
+  }
+
+  onDetailsClosed(): void {
+    this.reloadActiveBays();
+    this.refreshRequested.emit();
   }
 }

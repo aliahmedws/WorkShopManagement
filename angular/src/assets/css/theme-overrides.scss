@@ -1454,6 +1454,12 @@ lpx-footer {
     font-size: 0.82rem;
 }
 
-i.link {
+i.link,
+.badge.link {
     cursor: pointer;
+}
+
+.badge.badge-sm {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
 }

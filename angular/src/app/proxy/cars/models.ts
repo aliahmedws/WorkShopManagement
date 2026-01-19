@@ -107,7 +107,6 @@ export interface UpdateCarDto {
   startDate?: string;
   notes?: string;
   missingParts?: string;
-  storageLocation?: StorageLocation;
   buildMaterialNumber?: string;
   angleBailment?: number;
   avvStatus?: AvvStatus;

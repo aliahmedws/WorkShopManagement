@@ -65,10 +65,10 @@ export class Cars implements OnInit {
     });
   }
   
-  selectedCar: CarDto;
+  // selectedCar: CarDto;
   showImages(car: CarDto): void {
 
-    this.selectedCar = car;
+    this.selectedId = car?.id;
     this.isImageModalVisible = true;
   }
 }

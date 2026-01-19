@@ -51,6 +51,7 @@ export interface StageDto {
   etaScd?: string;
   recallStatus?: RecallStatus;
   issueStatus?: IssueStatus;
+  priority?: Priority;
   carBayId?: string;
   bayId?: string;
 }

@@ -66,7 +66,7 @@ public class EfCoreLookupRepository : ILookupRepository
     {
         var ctx = await GetDbContextAsync();
 
-        return await ctx.Bays
+        return await ctx.Bays.Where(x => x.IsActive == true)
             .AsNoTracking()
             .OrderBy(x => x.CreationTime)
             .Select(x => new GuidLookup(x.Id, x.Name))

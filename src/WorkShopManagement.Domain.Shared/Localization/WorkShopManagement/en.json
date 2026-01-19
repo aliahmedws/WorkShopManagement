@@ -402,6 +402,9 @@
     "Enum:IssueStatus.3": "In Progress",
     "Enum:IssueStatus.4": "No Action Required",
     "Enum:IssueStatus.5": "Resolved",
+    "Enum:CheckListProgressStatus.0": "Pending",
+    "Enum:CheckListProgressStatus.1": "InProgress",
+    "Enum:CheckListProgressStatus.2": "Completed",
 
     "Enum:IssueType.1": "Scratch / Dent",
     "Enum:IssueType.2": "Upholstery / Trim",
@@ -459,6 +462,7 @@
     "NewVehicle": "New Vehicle",
     "QualityGateUpdatedSuccessfully": "Quality Gate Updated Successfully",
     "QualityGateCreatedSuccessfully": "Quality Gate Created Successfully",
+    "EnterNotes": "Enter Notes",
     "LogisticsAttachments.Help": "Add CRE attachments or any other attachments related to car logistics here.",
     "Menu:Logistics": "Logistics",
     "CreStatus": "CRE Status",
@@ -469,7 +473,11 @@
     "FetchImages": "Fetch Images",
     "NewEstimate": "New Estimate",
     "EditEstimate": "Edit Estimate",
-    "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available."
+    "DateCannotBeChangedInEdit": "ETAs cannot be modifed. If ETAs updated by external source, create a new entry for the updated ETAs. Updated notes and attachment for outdated ETAs if available.",
+    "EstimatedReleaseUpdatedSuccessfully": "Est. Release Updated Successfully",
+    "ClockOut": "Clock Out",
+    "ClockedOutSuccessfully": "Clocked Out Successfully",
+    "ClockedInSuccessfully": "Clocked In Successfully"
 
 
   }
