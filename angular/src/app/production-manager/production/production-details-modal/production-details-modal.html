@@ -9,7 +9,7 @@
           <span class="text-muted ms-2">{{ '::ProductionDetails' | abpLocalization }}</span>
         </div>
         <div class="text-muted small">
-          {{ details?.ownerName ?? '-' }} • {{ details?.modelName ?? '-' }}
+          {{ details?.ownerName ?? '-' | uppercase }} • {{ details?.modelName ?? '-' }}
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@
 
         <div class="info-item">
           <div class="info-label">{{'::Buyer' | abpLocalization }}</div>
-          <div class="info-value">{{ details.ownerName ?? '-' }}</div>
+          <div class="info-value">{{ details.ownerName ?? '-' | uppercase }}</div>
         </div>
 
         <div class="info-item">
@@ -44,7 +44,7 @@
         <div class="info-item">
           <div class="info-label">{{'::ManufactureDate' | abpLocalization}}</div>
           <div class="info-value">
-            {{ details.manufactureStartDate ? (details.manufactureStartDate | date:'dd/MMM/yyyy') : '-' }}
+            {{ details.manufactureStartDate ? (details.manufactureStartDate | date:'dd-MMM-yyyy') : '-' }}
           </div>
         </div>
       </div>
