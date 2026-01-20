@@ -11,8 +11,8 @@ namespace WorkShopManagement.Stages;
 public class StageDto
 {
     public Guid CarId { get; set; }
-    public string Vin { get; set; } = default!;
     public Stage Stage { get; set; } = default!;        // New Added to get stage again in car bay . prod-detail modal
+    public string Vin { get; set; } = default!;
     public string Color { get; set; } = default!;
     public StorageLocation? StorageLocation { get; set; }
     public Guid ModelId { get; set; }

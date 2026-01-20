@@ -1,6 +1,13 @@
-<abp-page>
-    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
 
+
+<abp-page>
+    <div>
+        <button class="btn btn-md btn-primary" (click)="toggleView()">
+            Toggle {{ !isClassicView ? 'Classic' : 'Modern' }} View
+        </button>
+    </div>
+    @if(!isClassicView){
+    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
         <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
             (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
 
@@ -17,7 +24,7 @@
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-                
+
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
@@ -35,8 +42,15 @@
         </nz-tabs>
 
         @if (selectedIndex === 3) {
+        <div class="card">
             <app-production [filters]="filters"></app-production>
+        </div>
         }
+    
+
 
     </app-topbar-layout>
+    } @else {
+        <app-classic-view></app-classic-view>
+    }
 </abp-page>

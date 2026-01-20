@@ -481,6 +481,9 @@
     "ClockedOutSuccessfully": "Clocked Out Successfully",
     "ClockedInSuccessfully": "Clocked In Successfully",
     "ConfirmClearBayTitle": "Clear bay",
-    "ConfirmClearBayMessage": "Are you sure you want to clear this bay? The car will be moved to SCD Warehouse."
+    "ConfirmClearBayMessage": "Are you sure you want to clear this bay? The car will be moved to SCD Warehouse.",
+    "SearchResults": "Search Results",
+    "ClearSearch": "Clear Search",
+    "NoRecordsFound": "No Records Found"
   }
 }
