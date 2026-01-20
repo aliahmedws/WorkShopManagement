@@ -173,11 +173,17 @@
               </div>
 
               <!-- BOTTOM RIGHT STATUS + BUTTON -->
-              <div class="position-absolute bottom-0 end-0 p-3">
+              <div class="position-absolute bottom-0 end-0 p-1">
                 <div class="d-flex flex-column align-items-end gap-2">
                   <!-- buttons row -->
                     
                   <div class="d-flex flex-wrap justify-content-end gap-2">
+                     <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary px-4"
+                      (click)="openCheckInModal()">
+                      {{ '::CheckInReport' | abpLocalization }}
+                    </button>
                      <button
                       type="button"
                       class="btn btn-sm btn-outline-secondary px-4"
@@ -365,9 +371,5 @@
   <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" (submit)="loadSelectedCar()"></app-recalls>
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
   </app-critical-images-modal>
-  <app-assign-bay 
-  [(visible)]="isAssignBayVisible" 
-  [selected]="getSelectedStageDto()"
-  (submit)="onAssignBaySubmit()">
-</app-assign-bay>
-</abp-modal>
+  <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="getSelectedStageDto()" (submit)="onAssignBaySubmit()"></app-assign-bay>
+  <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="details?.carId" [carVin]="details?.carVin" (submit)="onCheckInReportSubmit()"></app-check-in-report-modal>
