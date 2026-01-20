@@ -1,0 +1,8 @@
+<button class="btn btn-sm btn-outline-success me-2" (click)="export()">
+    <i class="fas fa-cloud-download me-1"></i>
+    {{ '::Export Excel' | abpLocalization }}
+</button>
+<button class="btn btn-sm btn-outline-primary" (click)="toggleView()">
+    <i class="fas me-1" [class.fa-desktop]="!useClassicView" [class.fa-wand-magic-sparkles]="useClassicView"></i>
+    {{ (useClassicView ? '::Use Modern View' : '::Use Classic View') | abpLocalization }}
+</button>

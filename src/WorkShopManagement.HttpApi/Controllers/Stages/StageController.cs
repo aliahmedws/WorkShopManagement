@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Content;
 using WorkShopManagement.Stages;
 
 namespace WorkShopManagement.Controllers.Stages;
@@ -30,5 +31,23 @@ public class StageController(IStageAppService service) : WorkShopManagementContr
     public Task<List<StageBayDto>> GetBaysAsync()
     {
         return service.GetBaysAsync();
+    }
+
+    [HttpPost("production-classic-view/{useClassicView}")]
+    public Task SetUseProductionClassicViewAsync(bool useClassicView)
+    {
+        return service.SetUseProductionClassicViewAsync(useClassicView);
+    }
+
+    [HttpGet("production-classic-view")]
+    public Task<bool> GetUseProductionClassicViewAsync()
+    {
+        return service.GetUseProductionClassicViewAsync();
+    }
+
+    [HttpPost("excel")]
+    public Task<IRemoteStreamContent> GetListAsExcelAsync()
+    {
+        return service.GetListAsExcelAsync();
     }
 }

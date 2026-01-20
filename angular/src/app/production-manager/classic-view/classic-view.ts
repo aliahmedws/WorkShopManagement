@@ -13,10 +13,11 @@ import { CheckInReport } from 'src/app/check-in-reports/check-in-report';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { Production } from '../production/production';
 import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
+import { ProductionTopbarActions } from 'src/app/production-topbar-actions/production-topbar-actions';
 
 @Component({
   selector: 'app-classic-view',
-  imports: [...SHARED_IMPORTS, ProductionActions, Recalls, CheckInReportModal, CarNotesModal, EstReleaseModal, Production, AvvStatusModal],
+  imports: [...SHARED_IMPORTS, ProductionActions, Recalls, CheckInReportModal, CarNotesModal, EstReleaseModal, Production, AvvStatusModal, ProductionTopbarActions],
   templateUrl: './classic-view.html',
   styleUrl: './classic-view.scss',
 

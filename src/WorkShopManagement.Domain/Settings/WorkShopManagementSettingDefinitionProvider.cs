@@ -9,5 +9,6 @@ public class WorkShopManagementSettingDefinitionProvider : SettingDefinitionProv
     {
         //Define your own settings here. Example:
         context.Add(new SettingDefinition(CustomAccountSettingNames.TwoFactorLogin.IsRememberBrowserEnabled, bool.FalseString));
+        context.Add(new SettingDefinition(WorkShopManagementSettings.UseProductionClassicView, bool.FalseString));
     }
 }

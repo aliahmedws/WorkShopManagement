@@ -1,9 +1,11 @@
 <abp-page>
-    <app-topbar-layout titleKey="Menu:ProductionManagerClassic" [(filters)]="filters"
+    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters"
         (onFilter)="onSearchTriggered($event)" (onReset)="clearSearch()">
+        <div topbarActions>
+            <app-production-topbar-actions></app-production-topbar-actions>
+        </div>
         <div class="row">
             <div class="col-12">
-
 
                 @if (isSearching) {
                 <div class="card shadow-sm mb-4">

@@ -1,13 +1,10 @@
-
-
+@if (useClassicView !== undefined) {
 <abp-page>
-    <div>
-        <button class="btn btn-md btn-primary" (click)="toggleView()">
-            Toggle {{ !isClassicView ? 'Classic' : 'Modern' }} View
-        </button>
-    </div>
-    @if(!isClassicView){
+    @if(!useClassicView){
     <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
+        <div topbarActions>
+            <app-production-topbar-actions></app-production-topbar-actions>
+        </div>
         <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
             (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
 
@@ -46,11 +43,12 @@
             <app-production [filters]="filters"></app-production>
         </div>
         }
-    
+
 
 
     </app-topbar-layout>
     } @else {
-        <app-classic-view></app-classic-view>
+    <app-classic-view></app-classic-view>
     }
 </abp-page>
+}
