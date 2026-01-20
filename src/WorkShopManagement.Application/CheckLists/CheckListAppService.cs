@@ -122,7 +122,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
         entity = await _checkListRepository.InsertAsync(entity, autoSave: true);
 
         // --- CREATE EntityAttachment 
-        await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
+        await _entityAttachmentAppService.CreateAsync(null, new CreateAttachmentDto
         {
             EntityType = EntityType.CheckList,
             EntityId = entity.Id,
@@ -174,7 +174,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
         await _checkListRepository.UpdateAsync(entity, autoSave: true);
 
         // --- UPDATE EntityAttachment 
-        await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+        await _entityAttachmentAppService.UpdateAsync(null, new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.CheckList,
@@ -188,7 +188,7 @@ public class CheckListAppService : ApplicationService, ICheckListAppService
     [Authorize(WorkShopManagementPermissions.CheckLists.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _entityAttachmentAppService.DeleteAsync(id, EntityType.CheckList);
+        await _entityAttachmentAppService.DeleteAsync(id, EntityType.CheckList, null);
         await _checkListRepository.DeleteAsync(id);
     }
 }

@@ -59,6 +59,8 @@ namespace WorkShopManagement.Recalls
 
         public async Task<RecallDto> CreateAsync(CreateRecallDto input)
         {
+            var car = await _carRepository.GetAsync(input.CarId);
+
             var recall = new Recall(
                 GuidGenerator.Create(),
                 input.CarId,
@@ -73,7 +75,7 @@ namespace WorkShopManagement.Recalls
 
             recall = await _recallRepository.InsertAsync(recall);
             // --- CREATE EntityAttachment 
-            await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+            await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
             {
                 EntityType = EntityType.Recall,
                 EntityId = recall.Id,
@@ -87,6 +89,9 @@ namespace WorkShopManagement.Recalls
         public async Task<RecallDto> UpdateAsync(Guid id, UpdateRecallDto input)
         {
             var recall = await _recallRepository.GetAsync(id);
+
+            var car = await _carRepository.GetAsync(recall.CarId);
+
             if (recall == null)
             {
                 throw new UserFriendlyException("Recall not found.");
@@ -98,10 +103,10 @@ namespace WorkShopManagement.Recalls
             recall.SetNotes(input.Notes);
             recall.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
 
-            recall =  await _recallRepository.UpdateAsync(recall);
+            recall = await _recallRepository.UpdateAsync(recall);
 
             // --- UPDATE EntityAttachment 
-            await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = recall.Id,
                 EntityType = EntityType.Recall,

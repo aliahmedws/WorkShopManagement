@@ -150,7 +150,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         entity = await _repository.InsertAsync(entity, autoSave: true);
 
         // --- CREATE EntityAttachment 
-        await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
+        await _entityAttachmentAppService.CreateAsync(null, new CreateAttachmentDto
         {
             EntityType = EntityType.ListItem,
             EntityId = entity.Id,
@@ -224,7 +224,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
         await _repository.UpdateAsync(entity, autoSave: true);
 
         // --- UPDATE EntityAttachment 
-        await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+        await _entityAttachmentAppService.UpdateAsync(null, new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.ListItem,
@@ -240,7 +240,7 @@ public class ListItemAppService : ApplicationService, IListItemAppService
     [Authorize(WorkShopManagementPermissions.ListItems.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _entityAttachmentAppService.DeleteAsync(id, EntityType.ListItem);
+        await _entityAttachmentAppService.DeleteAsync(id, EntityType.ListItem, null);
         await _repository.DeleteAsync(id);
     }
 

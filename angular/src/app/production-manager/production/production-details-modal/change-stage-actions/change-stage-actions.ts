@@ -1,4 +1,4 @@
-import { Confirmation, ToasterService } from '@abp/ng.theme.shared';
+import { Confirmation, ConfirmationService, ToasterService } from '@abp/ng.theme.shared';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CarBayService } from 'src/app/proxy/car-bays';
 import { CarService } from 'src/app/proxy/cars';
@@ -18,7 +18,8 @@ export class ChangeStageActions {
   private readonly carBayService = inject(CarBayService);
   private readonly toaster = inject(ToasterService);
   private readonly confirm = inject(ConfirmationHelperService);
-
+  private readonly confirmation = inject(ConfirmationService);
+  
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageMoved = new EventEmitter<void>();
@@ -126,7 +127,7 @@ export class ChangeStageActions {
 
     this.confirm.confirmClearBay().subscribe((status: Confirmation.Status) => {
       if (status !== Confirmation.Status.confirm) {
-        this.confirm.info('::StageChangedBayNotCleared', '::Info');
+        this.confirmation.info('::StageChangedBayNotCleared', '::Info');
         this.handleSuccess();
         return;
       }
@@ -137,7 +138,7 @@ export class ChangeStageActions {
           this.handleSuccess();
         },
         error: () => {
-          this.confirm.warn('::StageChangedButBayNotCleared', '::Warning');
+          this.confirmation.warn('::StageChangedButBayNotCleared', '::Warning');
           this.handleSuccess();
         },
       });

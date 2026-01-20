@@ -1,6 +1,11 @@
 <abp-page>
     <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
-
+        <div topbarActions>
+            <button class="btn btn-outline-success btn-sm">
+                <i class="fas fa-cloud-download me-1"></i>
+                {{ '::Download Excel' | abpLocalization }}
+            </button>
+        </div>
         <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
             (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
 

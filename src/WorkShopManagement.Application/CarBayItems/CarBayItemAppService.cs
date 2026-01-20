@@ -13,6 +13,8 @@ using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using WorkShopManagement.CarBayItems.BatchCarBayItems;
+using WorkShopManagement.CarBays;
+using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
 
@@ -25,15 +27,19 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
     private readonly IRepository<CarBayItem, Guid> _carBayItemRepository;
     private readonly IEntityAttachmentService _entityAttachmentAppService;
     private readonly IIdentityUserRepository _identityUserRepository;
+    private readonly ICarBayRepository _carBayRepository;
 
     public CarBayItemAppService(
         IRepository<CarBayItem, Guid> carBayItemRepository,
         IEntityAttachmentService entityAttachmentAppService,
-         IIdentityUserRepository identityUserRepository)
+        IIdentityUserRepository identityUserRepository,
+        ICarBayRepository carBayRepository
+        )
     {
         _carBayItemRepository = carBayItemRepository;
         _entityAttachmentAppService = entityAttachmentAppService;
         _identityUserRepository = identityUserRepository;
+        _carBayRepository = carBayRepository;
     }
 
     public async Task<CarBayItemDto> GetAsync(Guid id)
@@ -149,6 +155,14 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
         if (exists)
             throw new UserFriendlyException("This checklist item already exists for this CarBay.");
 
+        var carBay = await _carBayRepository.GetAsync(input.CarBayId);
+        await _carBayRepository.EnsurePropertyLoadedAsync(carBay, cb => cb.Car);
+
+        if (carBay?.Car == null)
+        {
+            throw new EntityNotFoundException(typeof(Car));
+        }
+
         var entity = new CarBayItem(
             GuidGenerator.Create(),
             input.CheckListItemId,
@@ -159,7 +173,7 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
 
         entity = await _carBayItemRepository.InsertAsync(entity, autoSave: true);
 
-        await _entityAttachmentAppService.CreateAsync(new CreateAttachmentDto
+        await _entityAttachmentAppService.CreateAsync(carBay.Car.Vin, new CreateAttachmentDto
         {
             EntityType = EntityType.CarBayItem,
             EntityId = entity.Id,
@@ -190,11 +204,18 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
         if (exists)
             throw new UserFriendlyException("This checklist item already exists for this CarBay.");
 
+        var carBay = await _carBayRepository.GetAsync(input.CarBayId);
+        await _carBayRepository.EnsurePropertyLoadedAsync(carBay, cb => cb.Car);
+
+        if (carBay?.Car == null)
+        {
+            throw new EntityNotFoundException(typeof(Car));
+        }
+
         entity.SetCarBay(input.CarBayId);
         entity.SetCheckListItem(input.CheckListItemId);
         entity.SetCheckRadioOption(input.CheckRadioOption);
         entity.SetComments(input.Comments);
-
 
         if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
         {
@@ -203,7 +224,7 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
 
         await _carBayItemRepository.UpdateAsync(entity, autoSave: true);
 
-        await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+        await _entityAttachmentAppService.UpdateAsync(carBay.Car.Vin, new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.CarBayItem,
@@ -224,7 +245,16 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
     [Authorize(WorkShopManagementPermissions.CarBayItems.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _entityAttachmentAppService.DeleteAsync(id, EntityType.CarBayItem);
+        var carBayItem = await _carBayItemRepository.GetAsync(id);
+        var carBay = await _carBayRepository.GetAsync(carBayItem.CarBayId);
+        await _carBayRepository.EnsurePropertyLoadedAsync(carBay, cb => cb.Car);
+
+        if (carBay?.Car == null)
+        {
+            throw new EntityNotFoundException(typeof(Car));
+        }
+
+        await _entityAttachmentAppService.DeleteAsync(id, EntityType.CarBayItem, carBay.Car.Vin);
         await _carBayItemRepository.DeleteAsync(id);
     }
 
@@ -246,6 +276,15 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
 
         // For performance: load existing items for this CarBay in one query
         var carBayId = input.Items[0].CarBayId;
+
+        var carBay = await _carBayRepository.GetAsync(input.CarBayId);
+        await _carBayRepository.EnsurePropertyLoadedAsync(carBay, cb => cb.Car);
+
+        if (carBay?.Car == null)
+        {
+            throw new EntityNotFoundException(typeof(Car));
+        }
+
         var query = await _carBayItemRepository.GetQueryableAsync();
 
         var existing = await AsyncExecuter.ToListAsync(
@@ -318,7 +357,7 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
                 }
             }
 
-            await _entityAttachmentAppService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _entityAttachmentAppService.UpdateAsync(carBay.Car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
                 EntityType = EntityType.CarBayItem,

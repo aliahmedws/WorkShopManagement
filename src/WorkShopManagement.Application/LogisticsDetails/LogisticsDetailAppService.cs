@@ -8,6 +8,7 @@ using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
+using static WorkShopManagement.Permissions.WorkShopManagementPermissions;
 
 namespace WorkShopManagement.LogisticsDetails
 {
@@ -107,8 +108,10 @@ namespace WorkShopManagement.LogisticsDetails
              
             logisticDetail = await _logisticsRepository.InsertAsync(logisticDetail, autoSave: true);
 
+            var car = await _carRepository.GetAsync(logisticDetail.CarId);
+
             // --- CREATE EntityAttachment 
-            await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+            await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
             {
                 EntityType = EntityType.LogisticsDetail,
                 EntityId = logisticDetail.Id,
@@ -136,8 +139,10 @@ namespace WorkShopManagement.LogisticsDetails
                 actualScdArrivalDate: input.ActualScdArrivalDate
             );
 
+            var car = await _carRepository.GetAsync(entity.CarId);
+
             await _logisticsRepository.UpdateAsync(entity, autoSave: true);
-            await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
                 EntityType = EntityType.LogisticsDetail,
