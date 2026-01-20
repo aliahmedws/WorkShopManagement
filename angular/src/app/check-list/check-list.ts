@@ -114,7 +114,7 @@ export class CheckList implements OnInit {
   }
   save(): void {
     if (this.form.invalid || !this.carModelId) return;
-    debugger;
+    
     const raw = this.form.getRawValue();
     const name = (raw.name || '').trim();
     if (this.selected.id) {

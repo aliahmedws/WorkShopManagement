@@ -1,6 +1,8 @@
 <abp-modal [visible]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3> {{ '::CheckInReport' | abpLocalization }} <span>{{ " - " + car.vin }} </span> </h3>
+        <h3> {{ '::CheckInReport' | abpLocalization }} 
+            <span>{{ " - " + carVin }} </span>
+        </h3>
     </ng-template>
 
     <ng-template #abpBody>
@@ -28,19 +30,19 @@
 
                 <div class="form-group col-6">
                     <label class="form-label">{{ '::EngineNumber' | abpLocalization }}</label>
-                    <input type="number" class="form-control" formControlName="engineNumber" />
+                    <input type="text" class="form-control" formControlName="engineNumber" />
                 </div>
 
             </div>
             <div class="row g-2 mb-2">
 
                 <div class="form-group col-6">
-                    <label class="form-label">{{ '::FrontGwar' | abpLocalization }}</label>
-                    <input type="number" class="form-control" formControlName="frontGwar" />
+                    <label class="form-label">{{ '::FrontGawr' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="frontGawr" />
                 </div>
                 <div class="form-group col-6">
-                    <label class="form-label">{{ '::RearGwar' | abpLocalization }}</label>
-                    <input type="number" class="form-control" formControlName="rearGwar" />
+                    <label class="form-label">{{ '::RearGawr' | abpLocalization }}</label>
+                    <input type="text" class="form-control" formControlName="rearGawr" />
                 </div>
             </div>
             <div class="row g-2 mb-2">
@@ -59,7 +61,7 @@
 
                 <div class="form-group col-6">
                     <label class="form-label">{{ '::MaxTowingCapacity' | abpLocalization }}</label>
-                    <input type="number" class="form-control" formControlName="maxTowingCapacity" />
+                    <input type="text" class="form-control" formControlName="maxTowingCapacity" />
                 </div>
                 <div class="form-group col-6">
                     <label class="form-label">{{ '::TyreLabel' | abpLocalization }}</label>
@@ -83,8 +85,8 @@
                         <label class="form-label">{{ '::StorageLocation' | abpLocalization }}</label>
                         <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="storageLocation">
                             @for (option of storageLocationOptions; track option) {
-                            <nz-option [nzLabel]="('::Enum:StorageLocation.' + option) | abpLocalization"
-                                [nzValue]="option"></nz-option>
+                            <nz-option [nzLabel]="('::Enum:StorageLocation.' + option.value) | abpLocalization"
+                                [nzValue]="option.value"></nz-option>
                             }
                         </nz-select>
                     </div>
@@ -101,8 +103,8 @@
                     <label class="form-label">{{ '::AvcStickerCut' | abpLocalization }}</label>
                     <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="avcStickerCut">
                         @for (option of choiceOptions; track option) {
-                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
-                            [nzValue]="option"></nz-option>
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option.value) | abpLocalization"
+                            [nzValue]="option.value"></nz-option>
                         }
                     </nz-select>
                 </div>
@@ -111,8 +113,8 @@
                     <label class="form-label">{{ '::AvcStickerPrinted' | abpLocalization }}</label>
                     <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="avcStickerPrinted">
                         @for (option of choiceOptions; track option) {
-                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
-                            [nzValue]="option"></nz-option>
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option.value) | abpLocalization"
+                            [nzValue]="option.value"></nz-option>
                         }
                     </nz-select>
                 </div>
@@ -120,9 +122,9 @@
                 <div class="form-group">
                     <label class="form-label">{{ '::CompliancePlatePrinted' | abpLocalization }}</label>
                     <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="compliancePlatePrinted">
-                        @for (option of choiceOptions; track option) {
-                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option) | abpLocalization"
-                            [nzValue]="option"></nz-option>
+                        @for (option of choiceOptions; track option.value) {
+                        <nz-option [nzLabel]="('::Enum:ChoiceOptions.' + option.value) | abpLocalization"
+                            [nzValue]="option.value"></nz-option>
                         }
                     </nz-select>
                 </div>
@@ -147,13 +149,13 @@
     </ng-template>
 
     <ng-template #abpFooter>
-        <button type="button" class="btn btn-outline-primary me-2">
+        <!-- <button type="button" class="btn btn-outline-primary me-2">
             {{ '::AvcStickers' | abpLocalization }}
         </button>
         <button type="button" class="btn btn-outline-primary me-4">
             {{ '::AvcStickersNew' | abpLocalization }}
-        </button>
-        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+        </button> -->
+        <button abpClose type="button" class="btn btn-outline-secondary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
         <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">

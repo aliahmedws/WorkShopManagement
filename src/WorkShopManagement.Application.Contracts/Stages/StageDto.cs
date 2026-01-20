@@ -1,6 +1,7 @@
 ﻿using System;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
 using WorkShopManagement.Issues;
 using WorkShopManagement.Recalls;
@@ -11,6 +12,7 @@ public class StageDto
 {
     public Guid CarId { get; set; }
     public string Vin { get; set; } = default!;
+    public Stage Stage { get; set; } = default!;        // New Added to get stage again in car bay . prod-detail modal
     public string Color { get; set; } = default!;
     public StorageLocation? StorageLocation { get; set; }
     public Guid ModelId { get; set; }
@@ -27,6 +29,7 @@ public class StageDto
     public DateTime? EtaScd { get; set; }
     public RecallStatus? RecallStatus { get; set; }
     public IssueStatus? IssueStatus { get; set; }
+    public Priority? Priority { get; set; }
     public Guid? CarBayId { get; set; }
     public Guid? BayId { get; set; }
 }

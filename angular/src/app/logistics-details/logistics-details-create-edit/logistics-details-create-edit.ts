@@ -88,7 +88,7 @@ export class LogisticsDetailsCreateEdit implements OnInit {
 
   fetchLatestEstimate(logisticsId: string) {
     this.estimateService.getLatest(logisticsId).subscribe(res => {
-        this.latestEstimate = res || null;
+      this.latestEstimate = res || null;
     });
   }
 
@@ -154,7 +154,8 @@ export class LogisticsDetailsCreateEdit implements OnInit {
   };
 
   goBack() {
-    this.router.navigate(['/cars']);
+    const snapshot = this.route.snapshot.queryParams;
+    this.router.navigate(snapshot?.returnUrl ? [snapshot?.returnUrl] : ['/cars'], { queryParams: { 'tab': snapshot?.tab || 0 } });
   }
 
   addFirstEstimate() {
@@ -162,11 +163,12 @@ export class LogisticsDetailsCreateEdit implements OnInit {
   }
 
   viewEstimateHistory() {
-    this.router.navigate(['/arrival-estimates'], { 
-      queryParams: { 
+    this.router.navigate(['/arrival-estimates'], {
+      queryParams: {
         logisticsDetailId: this.selectedId,
         carId: this.carId // Pass carId to allow "Back" functionality
-      } 
+      },
+      queryParamsHandling: 'merge'
     });
   }
 }

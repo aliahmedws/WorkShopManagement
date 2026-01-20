@@ -21,7 +21,6 @@ public static class ExternalConfigurationExtensions
         context.Services.ConfigureOptions<ConfigureVpicApiOptions>();
         context.Services.ConfigureOptions<ConfigureNhtsaApiOptions>();
         context.Services.ConfigureOptions<ConfigureTwilioApiOptions>();
-        context.Services.ConfigureOptions<ConfigureBlobStorageOptions>();
         context.Services.ConfigureOptions<ConfigureCarsXeApiOptions>();
     }
 }

@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Confirmation, ToasterService } from '@abp/ng.theme.shared';
 import { ThemeSharedModule } from '@abp/ng.theme.shared';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-import { ChoiceOptions } from 'src/app/proxy/utils/enums';
-import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
+import { choiceOptionsOptions } from 'src/app/proxy/utils/enums';
+import { storageLocationOptions } from 'src/app/proxy/cars/storage-locations';
 import { CheckInReportDto, CheckInReportService, CreateCheckInReportDto, UpdateCheckInReportDto } from 'src/app/proxy/check-in-reports';
-import { CarDto, CarService, UpdateCarDto } from 'src/app/proxy/cars';
+import { CarDto, CarService } from 'src/app/proxy/cars';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
-import { Stage } from 'src/app/proxy/cars/stages';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
+import { LookupService } from 'src/app/proxy/lookups';
+import { SpecAttributesDto, SpecsResponseDto } from 'src/app/proxy/external/cars-xe';
 
 @Component({
   selector: 'app-check-in-report-modal',
@@ -21,24 +22,27 @@ import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.ser
 export class CheckInReportModal {
 
   private fb = inject(FormBuilder);
-  private service = inject(CheckInReportService);
-  private readonly carService = inject(CarService);
+  private service = inject(CheckInReportService); 
   private toaster = inject(ToasterHelperService);
-  private readonly confirm = inject(ConfirmationHelperService);
+
+  private readonly lookupService = inject(LookupService);
 
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  @Input() car: CarDto;
+  @Input() carId?: string;
+  @Input() carVin?: string;
   @Output() submit = new EventEmitter<void>();
+
+  specAttributes: SpecAttributesDto | null = null;
 
   form: FormGroup;
   existingReport = {} as CheckInReportDto;
 
   // Enums for Select Lists
-  choiceOptions = Object.values(ChoiceOptions).filter(val => typeof val === 'number');
-  storageLocationOptions = Object.values(StorageLocation).filter(val => typeof val === 'number');
+  choiceOptions = choiceOptionsOptions;
+  storageLocationOptions = storageLocationOptions;
 
   modalOptions = {
     size: 'lg',
@@ -47,28 +51,39 @@ export class CheckInReportModal {
     animation: true,
   };
 
-  loading: boolean = false;
 
   constructor() {
-    // Initialize empty form to avoid null errors before data loads
     this.buildForm();
   }
 
   public get() {
-    this.loading = true;
-    this.service.getByCarId(this.car.id)
+    this.specAttributes = {} as SpecAttributesDto;
+    
+    this.service.getByCarId(this.carId)
       .subscribe((res: CheckInReportDto) => {
         this.existingReport = res
         this.buildForm(this.existingReport);
-        this.loading = false;
+        this.fetchSpecs();
       });
   }
 
-  private buildForm(dto?: CheckInReportDto) {
+  fetchSpecs() {
+    this.lookupService.getExternalSpecsResponse(this.carVin).subscribe((res: SpecsResponseDto) => {
+      if (res && res.success) {
+        this.specAttributes = res.attributes;
 
-    // Helper to format Date for <input type="date"> (YYYY-MM-DD)
-    // const formatDate = (dateStr?: string) => dateStr ? dateStr.split('T')[0] : null;
-    const carStorage = this.car ? this.car.storageLocation : null;
+        const v = this.form.value;
+        this.form.patchValue({
+          buildYear: v.buildYear ?? res.attributes?.year,
+          maxTowingCapacity: v.maxTowingCapacity ?? this.getWeigthValue(res.attributes?.maximum_towing),
+          tyreLabel: v.tyreLabel ?? res.attributes?.tires,
+        });
+      }
+    });
+  }
+
+  private buildForm(dto?: CheckInReportDto) {
+    // const carStorage = this.existingReport.car ? this.existingReport.car.storageLocation : null;
 
     this.form = this.fb.group({
       // carId: [this.carId, Validators.required],
@@ -77,22 +92,22 @@ export class CheckInReportModal {
       compliancePlatePrinted: [dto?.compliancePlatePrinted ?? null],
       // complianceDate: [formatDate(dto?.complianceDate)], 
 
-      buildYear: [dto?.buildYear ?? null],
+      buildYear: [dto?.buildYear ?? (this.specAttributes?.year ?? null)],
       buildMonth: [dto?.buildMonth ?? null],
 
       entryKms: [dto?.entryKms ?? null],
       engineNumber: [dto?.engineNumber ?? null],
 
-      frontGwar: [dto?.frontGwar ?? null],
-      rearGwar: [dto?.rearGwar ?? null],
-      frontMotorNumber: [dto?.frontMoterNumber ?? null],
+      frontGawr: [dto?.frontGawr ?? null],
+      rearGawr: [dto?.rearGawr ?? null],
+      frontMotorNumber: [dto?.frontMotorNumber ?? null],
       rearMotorNumber: [dto?.rearMotorNumber ?? null],
       emission: [dto?.emission ?? null],
-      maxTowingCapacity: [dto?.maxTowingCapacity ?? null],
-      tyreLabel: [dto?.tyreLabel ?? null],
+      maxTowingCapacity: [dto?.maxTowingCapacity ?? (this.getWeigthValue(this.specAttributes?.maximum_towing) ?? null)],
+      tyreLabel: [dto?.tyreLabel ?? (this.specAttributes?.tires ?? null)],
       // rsvaImportApproval: [dto?.rsvaImportApproval ?? null],
       reportStatus: [dto?.reportStatus ?? null],
-      storageLocation: [dto?.storageLocation ?? carStorage],
+      storageLocation: [dto?.storageLocation ?? null],
       concurrencyStamp: [dto?.concurrencyStamp ?? null],
     });
 
@@ -102,14 +117,13 @@ export class CheckInReportModal {
     if (this.form.invalid) { return; }
 
     const formValue = this.form.value;
-    const sl = formValue?.storageLocation;
 
     const request$ = this.existingReport?.id
       ? this.service.update(this.existingReport.id, formValue as UpdateCheckInReportDto)
-      : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.car.id });
+      : this.service.create({ ...formValue as CreateCheckInReportDto, carId: this.carId });
 
-    request$.subscribe( () => {
-      this.toaster.createdOrUpdated(this.car.id);
+    request$.subscribe(() => {
+      this.toaster.createdOrUpdated(this.carId);
       this.submit.emit();
       this.close();
     });
@@ -118,5 +132,59 @@ export class CheckInReportModal {
   close() {
     this.visible = false;
     this.visibleChange.emit(false);
+  }
+
+
+
+  getWeigthUnit(field: string | null): string | null {
+    if (!field) return null;
+
+    const raw = field.trim();
+    if (!raw) return null;
+
+    // Remove commas to simplify parsing.
+    const s = raw.replace(/,/g, '');
+
+    // Common case: "5000 lbs", "18.50 gallon", "57.60 in."
+    const m = s.match(/^\s*[-+]?\d*\.?\d+\s*([^\d]+)\s*$/);
+    if (m?.[1]) {
+      const unit = m[1].trim();
+      return unit.length ? unit : null;
+    }
+
+    // Range formats: "19 - 21 miles/gallon"
+    // In this case, unit is after the last number segment.
+    const range = s.match(/^\s*[-+]?\d*\.?\d+\s*-\s*[-+]?\d*\.?\d+\s*([^\d]+)\s*$/);
+    if (range?.[1]) {
+      const unit = range[1].trim();
+      return unit.length ? unit : null;
+    }
+
+    // If we can't confidently detect a unit, return null.
+    return null;
+  }
+
+  getWeigthValue(field: string | null): number | null {
+    if (!field) return null;
+
+    const raw = field.trim();
+    if (!raw) return null;
+
+    // Remove commas to support "5,000 lbs"
+    const s = raw.replace(/,/g, '');
+
+    // If it's a range, take the first number as the "value" (you can change to avg if you prefer).
+    const range = s.match(/^\s*([-+]?\d*\.?\d+)\s*-\s*([-+]?\d*\.?\d+)/);
+    if (range?.[1]) {
+      const n = Number(range[1]);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    // Standard: take the first numeric token
+    const m = s.match(/[-+]?\d*\.?\d+/);
+    if (!m) return null;
+
+    const n = Number(m[0]);
+    return Number.isFinite(n) ? n : null;
   }
 }

@@ -44,6 +44,7 @@ public class StageModel
 
     //--CarBay
     public CarBay? CarBay { get; set; }
+    public Priority? Priority => CarBay?.Priority;
     public Guid? CarBayId => CarBay?.Id;
     public Guid? BayId => CarBay?.BayId;
 }

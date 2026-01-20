@@ -1,46 +1,3 @@
-// import { Component, EventEmitter, Input, Output } from '@angular/core';
-// import { ExternalRecallDetailDto, RecallDto } from '../proxy/recalls';
-// import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
-
-// @Component({
-//   selector: 'app-recalls',
-//   imports: [...SHARED_IMPORTS],
-//   templateUrl: './recalls.html',
-//   styleUrl: './recalls.scss'
-// })
-// export class Recalls {
-
-//   @Input() carId: string;
-//   @Output() submit = new EventEmitter<boolean>();   // return true when updated
-
-//   @Input() visible: boolean = false;
-//   @Output() visibleChange = new EventEmitter<boolean>();
-
-//   recalls: RecallDto[] = [];
-//   externalRecalls: ExternalRecallDetailDto[] = [];
-
-//   modalOptions = {
-//     size: 'lg',
-//     backdrop: 'static', //prevent close by outside click
-//     keyboard: false, //prevent close by esc key
-//     animation: true,
-//   };
-
-//   get(): void {
-//     // Load Data for Modal
-//   }
-
-//   save(): void {
-//     this.submit.emit(true);
-//     this.close();
-//   }
-
-//   close(): void {
-//     this.visible = false;
-//     this.visibleChange.emit(this.visible);
-//   }
-// }
-
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
@@ -50,7 +7,6 @@ import { RecallService, RecallDto, ExternalRecallDetailDto, CreateRecallDto, Upd
 import { RecallStatus } from '../proxy/recalls/recall-status.enum';
 import { RecallType } from '../proxy/recalls/recall-type.enum';
 import { ToasterHelperService } from '../shared/services/toaster-helper.service';
-import { CarDto } from '../proxy/cars';
 
 @Component({
   selector: 'app-recalls',
@@ -63,7 +19,7 @@ export class Recalls {
   private readonly fb = inject(FormBuilder);
   private readonly toaster = inject(ToasterHelperService);
 
-  @Input() car: CarDto;
+  @Input() carId: string;
   @Output() submit = new EventEmitter<boolean>();
 
   @Input() visible: boolean = false;
@@ -119,12 +75,12 @@ export class Recalls {
     this.dbRows.clear();
     this.externalRows.clear();
 
-    if (!this.car.id) {
+    if (!this.carId) {
       this.loading = false;
       return;
     }
 
-    this.recallService.getListByCar(this.car.id).subscribe((recalls) => {
+    this.recallService.getListByCar(this.carId).subscribe((recalls) => {
       this.recalls = recalls ?? [];
 
       if (this.recalls.length > 0) {
@@ -136,7 +92,7 @@ export class Recalls {
 
       // No DB recalls => load external
       this.mode = 'external';
-      this.recallService.getRecallsFromExternalService(this.car.id!).subscribe((external) => {
+      this.recallService.getRecallsFromExternalService(this.carId!).subscribe((external) => {
         this.externalRecalls = external ?? [];
         this.buildExternalRows(this.externalRecalls);
         this.loading = false;
@@ -253,13 +209,13 @@ export class Recalls {
     // External mode
     this.externalRows.markAllAsTouched();
     if (this.externalRows.invalid) return;
-    if (!this.car.id) return;
+    if (!this.carId) return;
 
     const requests = this.externalRows.controls.map((fg) => {
       const v = fg.value;
 
       const payload: CreateRecallDto = {
-        carId: this.car.id!,
+        carId: this.carId!,
         title: v.title,
         make: v.make ?? undefined,
         manufactureId: v.manufacturerId ?? undefined,

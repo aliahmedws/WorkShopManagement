@@ -35,6 +35,7 @@ export interface StageBayDto {
 export interface StageDto {
   carId?: string;
   vin?: string;
+  stage?: Stage;
   color?: string;
   storageLocation?: StorageLocation;
   modelId?: string;
@@ -51,6 +52,7 @@ export interface StageDto {
   etaScd?: string;
   recallStatus?: RecallStatus;
   issueStatus?: IssueStatus;
+  priority?: Priority;
   carBayId?: string;
   bayId?: string;
 }

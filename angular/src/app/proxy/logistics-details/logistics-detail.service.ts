@@ -1,4 +1,4 @@
-import type { CreateLogisticsDetailDto, LogisticsDetailDto, UpdateLogisticsDetailDto } from './models';
+import type { AddOrUpdateDeliverDetailDto, CreateLogisticsDetailDto, LogisticsDetailDto, UpdateLogisticsDetailDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import type { PagedAndSortedResultRequestDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
@@ -9,6 +9,15 @@ import { Injectable, inject } from '@angular/core';
 export class LogisticsDetailService {
   private restService = inject(RestService);
   apiName = 'Default';
+  
+
+  addOrUpdateDeliverDetails = (id: string, input: AddOrUpdateDeliverDetailDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, LogisticsDetailDto>({
+      method: 'POST',
+      url: `/api/app/logistics-details/${id}/add-or-update-deliver-details`,
+      body: input,
+    },
+    { apiName: this.apiName,...config });
   
 
   create = (input: CreateLogisticsDetailDto, config?: Partial<Rest.Config>) =>
@@ -49,6 +58,14 @@ export class LogisticsDetailService {
       method: 'GET',
       url: '/api/app/logistics-details',
       params: { sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount, filter, carId },
+    },
+    { apiName: this.apiName,...config });
+  
+
+  submitCreStatus = (id: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, LogisticsDetailDto>({
+      method: 'POST',
+      url: `/api/app/logistics-details/${id}/submit-cre`,
     },
     { apiName: this.apiName,...config });
   

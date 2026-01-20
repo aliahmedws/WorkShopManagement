@@ -149,7 +149,7 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
                 car,
                 OwnerName = owner != null ? owner.Name : null,
                 ModelName = model != null ? model.Name : null,
-                ImageUrl = model != null && model.FileAttachments != null ? model.FileAttachments.Path : null,
+                ImageUrl = car.ImageLink ?? (model != null && model.FileAttachments != null ? model.FileAttachments.Path : null),       // Set image from car or from model
                 ClockInTime = carBay.ClockInTime,
                 ClockOutTime = carBay.ClockOutTime,
                 ClockInStatus = carBay.ClockInStatus

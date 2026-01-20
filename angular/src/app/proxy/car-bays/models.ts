@@ -1,6 +1,8 @@
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { Priority } from './priority.enum';
 import type { AvvStatus } from './avv-status.enum';
+import type { ClockInStatus } from './clock-in-status.enum';
+import type { Port } from '../cars/port.enum';
 import type { CheckListDto } from '../check-lists/models';
 
 export interface CarBayDto extends EntityDto<string> {
@@ -40,6 +42,10 @@ export interface CarBayDto extends EntityDto<string> {
   modelName?: string;
   modelCategoryName?: string;
   modelImagePath?: string;
+  clockInTime?: string;
+  clockOutTime?: string;
+  clockInStatus?: ClockInStatus;
+  port?: Port;
   checkLists: CheckListDto[];
 }
 
@@ -112,5 +118,4 @@ export interface UpdateCarBayDto {
   pulseNumber?: string;
   canProgress?: boolean;
   jobCardCompleted?: boolean;
-  concurrencyStamp: string;
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CarDto, CarService } from 'src/app/proxy/cars';
+import { StageDto } from 'src/app/proxy/stages';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
@@ -16,9 +17,11 @@ export class CarImagesModal {
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
-  @Input() car = {} as CarDto;
+  @Input() carId = '';
 
   @Output() submit = new EventEmitter<void>();
+
+  selectedCar = {} as CarDto;
 
   selectedImage: string | null = null;
   images: string[] = [];
@@ -34,13 +37,17 @@ export class CarImagesModal {
   };
 
   init(): void {
-    this.images = [];
-    this.selectedImage = this.car.imageLink || null;
+    this.reset();
 
-    // Only fetch automatically if there is no image saved yet
-    if (!this.selectedImage) {
-      this.getCarImages();
-    }
+    this.carService.get(this.carId).subscribe((car) => {
+      this.selectedCar = car;
+      this.selectedImage = this.selectedCar.imageLink || null;
+      // Only fetch automatically if there is no image saved yet
+      if (!this.selectedImage) {
+        this.getCarImages();
+      }
+    });
+
   }
 
   // Add Selection Logic
@@ -58,25 +65,25 @@ export class CarImagesModal {
   getCarImages(): void {
     this.images = [];
     this.loading = true;
-    this.carService.getExternalCarImages(this.car.id!).subscribe((res) => {
+    this.carService.getExternalCarImages(this.carId!).subscribe((res) => {
       this.images = res;
       this.loading = false;
     });
   }
 
   // Add Save Logic
-save(): void {
-  if (!this.selectedImage) return;
+  save(): void {
+    if (!this.selectedImage) return;
 
-  this.saving = true;
-  this.carService.saveCarImage(this.car.id, this.selectedImage).subscribe(() => {
+    this.saving = true;
+    this.carService.saveCarImage(this.carId, this.selectedImage).subscribe(() => {
       this.toaster.createdOrUpdated('::CarImageSaved');
       this.saving = false;
 
       this.submit.emit();
       this.close();
-  });
-}
+    });
+  }
 
   close(): void {
     this.visible = false;
@@ -84,10 +91,50 @@ save(): void {
   }
 
 
-    // dont need this can directyly do that
+  // dont need this can directyly do that
   onPreviewLoad(): void {
     this.previewLoading = false;
   }
 
+  reset(){
+    this.selectedCar = {} as CarDto;
+    this.selectedImage = null; 
+    this.images = [];
+  }
+
+
+
+
+
+  // HELPERS ----- ADD TO A COMMON COMP LATER
+  // Check if the URL is an image based on extension
+  isImage(url: string | null): boolean {
+    if (!url) return false;
+    // Remove query parameters to get clean extension
+    const cleanUrl = url.split('?')[0];
+    const extension = cleanUrl.split('.').pop()?.toLowerCase();
+
+    // Added 'avif' here
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'avif', 'svg'];
+    return imageExtensions.includes(extension || '');
+  }
+
+  // Get a font-awesome icon class based on file type
+  getFileIcon(url: string | null): string {
+    if (!url) return 'fa-file';
+    const cleanUrl = url.split('?')[0];
+    const extension = cleanUrl.split('.').pop()?.toLowerCase();
+
+    if (extension === 'pdf') return 'fa-file-pdf text-danger';
+    if (['doc', 'docx'].includes(extension || '')) return 'fa-file-word text-primary';
+    if (['xls', 'xlsx', 'csv'].includes(extension || '')) return 'fa-file-excel text-success';
+    return 'fa-file-alt text-secondary';
+  }
+
+  // Helper to display a clean name
+  getFileName(url: string | null): string {
+    if (!url) return 'File';
+    return url.split('/').pop()?.split('?')[0] || 'File';
+  }
 }
 

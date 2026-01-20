@@ -1,6 +1,7 @@
 import type { EntityDto, FullAuditedEntityDto } from '@abp/ng.core';
 import type { ChoiceOptions } from '../utils/enums/choice-options.enum';
 import type { StorageLocation } from '../cars/storage-locations/storage-location.enum';
+import type { CarDto } from '../cars/models';
 
 export interface CheckInReportDto extends FullAuditedEntityDto<string> {
   buildYear?: number;
@@ -11,18 +12,18 @@ export interface CheckInReportDto extends FullAuditedEntityDto<string> {
   complianceDate?: string;
   entryKms?: number;
   engineNumber?: string;
-  frontGwar?: number;
-  rearGwar?: number;
-  frontMoterNumber?: string;
+  frontGawr?: string;
+  rearGawr?: string;
+  frontMotorNumber?: string;
   rearMotorNumber?: string;
-  maxTowingCapacity: number;
+  maxTowingCapacity?: string;
   emission?: string;
   tyreLabel?: string;
   reportStatus?: string;
   concurrencyStamp?: string;
-  creatorName?: string;
   carId?: string;
   storageLocation?: StorageLocation;
+  car: CarDto;
 }
 
 export interface CheckInReportFiltersDto {
@@ -53,11 +54,11 @@ export interface CreateCheckInReportDto {
   complianceDate?: string;
   entryKms?: number;
   engineNumber?: string;
-  frontGwar?: number;
-  rearGwar?: number;
-  frontMoterNumber?: string;
+  frontGawr?: string;
+  rearGawr?: string;
+  frontMotorNumber?: string;
   rearMotorNumber?: string;
-  maxTowingCapacity?: number;
+  maxTowingCapacity?: string;
   emission?: string;
   tyreLabel?: string;
   reportStatus?: string;
@@ -74,11 +75,11 @@ export interface UpdateCheckInReportDto extends EntityDto<string> {
   complianceDate?: string;
   entryKms?: number;
   engineNumber?: string;
-  frontGwar?: number;
-  rearGwar?: number;
-  frontMoterNumber?: string;
+  frontGawr?: string;
+  rearGawr?: string;
+  frontMotorNumber?: string;
   rearMotorNumber?: string;
-  maxTowingCapacity?: number;
+  maxTowingCapacity?: string;
   emission?: string;
   tyreLabel?: string;
   reportStatus?: string;

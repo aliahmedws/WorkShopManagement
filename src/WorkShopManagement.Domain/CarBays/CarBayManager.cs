@@ -49,7 +49,7 @@ public class CarBayManager : DomainService
         Check.NotNull(carId, nameof(carId));
         Check.NotNull(bayId, nameof(bayId));
 
-        await EnsureNoOtherActiveBayForCarAsync(carId, isActive, ignoreId: null);
+        //await EnsureNoOtherActiveBayForCarAsync(carId, isActive, ignoreId: null);
         await EnsureBayIsNotAlreadyActiveAsync(bayId, isActive, ignoreId: null);
 
 
@@ -95,6 +95,7 @@ public class CarBayManager : DomainService
 
     public virtual async Task<CarBay> UpdateAsync(
         Guid id,
+        Guid bayId,
         Priority priority,
         string? buildMaterialNumber = null,
         Guid? userId = null,
@@ -124,9 +125,10 @@ public class CarBayManager : DomainService
     {
         var entity = await _carBayRepository.GetAsync(id);
 
-        await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
-        await EnsureBayIsNotAlreadyActiveAsync(entity.BayId, isActive, ignoreId: null);
+        //await EnsureNoOtherActiveBayForCarAsync(entity.CarId, isActive, ignoreId: null);
+        await EnsureBayIsNotAlreadyActiveAsync(bayId, isActive, ignoreId: null);
 
+        entity.SetBayId(bayId);
 
         //var existing = await _carBayRepository.FindByCarIdAsync(entity.CarId, entity.BayId);
 
@@ -235,21 +237,22 @@ public class CarBayManager : DomainService
         entity.SetJobCardCompleted(jobCardCompleted);
     }
 
-    private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
-    {
-        if (isActive != true)
-            return;
+    //remove this if we want to reassign bay.
+    //private async Task EnsureNoOtherActiveBayForCarAsync(Guid carId, bool? isActive, Guid? ignoreId)
+    //{
+    //    if (isActive != true)
+    //        return;
 
-        var active = await _carBayRepository.FindActiveByCarIdAsync(carId);
+    //    var active = await _carBayRepository.FindActiveByCarIdAsync(carId);
 
-        if (active == null)
-            return;
+    //    if (active == null)
+    //        return;
 
-        if (ignoreId.HasValue && active.Id == ignoreId.Value)
-            return;
+    //    if (ignoreId.HasValue && active.Id == ignoreId.Value)
+    //        return;
 
-        throw new UserFriendlyException("Car already has an active bay.");
-    }
+    //    throw new UserFriendlyException("Car already has an active bay.");
+    //}
 
     private async Task EnsureBayIsNotAlreadyActiveAsync(Guid bayId, bool? isActive, Guid? ignoreId)
     {
@@ -267,40 +270,21 @@ public class CarBayManager : DomainService
         throw new UserFriendlyException("Bay is already occupied.");
     }
 
-    public virtual async Task<CarBay> ClockInAsync(Guid carBayId, DateTime? clockInTime = null)
+    public virtual async Task<CarBay> ToggleClockAsync(Guid carBayId, DateTime? clientTime = null)
     {
         var entity = await _carBayRepository.GetAsync(carBayId);
 
-        // Prefer server time to avoid client manipulation
-        var time = clockInTime ?? Clock.Now;
+        var time = clientTime ?? Clock.Now;
 
-        entity.ClockIn(time);
-
-        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
-    }
-
-    public virtual async Task<CarBay> ClockOutAsync(Guid carBayId, DateTime? clockOutTime = null)
-    {
-        var entity = await _carBayRepository.GetAsync(carBayId);
-
-        var time = clockOutTime ?? Clock.Now;
-
-        entity.ClockOut(time);
+        if (entity.ClockInStatus == ClockInStatus.ClockedIn)
+        {
+            entity.ClockOut(time);
+        }
+        else
+        {
+            entity.ClockIn(time);
+        }
 
         return await _carBayRepository.UpdateAsync(entity, autoSave: true);
     }
-
-    public virtual async Task<CarBay> ResetClockAsync(Guid carBayId)
-    {
-        var entity = await _carBayRepository.GetAsync(carBayId);
-
-        entity.ResetClock();
-
-        return await _carBayRepository.UpdateAsync(entity, autoSave: true);
-    }
-
-
-
-
-
 }

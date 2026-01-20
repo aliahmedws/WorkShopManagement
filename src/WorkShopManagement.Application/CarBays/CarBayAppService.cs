@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Data;
-using Volo.Abp.Domain.Repositories;
-using WorkShopManagement.CarBayItems;
+using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Permissions;
+using static WorkShopManagement.Permissions.WorkShopManagementPermissions;
 
 namespace WorkShopManagement.CarBays;
 
@@ -16,14 +17,21 @@ namespace WorkShopManagement.CarBays;
 public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 {
     private readonly ICarBayRepository _repository;
+    private readonly ICarRepository _carRepository;
     private readonly CarBayManager _manager;
+    private readonly CarManager _carManager;
 
     public CarBayAppService(
         ICarBayRepository repository,
-        CarBayManager manager)
+        ICarRepository carRepository,
+        CarBayManager manager,
+        CarManager carManager
+        )
     {
         _repository = repository;
+        _carRepository = carRepository;
         _manager = manager;
+        _carManager = carManager;
     }
 
     public async Task<CarBayDto> GetAsync(Guid id)
@@ -33,9 +41,16 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
 
         var dto = ObjectMapper.Map<CarBay, CarBayDto>(entity.CarBay);
 
+        // TEMP Fix for car images display instead from modal ---
+        var carImageLink = entity?.CarBay?.Car?.ImageLink;
+        if (!string.IsNullOrWhiteSpace(carImageLink))
+        {
+            dto.ModelImagePath = carImageLink;
+        }
+
         dto.CheckLists?.ForEach(cl =>
         {
-            entity.Progress.TryGetValue(cl.Id, out var progressStatus);
+            entity!.Progress.TryGetValue(cl.Id, out var progressStatus);
             cl.ProgressStatus = progressStatus;
         });
 
@@ -69,6 +84,11 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Create)]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
+        if (input.IsActive == true)
+        {
+            await DeactivateOtherActiveBayAsync(input.CarId);
+        }
+
         var entity = await _manager.CreateAsync(
             input.CarId,
             input.BayId,
@@ -100,14 +120,26 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
+        await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
+
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
     public async Task<CarBayDto> UpdateAsync(Guid id, UpdateCarBayDto input)
     {
-        var entity = await _manager.UpdateAsync(
+        var entity = await _repository.GetAsync(id);
+
+        entity.SetIsActive(input.IsActive);
+
+        if (input.IsActive == true)
+        {
+            await DeactivateOtherActiveBayAsync(entity.CarId, exceptCarBayId: entity.Id);
+        }
+
+         await _manager.UpdateAsync(
             id,
+            input.BayId,
             input.Priority,
             input.BuildMaterialNumber,
             input.UserId,
@@ -136,10 +168,22 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             input.JobCardCompleted
         );
 
-        if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
+        //if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
+        //{
+        //    entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+        //}
+
+        if (input.CarId != Guid.Empty) 
         {
-            entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+            var car = await _carRepository.GetAsync(input.CarId);
+
+            if (car.Stage != Stage.Production)
+            {
+                await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
+            }
         }
+
+        //await _carManager.ChangeStageAsync(input.CarId, Stage.Production);
 
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
@@ -147,27 +191,55 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Delete)]
     public async Task DeleteAsync(Guid id)
     {
-        await _repository.DeleteAsync(id);
+        var carBay = await _repository.GetAsync(id);
+
+        if (carBay.IsActive == true)
+        {
+            carBay.SetIsActive(false);
+            carBay.SetDateTimeOut(Clock.Now);
+
+            if (carBay.ClockInStatus == ClockInStatus.ClockedIn)
+            {
+                await _manager.ToggleClockAsync(carBay.Id, Clock.ConvertToUserTime(Clock.Now));
+            }
+
+            await _repository.UpdateAsync(carBay, autoSave: true);
+        }
+
+        var car = await _carRepository.GetAsync(carBay.CarId);
+        await _carManager.ChangeStageAsync(car, Stage.ScdWarehouse);
     }
 
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockInAsync(Guid id, DateTime? clockInTime)
+    public async Task<CarBayDto> ToggleClockAsync(Guid id, DateTime? time = null)
     {
-        var entity = await _manager.ClockInAsync(id, clockInTime);
+        var entity = await _manager.ToggleClockAsync(id, time);
         return ObjectMapper.Map<CarBay, CarBayDto>(entity);
     }
 
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ClockOutAsync(Guid id, DateTime? clockOutTime)
+    public async Task<List<string>> GetCarBayItemImagesAsync(Guid carBayId)
     {
-        var entity = await _manager.ClockOutAsync(id, clockOutTime);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
+        return await _repository.GetCarBayItemImages(carBayId);
     }
 
-    [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
-    public async Task<CarBayDto> ResetClockAsync(Guid id)
+    private async Task DeactivateOtherActiveBayAsync(Guid carId, Guid? exceptCarBayId = null)
     {
-        var entity = await _manager.ResetClockAsync(id);
-        return ObjectMapper.Map<CarBay, CarBayDto>(entity);
+        var activeBay = await _repository.FindActiveByCarIdAsync(carId);
+
+        if (activeBay == null)
+            return;
+
+        if (exceptCarBayId.HasValue && activeBay.Id == exceptCarBayId.Value)
+            return;
+
+        activeBay.SetIsActive(false);
+
+        if (activeBay.ClockInStatus == ClockInStatus.ClockedIn)
+        {
+            await ToggleClockAsync(activeBay.Id, Clock.ConvertToUserTime(Clock.Now));
+        }
+
+        await _repository.UpdateAsync(activeBay, autoSave: true);
     }
+
 }

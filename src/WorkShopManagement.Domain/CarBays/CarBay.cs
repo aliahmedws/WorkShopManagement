@@ -78,6 +78,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     }
 
     public void SetPriority(Priority? priority) => Priority = priority;
+    public void SetBayId(Guid bayId) => BayId = bayId;
     public void SetBuildMaterialNumber(string? buildMaterialNumber) => BuildMaterialNumber = buildMaterialNumber?.Trim();
     public void SetUserId(Guid? userId) => UserId = userId;
     public void SetDateTimeIn(DateTime? dateTimeIn) => DateTimeIn = dateTimeIn;
@@ -119,9 +120,6 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
 
     public void ClockIn(DateTime clockInTime)
     {
-        if (ClockInStatus == ClockInStatus.ClockedIn)
-            throw new UserFriendlyException("CarBay already clocked in.");
-
         ClockInTime = clockInTime;
         ClockOutTime = null;
         ClockInStatus = ClockInStatus.ClockedIn;
@@ -143,7 +141,7 @@ public class CarBay : FullAuditedAggregateRoot<Guid>
     {
         ClockInTime = null;
         ClockOutTime = null;
-        ClockInStatus = ClockInStatus.NotClockedIn;
+        ClockInStatus = ClockInStatus.ClockedOut;
     }
 
 }

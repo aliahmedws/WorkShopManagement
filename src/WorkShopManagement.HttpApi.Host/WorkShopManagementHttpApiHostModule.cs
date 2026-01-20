@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,6 @@ using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
 using Volo.Abp.BackgroundWorkers;
 using Volo.Abp.BlobStoring;
-using Volo.Abp.BlobStoring.FileSystem;
 using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
 using Volo.Abp.Security.Claims;
@@ -55,8 +55,7 @@ namespace WorkShopManagement;
     typeof(WorkShopManagementEntityFrameworkCoreModule),
     typeof(AbpAccountWebOpenIddictModule),
     typeof(AbpSwashbuckleModule),
-    typeof(AbpAspNetCoreSerilogModule),
-    typeof(AbpBlobStoringFileSystemModule)
+    typeof(AbpAspNetCoreSerilogModule)
     )]
 public class WorkShopManagementHttpApiHostModule : AbpModule
 {
@@ -87,6 +86,10 @@ public class WorkShopManagementHttpApiHostModule : AbpModule
                 serverBuilder.AddProductionEncryptionAndSigningCertificate("authserver.pfx", configuration["AuthServer:CertificatePassPhrase"]!, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
                 serverBuilder.SetIssuer(new Uri(configuration["AuthServer:Authority"]!));
             });
+
+            context.Services
+                .AddDataProtection()
+                .PersistKeysToDbContext<WorkShopManagementDbContext>();
         }
     }
 

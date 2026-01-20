@@ -25,6 +25,9 @@ export class IssueModal implements OnInit {
   @Input() visible: boolean;
   @Output() visibleChange = new EventEmitter<boolean>();
 
+  isChanged: boolean = false;
+  @Output() submit = new EventEmitter<void>();
+
   @Input() carId: string;
 
   car: CarDto | null = null;
@@ -61,6 +64,7 @@ export class IssueModal implements OnInit {
   }
 
   appear() {
+    this.isChanged = false;
     this.loading = true;
 
     forkJoin({
@@ -77,9 +81,13 @@ export class IssueModal implements OnInit {
       });
   }
 
+  disappear() {
+    if (this.isChanged) this.submit.emit();
+  }
+
   private reloadIssues() {
     if (!this.carId) return;
-
+    this.isChanged = true;
     this.issueService
       .getListByCar(this.carId)
       .subscribe(res => {

@@ -60,7 +60,7 @@ public class EfCoreCheckInReportRepository : EfCoreRepository<WorkShopManagement
             (x.CreatorId != null && x.CreatorId == filter.CreatorId) ||
             (x.Emission != null && x.Emission.Contains(filter.Filter!)) ||
             (x.EngineNumber != null && x.EngineNumber.Contains(filter.Filter!)) ||
-            (x.FrontMoterNumber != null && x.FrontMoterNumber.Contains(filter.Filter!)))
+            (x.FrontMotorNumber != null && x.FrontMotorNumber.Contains(filter.Filter!)))
       
        .WhereIf(!string.IsNullOrWhiteSpace(filter.ReportStatus),
            x => x.ReportStatus == filter.ReportStatus)

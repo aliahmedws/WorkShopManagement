@@ -80,6 +80,7 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.FileAttachments)
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.ModelCategory)
             .Include(x => x.Car).ThenInclude(c => c!.Model).ThenInclude(m => m!.CheckLists)
+            .Include(x => x.Car).ThenInclude(x => x!.LogisticsDetail)
             .FirstOrDefaultAsync();
 
         var progressMap = new Dictionary<Guid, CheckListProgressStatus>();
@@ -201,5 +202,22 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
                     .ThenInclude(x => x!.ModelCategory)
            .OrderBy(sorting);
 
+    }
+
+    public async Task<List<string>> GetCarBayItemImages(Guid carBayId)
+    {
+        var ctx = await GetDbContextAsync();
+
+        //List<Guid> itemIds = [];
+
+        var itemIds = await ctx.CarBayItems
+            .Where(x => x.CarBayId == carBayId)
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        return await ctx.EntityAttachments
+            .Where(ea => ea.EntityType == EntityAttachments.EntityType.CarBayItem && itemIds.Contains(ea.EntityId))
+            .Select(ea => ea.Attachment.Path)
+            .ToListAsync();
     }
 }

@@ -2,13 +2,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.BlobStoring;
-using Volo.Abp.BlobStoring.Database;
-using Volo.Abp.BlobStoring.FileSystem;
+using Volo.Abp.BlobStoring.Google;
 using Volo.Abp.Caching;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
@@ -20,8 +17,8 @@ using Volo.Abp.PermissionManagement.Identity;
 using Volo.Abp.PermissionManagement.OpenIddict;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
+using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.MultiTenancy;
-using WorkShopManagement.Utils.Exceptions;
 
 namespace WorkShopManagement;
 
@@ -38,8 +35,8 @@ namespace WorkShopManagement;
     typeof(AbpIdentityDomainModule),
     typeof(AbpOpenIddictDomainModule),
     typeof(AbpTenantManagementDomainModule),
-    typeof(BlobStoringDatabaseDomainModule),
-    typeof(AbpBlobStoringFileSystemModule)
+    typeof(AbpBlobStoringModule),
+    typeof(AbpBlobStoringGoogleModule)
     )]
 public class WorkShopManagementDomainModule : AbpModule
 {
@@ -49,38 +46,37 @@ public class WorkShopManagementDomainModule : AbpModule
         {
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
-       
-        ConfigureBlobStoringOptions(context.Services.GetConfiguration());
+
+        ConfigureBlobStoring(context);
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
     }
 
-    private void ConfigureBlobStoringOptions(IConfiguration configuration)
+    private void ConfigureBlobStoring(ServiceConfigurationContext context)
     {
+        context.Services.ConfigureOptions<ConfigureGoogleStorageOptions>();
+
+        var configuration = context.Services.GetConfiguration();
+        var googleOptions = configuration
+            .GetSection(GoogleStorageOptions.ConfigurationKey)
+            .Get<GoogleStorageOptions>()
+            ?? throw new InvalidOperationException($"Missing config: {GoogleStorageOptions.ConfigurationKey}");
+
         Configure<AbpBlobStoringOptions>(options =>
         {
             options.Containers.ConfigureDefault(container =>
             {
-                container.UseFileSystem(fileSystem =>
+                container.IsMultiTenant = false;
+                container.UseGoogle(google =>
                 {
-                    var baseDir = configuration["BlobStorageSettings:BaseDir"];
-                    var baseUrl = configuration["BlobStorageSettings:BaseUrl"];
-
-                    List<string> missingFields = [];
-                    if (string.IsNullOrWhiteSpace(baseDir))
-                        missingFields.Add("BlobStorageSettings:BaseDir");
-                    if (string.IsNullOrWhiteSpace(baseUrl))
-                        missingFields.Add("BlobStorageSettings:BaseUrl");
-                    if (missingFields.Count > 0)
-                    {
-                        throw new MissingConfigurationsException(missingFields.ToArray());
-
-                    }
-
-                    //fileSystem.BasePath = Path.Combine(baseUrl!, "wwwroot", baseDir!);
-                    fileSystem.BasePath = Path.Combine(Environment.CurrentDirectory, "wwwroot", baseDir!);
+                    google.ClientEmail = googleOptions.ClientEmail;
+                    google.ProjectId = googleOptions.ProjectId;
+                    google.PrivateKey = googleOptions.PrivateKey;
+                    google.Scopes = googleOptions.Scopes;
+                    google.ContainerName = googleOptions.ContainerName;
+                    google.CreateContainerIfNotExists = false;
                 });
             });
         });

@@ -128,87 +128,75 @@
 }
 
 .quality-gates-wrap {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--bg-border, #e9ecef);
   border-radius: 10px;
   padding: 10px 12px;
-  background: #fff;
+  background: var(--surface-primary, #fff);
 }
 
-.gate-btn {
-  font-weight: 600;
-  padding: 10px 12px;
-  border-radius: 6px;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
-}
-
-/* PASSED (green) */
+/* PASSED (success) */
 .gate-passed {
-  border-color: #198754 !important;
-  color: #198754 !important;
+  border-color: var(--accent-success) !important;
+  color: var(--accent-success) !important;
 
   &:hover,
   &:focus {
-    background: #198754 !important;
-    border-color: #198754 !important;
+    background: var(--accent-success) !important;
+    border-color: var(--accent-success) !important;
     color: #fff !important;
   }
 }
 
-/* CONDITIONAL PASSED - MAJOR (red) */
+/* CONDITIONAL PASSED - MAJOR (danger) */
 .gate-major {
-  border-color: #dc3545 !important;
-  color: #dc3545 !important;
+  border-color: var(--accent-danger) !important;
+  color: var(--accent-danger) !important;
 
   &:hover,
   &:focus {
-    background: #dc3545 !important;
-    border-color: #dc3545 !important;
+    background: var(--accent-danger) !important;
+    border-color: var(--accent-danger) !important;
     color: #fff !important;
   }
 }
 
-/* CONDITIONAL PASSED - MINOR (orange) */
+/* CONDITIONAL PASSED - MINOR (warning) */
 .gate-minor {
-  border-color: #fd7e14 !important;
-  color: #fd7e14 !important;
+  border-color: var(--accent-warning) !important;
+  color: var(--accent-warning) !important;
 
   &:hover,
   &:focus {
-    background: #fd7e14 !important;
-    border-color: #fd7e14 !important;
+    background: var(--accent-warning) !important;
+    border-color: var(--accent-warning) !important;
     color: #fff !important;
   }
 }
 
-/* OPEN (blue) */
+/* OPEN (use your brand tone or accent-info; choose one) */
 .gate-open {
-  border-color: #194d67 !important;
-  color: #194d67 !important;
+  border-color: var(--brand-primary-medium) !important; // or var(--accent-info)
+  color: var(--brand-primary-medium) !important;
 
   &:hover,
   &:focus {
-    background: #194d67 !important;
-    border-color: #194d67 !important;
+    background: var(--brand-primary-medium) !important; // or var(--accent-info)
+    border-color: var(--brand-primary-medium) !important;
     color: #fff !important;
   }
 }
 
-/* RESET (gray) */
+/* RESET (secondary/neutral) */
 .gate-reset {
-  border-color: #6c757d !important;
-  color: #6c757d !important;
+  border-color: var(--brand-secondary) !important; // or var(--text-secondary)
+  color: var(--brand-secondary) !important;
 
   &:hover,
   &:focus {
-    background: #6c757d !important;
-    border-color: #6c757d !important;
+    background: var(--brand-secondary) !important;
+    border-color: var(--brand-secondary) !important;
     color: #fff !important;
   }
-}
-
-.gate-menu {
-  padding: 4px 0;
-  border-radius: 4px;
 }
 
 .gate-menu {
@@ -216,59 +204,58 @@
   top: calc(100% + 6px);
   left: 0;
   width: 100%;
-  background: #fff;
-  border: 1px solid #dee2e6;
+  background: var(--surface-primary, #fff);
+  border: 1px solid var(--bg-border, #dee2e6);
   border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
-  z-index: 2000; // important inside modal
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 2000;
   padding: 4px 0;
 }
 
 .gate-item {
   width: 100%;
   display: flex;
-  align-items: flex-start;      // key: align to first line
+  align-items: flex-start;
   gap: 8px;
 
   background: transparent;
   border: 0;
-  padding: 8px 10px;            // a bit more breathing room
+  padding: 8px 10px;
   text-align: left;
 
-  font-size: 0.75rem;           // 0.55rem is too small; but keep if you want
+  font-size: 0.75rem;
   font-weight: 700;
   line-height: 1.15;
 
   &:hover {
-    background: #f1f3f5;
+    background: rgba(var(--brand-primary-rgb), 0.06);
   }
 
   &.active {
-    background: #e9ecef;
+    background: rgba(var(--brand-primary-rgb), 0.10);
   }
 }
 
 .status-dot {
   width: 10px;
   height: 10px;
-  min-width: 10px;              // key: prevents shrinking when text wraps
+  min-width: 10px;
   border-radius: 999px;
   display: inline-block;
-  margin-top: 2px;              // key: aligns dot with first text line
-  flex: 0 0 10px;               // key: fixed column
+  margin-top: 2px;
+  flex: 0 0 10px;
 }
 
 .gate-text {
   flex: 1 1 auto;
   min-width: 0;
-  white-space: normal;          // allow wrapping
+  white-space: normal;
   word-break: break-word;
 }
 
-
-
-.dot-passed { background: #198754; } // green
-.dot-major  { background: #dc3545; } // red
-.dot-minor  { background: #fd7e14; } // orange
-.dot-open   { background: #194d67; } // blue
-.dot-reset  { background: #6c757d; } // gray
+/* Dots mapped to your theme */
+.dot-passed { background: var(--accent-success); }
+.dot-major  { background: var(--accent-danger); }
+.dot-minor  { background: var(--accent-warning); }
+.dot-open   { background: var(--brand-primary-medium); } // or var(--accent-info)
+.dot-reset  { background: var(--brand-secondary); }

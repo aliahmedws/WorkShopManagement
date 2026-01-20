@@ -15,7 +15,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
-    <PackageReference Include="Volo.Abp.BlobStoring.FileSystem" Version="10.0.1" />
+    <PackageReference Include="Volo.Abp.BlobStoring" Version="10.0.1" />
+    <PackageReference Include="Volo.Abp.BlobStoring.Google" Version="10.0.1" />
     <PackageReference Include="Volo.Abp.Emailing" Version="10.0.1" />
     <PackageReference Include="Volo.Abp.Caching" Version="10.0.1" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="10.0.1" />
@@ -24,7 +25,6 @@
     <PackageReference Include="Volo.Abp.AuditLogging.Domain" Version="10.0.1" />
     <PackageReference Include="Volo.Abp.FeatureManagement.Domain" Version="10.0.1" />
     <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="10.0.1" />
-    <PackageReference Include="Volo.Abp.BlobStoring.Database.Domain" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>

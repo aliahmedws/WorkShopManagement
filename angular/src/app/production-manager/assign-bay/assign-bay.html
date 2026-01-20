@@ -1,0 +1,47 @@
+<!--  ASSIGN CAR BAY MODAL: -->
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="appear()" [options]="{ size: 'md' }">
+    <ng-template #abpHeader>
+        {{ '::AssignToBay' | abpLocalization }}
+    </ng-template>
+
+    <ng-template #abpBody>
+        <form *ngIf="form" [formGroup]="form" class="row g-3">
+
+            <!-- Bay -->
+            <div class="col-12 col-md-12">
+                <label class="form-label fw-semibold">
+                    {{ '::BayNumber' | abpLocalization }}
+                </label>
+
+                <nz-select nzShowSearch nzAllowClear nzSize="large" class="w-100" formControlName="bayId"
+                    [nzPlaceHolder]="'::Select' | abpLocalization">
+                    <nz-option *ngFor="let option of bayOptions" [nzLabel]="option.displayName"
+                        [nzValue]="option.id"></nz-option>
+                </nz-select>
+            </div>
+
+            <!-- Priority -->
+            <div class="col-12 col-md-12">
+                <label class="form-label fw-semibold">
+                    {{ '::Priority' | abpLocalization }}
+                </label>
+
+                <nz-select nzAllowClear nzSize="large" class="w-100" formControlName="priority"
+                    [nzPlaceHolder]="'::Select' | abpLocalization">
+                    <nz-option *ngFor="let option of priorityOptions" [nzLabel]="('::Enum:Priority.' + option.value | abpLocalization)"
+                        [nzValue]="option.value"></nz-option>
+                </nz-select>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <!-- <button type="button" class="btn btn-outline-secondary" (click)="closeAssignModal()" abpClose>
+            {{ '::Cancel' | abpLocalization }}
+        </button> -->
+
+        <button type="button" class="btn btn-primary" [disabled]="!form || form.invalid" (click)="assignToBay()">
+            {{ '::AssignToBay' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>
