@@ -1,1 +1,42 @@
-<p>change-stage-actions works!</p>
+<abp-modal [(visible)]="visible" [busy]="saving" size="md">
+  <ng-template #abpHeader>
+    <h5>{{ '::MoveStage' | abpLocalization }}</h5>
+  </ng-template>
+
+  <ng-template #abpBody>
+    <div class="mb-3">
+      <label class="form-label">{{ '::SelectTargetStage' | abpLocalization }}</label>
+      <div class="list-group">
+        <button
+          *ngFor="let option of availableStages"
+          type="button"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          [class.active]="isStageSelected(option.value)"
+          (click)="selectStage(option.value)"
+          [disabled]="saving">
+          <span>{{ ('::Enum:Stage.' + option.value) | abpLocalization }}</span>
+          <i *ngIf="isStageSelected(option.value)" class="fas fa-check"></i>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="selectedStage !== undefined" class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      {{ '::StageChangeInfo' | abpLocalization }}
+    </div>
+  </ng-template>
+
+  <ng-template #abpFooter>
+    <button type="button" class="btn btn-outline-secondary" (click)="close()" [disabled]="saving">
+      {{ '::Cancel' | abpLocalization }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="save()"
+      [disabled]="selectedStage === undefined || saving">
+      <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+      {{ '::Move' | abpLocalization }}
+    </button>
+  </ng-template>
+</abp-modal>

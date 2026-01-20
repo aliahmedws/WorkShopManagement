@@ -3,17 +3,22 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Domain.Services;
 using WorkShopManagement.Bays;
+using WorkShopManagement.Cars;
+using WorkShopManagement.LogisticsDetails;
 
 namespace WorkShopManagement.CarBays;
 
 public class CarBayManager : DomainService
 {
     private readonly ICarBayRepository _carBayRepository;
+    private readonly ICarRepository _carRepository;
 
     public CarBayManager(
-        ICarBayRepository carBayRepository)
+        ICarBayRepository carBayRepository,
+         ICarRepository carRepository)
     {
         _carBayRepository = carBayRepository;
+        _carRepository = carRepository;
     }
 
     public virtual async Task<CarBay> CreateAsync(
@@ -283,8 +288,22 @@ public class CarBayManager : DomainService
         else
         {
             entity.ClockIn(time);
+            var deliveryDate = time.AddDays(7);
+
+            // Set delivery date on Car entity
+            await SetCarDeliveryDateAsync(entity.CarId, deliveryDate);
         }
 
         return await _carBayRepository.UpdateAsync(entity, autoSave: true);
+    }
+    private async Task SetCarDeliveryDateAsync(Guid carId, DateTime deliveryDate)
+    {
+        var car = await _carRepository.GetAsync(carId);
+
+        // Set the delivery date on the Car entity
+        car.SetSchedule(car.DueDate, deliveryDate, car.StartDate);
+
+        // Update the car
+        await _carRepository.UpdateAsync(car, autoSave: true);
     }
 }

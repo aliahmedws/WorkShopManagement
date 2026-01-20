@@ -12,6 +12,7 @@ import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-moda
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import {  StageDto } from 'src/app/proxy/stages';
 import { mapCreStatusColor, mapEstReleaseStatusColor, mapIssueStatusColor, mapNoteStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-incoming',
@@ -32,6 +33,7 @@ export class Incoming {
   @ViewChild('notesModal', { static: true })
   notesModal!: CarNotesModal;
 
+  currentStage = Stage.Incoming;
   selected = {} as StageDto;
   isRecallModalVisible = false;
   isCheckInModalVisible = false;

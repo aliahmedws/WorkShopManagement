@@ -149,34 +149,40 @@ namespace WorkShopManagement.Cars
                 throw new UserFriendlyException($"Invalid value for {nameof(storageLocation)}");
             }
 
-            // if car stage is not Incoming, external or Scd Warehouse -> meaning stage is prod, post prod, awaiting transport or dispatched [DISABLE STORAGE CHANGE] 
-            if (!car.Stage.Equals(Stage.Incoming) && !car.Stage.Equals(Stage.ExternalWarehouse) && !car.Stage.Equals(Stage.ScdWarehouse))
-            {
-                throw new UserFriendlyException($"Cannot change storage location when car is in <strong>{car.Stage}</strong> stage.");
-            }
-
             // if same as current, return
             if (car.StorageLocation == storageLocation)
             {
                 return car;
             }
 
-            // change storage location
-            //- no need remove if (car.Stage.Equals(Stage.Incoming) && (!car.StorageLocation.HasValue || !Enum.IsDefined(car.StorageLocation.Value)))        // this only happes if car is in incoming stage
 
-            // TO CHECK?? If car has same stage. simply update storage location 
-
-            if (storageLocation.Equals(StorageLocation.K2) || storageLocation.Equals(StorageLocation.TerrenceRoad))
+            // if car stage is not Incoming, external or Scd Warehouse -> meaning stage is prod, post prod, awaiting transport or dispatched [DISABLE STORAGE CHANGE] 
+            if (!car.Stage.Equals(Stage.Incoming) && !car.Stage.Equals(Stage.ExternalWarehouse) && !car.Stage.Equals(Stage.ScdWarehouse))
             {
-                // move to SCD Warehouse Stage
-                car = await ChangeStageAsync(car, Stage.ScdWarehouse);
+                //throw new UserFriendlyException($"Cannot change storage location when car is in <strong>{car.Stage}</strong> stage.");
+
             }
             else
             {
-                // move to External Warehouse Stage
-                car = await ChangeStageAsync(car, Stage.ExternalWarehouse);
+
+                // change storage location
+                //- no need remove if (car.Stage.Equals(Stage.Incoming) && (!car.StorageLocation.HasValue || !Enum.IsDefined(car.StorageLocation.Value)))        // this only happes if car is in incoming stage
+
+                // TO CHECK?? If car has same stage. simply update storage location 
+
+                if (storageLocation.Equals(StorageLocation.K2) || storageLocation.Equals(StorageLocation.TerrenceRoad))
+                {
+                    // move to SCD Warehouse Stage
+                    car = await ChangeStageAsync(car, Stage.ScdWarehouse);
+                }
+                else
+                {
+                    // move to External Warehouse Stage
+                    car = await ChangeStageAsync(car, Stage.ExternalWarehouse);
+                }
             }
 
+            
 
 
             car.SetStorageLocation(storageLocation);
@@ -259,6 +265,7 @@ namespace WorkShopManagement.Cars
                     {
                         missingFields.Add("LogisticsDetail.CreStatus.Pending");
                     }
+
                 }
 
 

@@ -38,6 +38,7 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { AssignBay } from '../../assign-bay/assign-bay';
 import { StageDto } from 'src/app/proxy/stages';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
+import { ChangeStageActions } from './change-stage-actions/change-stage-actions';
 
 @Component({
   selector: 'app-production-details-modal',
@@ -51,6 +52,7 @@ import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-mod
     Recalls,
     AssignBay,
     CheckInReportModal,
+    ChangeStageActions,
   ],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
@@ -66,6 +68,7 @@ export class ProductionDetailsModal {
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
   @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
   @ViewChild(IssueModal) issueModal!: IssueModal;
+  @ViewChild(ChangeStageActions) changeStageModal!: ChangeStageActions;
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -74,6 +77,9 @@ export class ProductionDetailsModal {
   isIssueModalVisible = false;
   isAssignBayVisible: boolean = false;
   isCheckInModalVisible = false;
+  isChangeStageModalVisible = false;
+
+  currentStage?: Stage;
 
   @Input() allowMovetoPostProduction = true; // NO NEED SIMPLE GET stage of car and do validation
   @Input() allowMovetoAwaitingTransport = true;
@@ -151,6 +157,16 @@ export class ProductionDetailsModal {
       this.buildForm();
 
       this.loadQualityGates(); // MOVE TO GATE
+       this.loadCurrentStage();
+    });
+  }
+
+   private loadCurrentStage(): void {
+    if (!this.carId) return;
+    
+    this.carService.get(this.carId).subscribe(car => {
+      this.selectedCar = car;
+      this.currentStage = car.stage; // Assuming CarDto has stage property
     });
   }
 
@@ -278,6 +294,55 @@ export class ProductionDetailsModal {
           },
         });
       });
+  }
+
+  moveToSCDWareHouse() {
+    const carId = this.details?.carId;
+    const carBayId = this.details?.id;
+
+    if (!carId || this.movingStage) return;
+
+    this.confirm
+      .confirmAction('::ConfirmMoveToSCDWareHouseMessage', '::ConfirmMoveToSCDWareHouse')
+      .subscribe((status: Confirmation.Status) => {
+        if (status !== Confirmation.Status.confirm) return;
+
+        this.movingStage = true;
+
+        // Change stage to SCD WareHouse (replace with your actual Stage enum value)
+        this.carService.changeStage(carId, { targetStage: Stage.ScdWarehouse }).subscribe({
+          next: () => {
+            // After successfully changing stage, clear the bay
+            if (carBayId) {
+              this.clearBay(carBayId, carId);
+            } else {
+              this.movingStage = false;
+              this.close();
+              this.stageChanged.emit(carId);
+            }
+          },
+          error: () => {
+            this.movingStage = false;
+          },
+        });
+      });
+  }
+
+  private clearBay(carBayId: string, carId: string): void {
+    this.carBayService.delete(carBayId).subscribe({
+      next: () => {
+        this.toaster.success('::BayClearedSuccessfully', '::Success');
+        this.movingStage = false;
+        this.close();
+        this.stageChanged.emit(carId);
+      },
+      error: () => {
+        this.toaster.error('::FailedToClearBay', '::Error');
+        this.movingStage = false;
+        this.close();
+        this.stageChanged.emit(carId);
+      },
+    });
   }
 
   moveToAwaitingTransportProduction() {
@@ -568,7 +633,18 @@ export class ProductionDetailsModal {
   }
 
   onCheckInReportSubmit(): void {
-  this.loadDetails(); // Reload the car bay details
-  this.isCheckInModalVisible = false;
-}
+    this.loadDetails(); // Reload the car bay details
+    this.isCheckInModalVisible = false;
+  }
+
+  openMoveStageModal(): void {
+    if (!this.carId) return;
+    this.isChangeStageModalVisible = true;
+  }
+
+  onStageMoved(): void {
+    this.loadDetails();
+    this.isChangeStageModalVisible = false;
+    this.stageChanged.emit(this.carId!);
+  }
 }

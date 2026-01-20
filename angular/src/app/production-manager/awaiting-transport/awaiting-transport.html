@@ -3,7 +3,7 @@
         <ngx-datatable [rows]="stages.items" [count]="stages.totalCount" [list]="list" [columnMode]="'force'" default>
             <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <app-production-actions [stage]="row" [showBayDetails]="true" [showAssignBay]="true"
+                    <app-production-actions [stage]="row" [showBayDetails]="true" [showAssignBay]="true"  [showMove]="true"
                         (change)="list?.get()" [(isIssueModalVisible)]="issueModalVisible[row.carId]"></app-production-actions>
                 </ng-template>
             </ngx-datatable-column>

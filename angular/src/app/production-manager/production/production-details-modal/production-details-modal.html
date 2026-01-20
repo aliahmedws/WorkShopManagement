@@ -163,8 +163,7 @@
                     
                     /> -->
                   <img nz-image [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
-                    style="height: 300px; object-fit: contain; min-width: 300px;"
-                    />
+                    style="height: 300px; object-fit: contain; min-width: 300px;" />
                 </ng-container>
 
                 <ng-template #noImage>
@@ -176,55 +175,51 @@
               <div class="position-absolute bottom-0 end-0 p-1">
                 <div class="d-flex flex-column align-items-end gap-2">
                   <!-- buttons row -->
-                    
+
                   <div class="d-flex flex-wrap justify-content-end gap-2">
-                     <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary px-4"
-                      (click)="openCheckInModal()">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openCheckInModal()">
                       {{ '::CheckInReport' | abpLocalization }}
                     </button>
-                     <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary px-4"
-                      (click)="openAssignBay()"
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openAssignBay()"
                       [disabled]="movingStage || !details?.carId">
                       {{ '::AssignToBay' | abpLocalization }}
                     </button>
-                     <div class="btn-group" ngbDropdown>
-                    <button
-                      type="button"
+
+                 
+                    <button 
+                      type="button" 
                       class="btn btn-sm btn-outline-secondary px-4"
-                      ngbDropdownToggle
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
+                      (click)="openMoveStageModal()"
+                      [disabled]="!details?.carId">
                       {{ '::Move' | abpLocalization }}
                     </button>
-                     <div ngbDropdownMenu>
-                    <button
-                      ngbDropdownItem
-                      type="button"
-                      (click)="moveToPostProduction()"
-                      [disabled]="movingStage || !details?.carId || !allowMovetoPostProduction">
-                      {{ '::Post Production' | abpLocalization }}
-                    </button>
+                    <!-- <div class="btn-group" ngbDropdown>
+                      <button type="button" class="btn btn-sm btn-outline-secondary px-4" ngbDropdownToggle
+                        [disabled]="movingStage || !details?.carId">
+                        <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
+                        {{ '::Move' | abpLocalization }}
+                      </button>
+                      <div ngbDropdownMenu>
+                        <button ngbDropdownItem type="button" (click)="moveToSCDWareHouse()"
+                          [disabled]="movingStage || !details?.carId">
+                          {{ '::SCD WareHouse' | abpLocalization }}
+                        </button>
+                        <button ngbDropdownItem type="button" (click)="moveToPostProduction()"
+                          [disabled]="movingStage || !details?.carId || !allowMovetoPostProduction">
+                          {{ '::Post Production' | abpLocalization }}
+                        </button>
 
-                    <button
-                      ngbDropdownItem
-                      type="button"
-                      (click)="moveToAwaitingTransportProduction()"
-                      [disabled]="movingStage || !details?.carId || !allowMovetoAwaitingTransport">
-                      {{ '::Awaiting Transport' | abpLocalization }}
-                    </button>
-                    <button
-                      ngbDropdownItem
-                      type="button"
-                      (click)="moveToDispatched()"
-                      [disabled]="movingStage || !details?.carId">
-                      {{ '::Dispatched' | abpLocalization }}
-                    </button>
-                  </div>
-                  </div>
+                        <button ngbDropdownItem type="button" (click)="moveToAwaitingTransportProduction()"
+                          [disabled]="movingStage || !details?.carId || !allowMovetoAwaitingTransport">
+                          {{ '::Awaiting Transport' | abpLocalization }}
+                        </button>
+                        <button ngbDropdownItem type="button" (click)="moveToDispatched()"
+                          [disabled]="movingStage || !details?.carId">
+                          {{ '::Dispatched' | abpLocalization }}
+                        </button>
+
+                      </div>
+                    </div> -->
                     <!-- <button *ngIf="allowMovetoPostProduction" type="button"
                       class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
                       [disabled]="movingStage || !details?.carId">
@@ -268,8 +263,8 @@
                   <small>
                     Clocked In: {{ details?.clockInTime | shortDateTime }}
                   </small>
-                  } 
-                  @if(details?.clockInStatus == ClockInStatus.ClockedOut  )
+                  }
+                  @if(details?.clockInStatus == ClockInStatus.ClockedOut )
                   {
                   <small>
                     Clocked Out: {{ details?.clockOutTime | shortDateTime }}
@@ -371,5 +366,9 @@
   <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" (submit)="loadSelectedCar()"></app-recalls>
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
   </app-critical-images-modal>
-  <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="getSelectedStageDto()" (submit)="onAssignBaySubmit()"></app-assign-bay>
-  <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="details?.carId" [carVin]="details?.carVin" (submit)="onCheckInReportSubmit()"></app-check-in-report-modal>
+  <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="getSelectedStageDto()"
+    (submit)="onAssignBaySubmit()"></app-assign-bay>
+  <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="details?.carId" [carVin]="details?.carVin"
+    (submit)="onCheckInReportSubmit()"></app-check-in-report-modal>
+  <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="details?.carId" [carBayId]="details?.id" [currentStage]="currentStage"(stageMoved)="onStageMoved()">
+</app-change-stage-actions>
