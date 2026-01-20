@@ -11,7 +11,7 @@ namespace WorkShopManagement.Stages;
 public interface IStageRepository : IRepository<Car, Guid>
 {
     Task<ListResult<StageModel>> GetStageAsync(
-        Stage stage,
+        Stage? stage = null,
         string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,

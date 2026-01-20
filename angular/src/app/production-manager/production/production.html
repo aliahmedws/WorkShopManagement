@@ -1,4 +1,4 @@
-<div class="card">
+
     <div class="card-body">
         <div class="row g-3">
             @for (bay of activeCarBays; track bay.bayId) {
@@ -97,7 +97,7 @@
 
         </div>
     </div>
-</div>
+
 
 <!-- your grid / bay cards html stays the same -->
 <app-production-details-modal [(visible)]="isProductionDetailVisible"  [carId]="carId"  (stageChanged)="onStageChanged()" (closed)="onDetailsClosed()"></app-production-details-modal>

@@ -29,7 +29,7 @@ import { Confirmation } from '@abp/ng.theme.shared';
 })
 export class Production implements OnInit {
   @Input() filters = {} as GetCarListInput;
-  @Output() refreshRequested = new EventEmitter<void>();
+  @Output() change = new EventEmitter<void>();
 
   bayOptions: GuidLookupDto[] = [];
   activeCarBays: StageBayDto[] = [];
@@ -65,8 +65,6 @@ export class Production implements OnInit {
 
   reloadActiveBays(): void {
     this.stageService.getBays().subscribe(res => (this.activeCarBays = res || []));
-    // this.carBayService.getList({ isActive: true, maxResultCount: 1000 } as any)
-    //   .subscribe(res => (this.activeCarBays = res?.items || []));
   }
 
   getAssignment(bayId: string): CarBayDto | null {
@@ -99,6 +97,7 @@ export class Production implements OnInit {
 
   onStageChanged() {
     // this.activeCarBays = this.activeCarBays.filter(x => x.carId !== carId);
+    this.change.emit();
     this.reloadActiveBays();
   }
 
@@ -111,6 +110,7 @@ export class Production implements OnInit {
   }
 
   onDetailsClosed(): void {
+    this.change.emit();
     this.reloadActiveBays();
     // this.refreshRequested.emit();
   }
@@ -126,6 +126,7 @@ export class Production implements OnInit {
 
       this.carBayService.delete(bay.carBayId).subscribe(() => {
         this.toaster.deleted();
+        this.change.emit();
         this.reloadActiveBays();
         // this.refreshRequested.emit();
       });

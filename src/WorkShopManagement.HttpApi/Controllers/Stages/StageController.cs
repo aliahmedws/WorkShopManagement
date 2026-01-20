@@ -14,6 +14,12 @@ namespace WorkShopManagement.Controllers.Stages;
 [Route("api/app/stages")]
 public class StageController(IStageAppService service) : WorkShopManagementController, IStageAppService
 {
+    [HttpGet("all-stages")]
+    public Task<ListResultDto<StageDto>> GetAllAsync(string? filter = null)
+    {
+        return service.GetAllAsync(filter);
+    }
+
     [HttpGet("stage")]
     public Task<PagedResultDto<StageDto>> GetStageAsync(GetStageInput input)
     {

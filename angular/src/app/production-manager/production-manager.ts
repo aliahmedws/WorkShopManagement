@@ -13,10 +13,11 @@ import { AwaitingTransport } from './awaiting-transport/awaiting-transport';
 import { Dispatched } from './dispatched/dispatched';
 import { ScdWarehouse } from './scd-warehouse/scd-warehouse';
 import { StageDto, StageService } from '../proxy/stages';
+import { ClassicView } from './classic-view/classic-view';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, ScdWarehouse, Production, PostProduction, AwaitingTransport, Dispatched],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, ScdWarehouse, Production, PostProduction, AwaitingTransport, Dispatched, ClassicView],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],
@@ -31,6 +32,8 @@ export class ProductionManager implements OnInit {
   cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
   stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
   filters = { stage: Stage.Incoming } as GetCarListInput;
+
+  isClassicView = false;
 
   selectedIndex = 0;
 
@@ -54,7 +57,7 @@ export class ProductionManager implements OnInit {
 
   onTabChange(index: number): void {
 
-    this.cars = { items: [], totalCount: 0 };
+    this.stages = { items: [], totalCount: 0 };
     this.selectedIndex = index;
     this.filters.stage = index + 1
     // this.setFiltersByIndex(index);
@@ -68,6 +71,10 @@ export class ProductionManager implements OnInit {
     });
 
     this.list.get();
+  }
+
+  toggleView(){
+    this.isClassicView = !this.isClassicView;
   }
 
   // 6. Refactored logic to reuse in ngOnInit and onTabChange

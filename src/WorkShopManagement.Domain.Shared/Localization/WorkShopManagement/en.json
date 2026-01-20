@@ -481,6 +481,9 @@
     "ClockedInSuccessfully": "Clocked In Successfully",
     "ConfirmClearBayTitle": "Clear bay",
     "ConfirmClearBayMessage": "Are you sure you want to clear this bay? The car will be moved to SCD Warehouse.",
+    "SearchResults": "Search Results",
+    "ClearSearch": "Clear Search",
+    "NoRecordsFound": "No Records Found",
     "ConfirmMoveToSCDWareHouse": "Confirm stage change",
     "ConfirmMoveToSCDWareHouseMessage": "Are you sure you want to move this car to SCD WareHouse?",
     "SCD WareHouse": "SCD WareHouse",
@@ -493,7 +496,6 @@
     "ConfirmMoveToPostProduction": "Are you sure you want to move this car to Post Production?",
     "ConfirmMoveToIncoming": "Are you sure you want to move this car to Incoming?",
     "ConfirmMoveToProduction": "Are you sure you want to move this car to Production?",
-
     "StageChangeInfo": "The car will be moved to the selected stage.",
     "StageChangedSuccessfully": "Stage changed successfully",
     "FailedToMoveStage": "Failed to move stage",

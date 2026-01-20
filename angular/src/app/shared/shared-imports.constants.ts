@@ -17,6 +17,7 @@ import { NzTabsModule } from "ng-zorro-antd/tabs";
 import { NzEmptyModule } from "ng-zorro-antd/empty";
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -40,7 +41,8 @@ export const SHARED_IMPORTS = [
     NzEmptyModule,
     EllipsisDirective,
     NzStepsModule,
-    NzCarouselModule 
+    NzCarouselModule,
+    NzCollapseModule 
 ];
 
 export { 
