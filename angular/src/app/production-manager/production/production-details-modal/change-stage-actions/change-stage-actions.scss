@@ -1,0 +1,18 @@
+.list-group-item-action {
+  cursor: pointer;
+
+  // This matches ngbDropdown hover style
+  &:hover:not(.active):not(:disabled) {
+    background-color: #f8f9fa; // Bootstrap's default hover color
+  }
+
+  &.active {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: white !important;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
