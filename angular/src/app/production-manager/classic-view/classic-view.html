@@ -25,37 +25,54 @@
                 </div>
                 }
 
-
-
-                <nz-collapse [nzBordered]="false" class="bg-transparent">
+                <div ngbAccordion class="bg-transparent" [closeOthers]="false">
 
                     @for (option of stageOptions; track option.value) {
-                    <nz-collapse-panel [nzHeader]="headerTpl" [nzActive]="true"
-                        class="mb-2 bg-white rounded border shadow-sm">
-                        <ng-template #headerTpl>
-                            <div class="d-flex justify-content-between w-100 pe-3">
-                                <h5 class="m-0">
-                                    <span class="fw-bold">{{ ('::Enum:Stage.' + option.value) | abpLocalization }}</span>
-                                    <i class="far fa-question-circle ms-2" (click)="helpMessage(option)"></i>
-                                </h5>
-                                <span class="badge bg-light text-dark border">{{ getCountForStage(option.value) }}</span>
+
+                    <div ngbAccordionItem class="mb-3 rounded shadow-sm py-2" [destroyOnHide]="false" [collapsed]="false">
+                        <!-- Header -->
+                        <h2 ngbAccordionHeader>
+                            <button ngbAccordionButton class="w-100 px-3 pb-2 pt-1 m-0 bg-transparent border-0">
+                                <div class="d-flex justify-content-between w-100 align-items-center">
+                                    <h5 class="m-0">
+                                        <span class="fw-bold">
+                                            {{ ('::Enum:Stage.' + option.value) | abpLocalization }}
+                                        </span>
+
+                                        <!-- IMPORTANT: stopPropagation so click doesn't toggle accordion -->
+                                        <i class="far fa-question-circle text-primary" role="button" tabindex="0"
+                                            (click)="$event.stopPropagation(); helpMessage(option)"
+                                            (keydown.enter)="$event.stopPropagation(); helpMessage(option)"></i>
+                                    </h5>
+
+                                    <span class="badge bg-light text-dark border me-3">
+                                        {{ getCountForStage(option.value) }}
+                                    </span>
+                                </div>
+                            </button>
+                        </h2>
+
+                        <!-- Body -->
+                        <div ngbAccordionCollapse>
+                            <div ngbAccordionBody class="px-3 py-2">
+                                <ng-template>
+                                    @if (option.value === Stage.Production) {
+                                    <app-production #production [filters]="filters"
+                                        (change)="refresh(false)"></app-production>
+                                    } @else {
+                                    <ng-container
+                                        *ngTemplateOutlet="stageTable; context: { items: getItemsForStage(option.value) }"></ng-container>
+                                    }
+                                </ng-template>
                             </div>
-                        </ng-template>
+                        </div>
 
-                        @if(option.value === Stage.Production)
-                        {
-                        <app-production #production [filters]="filters" (change)="refresh(false)"></app-production>
-                        } @else {
-                        <ng-container
-                            *ngTemplateOutlet="stageTable; context: { items: getItemsForStage(option.value) }">
-                        </ng-container>
-                        }
+                    </div>
 
-                        <!-- <ng-container
-                            *ngTemplateOutlet="stageTable; context: { items: getItemsForStage(option.value) }"></ng-container> -->
-                    </nz-collapse-panel>
                     }
-                </nz-collapse>
+
+                </div>
+
             </div>
         </div>
     </app-topbar-layout>
