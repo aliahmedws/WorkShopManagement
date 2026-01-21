@@ -6,7 +6,8 @@
             <app-production-topbar-actions></app-production-topbar-actions>
         </div>
         <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
-            (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
+            (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;"
+            [nzTabBarExtraContent]="extraTemplate">
 
             <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization">
                 <app-incoming [stages]="stages" [(filters)]="filters" [list]="list"></app-incoming>
@@ -36,6 +37,9 @@
                 <app-dispatched [stages]="stages" [(filters)]="filters" [list]="list"></app-dispatched>
             </nz-tab>
 
+            <ng-template #extraTemplate>
+                <i class="far fa-question-circle fa-xl link text-info" (click)="helpMessage()"></i>
+            </ng-template>
         </nz-tabs>
 
         @if (selectedIndex === 3) {

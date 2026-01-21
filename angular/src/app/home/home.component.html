@@ -4,41 +4,29 @@
     <div class="card h-lg-100 w-100 overflow-hidden">
       <div class="card-body">
         <div class="starting-content pe-5">
-
-          <!-- <h3>Welcome</h3>
-          <p class="lead text-muted mb-2">
-            {{ '::LongWelcomeMessage' | abpLocalization }}
-          </p> -->
           <a (click)="login()" class="px-4 btn btn-primary mb-4" role="button">
             <i class="fa fa-sign-in"></i>
             {{ 'AbpAccount::Login' | abpLocalization }}
           </a>
         </div>
-        <!-- <img class="card-bg-image" src="assets/images/getting-started/bg-01.png" /> -->
       </div>
     </div>
   </div>
 </div>
 }
 @else{
-<div class="pt-4" style="position: relative; width: 100%;">
-  <img [src]="'assets/images/logo/logo.png'"
-    alt="SCD Direct" 
-    style="position: absolute;
-      z-index:100; left:50%;
-      top:40px; transform: translate(-50%, -50%);
-      width: 400px;
-      max-width: 80%;
-      pointer-events: none;
-      ">
-  <nz-carousel nzAutoPlay class="rounded-3" [nzEffect]="'scrollx'" [nzEnableSwipe]="false" [nzAutoPlaySpeed]="4000" [nzDots]="false">
-    @for (image of images; track image) {
-    <div nz-carousel-content style="height: 800px;">
-      <img [src]="image" alt="Banner" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
-    </div>
-    }
+<div class="carousel-shell">
+  <img [src]="'assets/images/logo/logo.png'" alt="SCD Direct" class="carousel-logo" />
 
-  </nz-carousel>
+  <ngb-carousel class="app-carousel" [interval]="3000" [pauseOnHover]="false">
+    @for (image of images; track image) {
+    <ng-template ngbSlide>
+      <div class="slide-wrapper">
+        <img [src]="image" alt="slide" class="slide-img" />
+      </div>
+    </ng-template>
+    }
+  </ngb-carousel>
 </div>
 
 }

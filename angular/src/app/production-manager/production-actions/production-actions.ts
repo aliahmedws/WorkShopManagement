@@ -43,6 +43,10 @@ export class ProductionActions {
   @Input() isIssueModalVisible: boolean = false;
   @Output() isIssueModalVisibleChange = new EventEmitter<boolean>();
 
+  get canAssignBay(): boolean {
+    return this.showAssignBay && !this.stage.carBayId && this.stage.stage != Stage.Incoming;
+  }
+
   editCar() {
     this.isCarEditModalVisible = true;
   }

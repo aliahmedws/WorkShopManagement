@@ -16,6 +16,7 @@ import { StageDto, StageService } from '../proxy/stages';
 import { ClassicView } from './classic-view/classic-view';
 import { ProductionTopbarActions } from '../production-topbar-actions/production-topbar-actions';
 import { ProductionStateService } from './production-state.service';
+import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 
 @Component({
   selector: 'app-production-manager',
@@ -28,7 +29,7 @@ export class ProductionManager implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   public readonly list = inject(ListService);
-  private readonly carService = inject(CarService);
+  private readonly confirmation = inject(ConfirmationHelperService);
   private readonly stageService = inject(StageService);
   private state = inject(ProductionStateService);
 
@@ -78,6 +79,10 @@ export class ProductionManager implements OnInit {
     });
 
     this.list.get();
+  }
+
+  helpMessage() {
+    this.confirmation.productionStageHelpMessage(this.filters.stage);
   }
 
   // 6. Refactored logic to reuse in ngOnInit and onTabChange
