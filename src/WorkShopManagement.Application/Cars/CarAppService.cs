@@ -254,7 +254,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             var dto = new ExternalCarDetailsDto
             {
                 Error = res.Message,
-                Success = res.Success
+                Success = res.Success,
+                SuggestedVin = res.Input?.Vin
             };
 
             if (res.Attributes != null)

@@ -12,7 +12,7 @@
         }
         @if (form && !loading) {
         <div id="top"></div>
-        @if (external && !carId) {
+        @if (external && newFetch) {
         <div class="alert alert-dismissible fade show" [ngClass]="external.success ? 'alert-info' : 'alert-warning'"
             role="alert">
             <h4 class="alert-heading">
@@ -54,7 +54,7 @@
                             <div class="input-group" validationTarget>
                                 <input class="form-control" formControlName="vin" maxlength="17" />
                                 @if (canFetchVinDetails){
-                                <button type="button" class="btn btn-outline-info" (click)="fetchExternalCarDetails()">
+                                <button type="button" class="btn btn-outline-info" (click)="fetchExternalCarDetails(true)">
                                     {{ '::Fetch Details' | abpLocalization }}
                                 </button>
                                 }
