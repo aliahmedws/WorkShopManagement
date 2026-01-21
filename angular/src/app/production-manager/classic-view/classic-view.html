@@ -1,6 +1,6 @@
 <abp-page>
-    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters"
-        (onFilter)="onSearchTriggered($event)" (onReset)="clearSearch()">
+    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" (onFilter)="onSearchTriggered($event)"
+        (onReset)="clearSearch()">
         <div topbarActions>
             <app-production-topbar-actions></app-production-topbar-actions>
         </div>
@@ -34,9 +34,11 @@
                         class="mb-2 bg-white rounded border shadow-sm">
                         <ng-template #headerTpl>
                             <div class="d-flex justify-content-between w-100 pe-3">
-                                <span class="fw-bold">{{ ('::Enum:Stage.' + option.value) | abpLocalization }}</span>
-                                <span class="badge bg-light text-dark border">{{ getCountForStage(option.value)
-                                    }}</span>
+                                <h5 class="m-0">
+                                    <span class="fw-bold">{{ ('::Enum:Stage.' + option.value) | abpLocalization }}</span>
+                                    <i class="far fa-question-circle ms-2" (click)="helpMessage(option)"></i>
+                                </h5>
+                                <span class="badge bg-light text-dark border">{{ getCountForStage(option.value) }}</span>
                             </div>
                         </ng-template>
 
@@ -160,10 +162,10 @@
                     <td class="text-center">
 
                         <span class="text-center badge bg-{{mapAvvStatus(row)}} link" (click)="openAvvModal(row)">
-                        {{ row?.avvStatus ? (("::Enum:AvvStatus." + row.avvStatus) | abpLocalization) : 'AVV' }}
+                            {{ row?.avvStatus ? (("::Enum:AvvStatus." + row.avvStatus) | abpLocalization) : 'AVV' }}
                         </span>
                     </td>
-                    
+
 
                     <!-- ISSUES -->
                     <td class="text-center">

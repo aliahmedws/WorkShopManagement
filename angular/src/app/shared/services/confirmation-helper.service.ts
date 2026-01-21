@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Confirmation, ConfirmationService } from '@abp/ng.theme.shared';
 import { Observable } from 'rxjs';
+import { Stage } from 'src/app/proxy/cars/stages';
 
 export const DELETE_CONFIRMATION_OPTIONS: Confirmation.Options = {
   yesText: '::Button:ConfirmDelete',
@@ -32,6 +33,10 @@ export const INFO_CONFIRMATION_OPTIONS: Confirmation.Options = {
   icon: 'fas fa-info-circle text-info',
 } as const;
 
+export const PRODUCTION_HELP_MESSAGE_OPTIONS: Confirmation.Options = {
+  cancelText: '::Close',
+  hideYesBtn: true,
+} as const;
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmationHelperService {
@@ -52,7 +57,7 @@ export class ConfirmationHelperService {
     titleKey: string,
     options: Confirmation.Options = ACTION_CONFIRMATION_OPTIONS
   ): Observable<Confirmation.Status> {
-  return this.confirmation.warn(messageKey, titleKey, options);
+    return this.confirmation.warn(messageKey, titleKey, options);
   }
 
   confirmClearBay(): Observable<Confirmation.Status> {
@@ -79,5 +84,10 @@ export class ConfirmationHelperService {
     return this.confirmation.info(messageKey, titleKey, options);
   }
 
-  
+  productionStageHelpMessage(stage: Stage) {
+    const value = (stage as any)?.value ? (stage as any)?.value : stage;
+    if (value) {
+      this.confirmation.info(`::Enum:Stage.${value}.HelpMessage`, `::Enum:Stage.${value}`, PRODUCTION_HELP_MESSAGE_OPTIONS);
+    }
+  }
 }
