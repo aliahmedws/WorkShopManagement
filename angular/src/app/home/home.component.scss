@@ -32,7 +32,7 @@
 /* Consistent slide viewport (single source of truth for height) */
 .slide-wrapper {
   width: 100%;
-  height: clamp(300px, 52vw, 720px); /* increase height gradually, cap it */
+  height: clamp(320px, 75vh, 900px);
   overflow: hidden;
   background: #f3f4f6;
 
