@@ -747,11 +747,12 @@ a:active {
 }
 
 /* Tables */
-.table thead th {
-    color: var(--text-secondary);
-    font-weight: 600;
-}
+// .table thead th {
+//     color: var(--text-secondary);
+//     font-weight: 600;
+// }
 
+.table thead th,
 .ngx-datatable.material .datatable-header .datatable-header-cell {
     color: var(--brand-primary-dark);
     font-size: 0.75rem !important;
