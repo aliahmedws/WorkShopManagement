@@ -1,27 +1,56 @@
-/* Styles for the home component */
-.card-bg-image {
-  position: absolute;
-  width: 630px;
-  height: auto;
-  bottom: 0;
-  right: 0;
-  z-index: 1;
-}
-
-.starting-content {
+.carousel-shell {
   position: relative;
-  z-index: 2;
+  margin-top: 40px;
 }
 
+/* Logo overlay */
+.carousel-logo {
+  position: absolute;
+  z-index: 100000;
+  top: -50px;
 
-@media (min-width: 1199px) {
-  .h-lg-100 {
-    height: 100% !important;
+  left: 50%;
+  transform: translateX(-50%);
+
+  max-height: 100px;
+  width: auto;
+  max-width: 80%;
+  pointer-events: none;
+}
+
+/* Carousel sizing + rounding */
+:host ::ng-deep .app-carousel {
+  display: block;
+  width: 100%;
+
+  .carousel-inner {
+    border-radius: 0.2rem;
+    overflow: hidden; /* ensures rounded corners clip the image */
   }
 }
 
-@media (min-width: 768px) {
-  .h-md-100 {
-    height: 100% !important;
-  }
+/* Consistent slide viewport (single source of truth for height) */
+.slide-wrapper {
+  width: 100%;
+  height: clamp(300px, 52vw, 720px); /* increase height gradually, cap it */
+  overflow: hidden;
+  background: #f3f4f6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image fills viewport consistently */
+.slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Ensure ngb-carousel internals stretch */
+:host ::ng-deep .app-carousel .carousel-item {
+  height: 100%;
 }

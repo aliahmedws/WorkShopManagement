@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { AuthService} from '@abp/ng.core';
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { NgbCarousel, NgbSlide } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [...SHARED_IMPORTS]
+  imports: [...SHARED_IMPORTS, NgbCarousel, NgbSlide]
 })
 export class HomeComponent {
 
