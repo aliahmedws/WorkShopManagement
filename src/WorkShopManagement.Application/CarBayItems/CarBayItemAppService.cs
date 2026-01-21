@@ -277,7 +277,7 @@ public class CarBayItemAppService : ApplicationService, ICarBayItemAppService
         // For performance: load existing items for this CarBay in one query
         var carBayId = input.Items[0].CarBayId;
 
-        var carBay = await _carBayRepository.GetAsync(input.CarBayId);
+        var carBay = await _carBayRepository.GetAsync(carBayId);
         await _carBayRepository.EnsurePropertyLoadedAsync(carBay, cb => cb.Car);
 
         if (carBay?.Car == null)

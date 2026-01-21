@@ -115,13 +115,14 @@ export class ProductionDetailsModal {
   // persistence state
   private gateByName: Record<number, QualityGateDto | null> = {}; // gateNameValue -> dto // MOVE TO GATE
   savingGate: Record<number, boolean> = {}; // gateNameValue -> boolean // MOVE TO GATE
+  manufactureDate?: string | Date | null;
 
   form?: FormGroup;
 
   open(): void {
     this.details = undefined;
-    this.loadDetails();
     this.loadSelectedCar();
+    this.loadDetails();
   }
 
   loadSelectedCar() {
@@ -129,6 +130,8 @@ export class ProductionDetailsModal {
 
     this.carService.get(this.carId).subscribe(car => {
       this.selectedCar = car;
+      this.currentStage = car.stage;
+      this.manufactureDate = car.startDate ?? null;
     });
   }
 
@@ -157,7 +160,7 @@ export class ProductionDetailsModal {
       this.buildForm();
 
       this.loadQualityGates(); // MOVE TO GATE
-       this.loadCurrentStage();
+      //  this.loadCurrentStage();
     });
   }
 
@@ -588,6 +591,8 @@ export class ProductionDetailsModal {
           clockInTime: updated?.clockInTime ?? this.details.clockInTime,
           clockOutTime: updated?.clockOutTime ?? this.details.clockOutTime,
         } as CarBayDto;
+
+        this.loadSelectedCar();
 
         this.toaster.success(
           wasClockedIn ? '::ClockedOutSuccessfully' : '::ClockedInSuccessfully',

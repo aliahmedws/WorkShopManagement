@@ -291,17 +291,17 @@ public class CarBayManager : DomainService
             var deliveryDate = time.AddDays(7);
 
             // Set delivery date on Car entity
-            await SetCarDeliveryDateAsync(entity.CarId, deliveryDate);
+            await SetCarDeliveryDateAsync(entity.CarId, deliveryDate, time);
         }
 
         return await _carBayRepository.UpdateAsync(entity, autoSave: true);
     }
-    private async Task SetCarDeliveryDateAsync(Guid carId, DateTime deliveryDate)
+    private async Task SetCarDeliveryDateAsync(Guid carId, DateTime deliveryDate, DateTime clockInTime)
     {
         var car = await _carRepository.GetAsync(carId);
 
         // Set the delivery date on the Car entity
-        car.SetSchedule(car.DueDate, deliveryDate, car.StartDate);
+        car.SetSchedule(car.DueDate, deliveryDate, clockInTime);
 
         // Update the car
         await _carRepository.UpdateAsync(car, autoSave: true);

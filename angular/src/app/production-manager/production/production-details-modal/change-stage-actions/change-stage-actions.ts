@@ -19,7 +19,7 @@ export class ChangeStageActions {
   private readonly toaster = inject(ToasterService);
   private readonly confirm = inject(ConfirmationHelperService);
   private readonly confirmation = inject(ConfirmationService);
-  
+
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() stageMoved = new EventEmitter<void>();
@@ -33,28 +33,26 @@ export class ChangeStageActions {
 
   stageOptions = stageOptions;
 
-  private readonly stagesThatClearBay: Stage[] = [
-    Stage.ScdWarehouse,
-  ];
+  private readonly stagesThatClearBay: Stage[] = [Stage.ScdWarehouse];
 
   private readonly excludedStages: Stage[] = [
     Stage.Production, // Production stage is not available for moving
   ];
 
   get availableStages() {
-     return this.stageOptions.filter(option => {
+    return this.stageOptions.filter(option => {
       // Exclude the current stage
       if (this.currentStage !== undefined && this.currentStage !== null) {
         if (option.value === this.currentStage) {
           return false;
         }
       }
-      
+
       // Exclude Production stage and any other excluded stages
       if (this.excludedStages.includes(option.value)) {
         return false;
       }
-      
+
       return true;
     });
   }
@@ -102,7 +100,7 @@ export class ChangeStageActions {
 
     this.carService.changeStage(this.carId, { targetStage: this.selectedStage }).subscribe({
       next: () => {
-        if (this.shouldClearBay(this.selectedStage!) && this.carBayId) {
+        if (this.shouldClearBay(this.selectedStage!)) {
           this.clearBay();
         } else {
           this.handleSuccess();
@@ -110,13 +108,16 @@ export class ChangeStageActions {
       },
       error: () => {
         this.saving = false;
-        this.toaster.error('::FailedToMoveStage', '::Error');
       },
     });
   }
 
-  private shouldClearBay(stage: Stage): boolean {
-    return this.stagesThatClearBay.includes(stage);
+  private shouldClearBay(targetStage: Stage): boolean {
+    return (
+      targetStage === Stage.ScdWarehouse &&
+      this.currentStage === Stage.Production &&
+      !!this.carBayId
+    );
   }
 
   private clearBay(): void {
@@ -125,12 +126,12 @@ export class ChangeStageActions {
       return;
     }
 
-    this.confirm.confirmClearBay().subscribe((status: Confirmation.Status) => {
-      if (status !== Confirmation.Status.confirm) {
-        this.confirmation.info('::StageChangedBayNotCleared', '::Info');
-        this.handleSuccess();
-        return;
-      }
+    // this.confirm.confirmClearBay().subscribe((status: Confirmation.Status) => {
+    //   if (status !== Confirmation.Status.confirm) {
+    //     this.confirmation.info('::StageChangedBayNotCleared', '::Info');
+    //     this.handleSuccess();
+    //     return;
+    //   }
 
       this.carBayService.delete(this.carBayId!).subscribe({
         next: () => {
@@ -142,7 +143,7 @@ export class ChangeStageActions {
           this.handleSuccess();
         },
       });
-    });
+    // });
   }
 
   private handleSuccess(): void {
