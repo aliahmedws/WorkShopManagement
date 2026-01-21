@@ -57,4 +57,4 @@
     [carId]="stage?.carId" (submit)="emitChange()"></app-issue-modal>
 <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="emitChange()"></app-assign-bay>
 <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="stage?.carId" [carBayId]="stage?.bayId"
-    [currentStage]="currentStage" (stageMoved)="onStageMoved()"></app-change-stage-actions>
+    [currentStage]="stage?.stage ?? currentStage" (stageMoved)="onStageMoved()"></app-change-stage-actions>
