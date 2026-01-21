@@ -97,7 +97,7 @@ export class CarCreateEditModal {
     }
 
     this.form = this.fb.group({
-      vin: [dto?.vin ?? null, [Validators.required, Validators.minLength(17), Validators.maxLength(17)]],
+      vin: [dto?.vin ?? null, [Validators.required, Validators.pattern(/^[A-Za-z0-9]{17}$/)]],
       color: [dto?.color ?? null, [Validators.required, Validators.maxLength(64)]],
       modelId: [dto?.modelId ?? null, [Validators.required]],
       modelYear: [dto?.modelYear, [Validators.required, Validators.min(1800)]],

@@ -1,12 +1,4 @@
-<!-- Trigger button (inside component) -->
-<!-- <button
-  type="button"
-  [class]="buttonClass"
-  [disabled]="disabled"
-  (click)="open()"
-  [title]="buttonTitle"
-> -->
-  <i class="link text-primary" [class]="buttonIcon" aria-hidden="true" (click)="open()"></i>
+<i class="link text-primary" [class]="buttonIcon" aria-hidden="true" (click)="open()"></i>
 <!-- </button> -->
 
 <!-- Modal -->
@@ -16,16 +8,9 @@
   </ng-template>
 
   <ng-template #abpBody>
-  <app-file-upload
-      [multiple]="multiple"
-      [maxSizeMB]="maxSizeMB"
-      [acceptedTypes]="acceptedTypes"
-      [tempFiles]="tempFiles"
-      (tempFilesChange)="onTempFilesChange($event)"
-      [existingFiles]="existingFiles"
-      (existingFilesChange)="onExistingFilesChange($event)"
-      [size]="uploadSize"
-    ></app-file-upload>
+    <app-file-upload [multiple]="multiple" [maxSizeMB]="maxSizeMB" [acceptedTypes]="acceptedTypes"
+      [tempFiles]="tempFiles" (tempFilesChange)="onTempFilesChange($event)" [existingFiles]="existingFiles"
+      (existingFilesChange)="onExistingFilesChange($event)" [size]="uploadSize"></app-file-upload>
   </ng-template>
 
   <ng-template #abpFooter>

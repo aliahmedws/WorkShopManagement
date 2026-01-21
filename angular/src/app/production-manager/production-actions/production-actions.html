@@ -9,7 +9,7 @@
             {{ '::AssignToBay' | abpLocalization }}
         </button>
         }
-        @if (showBayDetails) {
+        @if (showBayDetails && stage.carBayId) {
         <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Create'"
             (click)="isProductionDetailVisible = true">
             {{ '::Bay' | abpLocalization }}

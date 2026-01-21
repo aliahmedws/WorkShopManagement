@@ -6,7 +6,7 @@ namespace WorkShopManagement.Utils.Helpers
 {
     public static class CarHelper
     {
-        private static readonly Regex VinRegex = new(@"^[A-Z0-9]{17}$", RegexOptions.Compiled);
+        private static readonly Regex VinRegex = new(@"^[A-Za-z0-9]{17}$", RegexOptions.Compiled);
         public static string NormalizeAndValidateVin(string vin)
         {
 

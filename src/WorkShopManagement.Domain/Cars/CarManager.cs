@@ -199,7 +199,7 @@ namespace WorkShopManagement.Cars
             // Only load logistics when the target stage requires it 
             LogisticsDetail? logisticsDetail = null;
             //logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(car.Id);
-            if (targetStage == Stage.ExternalWarehouse || targetStage == Stage.ScdWarehouse || targetStage == Stage.Dispatched)
+            if (targetStage != Stage.Incoming)
             {
                 // Prefer lookup by CarId (since LogisticsDetail FK is CarId)
                 logisticsDetail = await _logisticsDetailRepository.FindByCarIdAsync(
@@ -245,7 +245,7 @@ namespace WorkShopManagement.Cars
 
         private static void ValidateStageChange(Car car, Stage targetStage, LogisticsDetail? logisticsDetail)
         {
-            if (targetStage == Stage.ExternalWarehouse || targetStage == Stage.ScdWarehouse)
+            if (targetStage != Stage.Incoming)
             {
 
                 var missingFields = new List<string>();
