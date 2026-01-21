@@ -361,7 +361,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     }
 
     [Authorize(WorkShopManagementPermissions.Cars.Edit)]
-    public async Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate)
+    public async Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime? estimatedReleaseDate)
     {
         var car = await _carRepository.GetAsync(id);
 

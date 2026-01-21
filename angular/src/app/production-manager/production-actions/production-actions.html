@@ -3,7 +3,7 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
     <div ngbDropdownMenu>
-        @if (showAssignBay) {
+        @if (canAssignBay) {
         <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem
             (click)="isAssignBayVisible = true">
             {{ '::AssignToBay' | abpLocalization }}

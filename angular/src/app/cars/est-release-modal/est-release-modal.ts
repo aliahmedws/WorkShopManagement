@@ -57,10 +57,10 @@ export class EstReleaseModal {
   save(): void {
   if (!this.carId || !this.form || this.saving) return;
 
-  const dateObj = (this.form.value?.estimatedReleaseDate ?? null) as Date | null;
+  // const dateObj = (this.form.value?.estimatedReleaseDate ?? null) as Date | null;
 
   // ABP proxy expects string (ISO). Send null if empty.
-  const dateStr: string | null = dateObj ? dateObj.toISOString() : null;
+  const dateStr: string | null = this.form.value?.estimatedReleaseDate;
 
   this.saving = true;
 
@@ -68,7 +68,7 @@ export class EstReleaseModal {
     next: () => {
       this.saving = false;
       this.toaster.success('::EstimatedReleaseUpdatedSuccessfully', '::Success');
-      this.saved.emit({ carId: this.carId!, date: dateObj });
+      this.saved.emit({ carId: this.carId!, date: new Date(dateStr) });
       this.close();
     },
     error: () => {

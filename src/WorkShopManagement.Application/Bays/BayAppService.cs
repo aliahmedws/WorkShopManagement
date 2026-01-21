@@ -72,7 +72,7 @@ public class BayAppService : ApplicationService, IBayAppService
     {
         var bay = await _bayRepository.GetAsync(id);
 
-        if (isActive)
+        if (!isActive)
         {
             var inUse = await _carBayRepository.AnyAsync(cb => cb.BayId == id && cb.IsActive == true);
             if (inUse)
