@@ -132,4 +132,10 @@ export class Production implements OnInit {
       });
     });
   }
+
+  onBayChanged() {
+    this.isProductionDetailVisible = false;
+    this.change.emit();
+    this.reloadActiveBays();
+  }
 }

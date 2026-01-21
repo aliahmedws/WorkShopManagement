@@ -72,6 +72,7 @@ export class ProductionDetailsModal {
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
+  
   clockSaving = false;
   movingStage = false;
   isIssueModalVisible = false;
@@ -631,6 +632,7 @@ export class ProductionDetailsModal {
   onAssignBaySubmit(): void {
     this.loadDetails();
     this.isAssignBayVisible = false;
+    this.close();
   }
 
   openCheckInModal(): void {
@@ -650,6 +652,7 @@ export class ProductionDetailsModal {
   onStageMoved(): void {
     this.loadDetails();
     this.isChangeStageModalVisible = false;
+    this.close();
     this.stageChanged.emit(this.carId!);
   }
 }
