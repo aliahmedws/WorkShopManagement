@@ -269,7 +269,7 @@
     "BackToCars": "Back to Cars",
 
     "CreDetails": "CRE Details",
-    "RsvaNumber": "RSVA Number",
+    "RvsaNumber": "RVSA Number",
     "CreSubmissionDate": "CRE Submission Date",
 
     "ClearanceDetails": "Clearance Details",
@@ -316,7 +316,7 @@
     "Cars:StageChangeMissingFields": "Cannot move car to \"{Stage}\". Missing fields: {MissingFields}.",
     "Cars:StageChangeRequiresAvvStatus": "Cannot move car to \"{Stage}\". Missing field: {MissingField}.",
     "Field:LogisticsDetail": "Logistic Details",
-    "Field:LogisticsDetail.RsvaNumber": "Logistics Details: RSVA Number (CRE)",
+    "Field:LogisticsDetail.RvsaNumber": "Logistics Details: RVSA Number (CRE)",
     "Field:Car.StorageLocation": "Car: Storage Location",
     "Field:Car.AvvStatus": "Car: AVV Status",
     "IssueStatus": "Issue Status",
@@ -426,7 +426,7 @@
     "Delete": "Delete",
     "FrontMotorNumbr": "Front Motor Number",
     "RearMotorNumber": "Rear Motor Number",
-    "RsvaImportApproval": "RSVA Import Approval",
+    "RvsaImportApproval": "RVSA Import Approval",
     "BuildYear": "Build Year",
     "BuildMonth": "Build Month",
     "EntryKms": "Entry Kms",

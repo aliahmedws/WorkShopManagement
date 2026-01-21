@@ -256,7 +256,7 @@ namespace WorkShopManagement.Cars
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(logisticsDetail.RsvaNumber))
+                    if (string.IsNullOrWhiteSpace(logisticsDetail.RvsaNumber))
                     {
                         missingFields.Add("LogisticsDetail.RsvaNumber");
                     }

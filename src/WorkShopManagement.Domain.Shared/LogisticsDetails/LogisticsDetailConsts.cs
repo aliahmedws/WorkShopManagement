@@ -6,7 +6,7 @@
         public const int MaxBookingNumberLength = 64;
         public const int MaxClearingAgentLength = 128;
         public const int MaxClearanceRemarksLength = 1024;
-        public const int MaxRsvaNumberLength = 64;
+        public const int MaxRvsaNumberLength = 64;
         public const int MaxDeliverNotesLength = 1024;
         public const int MaxTransportDestinationLength = 128;
         public const int MaxDeliverToLength = 128;

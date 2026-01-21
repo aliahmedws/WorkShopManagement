@@ -100,7 +100,7 @@ export class LogisticsDetailsCreateEdit implements OnInit {
 
       // --- Update Fields ---
       creStatus: [dto?.creStatus ?? CreStatus.Pending],
-      rsvaNumber: [dto?.rsvaNumber ?? null, [Validators.maxLength(64)]],
+      rvsaNumber: [dto?.rvsaNumber ?? null, [Validators.maxLength(64)]],
       creSubmissionDate: [dto?.creSubmissionDate ? new Date(dto.creSubmissionDate) : null],
 
       clearingAgent: [dto?.clearingAgent ?? null, [Validators.maxLength(128)]],

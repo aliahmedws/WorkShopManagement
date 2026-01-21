@@ -105,7 +105,7 @@ export class CheckInReportModal {
       emission: [dto?.emission ?? null],
       maxTowingCapacity: [dto?.maxTowingCapacity ?? (this.getWeigthValue(this.specAttributes?.maximum_towing) ?? null)],
       tyreLabel: [dto?.tyreLabel ?? (this.specAttributes?.tires ?? null)],
-      // rsvaImportApproval: [dto?.rsvaImportApproval ?? null],
+      // rvsaImportApproval: [dto?.rvsaImportApproval ?? null],
       reportStatus: [dto?.reportStatus ?? null],
       storageLocation: [dto?.storageLocation ?? null],
       concurrencyStamp: [dto?.concurrencyStamp ?? null],

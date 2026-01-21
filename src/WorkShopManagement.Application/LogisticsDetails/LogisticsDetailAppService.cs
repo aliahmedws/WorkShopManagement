@@ -131,7 +131,7 @@ namespace WorkShopManagement.LogisticsDetails
                 bookingNumber: input.BookingNumber,
                 creStatus: input.CreStatus,
                 creSubmissionDate: input.CreSubmissionDate,
-                rsvaNumber: input.RsvaNumber,
+                rvsaNumber: input.RvsaNumber,
                 clearingAgent: input.ClearingAgent,
                 clearanceRemarks: input.ClearanceRemarks,
                 clearanceDate: input.ClearanceDate,

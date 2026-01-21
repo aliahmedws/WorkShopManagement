@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.EntityFrameworkCore;
@@ -12,9 +13,11 @@ using WorkShopManagement.EntityFrameworkCore;
 namespace WorkShopManagement.Migrations
 {
     [DbContext(typeof(WorkShopManagementDbContext))]
-    partial class WorkShopManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260121191742_UpdatedLogisticsDetails_RsvaToRvsa")]
+    partial class UpdatedLogisticsDetails_RsvaToRvsa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

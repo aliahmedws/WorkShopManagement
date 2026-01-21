@@ -15,7 +15,7 @@ namespace WorkShopManagement.LogisticsDetails
 
         public CreStatus CreStatus { get; set; }
         public DateTime? CreSubmissionDate { get; set; }
-        public string? RsvaNumber { get; set; }
+        public string? RvsaNumber { get; set; }
 
         public string? ClearingAgent { get; set; }
         public string? ClearanceRemarks { get; set; }
