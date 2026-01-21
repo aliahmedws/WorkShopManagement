@@ -9,7 +9,7 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 @Component({
   selector: 'app-critical-images-modal',
   standalone: true,
-  imports: [...SHARED_IMPORTS, NzImageModule, SignedNzImageSrcDirective],
+  imports: [...SHARED_IMPORTS, NzImageModule, SignedNzImageSrcDirective, SignedHrefDirective],
   templateUrl: './critical-images-modal.html',
   styleUrl: './critical-images-modal.scss',
 })
