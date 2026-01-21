@@ -86,7 +86,7 @@ export class CheckListItemsModal {
   }
 
   canAttach(li: ListItemDto): boolean {
-    return li.isSeparator !== true && li.isAttachmentRequired === true;
+    return li.isSeparator !== true;// && li.isAttachmentRequired === true;
   }
 
   trackById(_: number, item: ListItemDto): string {
