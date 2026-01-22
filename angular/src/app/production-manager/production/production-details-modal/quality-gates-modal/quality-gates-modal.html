@@ -1,5 +1,6 @@
+<!-- quality-gates-modal.html -->
 <abp-modal [(visible)]="visible" (visibleChange)="onVisibleChange($event)" (appear)="onAppear()"
-    [options]="{ size: 'lg'}" >
+    [options]="{ size: 'md', modalClass: 'quality-gates-modal' }">
 
     <ng-template #abpHeader>
         <div class="fw-bold">{{ '::QualityGates' | abpLocalization }}</div>
@@ -11,7 +12,8 @@
         </ng-container>
 
         <ng-container *ngIf="!loading && resolvedCarBayId">
-            <app-quality-gates [carBayId]="resolvedCarBayId" (saved)="onSaved()">
+            <!-- IMPORTANT: layout="modal" -->
+            <app-quality-gates [carBayId]="resolvedCarBayId" layout="modal" (saved)="onSaved()">
             </app-quality-gates>
         </ng-container>
 

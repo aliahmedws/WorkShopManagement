@@ -16,6 +16,7 @@ export class QualityGates implements OnChanges {
 
   @Input() carBayId?: string;
   @Output() saved = new EventEmitter<void>();
+  @Input() layout: 'page' | 'modal' = 'page';
 
   loading = false;
 
