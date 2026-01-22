@@ -79,6 +79,7 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Edit, L("Permission:ArrivalEstimates.Edit"));
         //arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Delete, L("Permission:ArrivalEstimates.Delete"));
 
+        myGroup.AddPermission(WorkShopManagementPermissions.AuditLogs.Default, L("Permission:AuditLogs"));
     }
 
     private static LocalizableString L(string name)

@@ -18,6 +18,7 @@ import { NzEmptyModule } from "ng-zorro-antd/empty";
 import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { SignedNzImageSrcDirective } from "./services/signed-urls/signed-nz-image-src.directive";
+import { EntityChangeHistoryModal } from "../entity-changes/entity-change-history-modal/entity-change-history-modal";
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -42,12 +43,14 @@ export const SHARED_IMPORTS = [
     EllipsisDirective,
     NzStepsModule,
     NzCollapseModule,
-    SignedNzImageSrcDirective
+    SignedNzImageSrcDirective,
+    EntityChangeHistoryModal
 ];
 
 export { 
     CopyComponent,
     TopbarLayoutComponent,
     FileUploadComponent,
-    SignedNzImageSrcDirective
+    SignedNzImageSrcDirective, 
+    EntityChangeHistoryModal
  };

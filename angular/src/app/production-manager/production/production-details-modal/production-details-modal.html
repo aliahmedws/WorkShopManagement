@@ -131,24 +131,25 @@
                 <!-- buttons row -->
 
                 <div class="d-flex flex-wrap justify-content-end gap-2">
-                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openCheckInModal()">
+                  <button type="button" class="btn btn-sm btn-outline-primary px-3" (click)="openCheckInModal()">
                     {{ '::CheckInReport' | abpLocalization }}
                   </button>
-                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openAssignBay()"
+                  <button type="button" class="btn btn-sm btn-outline-primary px-3" (click)="openAssignBay()"
                     [disabled]="movingStage || !details?.carId">
                     {{ '::AssignToBay' | abpLocalization }}
                   </button>
 
 
-                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openMoveStageModal()"
+                  <button type="button" class="btn btn-sm btn-outline-primary px-3" (click)="openMoveStageModal()"
                     [disabled]="!details?.carId">
                     {{ '::Move' | abpLocalization }}
                   </button>
-                  <button type="button" class="btn btn-sm btn-primary px-4" (click)="clockToggle()"
+                  <button type="button" class="btn btn-sm btn-primary px-3" (click)="clockToggle()"
                     [disabled]="!details?.id || clockSaving">
                     <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
                     {{ clockButtonKey | abpLocalization }}
                   </button>
+                  <app-entity-change-history-modal [entityId]="details?.id" entityName="carbay" buttonType="button"></app-entity-change-history-modal>
                 </div>
 
                 <!-- CLOCK IN TIME -->

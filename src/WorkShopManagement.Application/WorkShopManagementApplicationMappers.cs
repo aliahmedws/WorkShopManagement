@@ -1,4 +1,5 @@
 using Riok.Mapperly.Abstractions;
+using Volo.Abp.AuditLogging;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarBayItems;
@@ -9,6 +10,7 @@ using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.EntityChanges;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Issues;
@@ -251,4 +253,11 @@ public partial class BayToBayDtoMapper : MapperBase<Bay, BayDto>
 {
     public override partial BayDto Map(Bay source);
     public override partial void Map(Bay source, BayDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class EntityChangeWithUsernameToEntityChangeWithUsernameDtoMapper : MapperBase<EntityChangeWithUsername, EntityChangeWithUsernameDto>
+{
+    public override partial EntityChangeWithUsernameDto Map(EntityChangeWithUsername source);
+    public override partial void Map(EntityChangeWithUsername source, EntityChangeWithUsernameDto destination);
 }

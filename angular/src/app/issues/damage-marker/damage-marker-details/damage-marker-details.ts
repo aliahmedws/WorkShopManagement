@@ -9,7 +9,7 @@ import { PermissionService } from '@abp/ng.core';
 import { CarDto } from 'src/app/proxy/cars';
 import { IssueStateService } from '../../utils/issue-state.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { createEmptyAttachmentsMap, IssueAttachmentsMap, TabAttachments } from '../../utils/issues.utils';
+import { createEmptyAttachmentsMap, IssueAttachmentsMap } from '../../utils/issues.utils';
 
 @Component({
   selector: 'app-damage-marker-details',

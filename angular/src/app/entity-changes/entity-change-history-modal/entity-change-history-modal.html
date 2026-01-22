@@ -1,0 +1,93 @@
+@if (isAuthorized) {
+@if (buttonType === 'button') {
+<button class="btn btn-sm btn-outline-info" (click)="showModal()">
+    <i class="fas fa-history"></i>
+</button>
+}
+@if (buttonType === 'icon') {
+<i class="fas fa-history text-info link" (click)="showModal()"></i>
+}
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (disappear)="disappear()"
+    [options]="modalOptions">
+    <ng-template #abpHeader>
+        <h5>{{ entityName }} | {{ entityTypeFullName }}</h5>
+    </ng-template>
+    <ng-template #abpBody>
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        }
+        @if (!loading && !changes?.items?.length) {
+        <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            [nzNotFoundContent]="'::The entity has no logs' | abpLocalization">
+        </nz-empty>
+        }
+        @if (!loading && changes?.items?.length) {
+        <h4>{{ '::Change History' | abpLocalization }}</h4>
+        <div class="audit-logs">
+            @for (item of changes?.items; track item.entityChange?.id) {
+            <div class="audit-card">
+                <div class="audit-header" [class.open]="item.isOpen" (click)="openItem(item)">
+                    <div class="audit-user">
+                        <strong class="me-2">{{ item.userName }}</strong>
+                        <app-copy (click)="$event.stopPropagation()" [value]="item.entityChange?.id"></app-copy>
+                    </div>
+                    <div class="audit-meta">
+                        <span class="change-badge" [class.badge-create]="item.entityChange.changeType === 0"
+                            [class.badge-update]="item.entityChange.changeType === 1">
+                            {{ item.entityChange.changeType === 0 ? 'Created' : 'Updated' }}
+                        </span>
+                        <span class="audit-time">{{ item.entityChange.changeTime | date:'medium' }}</span>
+
+                        <span class="ms-2">
+                            <i class="audit-close fas link"
+                                [ngClass]="{ 'fa-chevron-up': item.isOpen, 'fa-chevron-down': !item.isOpen,}"></i>
+                        </span>
+                    </div>
+                </div>
+
+                @if (item.isOpen) {
+                <div class="property-changes">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="sticky-top" style="background: lightgrey;">
+                                <tr>
+                                    <th>{{ '::Property Name' | abpLocalization }}</th>
+                                    <th>{{ '::Old Value' | abpLocalization }}</th>
+                                    <th>{{ '::New Value' | abpLocalization }}</th>
+                                    <th style="width: 30px;">{{ '::ID' | abpLocalization }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (prop of getProperties(item); track prop.id) {
+                                @if (hasValue(prop)) {
+                                <tr>
+                                    <td>{{ prop.propertyName }}</td>
+                                    <td class="text-muted">{{ getValue(prop.originalValue) }}</td>
+                                    <td>{{ getValue(prop.newValue) }}</td>
+                                    <td>
+                                        <app-copy [value]="prop.id"></app-copy>
+                                    </td>
+                                </tr>
+                                }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+    </ng-template>
+    <ng-template #abpFooter>
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>
+}
