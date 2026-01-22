@@ -64,14 +64,8 @@ public class CheckInReportAppService : WorkShopManagementAppService, ICheckInRep
   
         if (input.StorageLocation.HasValue && car!.StorageLocation != input.StorageLocation)
         {
-
-            if (car.Stage == Stage.Incoming)
-            {
-                car = await _carManager.ChangeStorageLocation(car, input.StorageLocation.Value);
-                car = await _carRepository.UpdateAsync(car);    // not savinng in car manager
-            }
-
-            
+            car = await _carManager.ChangeStorageLocation(car, input.StorageLocation.Value);
+            car = await _carRepository.UpdateAsync(car);    // not savinng in car manager           
         }
 
         report = await _checkInReportRepository.InsertAsync(report, autoSave: true);

@@ -195,8 +195,8 @@ public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInR
     public override partial void Map(CheckInReport source, CheckInReportDto destination);
 
     // Add this so Mapperly can generate mapping for the nested property
-    public partial CarDto Map(Car source);
-    public partial void Map(Car source, CarDto destination);
+    //public partial CarDto Map(Car source);
+    //public partial void Map(Car source, CarDto destination);
 
 }
 
