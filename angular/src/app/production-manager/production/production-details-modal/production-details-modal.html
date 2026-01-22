@@ -177,10 +177,10 @@
                   <!-- buttons row -->
 
                   <div class="d-flex flex-wrap justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openCheckInModal()">
+                    <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openCheckInModal()">
                       {{ '::CheckInReport' | abpLocalization }}
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openAssignBay()"
+                    <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openAssignBay()"
                       [disabled]="movingStage || !details?.carId">
                       {{ '::AssignToBay' | abpLocalization }}
                     </button>
@@ -188,59 +188,11 @@
                  
                     <button 
                       type="button" 
-                      class="btn btn-sm btn-outline-secondary px-4"
+                      class="btn btn-sm btn-outline-primary px-4"
                       (click)="openMoveStageModal()"
                       [disabled]="!details?.carId">
                       {{ '::Move' | abpLocalization }}
                     </button>
-                    <!-- <div class="btn-group" ngbDropdown>
-                      <button type="button" class="btn btn-sm btn-outline-secondary px-4" ngbDropdownToggle
-                        [disabled]="movingStage || !details?.carId">
-                        <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                        {{ '::Move' | abpLocalization }}
-                      </button>
-                      <div ngbDropdownMenu>
-                        <button ngbDropdownItem type="button" (click)="moveToSCDWareHouse()"
-                          [disabled]="movingStage || !details?.carId">
-                          {{ '::SCD WareHouse' | abpLocalization }}
-                        </button>
-                        <button ngbDropdownItem type="button" (click)="moveToPostProduction()"
-                          [disabled]="movingStage || !details?.carId || !allowMovetoPostProduction">
-                          {{ '::Post Production' | abpLocalization }}
-                        </button>
-
-                        <button ngbDropdownItem type="button" (click)="moveToAwaitingTransportProduction()"
-                          [disabled]="movingStage || !details?.carId || !allowMovetoAwaitingTransport">
-                          {{ '::Awaiting Transport' | abpLocalization }}
-                        </button>
-                        <button ngbDropdownItem type="button" (click)="moveToDispatched()"
-                          [disabled]="movingStage || !details?.carId">
-                          {{ '::Dispatched' | abpLocalization }}
-                        </button>
-
-                      </div>
-                    </div> -->
-                    <!-- <button *ngIf="allowMovetoPostProduction" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
-                    </button>
-
-                    <button *ngIf="allowMovetoAwaitingTransport" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to Awaiting Transport' | abpLocalization }}
-                    </button>
-
-                    <button *ngIf="allowMovetoPostProduction" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToDispatched()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to Dispatched' | abpLocalization }}
-                    </button> -->
-
                     <button type="button" class="btn btn-sm btn-primary px-4" (click)="clockToggle()"
                       [disabled]="!details?.id || clockSaving">
                       <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
@@ -354,7 +306,7 @@
   <!-- Footer -->
   <ng-template #abpFooter>
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      <button type="button" class="btn btn-outline-primary" (click)="close()">
         {{ '::Close' | abpLocalization }}
       </button>
     </div>
