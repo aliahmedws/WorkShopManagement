@@ -8,7 +8,7 @@ using WorkShopManagement.Permissions;
 
 namespace WorkShopManagement.EntityChanges;
 
-[RemoteService]
+[RemoteService(false)]
 [Authorize(WorkShopManagementPermissions.AuditLogs.Default)]
 public class EntityChangeAppService : WorkShopManagementAppService, IEntityChangeAppService
 {

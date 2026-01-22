@@ -19,7 +19,7 @@ export class EntityChangeHistoryModal implements OnInit {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   @Input() entityId: string;
-  @Input() entityName: 'issue' | 'carbay';
+  @Input() entityName: 'Issue' | 'CarBay' | 'CarBayItem';
 
   @Input() buttonType: 'icon' | 'button' = 'icon';
 
@@ -48,9 +48,10 @@ export class EntityChangeHistoryModal implements OnInit {
 
   showModal() {
     if (!this.isAuthorized) return;
-    this.loading = true;
     this.open();
     this.entityTypeFullName = resolveEntityTypeFullName(this.entityName);
+    if (!this.entityId || !this.entityTypeFullName) return;
+    this.loading = true;
 
     this.service
       .getChangeHistory(this.entityId, this.entityTypeFullName)

@@ -42,7 +42,7 @@
                         <td>{{ item.type ? (('::Enum:IssueType.' + item.type) | abpLocalization) : '-' }}</td>
                         <td>{{ item.description }}</td>
                         <td class="text-center">
-                            <app-entity-change-history-modal [entityId]="item.id" entityName="issue"></app-entity-change-history-modal>
+                            <app-entity-change-history-modal [entityId]="item.id" entityName="Issue"></app-entity-change-history-modal>
                         </td>
                     </tr>
                     }

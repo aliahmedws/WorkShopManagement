@@ -19,13 +19,19 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        }
-        @if (!loading && !changes?.items?.length) {
+        } @else {
+        @if (!entityId || !entityName) {
+        <div class="alert alert-warning">
+            <h3 class="alert-heading">Invalid!</h3>
+            <p>An argument was needed for this request but wasn't provided</p>
+        </div>
+        } @else {
+        @if (!changes?.items?.length) {
         <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
             [nzNotFoundContent]="'::The entity has no logs' | abpLocalization">
         </nz-empty>
         }
-        @if (!loading && changes?.items?.length) {
+        @if (changes?.items?.length) {
         <h4>{{ '::Change History' | abpLocalization }}</h4>
         <div class="audit-logs">
             @for (item of changes?.items; track item.entityChange?.id) {
@@ -83,6 +89,9 @@
             }
         </div>
         }
+        }
+        }
+
     </ng-template>
     <ng-template #abpFooter>
         <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">

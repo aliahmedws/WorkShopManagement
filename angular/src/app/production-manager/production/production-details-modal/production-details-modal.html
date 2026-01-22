@@ -149,7 +149,7 @@
                     <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
                     {{ clockButtonKey | abpLocalization }}
                   </button>
-                  <app-entity-change-history-modal [entityId]="details?.id" entityName="carbay" buttonType="button"></app-entity-change-history-modal>
+                  <app-entity-change-history-modal [entityId]="details?.id" entityName="CarBay" buttonType="button"></app-entity-change-history-modal>
                 </div>
 
                 <!-- CLOCK IN TIME -->
@@ -186,7 +186,7 @@
 
           <!-- AMQ Information -->
           <div class="col-12 col-lg-4">
-            <div class="fw-bold text-center mb-3">{{'::AMQInformation' | abpLocalization }}</div>
+            <div class="fw-bold text-center mb-3">{{'::SCD Information' | abpLocalization }}</div>
 
             <div class="row g-1">
               <div class="col-6">
@@ -198,13 +198,13 @@
                   abpLocalization }}</button>
               </div>
 
-              <div class="col-6">
+              <!-- <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100">{{'::JobCard' | abpLocalization}}</button>
               </div>
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100">{{'::PartsAccessories' | abpLocalization
                   }}</button>
-              </div>
+              </div> -->
 
               <div class="col-6">
                 <button type="button" class="btn btn-sm btn-primary w-100" (click)="goToLogistics()"
@@ -224,8 +224,8 @@
             <div class="d-grid gap-1">
               <button type="button" class="btn btn-sm btn-primary w-100">{{'::ViewModelReportSummary' |
                 abpLocalization}}</button>
-              <button type="button" class="btn btn-sm btn-primary w-100">{{'::ViewConsumerInformationNotice' |
-                abpLocalization }}</button>
+              <!-- <button type="button" class="btn btn-sm btn-primary w-100">{{'::ViewConsumerInformationNotice' |
+                abpLocalization }}</button> -->
               <button type="button" class="btn btn-sm btn-primary w-100">
                 {{'::Re-generateUploadAllDocumentstoGDrive' | abpLocalization}}
               </button>
