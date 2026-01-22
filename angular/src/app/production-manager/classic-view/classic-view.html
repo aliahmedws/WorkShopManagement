@@ -92,6 +92,7 @@
                     <th>{{ '::Owner' | abpLocalization }}</th>
                     <th>{{ '::Model' | abpLocalization }}</th>
                     <th>{{ '::Color' | abpLocalization }}</th>
+                    <th>{{ '::StorageLocation' | abpLocalization }}</th>
                     <th>{{ '::EtaScd' | abpLocalization }}</th>
                     <th>{{ '::Port' | abpLocalization }}</th>
                     <th class="text-center">{{ '::Recalls' | abpLocalization }}</th>
@@ -144,6 +145,10 @@
 
                     <!-- COLOR -->
                     <td [title]="row.color" class="text-truncate" style="max-width: 150px;">{{ row.color | uppercase }}
+                    </td>
+
+                    <td>
+                          {{ row?.storageLocation ? (("::Enum:AvvStatus." + row.storageLocation) | abpLocalization) : '-' }}
                     </td>
 
                     <!-- ETA SCD -->

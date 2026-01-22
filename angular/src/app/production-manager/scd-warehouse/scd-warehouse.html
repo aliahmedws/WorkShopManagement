@@ -42,6 +42,12 @@
 
             </ngx-datatable-column>
 
+            <ngx-datatable-column [name]="'::StorageLocation' | abpLocalization" prop="storageLocation" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.storageLocation ? ('::Enum:StorageLocation.' + row.storageLocation | abpLocalization) : '-' }}
+                </ng-template>
+            </ngx-datatable-column>
+
             <!-- INCOMING / WAREHOUSE -->
             <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd" [sortable]="false">
                 <ng-template let-value="value" ngx-datatable-cell-template>

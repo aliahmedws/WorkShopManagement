@@ -34,6 +34,11 @@
                     {{ row.color | uppercase }}
                 </ng-template>
             </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::StorageLocation' | abpLocalization" prop="storageLocation" [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.storageLocation ? ('::Enum:StorageLocation.' + row.storageLocation | abpLocalization) : '-' }}
+                </ng-template>
+            </ngx-datatable-column>
             <ngx-datatable-column [name]="'::AVV' | abpLocalization" prop="avvStatus" [canAutoResize]="false" [width]="140"
                 [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
