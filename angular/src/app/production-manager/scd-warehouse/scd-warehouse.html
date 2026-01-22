@@ -4,7 +4,8 @@
         <ngx-datatable [rows]="stages.items" [count]="stages.totalCount" [list]="list" [columnMode]="'force'" default>
             <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <app-production-actions [stage]="row" [showAssignBay]="true" [showBayDetails]="true" (change)="list?.get()"
+                    <app-production-actions [stage]="row" [showAssignBay]="true" [showBayDetails]="true"
+                        (change)="list?.get()"
                         [(isIssueModalVisible)]="issueModalVisible[row.carId]"></app-production-actions>
                 </ng-template>
             </ngx-datatable-column>
@@ -42,6 +43,14 @@
 
             </ngx-datatable-column>
 
+            <ngx-datatable-column [name]="'::StorageLocation' | abpLocalization" prop="storageLocation"
+                [sortable]="false">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row?.storageLocation ? ('::Enum:StorageLocation.' + row.storageLocation | abpLocalization) : '-'
+                    }}
+                </ng-template>
+            </ngx-datatable-column>
+
             <!-- INCOMING / WAREHOUSE -->
             <ngx-datatable-column [name]="'::EtaScd' | abpLocalization" prop="etaScd" [sortable]="false">
                 <ng-template let-value="value" ngx-datatable-cell-template>
@@ -57,14 +66,6 @@
             <!-- INCOMING / WAREHOUSE -->
 
             <!-- ---------- ACTIONS GROUP  --------- -->
-
-            <!-- <ngx-datatable-column [name]="'::Issue' | abpLocalization" [maxWidth]="65" [sortable]="false">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="text-center text-{{getIssueStatusColor(row)}}">
-                        <i class="fas fa-triangle-exclamation link" (click)="openIssueModal()"></i>
-                    </div>
-                </ng-template>
-            </ngx-datatable-column> -->
             <ngx-datatable-column [name]="'::Recalls' | abpLocalization" [canAutoResize]="false" [width]="65"
                 [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
@@ -94,9 +95,26 @@
             <ngx-datatable-column [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false"
                 [canAutoResize]="false" [width]="70">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="text-center text-{{mapIssueStatusColor(row)}}">
+                    <div class="text-center text-primary">
                         <i class="fas fa-triangle-exclamation link" (click)="openIssueModal(row)"></i>
                     </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::QualityGates' | abpLocalization" [sortable]="false" [canAutoResize]="false"
+                [width]="100">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <ng-container *ngIf="row?.carBayId; else noBay">
+                        <div class="text-center text-primary">
+                            <i class="fas fa-clipboard-check link" title="Quality Gates"
+                                (click)="openQualityGates(row)"></i>
+                        </div>
+                    </ng-container>
+
+                    <ng-template #noBay>
+                        <div class="text-center text-secondary">
+                            <i class="fas fa-clipboard-check opacity-25" title="No Bay"></i>
+                        </div>
+                    </ng-template>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
@@ -135,4 +153,6 @@
     (submit)="list?.get()"></app-check-in-report-modal>
 <app-est-release-modal #estReleaseModal (saved)="list?.get()"></app-est-release-modal>
 <app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
+<app-quality-gates-modal [(visible)]="isQualityGatesModalVisible" [carId]="selectedQualityGatesCarId"
+    (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="onQualityGatesSaved()"></app-quality-gates-modal>
 <!-- MODALS END  -->

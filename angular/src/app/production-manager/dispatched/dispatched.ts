@@ -2,7 +2,13 @@ import { PagedResultDto, ListService } from '@abp/ng.core';
 import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayDto, CarBayService, CreateCarBayDto, Priority, avvStatusOptions } from 'src/app/proxy/car-bays';
+import {
+  CarBayDto,
+  CarBayService,
+  CreateCarBayDto,
+  Priority,
+  avvStatusOptions,
+} from 'src/app/proxy/car-bays';
 import { CarService, CarDto } from 'src/app/proxy/cars';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations';
 import { LookupService, GuidLookupDto } from 'src/app/proxy/lookups';
@@ -10,17 +16,31 @@ import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionActions } from '../production-actions/production-actions';
-import { AvvStatusModal } from "../mini-modals/avv-status-modal/avv-status-modal";
-import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
+import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';
+import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
 import { StageDto } from 'src/app/proxy/stages';
-import { mapRecallStatusColor, mapEstReleaseStatusColor, mapAvvStatusColor, mapIssueStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import {
+  mapRecallStatusColor,
+  mapEstReleaseStatusColor,
+  mapAvvStatusColor,
+  mapIssueStatusColor,
+} from 'src/app/shared/utils/stage-colors.utils';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 
 @Component({
   selector: 'app-dispatched',
-  imports: [...SHARED_IMPORTS, AvvStatusModal, EstReleaseModal, ProductionActions, Recalls, CheckInReportModal],
+  imports: [
+    ...SHARED_IMPORTS,
+    AvvStatusModal,
+    EstReleaseModal,
+    ProductionActions,
+    Recalls,
+    CheckInReportModal,
+    QualityGatesModal,
+  ],
   templateUrl: './dispatched.html',
-  styleUrl: './dispatched.scss'
+  styleUrl: './dispatched.scss',
 })
 export class Dispatched {
   @ViewChild('detailsModal') detailsModal!: ProductionDetailsModal; //Bay
@@ -57,6 +77,11 @@ export class Dispatched {
   isAvvModalVisible = false;
 
   issueModalVisible: Record<string, boolean> = {};
+
+  // ===== Quality Gates =====
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
@@ -161,5 +186,19 @@ export class Dispatched {
 
   mapIssueStatusColor(row: StageDto): string {
     return mapIssueStatusColor(row?.issueStatus);
+  }
+
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+
+    if (!row?.carBayId) return;
+
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
+
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+    if (!v) this.selectedQualityGatesCarId = undefined;
   }
 }

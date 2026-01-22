@@ -53,6 +53,7 @@ export class CheckListItemsModal {
   lastModifiedInfo: { name: string; time: string | Date } | null = null;
 
   open(carBayId: string, checkListId: string, checkListName?: string): void {
+    this.resetState();
     this.carBayId = carBayId;
     this.checkListId = checkListId;
     this.checkListName = checkListName ?? '';
@@ -65,7 +66,10 @@ export class CheckListItemsModal {
   close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
+    this.resetState();
+  }
 
+  private resetState() {
     this.carBayId = undefined;
     this.checkListId = undefined;
     this.checkListName = undefined;
@@ -77,16 +81,15 @@ export class CheckListItemsModal {
     this.tempFilesByListItemId = {};
     this.existingRowId = {};
     this.selectedLocalFiles = {};
-    
-    // Clear status
-    this.lastModifiedInfo = null;
 
+    this.lastModifiedInfo = null;
     this.loading = false;
     this.saving = false;
+    this.savingRow = {};
   }
 
   canAttach(li: ListItemDto): boolean {
-    return li.isSeparator !== true;// && li.isAttachmentRequired === true;
+    return li.isSeparator !== true; // && li.isAttachmentRequired === true;
   }
 
   trackById(_: number, item: ListItemDto): string {
@@ -128,7 +131,7 @@ export class CheckListItemsModal {
     this.lastModifiedInfo = null; // reset before load
 
     this.listItemService.getByCheckListWithDetails(this.checkListId).subscribe({
-      next: async (res) => {
+      next: async res => {
         this.items = (res ?? []).slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
         for (const li of this.items) {
@@ -150,18 +153,18 @@ export class CheckListItemsModal {
   private async preloadExistingValues(): Promise<void> {
     if (!this.carBayId) return;
 
-    const listItemIds = this.items
-      .filter(x => x?.id && x.isSeparator !== true)
-      .map(x => x.id!);
+    const listItemIds = this.items.filter(x => x?.id && x.isSeparator !== true).map(x => x.id!);
 
     if (listItemIds.length === 0) return;
 
     try {
-      const res = await this.carBayItemService.getList({
-        carBayId: this.carBayId,
-        skipCount: 0,
-        maxResultCount: 1000,
-      } as any).toPromise();
+      const res = await this.carBayItemService
+        .getList({
+          carBayId: this.carBayId,
+          skipCount: 0,
+          maxResultCount: 1000,
+        } as any)
+        .toPromise();
 
       const rows = (res?.items ?? []) as any[];
 
@@ -171,7 +174,7 @@ export class CheckListItemsModal {
       for (const r of rows) {
         const listItemId = r.checkListItemId;
         if (!listItemId || !listItemIds.includes(listItemId)) continue;
-        
+
         this.existingRowId[listItemId] = r.id;
 
         // 1. Map Values
@@ -179,7 +182,7 @@ export class CheckListItemsModal {
         if (li) {
           const savedName = r.checkRadioOption as string | null;
           const mappedId = savedName
-            ? (li.radioOptions ?? []).find(ro => ro.name === savedName)?.id ?? null
+            ? ((li.radioOptions ?? []).find(ro => ro.name === savedName)?.id ?? null)
             : null;
 
           this.selectedMarks[listItemId] = mappedId;
@@ -195,11 +198,11 @@ export class CheckListItemsModal {
         if (rowTime) {
           const tVal = new Date(rowTime).getTime();
           if (tVal > maxTimeValue) {
-             maxTimeValue = tVal;
-             this.lastModifiedInfo = {
-               name: rowName || 'Unknown',
-               time: rowTime
-             };
+            maxTimeValue = tVal;
+            this.lastModifiedInfo = {
+              name: rowName || 'Unknown',
+              time: rowTime,
+            };
           }
         }
       }
@@ -220,10 +223,9 @@ export class CheckListItemsModal {
       .map(li => {
         const listItemId = li.id!;
         const selectedRadioId = this.selectedMarks[listItemId];
-        const selectedRadioName =
-          selectedRadioId
-            ? (li.radioOptions ?? []).find(ro => ro.id === selectedRadioId)?.name ?? null
-            : null;
+        const selectedRadioName = selectedRadioId
+          ? ((li.radioOptions ?? []).find(ro => ro.id === selectedRadioId)?.name ?? null)
+          : null;
 
         return {
           id: this.existingRowId[listItemId] ?? null,
@@ -238,81 +240,80 @@ export class CheckListItemsModal {
 
     this.saving = true;
 
-    this.carBayItemService.saveBatch({ items: rows } as any)
+    this.carBayItemService
+      .saveBatch({ items: rows } as any)
       .pipe(finalize(() => (this.saving = false)))
       .subscribe({
-        next: (res : any) => {
+        next: (res: any) => {
           for (const li of this.items) {
-          if (!li?.id || li.isSeparator === true) continue;
-          this.tempFilesByListItemId[li.id] = [];
-          this.saved.emit();
-          this.close();
-        }
-      }
-    });}
-
-
-onTempFilesChanged(listItemId: string, files: FileAttachmentDto[]): void {
-  this.tempFilesByListItemId[listItemId] = files ?? [];
-  this.updateRowAttachments(listItemId);
-}
-
-onExistingFilesChanged(listItemId: string, files: EntityAttachmentDto[]): void {
-  this.attachmentsByListItemId[listItemId] = files ?? [];
-  this.updateRowAttachments(listItemId);
-}
-
-private updateRowAttachments(listItemId: string): void {
-  if (!this.carBayId) return;
-
-  // prevent concurrent spam for same row
-  if (this.savingRow[listItemId]) return;
-  this.savingRow[listItemId] = true;
-
-  const li = this.items.find(x => x.id === listItemId);
-  if (!li) {
-    this.savingRow[listItemId] = false;
-    return;
+            if (!li?.id || li.isSeparator === true) continue;
+            this.tempFilesByListItemId[li.id] = [];
+            this.saved.emit();
+            this.close();
+          }
+        },
+      });
   }
 
-  const selectedRadioId = this.selectedMarks[listItemId];
-  const selectedRadioName =
-    selectedRadioId
-      ? (li.radioOptions ?? []).find(ro => ro.id === selectedRadioId)?.name ?? null
+  onTempFilesChanged(listItemId: string, files: FileAttachmentDto[]): void {
+    this.tempFilesByListItemId[listItemId] = files ?? [];
+    this.updateRowAttachments(listItemId);
+  }
+
+  onExistingFilesChanged(listItemId: string, files: EntityAttachmentDto[]): void {
+    this.attachmentsByListItemId[listItemId] = files ?? [];
+    this.updateRowAttachments(listItemId);
+  }
+
+  private updateRowAttachments(listItemId: string): void {
+    if (!this.carBayId) return;
+
+    // prevent concurrent spam for same row
+    if (this.savingRow[listItemId]) return;
+    this.savingRow[listItemId] = true;
+
+    const li = this.items.find(x => x.id === listItemId);
+    if (!li) {
+      this.savingRow[listItemId] = false;
+      return;
+    }
+
+    const selectedRadioId = this.selectedMarks[listItemId];
+    const selectedRadioName = selectedRadioId
+      ? ((li.radioOptions ?? []).find(ro => ro.id === selectedRadioId)?.name ?? null)
       : null;
 
-  const payload = {
-    items: [
-      {
-        id: this.existingRowId[listItemId] ?? null,
-        carBayId: this.carBayId,
-        checkListItemId: listItemId,
+    const payload = {
+      items: [
+        {
+          id: this.existingRowId[listItemId] ?? null,
+          carBayId: this.carBayId,
+          checkListItemId: listItemId,
 
-        // keep existing values so update does not wipe them
-        checkRadioOption: selectedRadioName,
-        comments: (this.comments[listItemId] ?? '').trim() || null,
+          // keep existing values so update does not wipe them
+          checkRadioOption: selectedRadioName,
+          comments: (this.comments[listItemId] ?? '').trim() || null,
 
-        // attachments
-        tempFiles: this.tempFilesByListItemId[listItemId] ?? [],
-        entityAttachments: this.attachmentsByListItemId[listItemId] ?? [],
-      },
-    ],
-  };
+          // attachments
+          tempFiles: this.tempFilesByListItemId[listItemId] ?? [],
+          entityAttachments: this.attachmentsByListItemId[listItemId] ?? [],
+        },
+      ],
+    };
 
-  this.carBayItemService
-    .saveBatch(payload as any)
-    .pipe(finalize(() => (this.savingRow[listItemId] = false)))
-    .subscribe({
-      next: (res: any) => {
-        // If backend returns created/updated row id, store it so next updates are true updates
-        // Adjust this depending on your API response shape.
-        const returnedId = res?.items?.[0]?.id || res?.id;
-        if (returnedId) this.existingRowId[listItemId] = returnedId;
-      },
-      error: () => {
-        // Optional: show a toast, but don't break UI
-      },
-    });
-}
-
+    this.carBayItemService
+      .saveBatch(payload as any)
+      .pipe(finalize(() => (this.savingRow[listItemId] = false)))
+      .subscribe({
+        next: (res: any) => {
+          // If backend returns created/updated row id, store it so next updates are true updates
+          // Adjust this depending on your API response shape.
+          const returnedId = res?.items?.[0]?.id || res?.id;
+          if (returnedId) this.existingRowId[listItemId] = returnedId;
+        },
+        error: () => {
+          // Optional: show a toast, but don't break UI
+        },
+      });
+  }
 }

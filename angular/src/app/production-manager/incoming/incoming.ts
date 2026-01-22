@@ -6,17 +6,32 @@ import { CarService, CarDto } from 'src/app/proxy/cars';
 import { Recalls } from 'src/app/recalls/recalls';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-import { ProductionActions } from "../production-actions/production-actions";
-import { NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap'; 
+import { ProductionActions } from '../production-actions/production-actions';
+import { NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
-import {  StageDto } from 'src/app/proxy/stages';
-import { mapCreStatusColor, mapEstReleaseStatusColor, mapIssueStatusColor, mapNoteStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import { StageDto } from 'src/app/proxy/stages';
+import {
+  mapCreStatusColor,
+  mapEstReleaseStatusColor,
+  mapIssueStatusColor,
+  mapNoteStatusColor,
+  mapRecallStatusColor,
+} from 'src/app/shared/utils/stage-colors.utils';
 import { Stage } from 'src/app/proxy/cars/stages';
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 
 @Component({
   selector: 'app-incoming',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal, CarNotesModal],
+  imports: [
+    ...SHARED_IMPORTS,
+    Recalls,
+    CheckInReportModal,
+    ProductionActions,
+    EstReleaseModal,
+    CarNotesModal,
+    QualityGatesModal,
+  ],
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss',
   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
@@ -38,13 +53,28 @@ export class Incoming {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
-  
+
+  //Quality Gates
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
+
   issueModalVisible: Record<string, boolean> = {};
+
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
+
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+    if (!v) this.selectedQualityGatesCarId = undefined;
+  }
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
   }
-
 
   // COMMON MODALS
 
@@ -74,11 +104,11 @@ export class Incoming {
   }
 
   getRecallColor(row: StageDto): string {
-      return mapRecallStatusColor(row?.recallStatus);
+    return mapRecallStatusColor(row?.recallStatus);
   }
 
   getNoteColor(row: StageDto): string {
-      return mapNoteStatusColor(row?.notes);
+    return mapNoteStatusColor(row?.notes);
   }
 
   getEstRelease(row: StageDto): string {
@@ -93,5 +123,4 @@ export class Incoming {
     return mapIssueStatusColor(row?.issueStatus);
   }
 
-  
 }

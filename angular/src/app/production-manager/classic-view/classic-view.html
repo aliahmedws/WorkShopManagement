@@ -29,7 +29,8 @@
 
                     @for (option of stageOptions; track option.value) {
 
-                    <div ngbAccordionItem class="mb-3 rounded shadow-sm py-2" [destroyOnHide]="false" [collapsed]="false">
+                    <div ngbAccordionItem class="mb-3 rounded shadow-sm py-2" [destroyOnHide]="false"
+                        [collapsed]="false">
                         <!-- Header -->
                         <h2 ngbAccordionHeader>
                             <button ngbAccordionButton class="w-100 px-3 pb-2 pt-1 m-0 bg-transparent border-0">
@@ -92,6 +93,7 @@
                     <th>{{ '::Owner' | abpLocalization }}</th>
                     <th>{{ '::Model' | abpLocalization }}</th>
                     <th>{{ '::Color' | abpLocalization }}</th>
+                    <th>{{ '::StorageLocation' | abpLocalization }}</th>
                     <th>{{ '::EtaScd' | abpLocalization }}</th>
                     <th>{{ '::Port' | abpLocalization }}</th>
                     <th class="text-center">{{ '::Recalls' | abpLocalization }}</th>
@@ -103,6 +105,7 @@
                     <th class="text-center">{{ '::AVV' | abpLocalization }}</th>
 
                     <th class="text-center">{{ '::Issues' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::QualityGates' | abpLocalization }}</th>
                     <th>{{ '::CRE' | abpLocalization }}</th>
                     <th>{{ '::BookingNumber' | abpLocalization }}</th>
                     <th>{{ '::ClearingAgent' | abpLocalization }}</th>
@@ -144,6 +147,10 @@
 
                     <!-- COLOR -->
                     <td [title]="row.color" class="text-truncate" style="max-width: 150px;">{{ row.color | uppercase }}
+                    </td>
+
+                    <td>
+                        {{ row?.storageLocation ? (("::Enum:StorageLocation." + row.storageLocation) | abpLocalization) : '-' }}
                     </td>
 
                     <!-- ETA SCD -->
@@ -191,6 +198,21 @@
                         </i>
                     </td>
 
+                    <!-- QUALITY GATES -->
+                    <td class="text-center">
+                        <ng-container *ngIf="row?.carBayId; else noBayClassic">
+                            <i class="fas fa-clipboard-check link text-primary" title="Quality Gates"
+                                (click)="openQualityGates(row)">
+                            </i>
+                        </ng-container>
+
+                        <ng-template #noBayClassic>
+                            <i class="fas fa-clipboard-check opacity-25 text-secondary" title="No Bay">
+                            </i>
+                        </ng-template>
+                    </td>
+
+
                     <!-- CRE STATUS -->
                     <td>
                         <span class="badge" [class]="'bg-' + getCreStatusColor(row)" (click)="openCreModal(row)">
@@ -225,3 +247,6 @@
 <app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
 <app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
     (statusUpdated)="refresh()"></app-avv-status-modal>
+<app-quality-gates-modal [carId]="selectedQualityGatesCarId" [(visible)]="isQualityGatesModalVisible"
+    (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="refresh()">
+</app-quality-gates-modal>

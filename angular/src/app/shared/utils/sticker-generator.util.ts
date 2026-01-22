@@ -46,4 +46,11 @@ export class StickerGeneratorUtil {
     const year = d.toLocaleDateString('en-US', { year: 'numeric' });
     return `${weekday}, ${day} ${month} ${year}`;
   }
+
+  static manufactureDateLabel(value?: Date | string | null): string {
+    if (!value) return '';
+    const d = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(d.getTime())) return '';
+    return StickerGeneratorUtil.formatDate(d);
+  }
 }

@@ -95,75 +95,30 @@
         <!-- Right: Image -->
         <div class="col-12 col-lg-7">
           <div class="card shadow-sm h-100">
-            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+            <div class="card-header px-0 bg-white d-flex align-items-center justify-content-between">
               <div class="fw-bold">{{ details.modelName ?? '-' }}</div>
               <!-- <span class="badge text-bg-light" *ngIf="details.modelImagePath">{{'::Image' | abpLocalization }}</span> -->
             </div>
             <!-- QualityGates -->
-            <div class="quality-gates-wrap">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <div class="fw-semibold">Quality Gates</div>
-                <i class="fa fa-question-circle text-muted" aria-hidden="true"></i>
-              </div>
-
-              <div class="row g-2">
-                <div class="col-12 col-sm-3" *ngFor="let g of GateName">
-                  <div class="position-relative w-100" (click)="$event.stopPropagation()">
-                    <!-- button -->
-                    <button class="btn btn-sm w-100 d-flex align-items-center justify-content-between gate-btn"
-                      type="button" [ngClass]="gateBtnClass(g.value)" (click)="toggleGate(g.value)">
-                      <span>{{ ('::Enum:GateName.' + g.value) | abpLocalization }}</span>
-                      <i class="fa fa-caret-down ms-2"></i>
-                    </button>
-
-
-                    <!-- menu -->
-                    <div *abpPermission="'WorkShopManagement.QualityGates.Create'">
-                      <div class="gate-menu" *ngIf="openGateValue === g.value">
-                        <button type="button" class="gate-item d-flex align-items-center gap-2 w-100"
-                          *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
-                          [class.active]="isSelected(g.value, s.value)">
-                          <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
-                          <span>{{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-
-            <div class="card-body position-relative p-3">
+            <app-quality-gates [carBayId]="details?.id" (saved)="onQualityGatesSaved()"></app-quality-gates>
+            <div class="card-body p-3">
               <!-- TOP BUTTONS (overlay) -->
-              <div class="position-absolute top-0 start-0 p-3">
-
+              <div class="d-flex align-items-center justify-content-between mt-2">
                 <button type="button" class="btn btn-sm btn-primary px-4" (click)="openCriticalImages()">
                   {{'::CriticalImages' | abpLocalization}}
                 </button>
-
-              </div>
-
-              <!-- Quality Gates (Design Only) -->
-
-
-
-              <div class="position-absolute top-0 end-0 p-3">
                 <button type="button" class="btn btn-sm btn-primary px-4" (click)="openIssues()">
                   {{'::Issues' | abpLocalization }}
                 </button>
               </div>
 
               <!-- IMAGE AREA -->
-              <div class="d-flex align-items-center justify-content-center mb-3" style="min-height: 520px;">
+              <div class="d-flex align-items-center justify-content-center mb-3">
                 <ng-container *ngIf="details.modelImagePath; else noImage">
-                  <!-- <img nz-image class="" [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
-                    style="max-height: 500px; object-fit: contain; "
-                    
-                    /> -->
-                  <img nz-image [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
-                    style="height: 300px; object-fit: contain; min-width: 300px;" />
+                  <div class="py-5">
+                    <img nz-image [nzSrc]="details.modelImagePath" [alt]="details.modelName || 'model'"
+                      style="height: 200px; object-fit: contain; width: auto;" />
+                  </div>
                 </ng-container>
 
                 <ng-template #noImage>
@@ -172,105 +127,52 @@
               </div>
 
               <!-- BOTTOM RIGHT STATUS + BUTTON -->
-              <div class="position-absolute bottom-0 end-0 p-1">
-                <div class="d-flex flex-column align-items-end gap-2">
-                  <!-- buttons row -->
+              <div class="d-flex flex-column align-items-end gap-2">
+                <!-- buttons row -->
 
-                  <div class="d-flex flex-wrap justify-content-end gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openCheckInModal()">
-                      {{ '::CheckInReport' | abpLocalization }}
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-4" (click)="openAssignBay()"
-                      [disabled]="movingStage || !details?.carId">
-                      {{ '::AssignToBay' | abpLocalization }}
-                    </button>
+                <div class="d-flex flex-wrap justify-content-end gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openCheckInModal()">
+                    {{ '::CheckInReport' | abpLocalization }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openAssignBay()"
+                    [disabled]="movingStage || !details?.carId">
+                    {{ '::AssignToBay' | abpLocalization }}
+                  </button>
 
-                 
-                    <button 
-                      type="button" 
-                      class="btn btn-sm btn-outline-secondary px-4"
-                      (click)="openMoveStageModal()"
-                      [disabled]="!details?.carId">
-                      {{ '::Move' | abpLocalization }}
-                    </button>
-                    <!-- <div class="btn-group" ngbDropdown>
-                      <button type="button" class="btn btn-sm btn-outline-secondary px-4" ngbDropdownToggle
-                        [disabled]="movingStage || !details?.carId">
-                        <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                        {{ '::Move' | abpLocalization }}
-                      </button>
-                      <div ngbDropdownMenu>
-                        <button ngbDropdownItem type="button" (click)="moveToSCDWareHouse()"
-                          [disabled]="movingStage || !details?.carId">
-                          {{ '::SCD WareHouse' | abpLocalization }}
-                        </button>
-                        <button ngbDropdownItem type="button" (click)="moveToPostProduction()"
-                          [disabled]="movingStage || !details?.carId || !allowMovetoPostProduction">
-                          {{ '::Post Production' | abpLocalization }}
-                        </button>
 
-                        <button ngbDropdownItem type="button" (click)="moveToAwaitingTransportProduction()"
-                          [disabled]="movingStage || !details?.carId || !allowMovetoAwaitingTransport">
-                          {{ '::Awaiting Transport' | abpLocalization }}
-                        </button>
-                        <button ngbDropdownItem type="button" (click)="moveToDispatched()"
-                          [disabled]="movingStage || !details?.carId">
-                          {{ '::Dispatched' | abpLocalization }}
-                        </button>
-
-                      </div>
-                    </div> -->
-                    <!-- <button *ngIf="allowMovetoPostProduction" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToPostProduction()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to "Post Production/Wheel Alignment"' | abpLocalization }}
-                    </button>
-
-                    <button *ngIf="allowMovetoAwaitingTransport" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToAwaitingTransportProduction()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to Awaiting Transport' | abpLocalization }}
-                    </button>
-
-                    <button *ngIf="allowMovetoPostProduction" type="button"
-                      class="btn btn-sm btn-outline-secondary px-4" (click)="moveToDispatched()"
-                      [disabled]="movingStage || !details?.carId">
-                      <span *ngIf="movingStage" class="spinner-border spinner-border-sm me-2"></span>
-                      {{'::Move to Dispatched' | abpLocalization }}
-                    </button> -->
-
-                    <button type="button" class="btn btn-sm btn-primary px-4" (click)="clockToggle()"
-                      [disabled]="!details?.id || clockSaving">
-                      <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
-                      {{ clockButtonKey | abpLocalization }}
-                    </button>
-                  </div>
-
-                  <!-- CLOCK IN TIME -->
-                  <!-- @if(clockStatus == ClockInStatus.NotClockedIn)  FROM get clockin ts method -->
-                  @if(details?.clockInStatus == ClockInStatus.NotClockedIn)
-                  {
-                  <!-- status text -->
-                  <small>
-                    {{ '::Notcurrentlyclockedin.' | abpLocalization }}
-                  </small>
-                  }
-
-                  @if(details?.clockInStatus == ClockInStatus.ClockedIn)
-                  {
-                  <small>
-                    Clocked In: {{ details?.clockInTime | shortDateTime }}
-                  </small>
-                  }
-                  @if(details?.clockInStatus == ClockInStatus.ClockedOut )
-                  {
-                  <small>
-                    Clocked Out: {{ details?.clockOutTime | shortDateTime }}
-                  </small>
-                  }
+                  <button type="button" class="btn btn-sm btn-outline-primary px-4" (click)="openMoveStageModal()"
+                    [disabled]="!details?.carId">
+                    {{ '::Move' | abpLocalization }}
+                  </button>
+                  <button type="button" class="btn btn-sm btn-primary px-4" (click)="clockToggle()"
+                    [disabled]="!details?.id || clockSaving">
+                    <span *ngIf="clockSaving" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ clockButtonKey | abpLocalization }}
+                  </button>
                 </div>
+
+                <!-- CLOCK IN TIME -->
+                <!-- @if(clockStatus == ClockInStatus.NotClockedIn)  FROM get clockin ts method -->
+                @if(details?.clockInStatus == ClockInStatus.NotClockedIn)
+                {
+                <!-- status text -->
+                <small>
+                  {{ '::Notcurrentlyclockedin.' | abpLocalization }}
+                </small>
+                }
+
+                @if(details?.clockInStatus == ClockInStatus.ClockedIn)
+                {
+                <small>
+                  Clocked In: {{ details?.clockInTime | shortDateTime }}
+                </small>
+                }
+                @if(details?.clockInStatus == ClockInStatus.ClockedOut )
+                {
+                <small>
+                  Clocked Out: {{ details?.clockOutTime | shortDateTime }}
+                </small>
+                }
               </div>
             </div>
           </div>
@@ -354,7 +256,7 @@
   <!-- Footer -->
   <ng-template #abpFooter>
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      <button type="button" class="btn btn-outline-primary" (click)="close()">
         {{ '::Close' | abpLocalization }}
       </button>
     </div>
@@ -370,5 +272,6 @@
     (submit)="onAssignBaySubmit()"></app-assign-bay>
   <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="details?.carId" [carVin]="details?.carVin"
     (submit)="onCheckInReportSubmit()"></app-check-in-report-modal>
-  <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="details?.carId" [carBayId]="details?.id" [currentStage]="currentStage"(stageMoved)="onStageMoved()">
-</app-change-stage-actions>
+  <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="details?.carId" [carBayId]="details?.id"
+    [currentStage]="currentStage" (stageMoved)="onStageMoved()">
+  </app-change-stage-actions>

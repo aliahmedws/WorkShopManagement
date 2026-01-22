@@ -22,11 +22,26 @@ import { ProductionActions } from '../production-actions/production-actions';
 import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { StageDto } from 'src/app/proxy/stages';
-import { mapRecallStatusColor, mapNoteStatusColor, mapEstReleaseStatusColor, mapCreStatusColor, mapIssueStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import {
+  mapRecallStatusColor,
+  mapNoteStatusColor,
+  mapEstReleaseStatusColor,
+  mapCreStatusColor,
+  mapIssueStatusColor,
+} from 'src/app/shared/utils/stage-colors.utils';
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 
 @Component({
   selector: 'app-external-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal, CarNotesModal],
+  imports: [
+    ...SHARED_IMPORTS,
+    Recalls,
+    CheckInReportModal,
+    ProductionActions,
+    EstReleaseModal,
+    CarNotesModal,
+    QualityGatesModal,
+  ],
   templateUrl: './external-warehouse.html',
   styleUrl: './external-warehouse.scss',
 })
@@ -46,15 +61,36 @@ export class ExternalWarehouse {
   bayOptions: GuidLookupDto[] = [];
 
   isAssignModalVisible = false;
-  selectedCarBay = {} as CarBayDto;   // to review later
-  
+  selectedCarBay = {} as CarBayDto; // to review later
+
   issueModalVisible: Record<string, boolean> = {};
+
+  //QualityGate Modal
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
   }
 
+  //Quality Gate Start
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
 
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+    if (!v) this.selectedQualityGatesCarId = undefined;
+  }
+
+  onQualityGatesSaved(): void {
+    this.list?.get();
+  }
+
+  //Quality Gate End
 
   // ====== ASSIGN MODAL ^
 
@@ -73,7 +109,6 @@ export class ExternalWarehouse {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
-
 
   // StorageLocation = StorageLocation;
 
@@ -115,7 +150,6 @@ export class ExternalWarehouse {
   openAssignModal(carId: string): void {
     this.selected.carId = carId;
     this.loadBays();
-    
 
     this.buildForm();
     this.isAssignModalVisible = true;
@@ -177,12 +211,10 @@ export class ExternalWarehouse {
     this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
   }
 
-
   openNotesModal(row: StageDto): void {
     if (!row?.carId) return;
     this.notesModal.open(row.carId, row.notes);
   }
-
 
   onNotesSaved(e: { carId: string; notes: string }): void {
     const row = this.stages.items?.find(x => x.carId === e.carId);
@@ -192,11 +224,11 @@ export class ExternalWarehouse {
 
   // =======COLOR MAPPING
   getRecallColor(row: StageDto): string {
-      return mapRecallStatusColor(row?.recallStatus);
+    return mapRecallStatusColor(row?.recallStatus);
   }
 
   getNoteColor(row: StageDto): string {
-      return mapNoteStatusColor(row?.notes);
+    return mapNoteStatusColor(row?.notes);
   }
 
   getEstRelease(row: StageDto): string {
@@ -208,7 +240,7 @@ export class ExternalWarehouse {
   }
 
   getIssueStatusColor(row: StageDto): string {
-    return mapIssueStatusColor(row?.issueStatus)
+    return mapIssueStatusColor(row?.issueStatus);
   }
 
   mapIssueStatusColor(row: StageDto): string {
