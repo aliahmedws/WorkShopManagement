@@ -94,10 +94,18 @@
             <ngx-datatable-column [name]="'::QualityGates' | abpLocalization" [sortable]="false" [canAutoResize]="false"
                 [width]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="text-center text-{{ getQualityGateColor(row) }}">
-                        <i class="fas fa-clipboard-check link" title="Quality Gates" (click)="openQualityGates(row)">
-                        </i>
-                    </div>
+                    <ng-container *ngIf="row?.carBayId; else noBay">
+                        <div class="text-center text-{{ getQualityGateColor(row) }}">
+                            <i class="fas fa-clipboard-check link" title="Quality Gates"
+                                (click)="openQualityGates(row)"></i>
+                        </div>
+                    </ng-container>
+
+                    <ng-template #noBay>
+                        <div class="text-center text-secondary">
+                            <i class="fas fa-clipboard-check opacity-25" title="No Bay"></i>
+                        </div>
+                    </ng-template>
                 </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false"
