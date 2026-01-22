@@ -30,7 +30,8 @@
                         <th width="5%">{{ '::SrNo' | abpLocalization }}</th>
                         <th>{{ '::Status' | abpLocalization }}</th>
                         <th>{{ '::Type' | abpLocalization }}</th>
-                        <th width="55%">{{ '::Description' | abpLocalization }}</th>
+                        <th width="50%">{{ '::Description' | abpLocalization }}</th>
+                        <th width="5%">{{ '::Logs' | abpLocalization }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,9 @@
                         <td><app-issue-status-badge [status]="item.status" /></td>
                         <td>{{ item.type ? (('::Enum:IssueType.' + item.type) | abpLocalization) : '-' }}</td>
                         <td>{{ item.description }}</td>
+                        <td class="text-center">
+                            <app-entity-change-history-modal [entityId]="item.id" entityName="Issue"></app-entity-change-history-modal>
+                        </td>
                     </tr>
                     }
                 </tbody>

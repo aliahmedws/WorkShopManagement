@@ -105,4 +105,9 @@ public static class WorkShopManagementPermissions
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
     }
+
+    public static class AuditLogs
+    {
+        public const string Default = GroupName + ".AuditLogs";
+    }
 }
