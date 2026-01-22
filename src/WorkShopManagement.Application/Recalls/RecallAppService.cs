@@ -32,12 +32,22 @@ namespace WorkShopManagement.Recalls
             _carXeService = carXeService;
             _entityAttachmentService = entityAttachmentAppService;
         }
+
+
+
         public async Task<List<RecallDto>> GetListByCarAsync(Guid carId)
         {
             var queryable = await _recallRepository.GetQueryableAsync();
             var recalls = await AsyncExecuter.ToListAsync(queryable.Where(x => x.CarId == carId));
 
+            if(recalls.Count <= 0)
+            {
+                return await GetExternalRecallsAsync(carId);  
+            }
+
             var dtos = ObjectMapper.Map<List<Recall>, List<RecallDto>>(recalls);
+
+            // Entity Attachments
             foreach (var dto in dtos)
             {
                 var attachments = await _entityAttachmentService.GetListAsync(new GetEntityAttachmentListDto
@@ -51,11 +61,102 @@ namespace WorkShopManagement.Recalls
 
         }
 
-        public async Task<RecallDto> GetAsync(Guid id)
+        public async Task<List<RecallDto>> AddOrUpdateRecallsAsync(Guid carId, List<RecallDto> inputs)
         {
-            var recall = await _recallRepository.GetAsync(id);
-            return ObjectMapper.Map<Recall, RecallDto>(recall);
+            var car = await _carRepository.GetAsync(carId);
+            List<Recall> updatedRecalls = [];
+
+            foreach (var input in inputs)
+            {
+                if (input.IsExternal || input.Id.Equals(Guid.Empty))
+                {
+                    // Create new recall
+                    var newRecall = new Recall(
+                        GuidGenerator.Create(),
+                        carId,
+                        input.Title,
+                        input.Type,
+                        input.Status,
+                        input.RiskDescription,
+                        input.Make,
+                        input.ManufactureId,
+                        input.Notes
+                    );
+                    newRecall = await _recallRepository.InsertAsync(newRecall);
+                    updatedRecalls.Add(newRecall);
+
+                    // --- Add EntityAttachment 
+                    await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
+                    {
+                        EntityType = EntityType.Recall,
+                        EntityId = newRecall.Id,
+                        TempFiles = input.TempFiles
+                    });
+
+                }
+                else
+                {
+                    // Update existing recall
+                    var existingRecall = await _recallRepository.GetAsync(input.Id);
+                    existingRecall.SetTitle(input.Title);
+                    existingRecall.SetType(input.Type);
+                    existingRecall.SetStatus(input.Status);
+                    existingRecall.SetNotes(input.Notes);
+                    existingRecall.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
+                    existingRecall = await _recallRepository.UpdateAsync(existingRecall);
+                    updatedRecalls.Add(existingRecall);
+
+                    // --- UPDATE EntityAttachment 
+                    await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
+                    {
+                        EntityId = input.Id,
+                        EntityType = EntityType.Recall,
+                        TempFiles = input.TempFiles,
+                        EntityAttachments = input.EntityAttachments
+                    });
+                }
+            }
+
+            return ObjectMapper.Map<List<Recall>, List<RecallDto>>(updatedRecalls);
         }
+
+        public async Task<List<RecallDto>> GetExternalRecallsAsync(Guid carId)
+        {
+            var car = await _carRepository.GetAsync(carId);
+            var vinNo = CarHelper.NormalizeAndValidateVin(car.Vin);
+
+            var res = await _carXeService.GetRecallAsync(vinNo);
+
+            var data = res?.Data;
+            var recalls = data?.Recalls;
+
+            // Error or no recalls Message? 
+
+            if (res == null || data == null || recalls == null || recalls.Count == 0)
+            {
+                return [];
+            }
+
+            if (!res.Success || !data.HasRecalls || data.Recalls?.Count <= 0)
+            {
+                return [];
+            }
+
+            return recalls
+                .Select(x => new RecallDto
+                {
+                    Id = Guid.NewGuid(),
+                    CarId = carId,
+                    Title =  (x.RecallName ?? "N/A").Trim(),
+                    Make = data.Make?.Trim(),
+                    ManufactureId = x.ManufacturerId?.Trim(),
+                    RiskDescription = x.RiskDescription?.Trim(),
+                    IsExternal = true
+                }).ToList() ?? [];
+        }
+
+
+
 
         public async Task<RecallDto> CreateAsync(CreateRecallDto input)
         {
@@ -131,40 +232,12 @@ namespace WorkShopManagement.Recalls
             return;
         }
 
-
-        public async Task<List<ExternalRecallDetailDto>> GetRecallsFromExternalServiceAsync(Guid carId)
+        public async Task<RecallDto> GetAsync(Guid id)
         {
-            // TODO: Get Vin Directly in params
-            var car = await _carRepository.GetAsync(carId);
-            var vinNo = CarHelper.NormalizeAndValidateVin(car.Vin);
-
-            var res = await _carXeService.GetRecallAsync(vinNo);
-
-            var data = res?.Data;
-            var recalls = data?.Recalls;
-
-            // Error or no recalls Message? 
-
-            if (res == null || data == null || recalls == null || recalls.Count == 0)
-            {
-                return [];
-            }
-
-            if (!res.Success || !data.HasRecalls || data.Recalls?.Count <= 0)
-            {
-                return [];
-            }
-
-            return recalls
-                //.Where(x => !string.IsNullOrWhiteSpace(x.RecallName))
-                .Select(x => new ExternalRecallDetailDto
-                {
-                    Title = x.RecallName!.Trim() ?? "N/A",
-                    Make = data.Make?.Trim(),
-                    ManufacturerId = x.ManufacturerId?.Trim(),
-                    RiskDescription = x.RiskDescription?.Trim()
-
-                }).ToList() ?? [];
+            var recall = await _recallRepository.GetAsync(id);
+            return ObjectMapper.Map<Recall, RecallDto>(recall);
         }
+
+    
     }
 }

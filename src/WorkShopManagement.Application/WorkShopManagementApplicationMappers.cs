@@ -178,10 +178,11 @@ public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttac
 public partial class RecallMapper : MapperBase<Recall, RecallDto>
 {
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
-    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    [MapperIgnoreTarget(nameof(RecallDto.IsExternal))]
     public override partial RecallDto Map(Recall source);
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
-    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    [MapperIgnoreTarget(nameof(RecallDto.IsExternal))]
+
     public override partial void Map(Recall source, RecallDto destination);
 }
 

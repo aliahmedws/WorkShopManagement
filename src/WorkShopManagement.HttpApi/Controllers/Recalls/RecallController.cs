@@ -44,9 +44,15 @@ namespace WorkShopManagement.Controllers.Recalls
         }
 
         [HttpGet("external/{carId}")]
-        public Task<List<ExternalRecallDetailDto>> GetRecallsFromExternalServiceAsync(Guid carId)
+        public Task<List<RecallDto>> GetExternalRecallsAsync(Guid carId)
         {
-            return recallAppService.GetRecallsFromExternalServiceAsync(carId);
+            return recallAppService.GetExternalRecallsAsync(carId);
+        }
+
+        [HttpPost("{carId}/add-or-update-recalls")]
+        public Task<List<RecallDto>> AddOrUpdateRecallsAsync(Guid carId, List<RecallDto> inputs)
+        {
+            return recallAppService.AddOrUpdateRecallsAsync(carId, inputs);
         }
     }
 }

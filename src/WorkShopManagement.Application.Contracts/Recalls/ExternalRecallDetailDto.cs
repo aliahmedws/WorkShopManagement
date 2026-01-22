@@ -10,6 +10,5 @@ namespace WorkShopManagement.Recalls
         public string? Make { get; set; }
         public string? ManufacturerId { get; set; }
         public string? RiskDescription { get; set; }
-
     }
 }
