@@ -1,4 +1,5 @@
 ﻿using System;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.Cars;
 
@@ -24,13 +25,19 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         ) : base(id)
         {
             LogisticsDetailId = logisticsDetailId;
-            EtaPort = etaPort;
-            EtaScd = etaScd;
-            Notes = DomainCheck.TrimOptional(notes, nameof(notes), maxLength: ArrivalEstimateConsts.MaxNotesLength);
+            SetEta(etaPort, etaScd);
+            SetNotes(notes);
         }
 
         public void SetEta(DateTime etaPort, DateTime etaScd)
         {
+            if (etaPort < etaScd)
+            {
+                throw new BusinessException(WorkShopManagementDomainErrorCodes.LogisticsInvalidEtaRange)
+                    .WithData(nameof(etaPort), etaPort)
+                    .WithData(nameof(etaScd), etaScd);
+            }
+
             EtaPort = etaPort;
             EtaScd = etaScd;
         }

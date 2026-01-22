@@ -252,3 +252,10 @@ public partial class BayToBayDtoMapper : MapperBase<Bay, BayDto>
     public override partial BayDto Map(Bay source);
     public override partial void Map(Bay source, BayDto destination);
 }
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class LogiticsDetailToCreDetailDto : MapperBase<LogisticsDetail, CreDetailDto>
+{
+    public override partial CreDetailDto Map(LogisticsDetail source);
+    public override partial void Map(LogisticsDetail source, CreDetailDto destination);
+}

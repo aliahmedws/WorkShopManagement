@@ -16,5 +16,8 @@ namespace WorkShopManagement.LogisticsDetails
         Task<LogisticsDetailDto> SubmitCreStatusAsync(Guid id);
         Task<LogisticsDetailDto> AddOrUpdateDeliverDetailsAsync(Guid id, AddOrUpdateDeliverDetailDto input);
         Task DeleteAsync(Guid id);
+
+        Task<CreDetailDto> GetCreDetailByCarIdAsync(Guid carId);
+        Task<CreDetailDto> AddOrUpdateCreDetailAsync(Guid carId, AddOrUpdateCreDetailDto input);
     }   
 }

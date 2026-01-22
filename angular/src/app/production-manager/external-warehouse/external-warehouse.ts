@@ -30,6 +30,7 @@ import {
   mapIssueStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
+import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal';
 
 @Component({
   selector: 'app-external-warehouse',
@@ -41,6 +42,7 @@ import { QualityGatesModal } from '../production/production-details-modal/qualit
     EstReleaseModal,
     CarNotesModal,
     QualityGatesModal,
+    CreDetailModal,
   ],
   templateUrl: './external-warehouse.html',
   styleUrl: './external-warehouse.scss',
@@ -68,6 +70,8 @@ export class ExternalWarehouse {
   //QualityGate Modal
   isQualityGatesModalVisible = false;
   selectedQualityGatesCarId?: string;
+
+  isCreDetailModalVisible = false;
 
   openIssueModal(row: any): void {
     if (!row?.carId) return;
@@ -194,6 +198,11 @@ export class ExternalWarehouse {
   }
 
   // -----^ ASSIGN BAY MODAL END ^===========
+
+  openCreDetailModal(car: StageDto): void {
+    this.selected = car;
+    this.isCreDetailModalVisible = true;
+  }
 
   // ========COMMON MODALS
   openRecallModal(car: StageDto): void {

@@ -31,6 +31,7 @@ import {
   mapIssueStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
+import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal';
 
 @Component({
   selector: 'app-scd-warehouse',
@@ -42,6 +43,7 @@ import { QualityGatesModal } from '../production/production-details-modal/qualit
     EstReleaseModal,
     CarNotesModal,
     QualityGatesModal,
+    CreDetailModal
   ],
   templateUrl: './scd-warehouse.html',
   styleUrl: './scd-warehouse.scss',
@@ -81,6 +83,7 @@ export class ScdWarehouse {
   isNotesModalVisible = false;
 
   issueModalVisible: Record<string, boolean> = {};
+  isCreDetailModalVisible = false;
 
   openIssueModal(row: any): void {
     if (!row?.carId) return;
@@ -110,6 +113,10 @@ export class ScdWarehouse {
   }
   //QUALITY GATE END
 
+  openCreDetailModal(car: StageDto): void {
+    this.selected = car;
+    this.isCreDetailModalVisible = true;
+  }
   // ========COMMON MODALS
   openRecallModal(car: StageDto): void {
     this.selected = car;

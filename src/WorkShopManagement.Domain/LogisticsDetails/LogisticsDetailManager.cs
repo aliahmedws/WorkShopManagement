@@ -133,16 +133,12 @@ namespace WorkShopManagement.LogisticsDetails
         public async Task<LogisticsDetail> AddOrUpdateCreDetailsAsync(
             Guid id,
             CreStatus creStatus,
-            DateTime creSubmissionDate,
-            string rvsaNumber)
+            DateTime? creSubmissionDate,
+            string? rvsaNumber)
         {
             var logisticsDetail = await _logisticsDetailRepository.GetAsync(id);
 
             creStatus.EnsureDefined(nameof(creStatus));
-            if(creStatus.Equals(CreStatus.Pending))
-            {
-                throw new UserFriendlyException("CRE status can only be set to Submitted.");
-            }
 
             logisticsDetail.SetCreStatus(creStatus);
             logisticsDetail.SetCreSubmissionDate(creSubmissionDate);

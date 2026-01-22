@@ -118,7 +118,7 @@
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="badge bg-{{getCreStatusColor(row)}}">
+                    <div class="badge bg-{{getCreStatusColor(row)}} link" (click)="openCreDetailModal(row)">
                         {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : 'CRE' }}
                     </div>
                 </ng-template>
@@ -145,6 +145,7 @@
 
     <!-- MODALS -->
     <app-recalls [(visible)]="isRecallModalVisible" [carId]="selected.carId" (submit)="list?.get()" />
+    <app-cre-detail-modal [(visible)]="isCreDetailModalVisible" [carId]="selected.carId" [vin]="selected.vin" (submit)="list?.get()" />
 
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
         (submit)="list?.get()"></app-check-in-report-modal>

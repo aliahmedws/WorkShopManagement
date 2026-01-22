@@ -24,6 +24,7 @@ import { ProductionTopbarActions } from 'src/app/production-topbar-actions/produ
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { QualityGatesModal } from "../production/production-details-modal/quality-gates-modal/quality-gates-modal";
+import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal';
 
 @Component({
   selector: 'app-classic-view',
@@ -38,7 +39,8 @@ import { QualityGatesModal } from "../production/production-details-modal/qualit
     AvvStatusModal,
     ProductionTopbarActions,
     NgbAccordionModule,
-    QualityGatesModal
+    QualityGatesModal,
+    CreDetailModal
 ],
   templateUrl: './classic-view.html',
   styleUrl: './classic-view.scss',
@@ -66,6 +68,7 @@ export class ClassicView implements OnInit {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isAvvModalVisible = false;
+  isCreDetailModalVisible = false;
 
   // Track issue modal visibility for specific cars (used by production-actions)
   issueModalVisible: Record<string, boolean> = {};
@@ -137,6 +140,11 @@ export class ClassicView implements OnInit {
   }
 
   // --- Actions & Modals ---
+
+  openCreDetailModal(car: StageDto): void {
+    this.selected = car;
+    this.isCreDetailModalVisible = true;
+  }
 
   openCheckInModal(row: StageDto) {
     this.selected = row;

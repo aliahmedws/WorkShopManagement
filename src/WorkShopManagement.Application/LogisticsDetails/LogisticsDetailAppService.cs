@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -183,5 +184,28 @@ namespace WorkShopManagement.LogisticsDetails
             await _logisticsRepository.DeleteAsync(id);
         }
 
+        public async Task<CreDetailDto> GetCreDetailByCarIdAsync(Guid carId)
+        {
+            var logis = await _logisticsRepository.FindByCarIdAsync(carId);
+            if (logis == null)
+            {
+                throw new UserFriendlyException("Logistic Details for the car does not exist.");
+            }
+            return ObjectMapper.Map<LogisticsDetail, CreDetailDto>(logis);
+        }
+
+        public async Task<CreDetailDto> AddOrUpdateCreDetailAsync(
+            Guid carId,
+            AddOrUpdateCreDetailDto input)
+        {
+            var logis = await _logisticsRepository.FindByCarIdAsync(carId);
+            if (logis == null)
+            {
+                throw new UserFriendlyException("Logistic Details for the car does not exist.");
+            }
+
+            logis = await _logisticsDetailManager.AddOrUpdateCreDetailsAsync(id: logis.Id, input.CreStatus, input.CreSubmissionDate, input.RvsaNumber);
+            return ObjectMapper.Map<LogisticsDetail, CreDetailDto>(logis);
+        }
     }
 }

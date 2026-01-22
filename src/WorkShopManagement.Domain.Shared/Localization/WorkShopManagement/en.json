@@ -509,6 +509,7 @@
     "Enum:Stage.5.HelpMessage": "The vehicle has completed all manufacturing processes and is now undergoing inspection by the Quality Control Team, with any necessary rework being performed at this stage. Vehicles should be moved in and out of QC bays by the user.<br/>Vehicles will automatically progress to Quality Release once the QC & Post Rework PDI checklists have been completed, and there are no non-deferred issues.",
     "Enum:Stage.6.HelpMessage": "The vehicle has completed all processes and is now awaiting pick-up by the transport company. Once the vehicle is sent for transport, the dispatch form will be completed, and the vehicle will be moved to the Dispatched status.<br/>This is simply a holding stage before the vehicle is officially dispatched from the site to the customer. The vehicle shows up here if the transport date has been updated.<br/>Once the vehicle has been uploaded to the RAV, it will be eligible to move to Dispatched through completion of the dispatch form.",
     "Enum:Stage.7.HelpMessage": "The vehicle has been dispatched",
-    "QualityGates": "Quality Gates"
+    "QualityGates": "Quality Gates",
+    "CreDetailsUpdated" :  "CRE Details Updated!"
   }
 }

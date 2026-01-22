@@ -69,5 +69,17 @@ namespace WorkShopManagement.Controllers.LogisticsDetails
         {
             return logisticsDetailAppService.AddOrUpdateDeliverDetailsAsync(id, input);
         }
+
+        [HttpGet("{carId}/get-cre-details")]
+        public Task<CreDetailDto> GetCreDetailByCarIdAsync(Guid carId)
+        {
+            return logisticsDetailAppService.GetCreDetailByCarIdAsync(carId);
+        }
+
+        [HttpPost("{carId}/add-or-update-cre-details")]
+        public Task<CreDetailDto> AddOrUpdateCreDetailAsync(Guid carId, AddOrUpdateCreDetailDto input)
+        {
+            return logisticsDetailAppService.AddOrUpdateCreDetailAsync(carId, input);
+        }
     }
 }

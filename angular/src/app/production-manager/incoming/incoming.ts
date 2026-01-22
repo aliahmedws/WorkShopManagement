@@ -20,6 +20,7 @@ import {
 } from 'src/app/shared/utils/stage-colors.utils';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
+import { CreDetailModal } from "../mini-modals/cre-detail-modal/cre-detail-modal";
 
 @Component({
   selector: 'app-incoming',
@@ -31,7 +32,8 @@ import { QualityGatesModal } from '../production/production-details-modal/qualit
     EstReleaseModal,
     CarNotesModal,
     QualityGatesModal,
-  ],
+    CreDetailModal,
+],
   templateUrl: './incoming.html',
   styleUrl: './incoming.scss',
   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
@@ -53,6 +55,7 @@ export class Incoming {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
+  isCreDetailModalVisible = false;
 
   //Quality Gates
   isQualityGatesModalVisible = false;
@@ -75,12 +78,18 @@ export class Incoming {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
   }
+  
 
   // COMMON MODALS
 
   openRecallModal(car: StageDto): void {
     this.selected = car;
     this.isRecallModalVisible = true;
+  }
+
+  openCreDetailModal(car: StageDto): void {
+    this.selected = car;
+    this.isCreDetailModalVisible = true;
   }
 
   openCheckInModal(car: StageDto): void {
