@@ -18,7 +18,6 @@ import {
   mapEstReleaseStatusColor,
   mapAvvStatus as mapAvvStatusColor,
   mapIssueStatusColor,
-  mapQualityGateStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
@@ -79,28 +78,25 @@ export class PostProduction {
 
   //QUALITY GATE START
   openQualityGates(row: StageDto): void {
-  if (!row?.carId) return;
+    if (!row?.carId) return;
 
-  this.selectedQualityGatesCarId = row.carId;
-  this.isQualityGatesModalVisible = true;
-}
-
-onQualityGatesVisibleChange(v: boolean): void {
-  this.isQualityGatesModalVisible = v;
-
-  if (!v) {
-    this.selectedQualityGatesCarId = undefined;
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
   }
-}
 
-onQualityGatesSaved(): void {
-  // Refresh list so the grid icon color updates as well
-  this.list?.get();
-}
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
 
- getQualityGateColor(row: StageDto): string {
-  return mapQualityGateStatusColor((row as any).qualityGateWorstStatus ?? null);
-}
+    if (!v) {
+      this.selectedQualityGatesCarId = undefined;
+    }
+  }
+
+  onQualityGatesSaved(): void {
+    // Refresh list so the grid icon color updates as well
+    this.list?.get();
+  }
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;

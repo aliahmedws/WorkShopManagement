@@ -16,7 +16,6 @@ import {
   mapEstReleaseStatusColor,
   mapIssueStatusColor,
   mapNoteStatusColor,
-  mapQualityGateStatusColor,
   mapRecallStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { Stage } from 'src/app/proxy/cars/stages';
@@ -124,7 +123,4 @@ export class Incoming {
     return mapIssueStatusColor(row?.issueStatus);
   }
 
-  getQualityGateColor(row: StageDto): string {
-  return mapQualityGateStatusColor((row as any).qualityGateWorstStatus ?? null);
-}
 }

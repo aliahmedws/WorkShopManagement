@@ -83,7 +83,7 @@
                 [width]="100">
                  <ng-template let-row="row" ngx-datatable-cell-template>
                     <ng-container *ngIf="row?.carBayId; else noBay">
-                        <div class="text-center text-{{ getQualityGateColor(row) }}">
+                        <div class="text-center text-primary">
                             <i class="fas fa-clipboard-check link" title="Quality Gates"
                                 (click)="openQualityGates(row)"></i>
                         </div>

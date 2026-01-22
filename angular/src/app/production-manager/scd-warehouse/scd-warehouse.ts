@@ -29,7 +29,6 @@ import {
   mapEstReleaseStatusColor,
   mapCreStatusColor,
   mapIssueStatusColor,
-  mapQualityGateStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 
@@ -108,10 +107,6 @@ export class ScdWarehouse {
 
   onQualityGatesSaved(): void {
     this.list?.get();
-  }
-
-  getQualityGateColor(row: StageDto): string {
-    return mapQualityGateStatusColor((row as any).qualityGateWorstStatus ?? null);
   }
   //QUALITY GATE END
 
