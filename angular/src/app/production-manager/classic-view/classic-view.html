@@ -150,8 +150,7 @@
                     </td>
 
                     <td>
-                        {{ row?.storageLocation ? (("::Enum:AvvStatus." + row.storageLocation) | abpLocalization) : '-'
-                        }}
+                        {{ row?.storageLocation ? (("::Enum:StorageLocation." + row.storageLocation) | abpLocalization) : '-' }}
                     </td>
 
                     <!-- ETA SCD -->

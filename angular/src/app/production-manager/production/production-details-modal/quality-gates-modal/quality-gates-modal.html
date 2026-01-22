@@ -13,8 +13,9 @@
 
         <ng-container *ngIf="!loading && resolvedCarBayId">
             <!-- IMPORTANT: layout="modal" -->
-            <app-quality-gates [carBayId]="resolvedCarBayId" layout="modal" (saved)="onSaved()">
-            </app-quality-gates>
+            <div style="min-height: 420px;">
+                <app-quality-gates [carBayId]="resolvedCarBayId" layout="modal" (saved)="onSaved()"></app-quality-gates>
+            </div>
         </ng-container>
 
         <ng-container *ngIf="!loading && !resolvedCarBayId">
