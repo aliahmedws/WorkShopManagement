@@ -2,11 +2,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { GuidLookupDto, LookupService } from 'src/app/proxy/lookups';
@@ -15,7 +12,6 @@ import { GetCarListInput } from 'src/app/proxy/cars';
 import { ProductionDetailsModal } from './production-details-modal/production-details-modal';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { StageBayDto, StageDto, StageService } from 'src/app/proxy/stages';
-import { Stage } from 'src/app/proxy/cars/stages';
 import { mapIssueStatusColor, mapRecallStatusColor } from 'src/app/shared/utils/stage-colors.utils';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { Confirmation } from '@abp/ng.theme.shared';
@@ -36,15 +32,10 @@ export class Production implements OnInit {
   stages: StageDto[] = [];
 
   carId?: string;
-  // carBayId?: string;
-
-  // bayId 
 
   Priority = Priority;
 
   isProductionDetailVisible = false;
-
-  // @ViewChild('detailsModal') detailsModal?: ProductionDetailsModal;
 
   constructor(
     private readonly lookupService: LookupService,
@@ -67,16 +58,9 @@ export class Production implements OnInit {
     this.stageService.getBays().subscribe(res => (this.activeCarBays = res || []));
   }
 
-  getAssignment(bayId: string): CarBayDto | null {
-    return null;
-    // return this.activeCarBays.find(x => x.bayId === bayId) ?? null;
-  }
-
   onOpenBay(bay: StageBayDto): void {
-    // const a = this.getAssignment(bay.id);
     if (!bay?.carId) return;
     this.carId = bay.carId;
-    // this.carBayId = bay.bayId;
     this.isProductionDetailVisible = true;
     // safest: detailsModal exists after view init because it's in template
     // this.detailsModal?.open(bay.carId, true, false);
@@ -88,15 +72,7 @@ export class Production implements OnInit {
     return v.length > 6 ? v.slice(-6) : v;
   }
 
-  // priorityText(p?: Priority | null): string {
-  //   if (p === null || p === undefined) return '-';
-  //   return Priority[p];
-  // }
-
-  // trackByBayId = (_: number, bay: GuidLookupDto) => bay.id;
-
   onStageChanged() {
-    // this.activeCarBays = this.activeCarBays.filter(x => x.carId !== carId);
     this.change.emit();
     this.reloadActiveBays();
   }
@@ -131,11 +107,5 @@ export class Production implements OnInit {
         // this.refreshRequested.emit();
       });
     });
-  }
-
-  onBayChanged() {
-    this.isProductionDetailVisible = false;
-    this.change.emit();
-    this.reloadActiveBays();
   }
 }

@@ -213,7 +213,7 @@ export class ProductionDetailsModal {
       vin: StickerGeneratorUtil.vinLast6(fullVin),
       bay: StickerGeneratorUtil.bayLabel(this.details?.bayName),
       type: 'ASSY', // hardcoded
-      date: StickerGeneratorUtil.formatDate(new Date()), // or manufactureStartDate if you want
+      date: StickerGeneratorUtil.manufactureDateLabel(this.manufactureDate), // or manufactureStartDate if you want
       model: this.details?.modelName ?? '',
       flags: this.details?.port ? Port[this.details.port].toUpperCase() : '', // hardcoded
       colour: this.selectedCar?.color || '',
@@ -234,9 +234,9 @@ export class ProductionDetailsModal {
     // Model
     const model = (this.details as any)?.modelName || '';
     const owner = this.details?.ownerName || 'Dealer Stock';
-    const color = (this.selectedCar as CarDto)?.color || '';
-    const dealer = 'BNE';
-    const image = (this.details as CarBayDto)?.modelImagePath;
+    const color = this.selectedCar?.color || '';
+    const dealer = this.details?.port.toString(); //need to confirm
+    const image = this.details?.modelImagePath;
 
     if (!image) {
       return;

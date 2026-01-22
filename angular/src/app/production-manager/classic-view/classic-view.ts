@@ -6,7 +6,14 @@ import { GetCarListInput } from 'src/app/proxy/cars';
 import { Stage, stageOptions } from 'src/app/proxy/cars/stages';
 import { StageService, StageDto } from 'src/app/proxy/stages';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
-import { mapRecallStatusColor, mapNoteStatusColor, mapEstReleaseStatusColor, mapCreStatusColor, mapIssueStatusColor, mapAvvStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import {
+  mapRecallStatusColor,
+  mapNoteStatusColor,
+  mapEstReleaseStatusColor,
+  mapCreStatusColor,
+  mapIssueStatusColor,
+  mapAvvStatusColor,
+} from 'src/app/shared/utils/stage-colors.utils';
 import { ProductionActions } from '../production-actions/production-actions';
 import { Recalls } from 'src/app/recalls/recalls';
 import { CheckInReport } from 'src/app/check-in-reports/check-in-report';
@@ -16,20 +23,32 @@ import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal
 import { ProductionTopbarActions } from 'src/app/production-topbar-actions/production-topbar-actions';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
+import { QualityGatesModal } from "../production/production-details-modal/quality-gates-modal/quality-gates-modal";
 
 @Component({
   selector: 'app-classic-view',
-  imports: [...SHARED_IMPORTS, ProductionActions, Recalls, CheckInReportModal, CarNotesModal, EstReleaseModal, Production, AvvStatusModal, ProductionTopbarActions, NgbAccordionModule],
+  imports: [
+    ...SHARED_IMPORTS,
+    ProductionActions,
+    Recalls,
+    CheckInReportModal,
+    CarNotesModal,
+    EstReleaseModal,
+    Production,
+    AvvStatusModal,
+    ProductionTopbarActions,
+    NgbAccordionModule,
+    QualityGatesModal
+],
   templateUrl: './classic-view.html',
   styleUrl: './classic-view.scss',
-
 })
 export class ClassicView implements OnInit {
   private readonly confirmation = inject(ConfirmationHelperService);
   private readonly stageService = inject(StageService);
   @ViewChild('production') production: Production;
 
-  stages: ListResultDto<StageDto> = { items: []};
+  stages: ListResultDto<StageDto> = { items: [] };
 
   // Fetch a large batch since we are filtering client-side for the view
   filters: any = {};
@@ -46,10 +65,14 @@ export class ClassicView implements OnInit {
   selected: StageDto = {};
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
-  isAvvModalVisible = false
+  isAvvModalVisible = false;
 
   // Track issue modal visibility for specific cars (used by production-actions)
   issueModalVisible: Record<string, boolean> = {};
+
+  // Quality Gates
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
 
   @ViewChild('estReleaseModal') estReleaseModal!: EstReleaseModal;
   @ViewChild('notesModal') notesModal!: CarNotesModal;
@@ -59,7 +82,7 @@ export class ClassicView implements OnInit {
   }
 
   refresh(reloadBay: boolean = true): void {
-    this.stageService.getAll(this.filters.filter).subscribe((res) => {
+    this.stageService.getAll(this.filters.filter).subscribe(res => {
       this.stages = res;
       if (reloadBay) this.production?.reloadActiveBays();
       // If a search was active (e.g. user edited a note on a search result), re-run search
@@ -67,10 +90,7 @@ export class ClassicView implements OnInit {
         this.performSearch(this.filters.filter);
       }
     });
-
   }
-
-
 
   // --- SEARCH LOGIC ---
 
@@ -89,10 +109,11 @@ export class ClassicView implements OnInit {
 
   performSearch(term: string) {
     // Client-side filter on VIN, Model, or Owner
-    this.searchResults = this.stages.items.filter(x =>
-      (x.vin && x.vin.toLowerCase().includes(term)) ||
-      (x.modelName && x.modelName.toLowerCase().includes(term)) ||
-      (x.ownerName && x.ownerName.toLowerCase().includes(term))
+    this.searchResults = this.stages.items.filter(
+      x =>
+        (x.vin && x.vin.toLowerCase().includes(term)) ||
+        (x.modelName && x.modelName.toLowerCase().includes(term)) ||
+        (x.ownerName && x.ownerName.toLowerCase().includes(term)),
     );
   }
 
@@ -138,7 +159,7 @@ export class ClassicView implements OnInit {
   }
 
   openIssueModal(row: StageDto) {
-    // This logic seems to be handled via the issueModalVisible dictionary 
+    // This logic seems to be handled via the issueModalVisible dictionary
     // passed to the actions component, but if clicked directly from table icon:
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
@@ -181,5 +202,17 @@ export class ClassicView implements OnInit {
 
   helpMessage(stage: Stage) {
     this.confirmation.productionStageHelpMessage(stage);
+  }
+
+  //Quality Gates
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
+
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+    if (!v) this.selectedQualityGatesCarId = undefined;
   }
 }
