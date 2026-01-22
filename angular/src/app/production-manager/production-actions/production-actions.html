@@ -55,6 +55,6 @@
 <app-car-images-modal [(visible)]="isImageModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
 <app-issue-modal [(visible)]="isIssueModalVisible" (visibleChange)="isIssueModalVisibleChange.emit($event)"
     [carId]="stage?.carId" (submit)="emitChange()"></app-issue-modal>
-<app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="emitChange()"></app-assign-bay>
+<app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="onAssignBaySubmit()"></app-assign-bay>
 <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="stage?.carId" [carBayId]="stage?.bayId"
     [currentStage]="stage?.stage ?? currentStage" (stageMoved)="onStageMoved()"></app-change-stage-actions>

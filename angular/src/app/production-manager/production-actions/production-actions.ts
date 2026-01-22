@@ -12,7 +12,15 @@ import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-production-actions',
-  imports: [...SHARED_IMPORTS, CarCreateEditModal, CarImagesModal, IssueModal, AssignBay, ProductionDetailsModal, ChangeStageActions],
+  imports: [
+    ...SHARED_IMPORTS,
+    CarCreateEditModal,
+    CarImagesModal,
+    IssueModal,
+    AssignBay,
+    ProductionDetailsModal,
+    ChangeStageActions,
+  ],
   templateUrl: './production-actions.html',
   styleUrl: './production-actions.scss',
 })
@@ -58,7 +66,12 @@ export class ProductionActions {
   manageLogistics() {
     const tab = this.route.snapshot.queryParams?.tab;
     this.router.navigate(['/logistics-details'], {
-      queryParams: { carId: this.stage?.carId, vin: this.stage?.vin, returnUrl: window.location.pathname, tab: tab },
+      queryParams: {
+        carId: this.stage?.carId,
+        vin: this.stage?.vin,
+        returnUrl: window.location.pathname,
+        tab: tab,
+      },
     });
   }
 
@@ -79,7 +92,9 @@ export class ProductionActions {
     this.emitChange();
   }
 
-  requestDispatched() {
-    // Your existing dispatched logic
+  onAssignBaySubmit(): void {
+    this.isAssignBayVisible = false;
+    this.isProductionDetailVisible = false;
+    this.emitChange();
   }
 }

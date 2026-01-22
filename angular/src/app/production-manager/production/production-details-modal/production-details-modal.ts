@@ -11,8 +11,6 @@ import {
 import { CheckListItemsModal } from '../checklist-items-modal/checklist-items-modal';
 import { CarDto, CarService, Port } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
-import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
-import { Confirmation } from '@abp/ng.theme.shared';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
@@ -20,13 +18,6 @@ import { StickerItem } from 'src/app/shared/models/sticker-item';
 import { StickerGeneratorUtil } from 'src/app/shared/utils/sticker-generator.util';
 import { VehicleStickerV2Item } from 'src/app/shared/models/vehicle-sticker-v2';
 import { VehicleStickerV2Util } from 'src/app/shared/utils/vehicle-sticker-v2.util';
-import {
-  gateNameOptions,
-  QualityGateDto,
-  QualityGateService,
-  QualityGateStatus,
-  qualityGateStatusOptions,
-} from 'src/app/proxy/quality-gates';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { checkListProgressStatusOptions } from 'src/app/proxy/check-lists';
 import { mapCheckListProgressStatusColor } from 'src/app/shared/utils/stage-colors.utils';
