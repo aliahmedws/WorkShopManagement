@@ -98,11 +98,11 @@ namespace WorkShopManagement.LogisticsDetails
         internal void SetActualArrivals(DateTime? actualPortArrivalDate, DateTime? actualScdArrivalDate)
         {
             if (actualPortArrivalDate.HasValue && actualScdArrivalDate.HasValue &&
-                actualScdArrivalDate.Value < actualPortArrivalDate.Value)
+                actualScdArrivalDate.Value.Date < actualPortArrivalDate.Value.Date)
             {
-                throw new BusinessException(WorkShopManagementDomainErrorCodes.LogisticsInvalidActualArrivalRange)
-                    .WithData(nameof(actualPortArrivalDate), actualPortArrivalDate.Value)
-                    .WithData(nameof(actualScdArrivalDate), actualScdArrivalDate.Value);
+                var portDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
+                var scdDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
+                throw new UserFriendlyException($"Actual SCD arrival date cannot be earlier than actual port arrival date.</br></br> Port Arrival Date: <strong>{portDate}</strong></br> SCD Arrival Date: <strong>{scdDate}</strong>");
             }
 
             ActualPortArrivalDate = actualPortArrivalDate;

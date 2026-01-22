@@ -31,11 +31,11 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
 
         public void SetEta(DateTime etaPort, DateTime etaScd)
         {
-            if (etaPort < etaScd)
+            if (etaPort.Date > etaScd.Date)
             {
-                throw new BusinessException(WorkShopManagementDomainErrorCodes.LogisticsInvalidEtaRange)
-                    .WithData(nameof(etaPort), etaPort)
-                    .WithData(nameof(etaScd), etaScd);
+                var portDate = etaPort.Date.ToString("dd-MMM-yyyy");
+                var scdDate = etaScd.Date.ToString("dd-MMM-yyyy");
+                throw new UserFriendlyException($"ETA SCD cannot be earlier than ETA Port. </br></br> ETA Port: <strong>{portDate}</strong> </br> ETA SCD: <strong>{scdDate}</strong> ");
             }
 
             EtaPort = etaPort;
