@@ -54,7 +54,7 @@
 
                         <div class="row g-2 mb-2">
                             <div class="col-md-6">
-                                <label class="form-label small text-secondary fw-bold text-uppercase required">
+                                <label class="form-label small text-secondary  required">
                                     {{ '::Title' | abpLocalization }}
                                 </label>
                                 <input class="form-control" formControlName="title"
@@ -65,13 +65,13 @@
 
 
                                 <div class="d-flex align-items-center ">
-                                    <span class="small text-secondary fw-bold text-uppercase me-3">{{ '::Status' |
+                                    <span class="form-label small me-3">{{ '::Status' |
                                         abpLocalization }}:</span>
 
                                     <div class="form-check form-check-inline m-0 me-3">
                                         <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
                                             formControlName="status" id="st_p_{{$index}}" style="cursor: pointer;">
-                                        <label class="form-check-label" for="st_p_{{$index}}"
+                                        <label class="form-label form-check-label" for="st_p_{{$index}}"
                                             style="cursor: pointer;">
                                             {{ '::Enum:RecallStatus.1' | abpLocalization }}
                                         </label>
@@ -80,7 +80,7 @@
                                         <input class="form-check-input" type="radio"
                                             [value]="RecallStatus.Completed" formControlName="status"
                                             id="st_c_{{$index}}" style="cursor: pointer;">
-                                        <label class="form-check-label" for="st_c_{{$index}}"
+                                        <label class="form-label form-check-label" for="st_c_{{$index}}"
                                             style="cursor: pointer;">
                                             {{ '::Enum:RecallStatus.2' | abpLocalization }}
                                         </label>
@@ -89,10 +89,10 @@
 
                                 <div class="border-start mx-auto" style="height: 20px;"></div>
 
-                                <div class="ms-4 form-check form-switch m-0">
+                                <div class="ms-4 form-check form-switch m-0ncvcx">
                                     <input class="form-check-input" type="checkbox" formControlName="isCsp"
                                         id="csp_{{$index}}" style="cursor: pointer;">
-                                    <label class="form-check-label fw-semibold text-primary" for="csp_{{$index}}"
+                                    <label class="form-label form-check-label" for="csp_{{$index}}"
                                         style="cursor: pointer;">
                                         {{ '::MarkAsCsp' | abpLocalization }}
                                     </label>
@@ -104,19 +104,19 @@
 
                         <div class="row g-2 mb-3">
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary fw-bold text-uppercase">
+                                <label class="form-label small text-secondary">
                                     {{ '::RiskDescription' | abpLocalization }}
                                 </label>
                                 <textarea class="form-control" rows="4" formControlName="riskDescription"></textarea>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary fw-bold text-uppercase">
+                                <label class="form-label small text-secondary">
                                     {{ '::Notes' | abpLocalization }}
                                 </label>
                                 <textarea class="form-control" rows="4" formControlName="notes"></textarea>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary fw-bold text-uppercase">
+                                <label class="form-label small text-secondary">
                                     {{ '::Attachments' | abpLocalization }}
                                 </label>
                                 <app-file-upload [multiple]="true" size="small" [tempFiles]="fg.get('tempFiles').value"
@@ -138,10 +138,13 @@
         <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
             {{ '::Close' | abpLocalization }}
         </button>
-        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid || saving" (click)="save()">
-            @if(saving) { <i class="fa fa-spinner fa-spin me-1"></i> }
-            @else { <i class="fas fa-save me-1"></i> }
-            {{ '::Save' | abpLocalization }}
-        </button>
+
+        @if(rows?.length){
+            <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid || saving" (click)="save()">
+                <i class="fas fa-save me-1"></i> 
+                {{ '::Save' | abpLocalization }}
+            </button>
+        }
+        
     </ng-template>
 </abp-modal>

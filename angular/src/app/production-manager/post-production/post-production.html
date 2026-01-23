@@ -81,7 +81,7 @@
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::QualityGates' | abpLocalization" [sortable]="false" [canAutoResize]="false"
                 [width]="100">
-                 <ng-template let-row="row" ngx-datatable-cell-template>
+                <ng-template let-row="row" ngx-datatable-cell-template>
                     <ng-container *ngIf="row?.carBayId; else noBay">
                         <div class="text-center text-primary">
                             <i class="fas fa-clipboard-check link" title="Quality Gates"
@@ -108,7 +108,7 @@
 <app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
     (statusUpdated)="list.get()"></app-avv-status-modal>
 <app-est-release-modal #estReleaseModal (saved)="list.get()"></app-est-release-modal>
-<app-recalls [(visible)]="isRecallModalVisible" [carId]="selected?.carId" (submit)="list?.get()" />
+<app-recalls [(visible)]="isRecallModalVisible" [vin]="selected?.vin" [carId]="selected?.carId" (submit)="list?.get()" />
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
     (submit)="list?.get()"></app-check-in-report-modal>
 <app-quality-gates-modal [(visible)]="isQualityGatesModalVisible" [carId]="selectedQualityGatesCarId"

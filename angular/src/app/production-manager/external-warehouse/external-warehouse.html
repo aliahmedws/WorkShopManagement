@@ -147,7 +147,7 @@
 </div>
 
 <!-- MODALS -->
-<app-recalls [(visible)]="isRecallModalVisible" [carId]="selected.carId" (submit)="list?.get()" />
+<app-recalls [(visible)]="isRecallModalVisible" [vin]="selected?.vin" [carId]="selected?.carId" (submit)="list?.get()" />
 <app-cre-detail-modal [(visible)]="isCreDetailModalVisible" [carId]="selected.carId" [vin]="selected.vin" (submit)="list?.get()" />
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
     (submit)="list?.get()"></app-check-in-report-modal>

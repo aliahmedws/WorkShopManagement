@@ -66,6 +66,14 @@ export class Recalls {
   }
 
   private buildRows(items: RecallDto[]): void {
+
+    // Sort by CSPs
+    items.sort((a, b) => {
+      const isCspA = a.type === RecallType.Csps ? 1 : 0;
+      const isCspB = b.type === RecallType.Csps ? 1 : 0;
+      return isCspA - isCspB;
+    });
+
     for (const r of items) {
       this.rows.push(
         this.fb.group({
