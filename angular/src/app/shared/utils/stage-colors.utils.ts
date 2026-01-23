@@ -2,6 +2,7 @@ import { AvvStatus } from "src/app/proxy/car-bays";
 import { CreStatus } from "src/app/proxy/cars";
 import { CheckListProgressStatus } from "src/app/proxy/check-lists";
 import { IssueStatus } from "src/app/proxy/issues";
+import { QualityGateStatus } from "src/app/proxy/quality-gates/quality-gate-status.enum";
 import { RecallStatus } from "src/app/proxy/recalls";
 
 const DEFAULT_COLOR = 'secondary';
@@ -98,3 +99,5 @@ export function mapCheckListProgressStatusColor(progressStatus: CheckListProgres
             return DEFAULT_COLOR;
     }
 }
+
+

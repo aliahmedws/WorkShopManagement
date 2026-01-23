@@ -3,7 +3,10 @@
   @if (layout !== 'modal') {
   <div class="d-flex align-items-center gap-2 mb-2">
     <div class="fw-semibold">Quality Gates</div>
-    <i class="fa fa-question-circle text-muted" aria-hidden="true"></i>
+    <i class="far fa-question-circle text-primary" role="button" tabindex="0"
+      (click)="openHelp()"
+      aria-label="Quality Gates Help">
+    </i>
   </div>
   }
 

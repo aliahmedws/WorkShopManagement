@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { finalize } from 'rxjs';
 import { QualityGateService, gateNameOptions, qualityGateStatusOptions, QualityGateDto, QualityGateStatus, UpdateQualityGateDto, CreateQualityGateDto } from 'src/app/proxy/quality-gates';
+import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 
@@ -13,6 +14,7 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 export class QualityGates implements OnChanges {
   private readonly qualityGateService = inject(QualityGateService);
   private readonly toaster = inject(ToasterHelperService);
+  private readonly confirm = inject(ConfirmationHelperService);
 
   @Input() carBayId?: string;
   @Output() saved = new EventEmitter<void>();
@@ -174,5 +176,9 @@ export class QualityGates implements OnChanges {
       case QualityGateStatus.RESET: return 'gate-reset';
       default: return 'gate-reset';
     }
+  }
+
+   openHelp(): void {
+    this.confirm.qualityGatesHelpMessage();
   }
 }

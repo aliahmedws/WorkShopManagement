@@ -6,7 +6,7 @@ import { Stage } from 'src/app/proxy/cars/stages';
 
 export const DELETE_CONFIRMATION_OPTIONS: Confirmation.Options = {
   yesText: '::Button:ConfirmDelete',
-  icon: 'fas fa-trash text-danger'
+  icon: 'fas fa-trash text-danger',
 } as const;
 
 export const ACTION_CONFIRMATION_OPTIONS: Confirmation.Options = {
@@ -38,16 +38,21 @@ export const PRODUCTION_HELP_MESSAGE_OPTIONS: Confirmation.Options = {
   hideYesBtn: true,
 } as const;
 
+export const QUALITY_GATES_HELP_OPTIONS: Confirmation.Options = {
+  cancelText: '::Close',
+  hideYesBtn: true,
+} as const;
+
 @Injectable({ providedIn: 'root' })
 export class ConfirmationHelperService {
-  constructor(private confirmation: ConfirmationService) { }
+  constructor(private confirmation: ConfirmationService) {}
 
   /**
    * Shortcut for delete confirmation
    */
   confirmDelete(
     messageKey = '::DeleteConfirmationMessage',
-    titleKey = '::DeleteConfirmationTitle'
+    titleKey = '::DeleteConfirmationTitle',
   ): Observable<Confirmation.Status> {
     return this.confirmation.warn(messageKey, titleKey, DELETE_CONFIRMATION_OPTIONS);
   }
@@ -55,7 +60,7 @@ export class ConfirmationHelperService {
   confirmAction(
     messageKey: string,
     titleKey: string,
-    options: Confirmation.Options = ACTION_CONFIRMATION_OPTIONS
+    options: Confirmation.Options = ACTION_CONFIRMATION_OPTIONS,
   ): Observable<Confirmation.Status> {
     return this.confirmation.warn(messageKey, titleKey, options);
   }
@@ -64,14 +69,14 @@ export class ConfirmationHelperService {
     return this.confirmation.warn(
       '::ConfirmClearBayMessage',
       '::ConfirmClearBayTitle',
-      CLEAR_BAY_CONFIRMATION_OPTIONS
+      CLEAR_BAY_CONFIRMATION_OPTIONS,
     );
   }
 
   warn(
     messageKey: string,
     titleKey: string,
-    options: Confirmation.Options = WARNING_CONFIRMATION_OPTIONS
+    options: Confirmation.Options = WARNING_CONFIRMATION_OPTIONS,
   ): Observable<Confirmation.Status> {
     return this.confirmation.warn(messageKey, titleKey, options);
   }
@@ -79,7 +84,7 @@ export class ConfirmationHelperService {
   info(
     messageKey: string,
     titleKey: string,
-    options: Confirmation.Options = INFO_CONFIRMATION_OPTIONS
+    options: Confirmation.Options = INFO_CONFIRMATION_OPTIONS,
   ): Observable<Confirmation.Status> {
     return this.confirmation.info(messageKey, titleKey, options);
   }
@@ -87,7 +92,19 @@ export class ConfirmationHelperService {
   productionStageHelpMessage(stage: Stage) {
     const value = (stage as any)?.value ? (stage as any)?.value : stage;
     if (value) {
-      this.confirmation.info(`::Enum:Stage.${value}.HelpMessage`, `::Enum:Stage.${value}`, PRODUCTION_HELP_MESSAGE_OPTIONS);
+      this.confirmation.info(
+        `::Enum:Stage.${value}.HelpMessage`,
+        `::Enum:Stage.${value}`,
+        PRODUCTION_HELP_MESSAGE_OPTIONS,
+      );
     }
+  }
+
+  qualityGatesHelpMessage(): void {
+    this.confirmation.info(
+      '::QualityGates.HelpMessageHtml',
+      '::QualityGates',
+      QUALITY_GATES_HELP_OPTIONS,
+    );
   }
 }
