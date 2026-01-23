@@ -1,6 +1,9 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="modal-title">{{ '::Recalls' | abpLocalization }}</h3>
+        @if(vin){
+        <span class="fw-bold">{{vin}}</span>
+        }
+        <span class="text-muted ms-3">{{ '::Recalls' | abpLocalization }}</span>
     </ng-template>
 
     <ng-template #abpBody>
@@ -24,9 +27,9 @@
         <div [formGroup]="form">
             <div formArrayName="rows">
                 @for (fg of rows.controls; track $index) {
-                <div class="card border-0 mb-4 mt-3" [formGroupName]="$index">
+                <div class="card border-0 mb-4 mt-2" [formGroupName]="$index">
 
-                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
                         <div class="d-flex align-items-center">
                             @if (fg.get('isExternal')?.value) {
                             <span class="badge bg-warning text-dark rounded-pill me-2">New #{{ $index + 1 }}</span>
@@ -47,10 +50,10 @@
                         </div>
                     </div>
 
-                    <div class="px-1">
+                    <div>
 
-                        <div class="row g-2">
-                            <div class="mb-3 col-md-6">
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-6">
                                 <label class="form-label small text-secondary fw-bold text-uppercase required">
                                     {{ '::Title' | abpLocalization }}
                                 </label>
@@ -58,56 +61,45 @@
                                     placeholder="Enter recall title..." />
                             </div>
 
-                            <!-- <div class="col-md-6">
-                                <label class="form-label small text-secondary fw-bold text-uppercase">
-                                    {{ '::Title' | abpLocalization }}
-                                </label> -->
-
-                                <div class="col-md-6 d-flex align-items-center border rounded px-3 mt-4 mb-3 bg-white">
+                            <div class="col-md-6 d-flex align-items-center border rounded px-3 mt-4  bg-white">
 
 
-                                    <div class="d-flex align-items-center ">
-                                        <span class="small text-secondary fw-bold text-uppercase me-3">{{ '::Status' |
-                                            abpLocalization }}:</span>
+                                <div class="d-flex align-items-center ">
+                                    <span class="small text-secondary fw-bold text-uppercase me-3">{{ '::Status' |
+                                        abpLocalization }}:</span>
 
-                                        <div class="form-check form-check-inline m-0 me-3">
-                                            <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
-                                                formControlName="status" id="st_p_{{$index}}" style="cursor: pointer;">
-                                            <label class="form-check-label" for="st_p_{{$index}}"
-                                                style="cursor: pointer;">
-                                                {{ '::Enum:RecallStatus.1' | abpLocalization }}
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-check-inline m-0">
-                                            <input class="form-check-input" type="radio"
-                                                [value]="RecallStatus.Completed" formControlName="status"
-                                                id="st_c_{{$index}}" style="cursor: pointer;">
-                                            <label class="form-check-label" for="st_c_{{$index}}"
-                                                style="cursor: pointer;">
-                                                {{ '::Enum:RecallStatus.2' | abpLocalization }}
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="border-start mx-auto" style="height: 20px;"></div>
-
-                                    <div class="ms-4 form-check form-switch m-0">
-                                        <input class="form-check-input" type="checkbox" formControlName="isCsp"
-                                            id="csp_{{$index}}" style="cursor: pointer;">
-                                        <label class="form-check-label fw-semibold text-primary" for="csp_{{$index}}"
+                                    <div class="form-check form-check-inline m-0 me-3">
+                                        <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
+                                            formControlName="status" id="st_p_{{$index}}" style="cursor: pointer;">
+                                        <label class="form-check-label" for="st_p_{{$index}}"
                                             style="cursor: pointer;">
-                                            {{ '::MarkAsCsp' | abpLocalization }}
+                                            {{ '::Enum:RecallStatus.1' | abpLocalization }}
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input class="form-check-input" type="radio"
+                                            [value]="RecallStatus.Completed" formControlName="status"
+                                            id="st_c_{{$index}}" style="cursor: pointer;">
+                                        <label class="form-check-label" for="st_c_{{$index}}"
+                                            style="cursor: pointer;">
+                                            {{ '::Enum:RecallStatus.2' | abpLocalization }}
                                         </label>
                                     </div>
                                 </div>
 
-                            
+                                <div class="border-start mx-auto" style="height: 20px;"></div>
 
-                            <!-- </div> -->
+                                <div class="ms-4 form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" formControlName="isCsp"
+                                        id="csp_{{$index}}" style="cursor: pointer;">
+                                    <label class="form-check-label fw-semibold text-primary" for="csp_{{$index}}"
+                                        style="cursor: pointer;">
+                                        {{ '::MarkAsCsp' | abpLocalization }}
+                                    </label>
+                                </div>
+                            </div>
 
                         </div>
-
-
 
 
                         <div class="row g-2 mb-3">
@@ -125,7 +117,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small text-secondary fw-bold text-uppercase">
-                                    <i class="fa fa-paperclip me-1"></i> {{ '::Attachments' | abpLocalization }}
+                                    {{ '::Attachments' | abpLocalization }}
                                 </label>
                                 <app-file-upload [multiple]="true" size="small" [tempFiles]="fg.get('tempFiles').value"
                                     (tempFilesChange)="fg.get('tempFiles').setValue($event); fg.markAsDirty()"
@@ -133,10 +125,6 @@
                                     (existingFilesChange)="fg.get('existingFiles').setValue($event); fg.markAsDirty()">
                                 </app-file-upload>
                             </div>
-                        </div>
-
-                        <div class="row g-3">
-
                         </div>
                     </div>
                 </div>

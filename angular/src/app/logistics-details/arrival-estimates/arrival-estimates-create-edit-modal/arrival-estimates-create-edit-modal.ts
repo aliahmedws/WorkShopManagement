@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { ArrivalEstimateService, ArrivalEstimateDto, UpdateArrivalEstimateDto, CreateArrivalEstimateDto } from 'src/app/proxy/logistics-details/arrival-estimates';
@@ -64,13 +64,25 @@ export class ArrivalEstimatesCreateEditModal {
       etaPort: [{ value: dto?.etaPort ? new Date(dto.etaPort) : null, disabled: this.isEdit }, [Validators.required]],
       etaScd: [{ value: dto?.etaScd ? new Date(dto.etaScd) : null, disabled: this.isEdit }, [Validators.required]],
       notes: [dto?.notes ?? null, [Validators.maxLength(2000)]]
-    });
+    }, { validators: this.dateValidator });
     
     if (!this.isEdit) {
         this.existingFiles = [];
         this.tempFiles = [];
     }
   }
+
+   // Define the custom validator
+  dateValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const portDate = control.get('etaPort')?.value;
+    const scdDate = control.get('etaScd')?.value;
+
+    if (portDate && scdDate && new Date(portDate) > new Date(scdDate)) {
+      // Set error on the FormGroup (or specific control if preferred)
+      return { portAfterScd: true }; 
+    }
+    return null;
+  };
 
   save() {
     if (this.form.invalid) {

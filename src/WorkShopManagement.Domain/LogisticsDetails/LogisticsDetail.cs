@@ -100,7 +100,7 @@ namespace WorkShopManagement.LogisticsDetails
             if (actualPortArrivalDate.HasValue && actualScdArrivalDate.HasValue &&
                 actualScdArrivalDate.Value.Date < actualPortArrivalDate.Value.Date)
             {
-                var portDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
+                var portDate = actualPortArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
                 var scdDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
                 throw new UserFriendlyException($"Actual SCD arrival date cannot be earlier than actual port arrival date.</br></br> Port Arrival Date: <strong>{portDate}</strong></br> SCD Arrival Date: <strong>{scdDate}</strong>");
             }
