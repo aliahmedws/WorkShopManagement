@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Data;
+using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.Bays;
 using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
+using WorkShopManagement.Lookups;
 using WorkShopManagement.Permissions;
 using static WorkShopManagement.Permissions.WorkShopManagementPermissions;
 
@@ -20,16 +24,19 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     private readonly ICarRepository _carRepository;
     private readonly CarBayManager _manager;
     private readonly CarManager _carManager;
+    private readonly IRepository<Bay, Guid> _bayRepository;
 
     public CarBayAppService(
         ICarBayRepository repository,
         ICarRepository carRepository,
+        IRepository<Bay, Guid> bayRepository,
         CarBayManager manager,
         CarManager carManager
         )
     {
         _repository = repository;
         _carRepository = carRepository;
+        _bayRepository = bayRepository;
         _manager = manager;
         _carManager = carManager;
     }
@@ -84,6 +91,8 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Create)]
     public async Task<CarBayDto> CreateAsync(CreateCarBayDto input)
     {
+        await EnsureTargetBayIsActiveAsync(input.BayId);
+
         if (input.IsActive == true)
         {
             await DeactivateOtherActiveBayAsync(input.CarId);
@@ -128,6 +137,9 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
     [Authorize(WorkShopManagementPermissions.CarBays.Edit)]
     public async Task<CarBayDto> UpdateAsync(Guid id, UpdateCarBayDto input)
     {
+
+        await EnsureTargetBayIsActiveAsync(input.BayId);
+
         var entity = await _repository.GetAsync(id);
 
         entity.SetIsActive(input.IsActive);
@@ -137,43 +149,43 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
             await DeactivateOtherActiveBayAsync(entity.CarId, exceptCarBayId: entity.Id);
         }
 
-         await _manager.UpdateAsync(
-            id,
-            input.BayId,
-            input.Priority,
-            input.BuildMaterialNumber,
-            input.UserId,
-            input.DateTimeIn,
-            input.DateTimeOut,
-            input.IsActive,
-            input.IsWaiting,
-            input.IsQueue,
-            input.AngleBailment,
-            input.AvvStatus,
-            input.PdiStatus,
-            input.DisplayBay,
-            input.Percentage,
-            input.DueDate,
-            input.DueDateUpdated,
-            input.ConfirmedDeliverDate,
-            input.ConfirmedDeliverDateNotes,
-            input.TransportDestination,
-            input.StorageLocation,
-            input.Row,
-            input.Columns,
-            input.ReWorkDate,
-            input.ManufactureStartDate,
-            input.PulseNumber,
-            input.CanProgress,
-            input.JobCardCompleted
-        );
+        await _manager.UpdateAsync(
+           id,
+           input.BayId,
+           input.Priority,
+           input.BuildMaterialNumber,
+           input.UserId,
+           input.DateTimeIn,
+           input.DateTimeOut,
+           input.IsActive,
+           input.IsWaiting,
+           input.IsQueue,
+           input.AngleBailment,
+           input.AvvStatus,
+           input.PdiStatus,
+           input.DisplayBay,
+           input.Percentage,
+           input.DueDate,
+           input.DueDateUpdated,
+           input.ConfirmedDeliverDate,
+           input.ConfirmedDeliverDateNotes,
+           input.TransportDestination,
+           input.StorageLocation,
+           input.Row,
+           input.Columns,
+           input.ReWorkDate,
+           input.ManufactureStartDate,
+           input.PulseNumber,
+           input.CanProgress,
+           input.JobCardCompleted
+       );
 
         //if (!input.ConcurrencyStamp.IsNullOrWhiteSpace())
         //{
         //    entity.SetConcurrencyStampIfNotNull(input.ConcurrencyStamp);
         //}
 
-        if (input.CarId != Guid.Empty) 
+        if (input.CarId != Guid.Empty)
         {
             var car = await _carRepository.GetAsync(input.CarId);
 
@@ -242,4 +254,14 @@ public class CarBayAppService : WorkShopManagementAppService, ICarBayAppService
         await _repository.UpdateAsync(activeBay, autoSave: true);
     }
 
+    private async Task EnsureTargetBayIsActiveAsync(Guid bayId)
+    {
+        var bay = await _bayRepository.FindAsync(bayId);
+
+        if (bay == null)
+            throw new UserFriendlyException("Selected bay does not exist.");
+
+        if (!bay.IsActive)
+            throw new UserFriendlyException("Selected bay is inactive. Please activate it first.");
+    }
 }
