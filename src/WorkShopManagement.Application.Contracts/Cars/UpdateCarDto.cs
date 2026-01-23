@@ -25,7 +25,6 @@ public class UpdateCarDto
     [Required]
     public Guid ModelId { get; set; }
 
-    [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
     public int ModelYear { get; set; }
 
     [StringLength(CarConsts.MaxCncLength)]

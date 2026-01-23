@@ -62,7 +62,7 @@ namespace WorkShopManagement.LogisticsDetails
                 bookingNumber: bookingNumber
             );
 
-            return logisticsDetail;
+            return await _logisticsDetailRepository.InsertAsync(logisticsDetail, autoSave: true);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace WorkShopManagement.LogisticsDetails
             logisticsDetail.SetClearanceDetails(clearingAgent, clearanceRemarks, clearanceDate);
             logisticsDetail.SetActualArrivals(actualPortArrivalDate, actualScdArrivalDate);
 
-            return logisticsDetail;
+            return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
 
@@ -120,14 +120,14 @@ namespace WorkShopManagement.LogisticsDetails
             //}
 
             logisticsDetail.SetCreStatus(creStatus);
-            return logisticsDetail;
+            return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
         public async Task<LogisticsDetail> SubmitCreStatus(Guid id)
         {
             var logisticsDetail = await _logisticsDetailRepository.GetAsync(id);
             logisticsDetail.SetCreStatus(CreStatus.Submitted);
-            return logisticsDetail;
+            return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
         public async Task<LogisticsDetail> AddOrUpdateCreDetailsAsync(
@@ -158,7 +158,7 @@ namespace WorkShopManagement.LogisticsDetails
                 clearanceRemarks: clearanceRemarks,
                 clearanceDate: clearanceDate
             );
-            return logisticsDetail;
+            return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
         public async Task<LogisticsDetail> AddOrUpdateActualArrivalAsync(
@@ -189,7 +189,7 @@ namespace WorkShopManagement.LogisticsDetails
                 transportDestination: transportDestination
             );
 
-            return logisticsDetail;
+            return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
 

@@ -9,9 +9,11 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.EntityAttachments;
+using WorkShopManagement.Extensions;
 using WorkShopManagement.External.CarsXe;
 using WorkShopManagement.External.CarsXE;
 using WorkShopManagement.External.Vpic;
+using WorkShopManagement.LogisticsDetails;
 using WorkShopManagement.Permissions;
 using WorkShopManagement.Utils.Helpers;
 
@@ -29,6 +31,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     private readonly ICarXeService _carXeService;
     private readonly IEntityAttachmentService _entityAttachmentService;
     private readonly CarManager _carManager;
+    private readonly LogisticsDetailManager _logisticsManager;
 
 
     public CarAppService(
@@ -38,7 +41,9 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         IVpicService vpicService,
         ICarXeService carXeService,
         IEntityAttachmentService entityAttachmentService,
-        CarManager carManager
+        CarManager carManager,
+        LogisticsDetailManager logisticsManager
+
         )
     {
         _carRepository = carRepository;
@@ -48,6 +53,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         _carXeService = carXeService;
         _entityAttachmentService = entityAttachmentService;
         _carManager = carManager;
+        _logisticsManager = logisticsManager;
     }
 
     public async Task<CarDto> GetAsync(Guid id)
@@ -146,6 +152,12 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
         );
 
         var entity = await _carRepository.InsertAsync(car, autoSave: true);
+        // Create Default Logistics For car
+        var logisticsDetail = await _logisticsManager.CreateAsync(
+            car.Id,
+            input.Port.EnsureDefined(nameof(input.Port)),
+            input.BookingNumber
+        );
 
 
         // --- CREATE EntityAttachment 

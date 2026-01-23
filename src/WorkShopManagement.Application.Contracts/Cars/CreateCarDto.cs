@@ -22,7 +22,7 @@ public class CreateCarDto
     [Required]
     public Guid ModelId { get; set; }
 
-    [Range(CarConsts.MinModelYear, CarConsts.MaxModelYear)]
+    [Range(CarConsts.MinModelYear, int.MaxValue)]
     public int ModelYear { get; set; }
 
     [StringLength(CarConsts.MaxCncLength)]
@@ -46,8 +46,7 @@ public class CreateCarDto
 
 
     // Logistics vehicle data
-    [Required]
-    public Port? Port { get; set; } = Cars.Port.Bne;
+    public Port Port { get; set; } = Port.Bne;
     public string? BookingNumber { get; set; }
     //public StorageLocation? StorageLocation { get; set; }           // Remove when creating?
 
