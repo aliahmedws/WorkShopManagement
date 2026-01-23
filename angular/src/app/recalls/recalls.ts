@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { finalize, forkJoin, of } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { RecallService, RecallDto, CreateRecallDto, UpdateRecallDto } from '../proxy/recalls';
@@ -20,6 +20,7 @@ export class Recalls {
   private readonly toaster = inject(ToasterHelperService);
 
   @Input() carId: string;
+  @Input() vin: string;
   @Output() submit = new EventEmitter<boolean>();
 
   @Input() visible: boolean = false;

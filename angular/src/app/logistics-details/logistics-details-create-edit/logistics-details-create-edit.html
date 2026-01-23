@@ -130,7 +130,6 @@
 
 
 
-
                     <div class="form-group">
                         <hr class="my-4">
                         <h5 class="text-primary mb-3">{{ '::CreDetails' | abpLocalization }}</h5>
@@ -243,6 +242,14 @@
                     <div class="form-group">
                         <hr class="my-4">
                         <h5 class="text-primary mb-3">{{ '::ArrivalInformation' | abpLocalization }}</h5>
+                        @if (form.errors?.['portAfterScd'] && (form.touched || form.dirty)) {
+                            <div class="alert alert-danger">
+                                <small>
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    {{ '::Logistics:InvalidActualArrivalRange' | abpLocalization }}
+                                </small>
+                            </div>
+                            }
                         <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <label class="form-label">{{ '::ActualPortArrivalDate' | abpLocalization }}</label>
@@ -256,8 +263,11 @@
                                     formControlName="actualScdArrivalDate" ngbDatepicker
                                     (click)="scdArrPicker.toggle()" />
                             </div>
+
                         </div>
+                        
                     </div>
+
                     }
 
                     <hr class="my-4">

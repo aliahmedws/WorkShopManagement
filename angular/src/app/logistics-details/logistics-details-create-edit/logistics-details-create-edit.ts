@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreStatus, creStatusOptions, Port, portOptions } from 'src/app/proxy/cars';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
@@ -109,10 +109,22 @@ export class LogisticsDetailsCreateEdit implements OnInit {
 
       actualPortArrivalDate: [dto?.actualPortArrivalDate ? new Date(dto.actualPortArrivalDate) : null],
       actualScdArrivalDate: [dto?.actualScdArrivalDate ? new Date(dto.actualScdArrivalDate) : null],
-    });
+    }, { validators: this.arrivalDateValidator });
 
     this.tempFiles = [];
   }
+
+  // Define the custom validator
+  arrivalDateValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const portDate = control.get('actualPortArrivalDate')?.value;
+    const scdDate = control.get('actualScdArrivalDate')?.value;
+
+    if (portDate && scdDate && new Date(portDate) > new Date(scdDate)) {
+      // Set error on the FormGroup (or specific control if preferred)
+      return { portAfterScd: true }; 
+    }
+    return null;
+  };
 
   save() {
     if (this.form.invalid || !this.carId) {
