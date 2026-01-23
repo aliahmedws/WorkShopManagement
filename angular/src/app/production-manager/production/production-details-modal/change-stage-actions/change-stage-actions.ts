@@ -33,8 +33,6 @@ export class ChangeStageActions {
 
   stageOptions = stageOptions;
 
-  private readonly stagesThatClearBay: Stage[] = [Stage.ScdWarehouse];
-
   private readonly excludedStages: Stage[] = [
     Stage.Production, // Production stage is not available for moving
   ];
@@ -67,6 +65,10 @@ export class ChangeStageActions {
     this.visible = false;
     this.visibleChange.emit(false);
     this.selectedStage = undefined;
+  }
+
+  onVisibleChange(v: boolean): void {
+    if (!v) this.close();
   }
 
   selectStage(stage: Stage): void {
@@ -126,24 +128,16 @@ export class ChangeStageActions {
       return;
     }
 
-    // this.confirm.confirmClearBay().subscribe((status: Confirmation.Status) => {
-    //   if (status !== Confirmation.Status.confirm) {
-    //     this.confirmation.info('::StageChangedBayNotCleared', '::Info');
-    //     this.handleSuccess();
-    //     return;
-    //   }
-
-      this.carBayService.delete(this.carBayId!).subscribe({
-        next: () => {
-          this.toaster.success('::BayClearedSuccessfully', '::Success');
-          this.handleSuccess();
-        },
-        error: () => {
-          this.confirmation.warn('::StageChangedButBayNotCleared', '::Warning');
-          this.handleSuccess();
-        },
-      });
-    // });
+    this.carBayService.delete(this.carBayId!).subscribe({
+      next: () => {
+        this.toaster.success('::BayClearedSuccessfully', '::Success');
+        this.handleSuccess();
+      },
+      error: () => {
+        this.confirmation.warn('::StageChangedButBayNotCleared', '::Warning');
+        this.handleSuccess();
+      },
+    });
   }
 
   private handleSuccess(): void {

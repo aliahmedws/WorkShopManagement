@@ -1,4 +1,4 @@
-<abp-modal [(visible)]="visible" [busy]="saving" size="md">
+<abp-modal [(visible)]="visible" (visibleChange)="onVisibleChange($event)" [busy]="saving" size="md">
   <ng-template #abpHeader>
     <h5>{{ '::MoveStage' | abpLocalization }}</h5>
   </ng-template>
@@ -7,16 +7,10 @@
     <div class="mb-3">
       <label class="form-label">{{ '::SelectTargetStage' | abpLocalization }}</label>
       <div class="list-group">
-        <button
-          *ngFor="let option of availableStages"
-          type="button"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          [ngClass]="{
+        <button *ngFor="let option of availableStages" type="button"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" [ngClass]="{
             'active bg-primary text-white border-primary fw-semibold': isStageSelected(option.value)
-          }"
-          [class.active]="isStageSelected(option.value)"
-          (click)="selectStage(option.value)"
-          [disabled]="saving">
+          }" [class.active]="isStageSelected(option.value)" (click)="selectStage(option.value)" [disabled]="saving">
           <span>{{ ('::Enum:Stage.' + option.value) | abpLocalization }}</span>
           <i *ngIf="isStageSelected(option.value)" class="fas fa-check"></i>
         </button>
@@ -33,11 +27,7 @@
     <button type="button" class="btn btn-outline-primary" (click)="close()" [disabled]="saving">
       {{ '::Close' | abpLocalization }}
     </button>
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="save()"
-      [disabled]="selectedStage === undefined || saving">
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="selectedStage === undefined || saving">
       <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
       {{ '::Move' | abpLocalization }}
     </button>
