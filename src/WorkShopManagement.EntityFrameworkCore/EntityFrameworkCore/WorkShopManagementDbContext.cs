@@ -471,7 +471,7 @@ public class WorkShopManagementDbContext :
             b.Property(x => x.BookingNumber).HasMaxLength(LogisticsDetailConsts.MaxBookingNumberLength);
             b.Property(x => x.ClearingAgent).HasMaxLength(LogisticsDetailConsts.MaxClearingAgentLength);
             b.Property(x => x.ClearanceRemarks).HasMaxLength(LogisticsDetailConsts.MaxClearanceRemarksLength);
-            b.Property(x => x.RsvaNumber).HasMaxLength(LogisticsDetailConsts.MaxRsvaNumberLength);
+            b.Property(x => x.RvsaNumber).HasMaxLength(LogisticsDetailConsts.MaxRvsaNumberLength);
 
             b.Property(x => x.DeliverTo).HasMaxLength(LogisticsDetailConsts.MaxDeliverToLength);
             b.Property(x => x.DeliverNotes).HasMaxLength(LogisticsDetailConsts.MaxDeliverNotesLength);

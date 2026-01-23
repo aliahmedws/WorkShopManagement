@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using WorkShopManagement.Bays;
-using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars;
 using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Common;
 using WorkShopManagement.EntityFrameworkCore;
 using WorkShopManagement.Issues;
 using WorkShopManagement.Recalls;
-using WorkShopManagement.Utils.Helpers;
 
 namespace WorkShopManagement.Stages;
 
@@ -25,7 +23,7 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
     }
 
     public async Task<ListResult<StageModel>> GetStageAsync(
-        Stage stage,
+        Stage? stage = null,
         string? sorting = null,
         int skipCount = 0,
         int maxResultCount = int.MaxValue,
@@ -38,8 +36,12 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
 
         // Base: filter + sort + page on Cars only (fast and prevents join row explosion)
         var carsBase = ctx.Cars
-            .AsNoTracking()
-            .Where(c => c.Stage == stage);
+            .AsNoTracking();
+
+        if (stage.HasValue)
+        {
+            carsBase = carsBase.Where(c => c.Stage == stage.Value);
+        }
 
         if (!string.IsNullOrWhiteSpace(trimmedFilter))
         {
@@ -74,6 +76,7 @@ public class EfCoreStageRepository : EfCoreRepository<WorkShopManagementDbContex
             {
                 // -- Cars
                 CarId = car.Id,
+                Stage = car.Stage,
                 Vin = car.Vin,
                 Color = car.Color,
                 StorageLocation = car.StorageLocation,

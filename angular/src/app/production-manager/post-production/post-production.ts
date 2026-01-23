@@ -1,12 +1,5 @@
 import { PagedResultDto, ListService } from '@abp/ng.core';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarBayService, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
 import { CarDto } from 'src/app/proxy/cars';
@@ -27,6 +20,7 @@ import {
   mapIssueStatusColor,
 } from 'src/app/shared/utils/stage-colors.utils';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 
 @Component({
   selector: 'app-post-production',
@@ -36,7 +30,8 @@ import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-mod
     ProductionActions,
     EstReleaseModal,
     Recalls,
-    CheckInReportModal
+    CheckInReportModal,
+    QualityGatesModal,
   ],
   templateUrl: './post-production.html',
   styleUrl: './post-production.scss',
@@ -74,8 +69,34 @@ export class PostProduction {
   isRecallModalVisible = false;
   isCheckInModalVisible = false;
   isAvvModalVisible = false;
-  
+
   issueModalVisible: Record<string, boolean> = {};
+
+  // Quality Gates
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
+
+  //QUALITY GATE START
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
+
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+
+    if (!v) {
+      this.selectedQualityGatesCarId = undefined;
+    }
+  }
+
+  onQualityGatesSaved(): void {
+    // Refresh list so the grid icon color updates as well
+    this.list?.get();
+  }
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;

@@ -10,7 +10,7 @@ using WorkShopManagement.EntityAttachments.FileAttachments.TempFiles;
 
 namespace WorkShopManagement.EntityAttachments.FileAttachments.Files;
 
-public class FileManager: DomainService
+public class FileManager : DomainService
 {
     private readonly IBlobContainer _container;
     private readonly TempFileManager _tempFileManager;
@@ -27,7 +27,7 @@ public class FileManager: DomainService
         _tempFileManager = tempFileManager;
     }
 
-    public async Task<FileAttachment> SaveAsync(MemoryStream fileStream, string fileName, CancellationToken ct = default)
+    public async Task<FileAttachment> SaveAsync(MemoryStream fileStream, string fileName, string? vin, CancellationToken ct = default)
     {
         if (fileStream == null || fileStream.Length == 0)
         {
@@ -41,59 +41,64 @@ public class FileManager: DomainService
 
         var blobName = $"{ts}_{id}{ext}";
 
-        await _container.SaveAsync(BuildBlobPath(blobName), fileStream, overrideExisting: true, cancellationToken: ct);
+        await _container.SaveAsync(BuildBlobPath(blobName, vin), fileStream, overrideExisting: true, cancellationToken: ct);
 
-        var filePath = BuildBlobUrl(blobName);
+        var filePath = BuildBlobUrl(blobName, vin);
         return new FileAttachment(fileName, filePath, blobName);
 
     }
 
-    public async Task<FileAttachment> SaveFromTempAsync(string fileName, string tempBlobName, CancellationToken cancellationToken = default)
+    public async Task<FileAttachment> SaveFromTempAsync(string fileName, string tempBlobName, string? vin, CancellationToken cancellationToken = default)
     {
         FileHelper.ValidateFileNameWithExtension(fileName);
         FileHelper.ValidateFileNameWithExtension(tempBlobName);
 
         var fileStream = await _tempFileManager.GetAsync(tempBlobName, cancellationToken);
 
-        await _container.SaveAsync(BuildBlobPath(tempBlobName), fileStream, overrideExisting: true, cancellationToken: cancellationToken);
-        var filePath = BuildBlobUrl(tempBlobName);
+        await _container.SaveAsync(BuildBlobPath(tempBlobName, vin), fileStream, overrideExisting: true, cancellationToken: cancellationToken);
+        var filePath = BuildBlobUrl(tempBlobName, vin);
 
         return new FileAttachment(fileName, tempBlobName, filePath);
     }
 
-    public async Task<bool> DeleteAsync(FileAttachment attachment)
+    public async Task<bool> DeleteAsync(FileAttachment attachment, string? vin)
     {
         ArgumentNullException.ThrowIfNull(attachment);
         FileHelper.ValidateFileNameWithExtension(attachment.BlobName);
 
-        return await _container.DeleteAsync(BuildBlobPath(attachment.BlobName));
+        return await _container.DeleteAsync(BuildBlobPath(attachment.BlobName, vin));
     }
 
-    public async Task<bool> DeleteAsync(string blobName)
+    public async Task<bool> DeleteAsync(string blobName, string? vin)
     {
         FileHelper.ValidateFileNameWithExtension(blobName);
-        return await _container.DeleteAsync(BuildBlobPath(blobName));
+        return await _container.DeleteAsync(BuildBlobPath(blobName, vin));
     }
 
-    public async Task<byte[]> GetAllBytesAsync(string blobName, CancellationToken cancellationToken = default)
+    public async Task<byte[]> GetAllBytesAsync(string blobName, string? vin, CancellationToken cancellationToken = default)
     {
         FileHelper.ValidateFileName(blobName);
-        return await _container.GetAllBytesAsync(BuildBlobPath(blobName), cancellationToken: cancellationToken);
+        return await _container.GetAllBytesAsync(BuildBlobPath(blobName, vin), cancellationToken: cancellationToken);
     }
 
-    public async Task<Stream> GetAsync(string blobName, CancellationToken cancellationToken = default)
+    public async Task<Stream> GetAsync(string blobName, string? vin, CancellationToken cancellationToken = default)
     {
         FileHelper.ValidateFileName(blobName);
-        return await _container.GetAsync(BuildBlobPath(blobName), cancellationToken: cancellationToken);
+        return await _container.GetAsync(BuildBlobPath(blobName, vin), cancellationToken: cancellationToken);
     }
 
-    public string BuildBlobPath(string blobName)
+    public string BuildBlobPath(string blobName, string? vin)
     {
-        return _options.FilesPrefix.EnsureEndsWith('/') + blobName;
+        var path = _options.FilesPrefix.EnsureEndsWith('/');
+        if (!string.IsNullOrWhiteSpace(vin))
+        {
+            path += vin.EnsureEndsWith('/');
+        }
+        return path + blobName;
     }
 
-    private string BuildBlobUrl(string blobName)
+    private string BuildBlobUrl(string blobName, string? vin)
     {
-        return $"{_options.ContainerPath}/{BuildBlobPath(blobName)}".Replace("\\", "/");
+        return $"{_options.ContainerPath}/{BuildBlobPath(blobName, vin)}".Replace("\\", "/");
     }
 }

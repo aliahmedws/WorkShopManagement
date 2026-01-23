@@ -1,0 +1,253 @@
+<abp-page>
+    <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" (onFilter)="onSearchTriggered($event)"
+        (onReset)="clearSearch()">
+        <div topbarActions>
+            <app-production-topbar-actions></app-production-topbar-actions>
+        </div>
+        <div class="row">
+            <div class="col-12">
+
+                @if (isSearching) {
+                <div class="card shadow-sm mb-4">
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">
+                                <i class="fas fa-search me-2"></i>
+                                {{ '::SearchResults' | abpLocalization }}
+                                <span class="badge bg-secondary ms-2">{{ searchResults.length }}</span>
+                            </h5>
+                            <i class="fas fa-times link" (click)="clearSearch()"></i>
+                        </div>
+
+                        <ng-container *ngTemplateOutlet="stageTable; context: { items: searchResults }"></ng-container>
+                    </div>
+                </div>
+                }
+
+                <div ngbAccordion class="bg-transparent" [closeOthers]="false">
+
+                    @for (option of stageOptions; track option.value) {
+
+                    <div ngbAccordionItem class="mb-3 rounded shadow-sm py-2" [destroyOnHide]="false"
+                        [collapsed]="false">
+                        <!-- Header -->
+                        <h2 ngbAccordionHeader>
+                            <button ngbAccordionButton class="w-100 px-3 pb-2 pt-1 m-0 bg-transparent border-0">
+                                <div class="d-flex justify-content-between w-100 align-items-center">
+                                    <h5 class="m-0">
+                                        <span class="fw-bold">
+                                            {{ ('::Enum:Stage.' + option.value) | abpLocalization }}
+                                        </span>
+
+                                        <!-- IMPORTANT: stopPropagation so click doesn't toggle accordion -->
+                                        <i class="far fa-question-circle text-primary" role="button" tabindex="0"
+                                            (click)="$event.stopPropagation(); helpMessage(option)"
+                                            (keydown.enter)="$event.stopPropagation(); helpMessage(option)"></i>
+                                    </h5>
+
+                                    <span class="badge bg-light text-dark border me-3">
+                                        {{ getCountForStage(option.value) }}
+                                    </span>
+                                </div>
+                            </button>
+                        </h2>
+
+                        <!-- Body -->
+                        <div ngbAccordionCollapse>
+                            <div ngbAccordionBody class="px-3 py-2">
+                                <ng-template>
+                                    @if (option.value === Stage.Production) {
+                                    <app-production #production [filters]="filters"
+                                        (change)="refresh(false)"></app-production>
+                                    } @else {
+                                    <ng-container
+                                        *ngTemplateOutlet="stageTable; context: { items: getItemsForStage(option.value) }"></ng-container>
+                                    }
+                                </ng-template>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </app-topbar-layout>
+
+</abp-page>
+
+
+
+<ng-template #stageTable let-items="items">
+    @if (items.length > 0) {
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>{{ '::Vin' | abpLocalization }}</th>
+                    <th>{{ '::Owner' | abpLocalization }}</th>
+                    <th>{{ '::Model' | abpLocalization }}</th>
+                    <th>{{ '::Color' | abpLocalization }}</th>
+                    <th>{{ '::StorageLocation' | abpLocalization }}</th>
+                    <th>{{ '::EtaScd' | abpLocalization }}</th>
+                    <th>{{ '::Port' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Recalls' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Notes' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::Est. Release' | abpLocalization }}</th>
+
+
+
+                    <th class="text-center">{{ '::AVV' | abpLocalization }}</th>
+
+                    <th class="text-center">{{ '::Issues' | abpLocalization }}</th>
+                    <th class="text-center">{{ '::QualityGates' | abpLocalization }}</th>
+                    <th>{{ '::CRE' | abpLocalization }}</th>
+                    <th>{{ '::BookingNumber' | abpLocalization }}</th>
+                    <th>{{ '::ClearingAgent' | abpLocalization }}</th>
+                    <th>{{ '::Modified' | abpLocalization }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (row of items; track row.carId) {
+                <tr>
+                    <!-- ACTIONS -->
+                    <td>
+                        <app-production-actions [stage]="row" [showAssignBay]="true" [showBayDetails]="true"
+                            (change)="refresh()" [(isIssueModalVisible)]="issueModalVisible[row.carId]">
+                        </app-production-actions>
+                    </td>
+
+                    <!-- VIN -->
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <a type="button" class="text-primary clickable"
+                                (click)="openCheckInModal(row)">
+                                <strong>{{ row.vin | slice:-6 }}</strong>
+                            </a>
+                            <small>
+                                <a class="ms-1" [href]="'https://tracking.ausev.com.au/stock?q=' + row.vin" target="_blank">
+                                    <i class="fas fa-external-link link"></i>
+                                </a>
+                            </small>
+                        </div>
+                    </td>
+
+                    <!-- OWNER -->
+                    <td>{{ row.ownerName | uppercase }}</td>
+
+                    <!-- MODEL -->
+                    <td [title]="row.modelName" class="text-truncate" style="max-width: 150px;">
+                        {{ row.modelName }}
+                    </td>
+
+                    <!-- COLOR -->
+                    <td [title]="row.color" class="text-truncate" style="max-width: 150px;">{{ row.color | uppercase }}
+                    </td>
+
+                    <td>
+                        {{ row?.storageLocation ? (("::Enum:StorageLocation." + row.storageLocation) | abpLocalization) : '-' }}
+                    </td>
+
+                    <!-- ETA SCD -->
+                    <td>{{ row.etaScd | date:'shortDate' }}</td>
+
+                    <!-- PORT -->
+                    <td>{{ row.port ? ('::Enum:Port.' + row.port | abpLocalization) : '-' }}</td>
+
+                    <!-- RECALLS -->
+                    <td class="text-center">
+                        <i class="fas fa-bullhorn link" [class]="'text-' + getRecallColor(row)"
+                            (click)="openRecallModal(row)">
+                        </i>
+                    </td>
+
+                    <!-- NOTES -->
+                    <td class="text-center">
+                        <i class="fas fa-message link" [class]="'text-' + getNoteColor(row)"
+                            (click)="openNotesModal(row)">
+                        </i>
+                    </td>
+
+                    <!-- ESTIMATED RELEASE -->
+                    <td class="text-center">
+                        <i class="fas fa-calendar-alt link" [class]="'text-' + getEstRelease(row)"
+                            (click)="openEstReleaseModal(row)">
+                        </i>
+                    </td>
+
+                    <!-- AVV STATUS -->
+                    <!-- @if(row.stage == Stage.AwaitingTransport || row.stage == Stage.PostProduction || row.stage ==
+                    Stage.Dispatched){ -->
+                    <td class="text-center">
+
+                        <span class="text-center badge bg-{{mapAvvStatus(row)}} link" (click)="openAvvModal(row)">
+                            {{ row?.avvStatus ? (("::Enum:AvvStatus." + row.avvStatus) | abpLocalization) : 'AVV' }}
+                        </span>
+                    </td>
+
+
+                    <!-- ISSUES -->
+                    <td class="text-center">
+                        <i class="fas fa-triangle-exclamation link" [class]="'text-' + getIssueStatusColor(row)"
+                            (click)="openIssueModal(row)">
+                        </i>
+                    </td>
+
+                    <!-- QUALITY GATES -->
+                    <td class="text-center">
+                        <ng-container *ngIf="row?.carBayId; else noBayClassic">
+                            <i class="fas fa-clipboard-check link text-primary" title="Quality Gates"
+                                (click)="openQualityGates(row)">
+                            </i>
+                        </ng-container>
+
+                        <ng-template #noBayClassic>
+                            <i class="fas fa-clipboard-check opacity-25 text-secondary" title="No Bay">
+                            </i>
+                        </ng-template>
+                    </td>
+
+
+                    <!-- CRE STATUS -->
+                    <td>
+                        <span class="badge link" [class]="'bg-' + getCreStatusColor(row)" (click)="openCreDetailModal(row)">
+                            {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : 'CRE' }}
+                        </span>
+                    </td>
+
+                    <!-- BOOKING NUMBER -->
+                    <td>{{ row.bookingNumber }}</td>
+
+                    <!-- CLEARING AGENT -->
+                    <td>{{ row.clearingAgent }}</td>
+
+                    <!-- LAST MODIFICATION TIME -->
+                    <td>{{ row.lastModificationTime | date:'shortDate' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    } @else {
+    <div class="text-center py-3 text-muted fst-italic">
+        {{ '::NoRecordsFound' | abpLocalization }}
+    </div>
+    }
+</ng-template>
+
+<app-recalls [(visible)]="isRecallModalVisible" [carId]="selected.carId" (submit)="refresh()" />
+<app-cre-detail-modal [(visible)]="isCreDetailModalVisible" [carId]="selected.carId" [vin]="selected.vin" (submit)="refresh()" />
+<app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
+    (submit)="refresh()"></app-check-in-report-modal>
+<app-est-release-modal #estReleaseModal (saved)="refresh()"></app-est-release-modal>
+<app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
+<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
+    (statusUpdated)="refresh()"></app-avv-status-modal>
+<app-quality-gates-modal [carId]="selectedQualityGatesCarId" [(visible)]="isQualityGatesModalVisible"
+    (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="refresh()">
+</app-quality-gates-modal>

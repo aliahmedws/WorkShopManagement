@@ -13,10 +13,14 @@ import { AwaitingTransport } from './awaiting-transport/awaiting-transport';
 import { Dispatched } from './dispatched/dispatched';
 import { ScdWarehouse } from './scd-warehouse/scd-warehouse';
 import { StageDto, StageService } from '../proxy/stages';
+import { ClassicView } from './classic-view/classic-view';
+import { ProductionTopbarActions } from '../production-topbar-actions/production-topbar-actions';
+import { ProductionStateService } from './production-state.service';
+import { ConfirmationHelperService } from '../shared/services/confirmation-helper.service';
 
 @Component({
   selector: 'app-production-manager',
-  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, ScdWarehouse, Production, PostProduction, AwaitingTransport, Dispatched],
+  imports: [...SHARED_IMPORTS, NzTabsModule, Incoming, ExternalWarehouse, ScdWarehouse, Production, PostProduction, AwaitingTransport, Dispatched, ClassicView, ProductionTopbarActions],
   templateUrl: './production-manager.html',
   styleUrl: './production-manager.scss',
   providers: [ListService],
@@ -25,18 +29,25 @@ export class ProductionManager implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   public readonly list = inject(ListService);
-  private readonly carService = inject(CarService);
+  private readonly confirmation = inject(ConfirmationHelperService);
   private readonly stageService = inject(StageService);
+  private state = inject(ProductionStateService);
 
   cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
   stages: PagedResultDto<StageDto> = { items: [], totalCount: 0 };
   filters = { stage: Stage.Incoming } as GetCarListInput;
 
+  useClassicView = undefined;
+
   selectedIndex = 0;
 
   ngOnInit(): void {
-    // const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-    // this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
+    this.state.init();
+
+    this.state.useClassicView$
+      .subscribe(useClassicView =>
+        this.useClassicView = useClassicView || false
+      );
 
     const carStreamCreator = (query: any) => this.stageService.getStage({ ...query, ...this.filters });
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.stages = res));
@@ -45,7 +56,7 @@ export class ProductionManager implements OnInit {
     if (tabParam) {
       this.selectedIndex = Number(tabParam);
       this.filters.stage = this.selectedIndex + 1;
-    }  else {
+    } else {
       this.filters.stage = Stage.Incoming;
     }
   }
@@ -54,13 +65,13 @@ export class ProductionManager implements OnInit {
 
   onTabChange(index: number): void {
 
-    this.cars = { items: [], totalCount: 0 };
+    this.stages = { items: [], totalCount: 0 };
     this.selectedIndex = index;
     this.filters.stage = index + 1
     // this.setFiltersByIndex(index);
     // this.list.get();
 
-     // 5. Update URL without reloading the page
+    // 5. Update URL without reloading the page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { tab: index },
@@ -68,6 +79,10 @@ export class ProductionManager implements OnInit {
     });
 
     this.list.get();
+  }
+
+  helpMessage() {
+    this.confirmation.productionStageHelpMessage(this.filters.stage);
   }
 
   // 6. Refactored logic to reuse in ngOnInit and onTabChange

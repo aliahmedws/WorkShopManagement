@@ -1,0 +1,35 @@
+<!-- quality-gates-modal.html -->
+<abp-modal [(visible)]="visible" (visibleChange)="onVisibleChange($event)" (appear)="onAppear()"
+    [options]="{ size: 'md', modalClass: 'quality-gates-modal' }">
+
+    <ng-template #abpHeader>
+        <div class="fw-bold">{{ '::QualityGates' | abpLocalization }}</div>
+    </ng-template>
+
+    <ng-template #abpBody>
+        <ng-container *ngIf="loading" class="p-3 text-muted">
+            {{ '::Loading...' | abpLocalization }}
+        </ng-container>
+
+        <ng-container *ngIf="!loading && resolvedCarBayId">
+            <!-- IMPORTANT: layout="modal" -->
+            <div style="min-height: 420px;">
+                <app-quality-gates [carBayId]="resolvedCarBayId" layout="modal" (saved)="onSaved()"></app-quality-gates>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="!loading && !resolvedCarBayId">
+            <div class="text-muted p-3">
+                {{ '::NoDataFound' | abpLocalization }}
+            </div>
+        </ng-container>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-outline-primary" (click)="close()">
+                {{ '::Close' | abpLocalization }}
+            </button>
+        </div>
+    </ng-template>
+</abp-modal>

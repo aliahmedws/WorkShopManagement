@@ -3,14 +3,21 @@
         <i class="fa-solid fa-ellipsis-vertical"></i>
     </button>
     <div ngbDropdownMenu>
-        @if (showAssignBay) {
-        <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem (click)="isAssignBayVisible = true">
+        @if (canAssignBay) {
+        <button *abpPermission="'WorkShopManagement.CarBays.Create'" ngbDropdownItem
+            (click)="isAssignBayVisible = true">
             {{ '::AssignToBay' | abpLocalization }}
         </button>
         }
-        @if (showBayDetails) {
-        <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Create'" (click)="isProductionDetailVisible = true">
+        @if (showBayDetails && stage.carBayId) {
+        <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Create'"
+            (click)="isProductionDetailVisible = true">
             {{ '::Bay' | abpLocalization }}
+        </button>
+        }
+        @if (showMove) {
+        <button ngbDropdownItem *abpPermission="'WorkShopManagement.Cars.Edit'" (click)="openMoveStage()">
+            {{ '::Move' | abpLocalization }}
         </button>
         }
 
@@ -42,8 +49,12 @@
     </div>
 </div>
 
-<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="stage?.carId" (stageChanged)="emitChange()"></app-production-details-modal>
+<app-production-details-modal [(visible)]="isProductionDetailVisible" [carId]="stage?.carId"
+    (stageChanged)="emitChange()"></app-production-details-modal>
 <app-car-create-edit-modal [(visible)]="isCarEditModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
 <app-car-images-modal [(visible)]="isImageModalVisible" [carId]="stage?.carId" (submit)="emitChange()" />
-<app-issue-modal [(visible)]="isIssueModalVisible" (visibleChange)="isIssueModalVisibleChange.emit($event)" [carId]="stage?.carId" (submit)="emitChange()"></app-issue-modal>
-<app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="emitChange()"></app-assign-bay>
+<app-issue-modal [(visible)]="isIssueModalVisible" (visibleChange)="isIssueModalVisibleChange.emit($event)"
+    [carId]="stage?.carId" (submit)="emitChange()"></app-issue-modal>
+<app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="onAssignBaySubmit()"></app-assign-bay>
+<app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="stage?.carId" [carBayId]="stage?.bayId"
+    [currentStage]="stage?.stage ?? currentStage" (stageMoved)="onStageMoved()"></app-change-stage-actions>

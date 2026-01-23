@@ -4,7 +4,13 @@ import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CheckInReport } from 'src/app/check-in-reports/check-in-report';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
-import { CarBayService, priorityOptions, CarBayDto, Priority, CreateCarBayDto } from 'src/app/proxy/car-bays';
+import {
+  CarBayService,
+  priorityOptions,
+  CarBayDto,
+  Priority,
+  CreateCarBayDto,
+} from 'src/app/proxy/car-bays';
 import { CarService, CarDto } from 'src/app/proxy/cars';
 import { Stage } from 'src/app/proxy/cars/stages';
 import { StorageLocation } from 'src/app/proxy/cars/storage-locations/storage-location.enum';
@@ -14,16 +20,33 @@ import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ProductionActions } from '../production-actions/production-actions';
-import { EstReleaseModal } from "src/app/cars/est-release-modal/est-release-modal";
+import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { StageDto } from 'src/app/proxy/stages';
-import { mapRecallStatusColor, mapNoteStatusColor, mapEstReleaseStatusColor, mapCreStatusColor, mapIssueStatusColor } from 'src/app/shared/utils/stage-colors.utils';
+import {
+  mapRecallStatusColor,
+  mapNoteStatusColor,
+  mapEstReleaseStatusColor,
+  mapCreStatusColor,
+  mapIssueStatusColor,
+} from 'src/app/shared/utils/stage-colors.utils';
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
+import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal';
 
 @Component({
   selector: 'app-scd-warehouse',
-  imports: [...SHARED_IMPORTS, Recalls, CheckInReportModal, ProductionActions, EstReleaseModal, CarNotesModal],
+  imports: [
+    ...SHARED_IMPORTS,
+    Recalls,
+    CheckInReportModal,
+    ProductionActions,
+    EstReleaseModal,
+    CarNotesModal,
+    QualityGatesModal,
+    CreDetailModal
+  ],
   templateUrl: './scd-warehouse.html',
-  styleUrl: './scd-warehouse.scss'
+  styleUrl: './scd-warehouse.scss',
 })
 export class ScdWarehouse {
   private readonly carService = inject(CarService);
@@ -35,10 +58,13 @@ export class ScdWarehouse {
 
   //====== ASSIGN MODAL DEFINITIONS
 
-  selectedCarBay = {} as CarBayDto;   // to review later
-
+  selectedCarBay = {} as CarBayDto; // to review later
 
   // ====== ASSIGN MODAL ^
+
+  //QUALITY GATE MODAL
+  isQualityGatesModalVisible = false;
+  selectedQualityGatesCarId?: string;
 
   @Input() filters: any = {};
   @Output() filtersChange = new EventEmitter<any>();
@@ -57,37 +83,40 @@ export class ScdWarehouse {
   isNotesModalVisible = false;
 
   issueModalVisible: Record<string, boolean> = {};
+  isCreDetailModalVisible = false;
+
   openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
   }
 
-  // StorageLocation = StorageLocation;
-
-  // @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
-
-  // @Input() filters: any = {};
-  // @Output() filtersChange = new EventEmitter<any>();
-  // @Input() list: ListService;
-
-  // selectedCar = {} as CarDto;
-  // selectedId?: string; // REMOVE THIS. Instead send the whole CarDto object
-  // isRecallModalVisible = false;
-  // isCheckInModalVisible = false;
-
-  // @ViewChild('estReleaseModal', { static: true })
-  // estReleaseModal!: EstReleaseModal;
-  // // ngOnInit(): void {
-  // //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-  // //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  // // }
-
-  // =============== ASSIGN BAY MODAL v
-
-
-
   // -----^ ASSIGN BAY MODAL END ^===========
 
+  //QUALITY GATE START
+  openQualityGates(row: StageDto): void {
+    if (!row?.carId) return;
+
+    this.selectedQualityGatesCarId = row.carId;
+    this.isQualityGatesModalVisible = true;
+  }
+
+  onQualityGatesVisibleChange(v: boolean): void {
+    this.isQualityGatesModalVisible = v;
+
+    if (!v) {
+      this.selectedQualityGatesCarId = undefined;
+    }
+  }
+
+  onQualityGatesSaved(): void {
+    this.list?.get();
+  }
+  //QUALITY GATE END
+
+  openCreDetailModal(car: StageDto): void {
+    this.selected = car;
+    this.isCreDetailModalVisible = true;
+  }
   // ========COMMON MODALS
   openRecallModal(car: StageDto): void {
     this.selected = car;
@@ -108,7 +137,6 @@ export class ScdWarehouse {
     if (!row?.carId) return;
     this.notesModal.open(row.carId, row.notes);
   }
-
 
   onNotesSaved(e: { carId: string; notes: string }): void {
     const row = this.stages.items?.find(x => x.carId === e.carId);

@@ -1,4 +1,5 @@
 ﻿using System;
+using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
 using WorkShopManagement.Cars;
 
@@ -24,13 +25,19 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         ) : base(id)
         {
             LogisticsDetailId = logisticsDetailId;
-            EtaPort = etaPort;
-            EtaScd = etaScd;
-            Notes = DomainCheck.TrimOptional(notes, nameof(notes), maxLength: ArrivalEstimateConsts.MaxNotesLength);
+            SetEta(etaPort, etaScd);
+            SetNotes(notes);
         }
 
         public void SetEta(DateTime etaPort, DateTime etaScd)
         {
+            if (etaPort.Date > etaScd.Date)
+            {
+                var portDate = etaPort.Date.ToString("dd-MMM-yyyy");
+                var scdDate = etaScd.Date.ToString("dd-MMM-yyyy");
+                throw new UserFriendlyException($"ETA SCD cannot be earlier than ETA Port. </br></br> ETA Port: <strong>{portDate}</strong> </br> ETA SCD: <strong>{scdDate}</strong> ");
+            }
+
             EtaPort = etaPort;
             EtaScd = etaScd;
         }

@@ -20,8 +20,8 @@ namespace WorkShopManagement.LogisticsDetails
         public CreStatus CreStatus { get; set; }
         public DateTime? CreSubmissionDate { get; set; }
 
-        [StringLength(LogisticsDetailConsts.MaxRsvaNumberLength)]
-        public string? RsvaNumber { get; set; }
+        [StringLength(LogisticsDetailConsts.MaxRvsaNumberLength)]
+        public string? RvsaNumber { get; set; }
 
         // Clearance info
         [StringLength(LogisticsDetailConsts.MaxClearingAgentLength)]

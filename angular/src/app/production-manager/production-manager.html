@@ -1,8 +1,13 @@
+@if (useClassicView !== undefined) {
 <abp-page>
+    @if(!useClassicView){
     <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
-
+        <div topbarActions>
+            <app-production-topbar-actions></app-production-topbar-actions>
+        </div>
         <nz-tabs [nzSelectedIndex]="selectedIndex" [nzDestroyInactiveTabPane]="true"
-            (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;">
+            (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;"
+            [nzTabBarExtraContent]="extraTemplate">
 
             <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization">
                 <app-incoming [stages]="stages" [(filters)]="filters" [list]="list"></app-incoming>
@@ -17,7 +22,7 @@
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-                
+
             </nz-tab>
 
             <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
@@ -32,11 +37,22 @@
                 <app-dispatched [stages]="stages" [(filters)]="filters" [list]="list"></app-dispatched>
             </nz-tab>
 
+            <ng-template #extraTemplate>
+                <i class="far fa-question-circle fa-xl link text-info" (click)="helpMessage()"></i>
+            </ng-template>
         </nz-tabs>
 
         @if (selectedIndex === 3) {
+        <div class="card">
             <app-production [filters]="filters"></app-production>
+        </div>
         }
 
+
+
     </app-topbar-layout>
+    } @else {
+    <app-classic-view></app-classic-view>
+    }
 </abp-page>
+}

@@ -44,7 +44,7 @@
     </ng-template>
 
     <ng-template #abpFooter>
-        <button type="button" class="btn btn-outline-secondary me-2 px-3" (click)="close()">{{ '::Cancel' |
+        <button type="button" class="btn btn-outline-primary me-2 px-3" (click)="close()">{{ '::Close' |
             abpLocalization }}</button>
         <button type="button" class="btn btn-primary px-3" (click)="save()" [disabled]="form.invalid || loading">
             <i class="fa fa-save me-1"></i> {{ '::Save' | abpLocalization }}

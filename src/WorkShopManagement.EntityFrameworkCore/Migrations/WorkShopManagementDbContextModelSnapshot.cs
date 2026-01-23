@@ -2959,7 +2959,7 @@ namespace WorkShopManagement.Migrations
                     b.Property<int>("Port")
                         .HasColumnType("int");
 
-                    b.Property<string>("RsvaNumber")
+                    b.Property<string>("RvsaNumber")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 

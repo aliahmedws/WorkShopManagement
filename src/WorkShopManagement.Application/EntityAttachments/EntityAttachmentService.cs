@@ -5,7 +5,6 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.EntityAttachments.FileAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments.Files;
 
@@ -46,7 +45,8 @@ public class EntityAttachmentService(
 
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(items);
     }
-    public async Task DeleteAsync(Guid entityId, EntityType entityType)
+
+    public async Task DeleteAsync(Guid entityId, EntityType entityType, string? vin)
     {
         var items = await _repository.GetListByEntityAsync(
             entityId: entityId,
@@ -57,14 +57,15 @@ public class EntityAttachmentService(
         {
             foreach (var item in items)
             {
-                await _fileManager.DeleteAsync(item.Attachment);
+                await _fileManager.DeleteAsync(item.Attachment, vin);
             }
 
             var ids = items.Select(x => x.Id).ToList();
             await _repository.DeleteManyAsync(ids);
         }
     }
-    public async Task<List<EntityAttachmentDto>> CreateAsync(CreateAttachmentDto input)
+
+    public async Task<List<EntityAttachmentDto>> CreateAsync(string? vin, CreateAttachmentDto input)
     {
         if (input.TempFiles == null || input.TempFiles.Count == 0)
         {
@@ -75,7 +76,7 @@ public class EntityAttachmentService(
 
         foreach (var f in input.TempFiles)
         {
-            var saved = await _fileManager.SaveFromTempAsync(f.Name, f.BlobName);
+            var saved = await _fileManager.SaveFromTempAsync(f.Name, f.BlobName, vin);
 
             entities.Add(new EntityAttachment(
                 id: GuidGenerator.Create(),
@@ -91,9 +92,7 @@ public class EntityAttachmentService(
         return ObjectMapper.Map<List<EntityAttachment>, List<EntityAttachmentDto>>(entities);
     }
 
-
-
-    public async Task<List<EntityAttachmentDto>> UpdateAsync(UpdateEntityAttachmentDto input)
+    public async Task<List<EntityAttachmentDto>> UpdateAsync(string? vin, UpdateEntityAttachmentDto input)
     {
         var keptIds = input.EntityAttachments?.Select(x => x.Id).ToHashSet() ?? new HashSet<Guid>();
 
@@ -108,7 +107,7 @@ public class EntityAttachmentService(
         {
             foreach (var dbItem in itemsToDelete)
             {
-                await _fileManager.DeleteAsync(new FileAttachment(dbItem.Name, dbItem.BlobName, dbItem.Path));
+                await _fileManager.DeleteAsync(new FileAttachment(dbItem.Name, dbItem.BlobName, dbItem.Path), vin);
 
             }
             var ids = itemsToDelete.Select(x => x.Id).ToList();
@@ -116,7 +115,7 @@ public class EntityAttachmentService(
         }
 
 
-        var newItems = await CreateAsync(new CreateAttachmentDto
+        var newItems = await CreateAsync(vin, new CreateAttachmentDto
         {
             EntityId = input.EntityId,
             EntityType = input.EntityType,
@@ -131,7 +130,7 @@ public class EntityAttachmentService(
         });
     }
 
-    public async Task DeleteManyAsync(EntityType entityType, List<Guid> entityIds)
+    public async Task DeleteManyAsync(EntityType entityType, List<Guid> entityIds, string? vin)
     {
         var items = await _repository.GetListAsync(entityType, entityIds);
 
@@ -139,7 +138,7 @@ public class EntityAttachmentService(
         {
             foreach (var item in items)
             {
-                await _fileManager.DeleteAsync(item.Attachment);
+                await _fileManager.DeleteAsync(item.Attachment, vin);
             }
 
             await _repository.DeleteManyAsync(items);

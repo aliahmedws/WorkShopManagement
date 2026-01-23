@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, Input, model, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarService, CarDto, ExternalCarDetailsDto, UpdateCarDto, CreateCarDto } from 'src/app/proxy/cars';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
@@ -45,6 +45,8 @@ export class CarCreateEditModal {
 
   form: FormGroup;
 
+  newFetch = true;
+
   NOT_FOUND = 'NotFound';
 
   modalOptions = {
@@ -66,6 +68,7 @@ export class CarCreateEditModal {
   get() {
     this.external = null;
     this.colorOptions = [];
+    this.newFetch = true;
   
     this.loading = true;
 
@@ -82,8 +85,10 @@ export class CarCreateEditModal {
     this.carService
       .get(this.carId)
       .subscribe((dto: CarDto) => {
-        this.buildForm(dto);
         this.getExternalCarDetails(dto.vin, dto.modelYear?.toString()); 
+        this.buildForm(dto);
+        this.newFetch = false;
+        
         this.loading = false;
 
       });
@@ -92,12 +97,13 @@ export class CarCreateEditModal {
   buildForm(dto?: CarDto) {
     // this.colorOptions = [];
 
+    
     if(dto?.color){
       this.colorOptions = [...this.colorOptions, dto.color];
     }
 
     this.form = this.fb.group({
-      vin: [dto?.vin ?? null, [Validators.required, Validators.minLength(17), Validators.maxLength(17)]],
+      vin: [dto?.vin ?? null, [Validators.required, Validators.maxLength(17), Validators.pattern(/^[A-Za-z0-9]{17}$/)]],
       color: [dto?.color ?? null, [Validators.required, Validators.maxLength(64)]],
       modelId: [dto?.modelId ?? null, [Validators.required]],
       modelYear: [dto?.modelYear, [Validators.required, Validators.min(1800)]],
@@ -221,34 +227,39 @@ export class CarCreateEditModal {
 
   getExternalCarDetails(vin: string, modelYear?: string) {
 
-
-    // if(!this.carId){
-    //   const formValue = this.form.value || {};
-    //   vin = formValue.vin;
-    //   modelYear = formValue.modelYear?.toString();
-    // }
-    
-    if (!this.canFetchVinDetails) return;
     this.carService
       .getExternalCarDetails(vin, modelYear)
       .subscribe(response => {
         this.external = response;
+        
+        const {color} = this.form.value ;
+
         this.colorOptions = response?.colors.filter(color => color.trim() !== '') || [];
 
-        if(!this.carId){
+        if(this.newFetch){
+          
+
+          this.form.patchValue({
+            color: this.colorOptions.includes(color) ? color : null,
+            modelYear: null
+          })
           this.resolveExternalCarResponse(response);
         }
-        // this.resolveExternalCarResponse(response);
+
       });
 
   }
 
   fetchExternalCarDetails(){
-    if(!this.carId){
-      const { vin, modelYear} = this.form.value || {};
-      this.getExternalCarDetails(vin, modelYear);
-      this.resolveExternalCarResponse(this.external);
-    } else {
+
+    this.newFetch = true;
+    const {vin} = this.form.value || {}; 
+    if (!this.canFetchVinDetails) return;
+
+    if(this.external?.suggestedVin != vin){
+      this.getExternalCarDetails(vin);
+    }
+    else {
       this.resolveExternalCarResponse(this.external);
     }
   }

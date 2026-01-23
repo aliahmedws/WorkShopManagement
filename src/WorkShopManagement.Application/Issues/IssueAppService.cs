@@ -43,8 +43,7 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
         Check.NotDefaultOrNull<Guid>(carId, nameof(carId));
         Check.NotNull(input, nameof(input));
 
-        // Ensure car exists (fail fast, clearer error)
-        await _carRepository.GetAsync(carId);
+        var car = await _carRepository.GetAsync(carId);
 
         var existingIssue = await _issueRepository.FirstOrDefaultAsync(i => i.CarId == carId && i.SrNo == input.SrNo);
         if (existingIssue != null && (input.Id == null || input.Id != existingIssue.Id))
@@ -81,7 +80,7 @@ public class IssueAppService : WorkShopManagementAppService, IIssueAppService
             var tempFiles = input.TempFiles.Where(t => t.SubType == subType);
             var attachments = input.EntityAttachments.Where(t => t.SubType == subType);
 
-            await _attachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _attachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = issue.Id,
                 EntityType = EntityType.Issue,

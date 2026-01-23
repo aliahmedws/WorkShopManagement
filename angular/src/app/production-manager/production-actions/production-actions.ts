@@ -7,21 +7,33 @@ import { StageDto } from 'src/app/proxy/stages';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { AssignBay } from '../assign-bay/assign-bay';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
+import { ChangeStageActions } from '../production/production-details-modal/change-stage-actions/change-stage-actions';
+import { Stage } from 'src/app/proxy/cars/stages';
 
 @Component({
   selector: 'app-production-actions',
-  imports: [...SHARED_IMPORTS, CarCreateEditModal, CarImagesModal, IssueModal, AssignBay, ProductionDetailsModal],
+  imports: [
+    ...SHARED_IMPORTS,
+    CarCreateEditModal,
+    CarImagesModal,
+    IssueModal,
+    AssignBay,
+    ProductionDetailsModal,
+    ChangeStageActions,
+  ],
   templateUrl: './production-actions.html',
   styleUrl: './production-actions.scss',
 })
 export class ProductionActions {
   @Input() stage: StageDto;
+  @Input() currentStage?: Stage;
   @Output() change = new EventEmitter<void>();
 
   @Input() showEdit: boolean = true;
   @Input() showImage: boolean = true;
   @Input() showLogistics: boolean = true;
   @Input() showIssue: boolean = true;
+  @Input() showMove: boolean = true;
 
   @Input() showAssignBay = false;
   @Input() showBayDetails = false;
@@ -34,9 +46,14 @@ export class ProductionActions {
   isImageModalVisible: boolean = false;
   isAssignBayVisible: boolean = false;
   isProductionDetailVisible: boolean = false;
+  isChangeStageModalVisible: boolean = false;
 
   @Input() isIssueModalVisible: boolean = false;
   @Output() isIssueModalVisibleChange = new EventEmitter<boolean>();
+
+  get canAssignBay(): boolean {
+    return this.showAssignBay && !this.stage.carBayId && this.stage.stage != Stage.Incoming;
+  }
 
   editCar() {
     this.isCarEditModalVisible = true;
@@ -49,7 +66,12 @@ export class ProductionActions {
   manageLogistics() {
     const tab = this.route.snapshot.queryParams?.tab;
     this.router.navigate(['/logistics-details'], {
-      queryParams: { carId: this.stage?.carId, vin: this.stage?.vin, returnUrl: window.location.pathname, tab: tab },
+      queryParams: {
+        carId: this.stage?.carId,
+        vin: this.stage?.vin,
+        returnUrl: window.location.pathname,
+        tab: tab,
+      },
     });
   }
 
@@ -59,5 +81,20 @@ export class ProductionActions {
 
   emitChange() {
     this.change.emit();
+  }
+
+  openMoveStage() {
+    this.isChangeStageModalVisible = true;
+  }
+
+  onStageMoved() {
+    this.isChangeStageModalVisible = false;
+    this.emitChange();
+  }
+
+  onAssignBaySubmit(): void {
+    this.isAssignBayVisible = false;
+    this.isProductionDetailVisible = false;
+    this.emitChange();
   }
 }

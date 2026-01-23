@@ -149,7 +149,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
 
         // --- CREATE EntityAttachment 
-        await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+        await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
         {
             EntityType = EntityType.Car,
             EntityId = entity.Id,
@@ -193,7 +193,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
 
         var entity = await _carRepository.UpdateAsync(car, autoSave: true);
         // --- UPDATE EntityAttachment 
-        await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+        await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
         {
             EntityId = entity.Id,
             EntityType = EntityType.Car,
@@ -208,8 +208,9 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     [Authorize(WorkShopManagementPermissions.Cars.Delete)]
     public async Task DeleteAsync(Guid id)
     {
+        var car = await _carRepository.GetAsync(id);
         await _carRepository.DeleteAsync(id);
-        await _entityAttachmentService.DeleteAsync(id, EntityType.Car);
+        await _entityAttachmentService.DeleteAsync(id, EntityType.Car, car.Vin);
     }
 
     private async Task<Guid> ResolveOrCreateOwnerAsync(Guid? carOwnerId, CreateCarOwnerDto? ownerDto)
@@ -253,7 +254,8 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
             var dto = new ExternalCarDetailsDto
             {
                 Error = res.Message,
-                Success = res.Success
+                Success = res.Success,
+                SuggestedVin = res.Input?.Vin
             };
 
             if (res.Attributes != null)
@@ -360,7 +362,7 @@ public class CarAppService : WorkShopManagementAppService, ICarAppService
     }
 
     [Authorize(WorkShopManagementPermissions.Cars.Edit)]
-    public async Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime estimatedReleaseDate)
+    public async Task<CarDto> UpdateEstimatedReleaseAsync(Guid id, DateTime? estimatedReleaseDate)
     {
         var car = await _carRepository.GetAsync(id);
 

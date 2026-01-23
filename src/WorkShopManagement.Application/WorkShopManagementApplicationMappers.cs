@@ -1,4 +1,5 @@
 using Riok.Mapperly.Abstractions;
+using Volo.Abp.AuditLogging;
 using Volo.Abp.Mapperly;
 using WorkShopManagement.Bays;
 using WorkShopManagement.CarBayItems;
@@ -9,6 +10,7 @@ using WorkShopManagement.CheckInReports;
 using WorkShopManagement.CheckLists;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.EntityAttachments.FileAttachments;
+using WorkShopManagement.EntityChanges;
 using WorkShopManagement.External.Nhtsa;
 using WorkShopManagement.External.Vpic;
 using WorkShopManagement.Issues;
@@ -178,10 +180,11 @@ public partial class FileAttachmentMapper : MapperBase<FileAttachment, FileAttac
 public partial class RecallMapper : MapperBase<Recall, RecallDto>
 {
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
-    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    [MapperIgnoreTarget(nameof(RecallDto.IsExternal))]
     public override partial RecallDto Map(Recall source);
     [MapperIgnoreTarget(nameof(RecallDto.EntityAttachments))]
-    [MapProperty("Car.Vin", nameof(RecallDto.Vin))]
+    [MapperIgnoreTarget(nameof(RecallDto.IsExternal))]
+
     public override partial void Map(Recall source, RecallDto destination);
 }
 
@@ -195,8 +198,8 @@ public partial class CheckInReportToCheckInReportDtoMapper : MapperBase<CheckInR
     public override partial void Map(CheckInReport source, CheckInReportDto destination);
 
     // Add this so Mapperly can generate mapping for the nested property
-    public partial CarDto Map(Car source);
-    public partial void Map(Car source, CarDto destination);
+    //public partial CarDto Map(Car source);
+    //public partial void Map(Car source, CarDto destination);
 
 }
 
@@ -251,4 +254,18 @@ public partial class BayToBayDtoMapper : MapperBase<Bay, BayDto>
 {
     public override partial BayDto Map(Bay source);
     public override partial void Map(Bay source, BayDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class LogiticsDetailToCreDetailDto : MapperBase<LogisticsDetail, CreDetailDto>
+{
+    public override partial CreDetailDto Map(LogisticsDetail source);
+    public override partial void Map(LogisticsDetail source, CreDetailDto destination);
+}
+
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public partial class EntityChangeWithUsernameToEntityChangeWithUsernameDtoMapper : MapperBase<EntityChangeWithUsername, EntityChangeWithUsernameDto>
+{
+    public override partial EntityChangeWithUsernameDto Map(EntityChangeWithUsername source);
+    public override partial void Map(EntityChangeWithUsername source, EntityChangeWithUsernameDto destination);
 }

@@ -16,7 +16,9 @@ import { NzTooltipModule } from 'ng-zorro-antd/tooltip';
 import { NzTabsModule } from "ng-zorro-antd/tabs";
 import { NzEmptyModule } from "ng-zorro-antd/empty";
 import { NzStepsModule } from 'ng-zorro-antd/steps';
-import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
+import { SignedNzImageSrcDirective } from "./services/signed-urls/signed-nz-image-src.directive";
+import { EntityChangeHistoryModal } from "../entity-changes/entity-change-history-modal/entity-change-history-modal";
 
 export const SHARED_IMPORTS = [
     CoreModule,
@@ -40,11 +42,15 @@ export const SHARED_IMPORTS = [
     NzEmptyModule,
     EllipsisDirective,
     NzStepsModule,
-    NzCarouselModule 
+    NzCollapseModule,
+    SignedNzImageSrcDirective,
+    EntityChangeHistoryModal
 ];
 
 export { 
     CopyComponent,
     TopbarLayoutComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    SignedNzImageSrcDirective, 
+    EntityChangeHistoryModal
  };

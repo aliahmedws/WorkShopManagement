@@ -1,0 +1,44 @@
+<abp-modal [(visible)]="visible" [options]="{size: 'md'}" (appear)="get()" (visibleChange)="close()">
+    <ng-template #abpHeader>
+        @if(vin){
+        <span class="fw-bold">{{vin}}</span>
+        }
+        <span class="text-muted ms-1">{{ '::CreDetails' | abpLocalization }}</span>
+    </ng-template>
+
+    <ng-template #abpBody>
+        <form [formGroup]="form" class="row g-2" (submit)="save()">
+            <div class="col-12 form-group">
+                <label class="form-label required">{{'::CreStatus'|abpLocalization}}</label>
+                <nz-select nzSize="large" formControlName="creStatus">
+                    @for(option of creStatusOptions; track option.value){
+                    <nz-option [nzLabel]="('::Enum:CreStatus.' + option.value) | abpLocalization"
+                        [nzValue]="option.value">
+                    </nz-option>
+                    }
+                </nz-select>
+            </div>
+            
+            <div class="col-12 form-group">
+                <label class="form-label">{{'::CreSubmissionDate'|abpLocalization}}</label>
+                <input #startDatepicker="ngbDatepicker" class="form-control" name="creSubmissionDate"
+                    formControlName="creSubmissionDate" ngbDatepicker (click)="startDatepicker.toggle()" />
+            </div>
+
+            <div class="col-12 form-group">
+                <label class="form-label">{{'::RvsaNumber'|abpLocalization}}</label>
+                <input type="text" class="form-control" name="rvsaNumber" formControlName="rvsaNumber" />
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #abpFooter>
+        <button abpClose type="button" class="btn btn-outline-primary me-2 px-3">
+            {{ '::Close' | abpLocalization }}
+        </button>
+        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
+    </ng-template>
+</abp-modal>

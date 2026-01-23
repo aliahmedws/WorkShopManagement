@@ -19,7 +19,7 @@ namespace WorkShopManagement.LogisticsDetails
         public DateTime? ClearanceDate { get; private set; }
         public CreStatus CreStatus { get; private set; } = CreStatus.Pending;      
         public DateTime? CreSubmissionDate { get; private set; }
-        public string? RsvaNumber { get; private set; } = default!;
+        public string? RvsaNumber { get; private set; } = default!;
         public Port Port { get; private set; }                      // Destination Port (BNE Port)
         public DateTime? ActualPortArrivalDate { get; private set; }
         public DateTime? ActualScdArrivalDate { get; private set; }
@@ -84,9 +84,9 @@ namespace WorkShopManagement.LogisticsDetails
         }
 
         // Todo: Add methods in manager.
-        internal void SetCreDetails(string? rsvaNumber, DateTime? creSubmissionDate)
+        internal void SetCreDetails(string? rvsaNumber, DateTime? creSubmissionDate)
         {
-            SetRsvaNumber(rsvaNumber);
+            SetRvsaNumber(rvsaNumber);
             SetCreSubmissionDate(creSubmissionDate);
         }
         internal void SetCreStatus(CreStatus creStatus)
@@ -98,11 +98,11 @@ namespace WorkShopManagement.LogisticsDetails
         internal void SetActualArrivals(DateTime? actualPortArrivalDate, DateTime? actualScdArrivalDate)
         {
             if (actualPortArrivalDate.HasValue && actualScdArrivalDate.HasValue &&
-                actualScdArrivalDate.Value < actualPortArrivalDate.Value)
+                actualScdArrivalDate.Value.Date < actualPortArrivalDate.Value.Date)
             {
-                throw new BusinessException(WorkShopManagementDomainErrorCodes.LogisticsInvalidActualArrivalRange)
-                    .WithData(nameof(actualPortArrivalDate), actualPortArrivalDate.Value)
-                    .WithData(nameof(actualScdArrivalDate), actualScdArrivalDate.Value);
+                var portDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
+                var scdDate = actualScdArrivalDate.Value.Date.ToString("dd-MMM-yyyy");
+                throw new UserFriendlyException($"Actual SCD arrival date cannot be earlier than actual port arrival date.</br></br> Port Arrival Date: <strong>{portDate}</strong></br> SCD Arrival Date: <strong>{scdDate}</strong>");
             }
 
             ActualPortArrivalDate = actualPortArrivalDate;
@@ -151,12 +151,12 @@ namespace WorkShopManagement.LogisticsDetails
             );
         }
 
-        internal void SetRsvaNumber(string? rsvsNumber)
+        internal void SetRvsaNumber(string? rsvsNumber)
         {
-            RsvaNumber = DomainCheck.TrimOptional(
+            RvsaNumber = DomainCheck.TrimOptional(
                 rsvsNumber,
                 nameof(rsvsNumber),
-                maxLength: LogisticsDetailConsts.MaxRsvaNumberLength
+                maxLength: LogisticsDetailConsts.MaxRvsaNumberLength
             );
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WorkShopManagement.CarBays;
 using WorkShopManagement.Cars;
+using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
 using WorkShopManagement.Issues;
 using WorkShopManagement.Recalls;
@@ -12,6 +13,7 @@ public class StageModel
 {
     //--Cars
     public Guid CarId { get; set; }
+    public Stage Stage { get; set; }
     public string Vin { get; set; } = default!;
     public string Color { get; set; } = default!;
     public StorageLocation? StorageLocation { get; set; }

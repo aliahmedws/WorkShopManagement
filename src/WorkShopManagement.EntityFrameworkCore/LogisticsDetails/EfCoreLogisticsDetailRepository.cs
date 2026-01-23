@@ -61,7 +61,7 @@ namespace WorkShopManagement.LogisticsDetails
                 query = query.Where(x =>
                     (x.BookingNumber != null && x.BookingNumber.Contains(filter)) ||
                     (x.ClearingAgent != null && x.ClearingAgent.Contains(filter)) ||
-                    (x.RsvaNumber != null && x.RsvaNumber.Contains(filter)) ||
+                    (x.RvsaNumber != null && x.RvsaNumber.Contains(filter)) ||
                     x.CarId.ToString() == filter ||
                     x.Id.ToString() == filter
                 );

@@ -28,6 +28,7 @@
               <th style="width: 320px">Marks</th>
               <th style="width: 260px">Comments</th>
               <th style="width: 120px">Attachments</th>
+              <!-- <th style="width: 30px">Logs</th> -->
             </tr>
           </thead>
 
@@ -81,7 +82,9 @@
                     [existingFiles]="attachmentsByListItemId[li.id!]"
                     (existingFilesChange)="attachmentsByListItemId[li.id!] = $event"></app-file-upload-modal>
                 </td>
-
+                <!-- <td>
+                  <app-entity-change-history-modal [entityId]="li.id" entityName="CarBayItem"></app-entity-change-history-modal>
+                </td> -->
               </tr>
             </ng-container>
           </tbody>
@@ -101,7 +104,7 @@
 
   <ng-template #abpFooter>
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      <button type="button" class="btn btn-outline-primary" (click)="close()">
         {{ '::Close' | abpLocalization }}
       </button>
 

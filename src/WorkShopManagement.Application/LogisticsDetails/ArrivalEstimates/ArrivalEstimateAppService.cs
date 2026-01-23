@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
+using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
 
@@ -17,15 +18,19 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         private readonly IArrivalEstimateRepository _estimateRepository;
         private readonly ILogisticsDetailRepository _logisticsRepository;
         private readonly IEntityAttachmentService _entityAttachmentService;
+        private readonly ICarRepository _carRepository;
 
         public ArrivalEstimateAppService(
             IArrivalEstimateRepository estimateRepository,
             ILogisticsDetailRepository logisticsRepository,
-            IEntityAttachmentService entityAttachmentService)
+            IEntityAttachmentService entityAttachmentService,
+            ICarRepository carRepository
+            )
         {
             _estimateRepository = estimateRepository;
             _logisticsRepository = logisticsRepository;
             _entityAttachmentService = entityAttachmentService;
+            _carRepository = carRepository;
         }
 
         public async Task<ArrivalEstimateDto> GetAsync(Guid id)
@@ -85,6 +90,7 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         {
             // Ensure logistics exists
             var logistics = await _logisticsRepository.GetAsync(input.LogisticsDetailId, includeDetails: false);
+            var car = await _carRepository.GetAsync(logistics.CarId);
 
             var entity = new ArrivalEstimate(
                 id: GuidGenerator.Create(),
@@ -97,7 +103,7 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
             entity = await _estimateRepository.InsertAsync(entity, autoSave: true);
 
             // --- CREATE EntityAttachment
-            await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+            await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
             {
                 EntityType = EntityType.ArrivalEstimate,
                 EntityId = entity.Id,
@@ -123,12 +129,16 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         {
             var entity = await _estimateRepository.GetAsync(id);
 
+            var logisitcs = await _logisticsRepository.GetAsync(id);
+
+            var car = await _carRepository.GetAsync(logisitcs.CarId);
+
             entity.SetNotes(input.Notes);
 
             entity = await _estimateRepository.UpdateAsync(entity, autoSave: true);
 
             // --- UPDATE EntityAttachment
-            await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
                 EntityType = EntityType.ArrivalEstimate,
@@ -153,7 +163,13 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         [Authorize(WorkShopManagementPermissions.ArrivalEstimates.Delete)]
         public async Task DeleteAsync(Guid id)
         {
-            await _entityAttachmentService.DeleteAsync(id, EntityType.ArrivalEstimate);
+            var entity = await _estimateRepository.GetAsync(id);
+
+            var logisitcs = await _logisticsRepository.GetAsync(id);
+
+            var car = await _carRepository.GetAsync(logisitcs.CarId);
+
+            await _entityAttachmentService.DeleteAsync(id, EntityType.ArrivalEstimate,car.Vin);
             await _estimateRepository.DeleteAsync(id);
         }
 

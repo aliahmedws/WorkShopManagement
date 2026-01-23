@@ -23,7 +23,7 @@
 
     <ng-template #abpBody>
         @if (selectedImage) {
-        <div class="mb-4 text-center">
+        <div class="mb-4 mt-2 text-center">
             <div class="d-inline-block position-relative border border-success border-2 rounded p-1">
                 <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success">
                     {{ '::Selected' | abpLocalization }}
@@ -92,7 +92,7 @@
 
     <ng-template #abpFooter>
 
-        <button type="button" class="btn btn-outline-secondary" (click)="close()">
+        <button type="button" class="btn btn-outline-primary" (click)="close()">
             {{ '::Close' | abpLocalization }}
         </button>
 

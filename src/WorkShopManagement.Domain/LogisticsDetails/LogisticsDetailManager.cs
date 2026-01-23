@@ -77,7 +77,7 @@ namespace WorkShopManagement.LogisticsDetails
 
             CreStatus creStatus,
             DateTime? creSubmissionDate,
-            string? rsvaNumber,
+            string? rvsaNumber,
 
             string? clearingAgent,
             string? clearanceRemarks,
@@ -98,7 +98,7 @@ namespace WorkShopManagement.LogisticsDetails
             logisticsDetail.SetBookingNumber(bookingNumber);
             logisticsDetail.SetPort(port);
             logisticsDetail.SetCreStatus(creStatus);
-            logisticsDetail.SetCreDetails(rsvaNumber, creSubmissionDate);
+            logisticsDetail.SetCreDetails(rvsaNumber, creSubmissionDate);
             logisticsDetail.SetClearanceDetails(clearingAgent, clearanceRemarks, clearanceDate);
             logisticsDetail.SetActualArrivals(actualPortArrivalDate, actualScdArrivalDate);
 
@@ -133,20 +133,16 @@ namespace WorkShopManagement.LogisticsDetails
         public async Task<LogisticsDetail> AddOrUpdateCreDetailsAsync(
             Guid id,
             CreStatus creStatus,
-            DateTime creSubmissionDate,
-            string rsvaNumber)
+            DateTime? creSubmissionDate,
+            string? rvsaNumber)
         {
             var logisticsDetail = await _logisticsDetailRepository.GetAsync(id);
 
             creStatus.EnsureDefined(nameof(creStatus));
-            if(creStatus.Equals(CreStatus.Pending))
-            {
-                throw new UserFriendlyException("CRE status can only be set to Submitted.");
-            }
 
             logisticsDetail.SetCreStatus(creStatus);
             logisticsDetail.SetCreSubmissionDate(creSubmissionDate);
-            logisticsDetail.SetRsvaNumber(rsvaNumber);
+            logisticsDetail.SetRvsaNumber(rvsaNumber);
             return await _logisticsDetailRepository.UpdateAsync(logisticsDetail, autoSave: true);
         }
 
@@ -208,7 +204,7 @@ namespace WorkShopManagement.LogisticsDetails
                 return false;
             }
 
-            if(string.IsNullOrWhiteSpace(logisticsDetail.RsvaNumber))
+            if(string.IsNullOrWhiteSpace(logisticsDetail.RvsaNumber))
             {
                 return false;
             }

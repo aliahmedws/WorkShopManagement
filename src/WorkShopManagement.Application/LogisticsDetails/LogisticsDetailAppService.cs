@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -8,6 +9,7 @@ using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
+using static WorkShopManagement.Permissions.WorkShopManagementPermissions;
 
 namespace WorkShopManagement.LogisticsDetails
 {
@@ -107,8 +109,10 @@ namespace WorkShopManagement.LogisticsDetails
              
             logisticDetail = await _logisticsRepository.InsertAsync(logisticDetail, autoSave: true);
 
+            var car = await _carRepository.GetAsync(logisticDetail.CarId);
+
             // --- CREATE EntityAttachment 
-            await _entityAttachmentService.CreateAsync(new CreateAttachmentDto
+            await _entityAttachmentService.CreateAsync(car.Vin, new CreateAttachmentDto
             {
                 EntityType = EntityType.LogisticsDetail,
                 EntityId = logisticDetail.Id,
@@ -128,7 +132,7 @@ namespace WorkShopManagement.LogisticsDetails
                 bookingNumber: input.BookingNumber,
                 creStatus: input.CreStatus,
                 creSubmissionDate: input.CreSubmissionDate,
-                rsvaNumber: input.RsvaNumber,
+                rvsaNumber: input.RvsaNumber,
                 clearingAgent: input.ClearingAgent,
                 clearanceRemarks: input.ClearanceRemarks,
                 clearanceDate: input.ClearanceDate,
@@ -136,8 +140,10 @@ namespace WorkShopManagement.LogisticsDetails
                 actualScdArrivalDate: input.ActualScdArrivalDate
             );
 
+            var car = await _carRepository.GetAsync(entity.CarId);
+
             await _logisticsRepository.UpdateAsync(entity, autoSave: true);
-            await _entityAttachmentService.UpdateAsync(new UpdateEntityAttachmentDto
+            await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
                 EntityType = EntityType.LogisticsDetail,
@@ -178,5 +184,28 @@ namespace WorkShopManagement.LogisticsDetails
             await _logisticsRepository.DeleteAsync(id);
         }
 
+        public async Task<CreDetailDto> GetCreDetailByCarIdAsync(Guid carId)
+        {
+            var logis = await _logisticsRepository.FindByCarIdAsync(carId);
+            if (logis == null)
+            {
+                throw new UserFriendlyException("Logistic Details for the car does not exist.");
+            }
+            return ObjectMapper.Map<LogisticsDetail, CreDetailDto>(logis);
+        }
+
+        public async Task<CreDetailDto> AddOrUpdateCreDetailAsync(
+            Guid carId,
+            AddOrUpdateCreDetailDto input)
+        {
+            var logis = await _logisticsRepository.FindByCarIdAsync(carId);
+            if (logis == null)
+            {
+                throw new UserFriendlyException("Logistic Details for the car does not exist.");
+            }
+
+            logis = await _logisticsDetailManager.AddOrUpdateCreDetailsAsync(id: logis.Id, input.CreStatus, input.CreSubmissionDate, input.RvsaNumber);
+            return ObjectMapper.Map<LogisticsDetail, CreDetailDto>(logis);
+        }
     }
 }

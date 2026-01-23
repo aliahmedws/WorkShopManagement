@@ -1,4 +1,4 @@
-import type { CreateRecallDto, ExternalRecallDetailDto, RecallDto, UpdateRecallDto } from './models';
+import type { CreateRecallDto, RecallDto, UpdateRecallDto } from './models';
 import { RestService, Rest } from '@abp/ng.core';
 import { Injectable, inject } from '@angular/core';
 
@@ -8,6 +8,15 @@ import { Injectable, inject } from '@angular/core';
 export class RecallService {
   private restService = inject(RestService);
   apiName = 'Default';
+  
+
+  addOrUpdateRecalls = (carId: string, inputs: RecallDto[], config?: Partial<Rest.Config>) =>
+    this.restService.request<any, RecallDto[]>({
+      method: 'POST',
+      url: `/api/app/recalls/${carId}/add-or-update-recalls`,
+      body: inputs,
+    },
+    { apiName: this.apiName,...config });
   
 
   create = (input: CreateRecallDto, config?: Partial<Rest.Config>) =>
@@ -35,18 +44,18 @@ export class RecallService {
     { apiName: this.apiName,...config });
   
 
-  getListByCar = (carId: string, config?: Partial<Rest.Config>) =>
+  getExternalRecalls = (carId: string, config?: Partial<Rest.Config>) =>
     this.restService.request<any, RecallDto[]>({
       method: 'GET',
-      url: `/api/app/recalls/by-car/${carId}`,
+      url: `/api/app/recalls/external/${carId}`,
     },
     { apiName: this.apiName,...config });
   
 
-  getRecallsFromExternalService = (carId: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, ExternalRecallDetailDto[]>({
+  getListByCar = (carId: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, RecallDto[]>({
       method: 'GET',
-      url: `/api/app/recalls/external/${carId}`,
+      url: `/api/app/recalls/by-car/${carId}`,
     },
     { apiName: this.apiName,...config });
   
