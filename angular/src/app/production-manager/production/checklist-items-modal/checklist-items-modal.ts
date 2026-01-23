@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, ViewChild, inject } from '@angular/cor
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ListItemDto, ListItemService } from 'src/app/proxy/list-items';
 import { finalize } from 'rxjs/operators';
-import { CarBayItemService } from 'src/app/proxy/car-bay-items';
+import { CarBayItemDto, CarBayItemService } from 'src/app/proxy/car-bay-items';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
 import { FileUploadModal } from 'src/app/shared/components/file-upload-modal/file-upload-modal';
@@ -51,6 +51,8 @@ export class CheckListItemsModal {
 
   // ✅ NEW: Store the single "Last Updated" info for the whole form
   lastModifiedInfo: { name: string; time: string | Date } | null = null;
+
+  carBayItems: CarBayItemDto[] = [];
 
   open(carBayId: string, checkListId: string, checkListName?: string): void {
     this.resetState();
@@ -167,6 +169,7 @@ export class CheckListItemsModal {
         .toPromise();
 
       const rows = (res?.items ?? []) as any[];
+      this.carBayItems = rows;
 
       // Variables to track the latest modification
       let maxTimeValue = 0;
@@ -315,5 +318,12 @@ export class CheckListItemsModal {
           // Optional: show a toast, but don't break UI
         },
       });
+  }
+
+  findBayItemId(checkListItemId: string | null): string {
+    if (!checkListItemId) return '';
+
+    const bayItem = this.carBayItems.find(i => i.checkListItemId === checkListItemId);
+    return bayItem?.id ?? '';
   }
 }

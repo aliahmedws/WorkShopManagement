@@ -779,11 +779,11 @@ a:active {
 select.form-select option:checked,
 select.form-select option:focus,
 select.form-select option:active {
-    background: var(--brand-primary-light) !important;
+    background: var(--brand-primary) !important;
 }
 
 select.form-select option:hover {
-    background: var(--brand-primary-light) !important;
+    background: var(--brand-primary) !important;
 }
 
 .form-control:focus,
@@ -1477,4 +1477,25 @@ i.link,
 
 .badge {
     user-select: none;
+}
+
+ngb-datepicker {
+    .ngb-dp-weekdays .ngb-dp-weekday {
+        color: var(--brand-primary);
+        font-style: normal;
+    }
+}
+
+.ant-select-item {
+    padding: 5px 16px;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    color: #fff;
+    font-weight: 600;
+    background-color: var(--brand-primary);
+}
+
+.ant-select-dropdown {
+    padding: 5px 0;
 }
