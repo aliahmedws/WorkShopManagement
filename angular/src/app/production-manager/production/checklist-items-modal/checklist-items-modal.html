@@ -28,7 +28,7 @@
               <th style="width: 320px">Marks</th>
               <th style="width: 260px">Comments</th>
               <th style="width: 120px">Attachments</th>
-              <!-- <th style="width: 30px">Logs</th> -->
+              <th style="width: 30px">Logs</th>
             </tr>
           </thead>
 
@@ -36,7 +36,7 @@
             <ng-container *ngFor="let li of items; let idx = index; trackBy: trackById">
               <tr *ngIf="li.isSeparator === true" class="table-light">
                 <td class="text-muted">{{ li.position ?? (idx + 1) }}</td>
-                <td class="text-center" colspan="4"> {{ li.name }}
+                <td class="text-center" colspan="5"> {{ li.name }}
                 </td>
               </tr>
 
@@ -82,9 +82,9 @@
                     [existingFiles]="attachmentsByListItemId[li.id!]"
                     (existingFilesChange)="attachmentsByListItemId[li.id!] = $event"></app-file-upload-modal>
                 </td>
-                <!-- <td>
-                  <app-entity-change-history-modal [entityId]="li.id" entityName="CarBayItem"></app-entity-change-history-modal>
-                </td> -->
+                <td>
+                  <app-entity-change-history-modal [entityId]="findBayItemId(li.id)" entityName="CarBayItem"></app-entity-change-history-modal>
+                </td>
               </tr>
             </ng-container>
           </tbody>

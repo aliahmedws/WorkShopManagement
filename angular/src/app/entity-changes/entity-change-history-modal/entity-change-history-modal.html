@@ -20,18 +20,12 @@
             </div>
         </div>
         } @else {
-        @if (!entityId || !entityName) {
-        <div class="alert alert-warning">
-            <h3 class="alert-heading">Invalid!</h3>
-            <p>An argument was needed for this request but wasn't provided</p>
-        </div>
-        } @else {
+
         @if (!changes?.items?.length) {
         <nz-empty nzNotFoundImage="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
             [nzNotFoundContent]="'::The entity has no logs' | abpLocalization">
         </nz-empty>
-        }
-        @if (changes?.items?.length) {
+        } @else {
         <h4>{{ '::Change History' | abpLocalization }}</h4>
         <div class="audit-logs">
             @for (item of changes?.items; track item.entityChange?.id) {
@@ -88,7 +82,6 @@
             </div>
             }
         </div>
-        }
         }
         }
 
