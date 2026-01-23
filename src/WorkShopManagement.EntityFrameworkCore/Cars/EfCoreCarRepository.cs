@@ -84,6 +84,23 @@ public class EfCoreCarRepository : EfCoreRepository<WorkShopManagementDbContext,
         return car ?? throw new EntityNotFoundException(typeof(Car), id);
     }
 
+    public async Task<Car> GetDetailsForReportAsync(Guid id, bool asNoTracking = false)
+    {
+        var query = await GetQueryableAsync();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        query = query
+            .Include(x => x.Owner)
+            .Include(x => x.Model).ThenInclude(x => x.ModelCategory)
+            .Include(x => x.LogisticsDetail);    // Not working
+
+        var car = await query.FirstOrDefaultAsync(x => x.Id == id);
+
+        return car ?? throw new EntityNotFoundException(typeof(Car), id);
+    }
+
     public async Task DeleteAsync(Guid id)
     {
         var car = await GetAsync(id);

@@ -23,7 +23,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
     public string Color { get; private set; } = default!;
     public Guid OwnerId { get; private set; }
     public Guid ModelId { get; private set; }
-    public int ModelYear { get; private set; }
+    public int ModelYear { get; set; }
 
     public string? Cnc { get; private set; }
     public string? CncFirewall { get; private set; }

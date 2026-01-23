@@ -28,6 +28,7 @@ import { StageDto } from 'src/app/proxy/stages';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { ChangeStageActions } from './change-stage-actions/change-stage-actions';
 import { QualityGates } from './quality-gates/quality-gates';
+import { ModelReportService } from 'src/app/proxy/model-reports';
 
 @Component({
   selector: 'app-production-details-modal',
@@ -50,9 +51,11 @@ import { QualityGates } from './quality-gates/quality-gates';
 export class ProductionDetailsModal {
   private readonly carBayService = inject(CarBayService);
   private readonly carService = inject(CarService);
+  private readonly modelReportService = inject(ModelReportService);
   private readonly toaster = inject(ToasterHelperService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+
 
   @ViewChild(CheckListItemsModal) checkListItemsModal!: CheckListItemsModal;
   @ViewChild(CarNotesModal) carNotesModal!: CarNotesModal;
@@ -68,6 +71,7 @@ export class ProductionDetailsModal {
   isAssignBayVisible: boolean = false;
   isCheckInModalVisible = false;
   isChangeStageModalVisible = false;
+  downloadingModelReport = false;
 
   currentStage?: Stage;
 
@@ -337,4 +341,35 @@ export class ProductionDetailsModal {
     this.close();
     this.stageChanged.emit(this.carId!);
   }
+
+
+  downloadModelReport(): void {
+    if (!this.carId) return;
+
+    this.downloadingModelReport = true;
+
+    this.modelReportService.download(this.carId).subscribe({
+      next: (blob: Blob) => {
+        debugger;
+        const vin = this.selectedCar?.vin;
+        const fileName = `ModelReport_${vin}.pdf`;
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+
+        // cleanup
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: () => {
+         this.downloadingModelReport = false; 
+      },
+      complete: () => {
+        this.downloadingModelReport = false;
+      },
+    });
+  }
+
 }

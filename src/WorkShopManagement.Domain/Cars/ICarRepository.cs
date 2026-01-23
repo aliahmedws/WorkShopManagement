@@ -12,6 +12,7 @@ public interface ICarRepository : IRepository<Car, Guid>
     Task<List<Car>> GetListAsync(int skipCount = 0, int maxResultCount = 10, string? sorting = null, string? filter = null, Stage? stage = null);
 
     Task<Car> GetWithDetailsAsync(Guid id, bool asNoTracking = false);
+    Task<Car> GetDetailsForReportAsync(Guid id, bool asNoTracking = false);
 
     Task DeleteAsync(Guid id);
 
