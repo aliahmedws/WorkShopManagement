@@ -34,7 +34,8 @@ export class ProductionActions {
   @Input() showLogistics: boolean = true;
   @Input() showIssue: boolean = true;
   @Input() showMove: boolean = true;
-
+  @Input() showLogs: boolean = true;
+  
   @Input() showAssignBay = false;
   @Input() showBayDetails = false;
   @Input() showDispatched = false;
