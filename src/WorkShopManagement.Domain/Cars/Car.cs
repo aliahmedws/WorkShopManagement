@@ -145,7 +145,7 @@ public class Car : FullAuditedAggregateRoot<Guid>
 
     public void SetModelYear(int modelYear)
     {
-        ModelYear = Check.Range(modelYear, nameof(modelYear), CarConsts.MinModelYear, CarConsts.MaxModelYear);
+        ModelYear = Check.Range(modelYear, nameof(modelYear), CarConsts.MinModelYear);
     }
 
     public void SetCnc(string? cnc, string? cncFirewall, string? cncColumn)

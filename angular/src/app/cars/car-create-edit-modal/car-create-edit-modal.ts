@@ -106,7 +106,7 @@ export class CarCreateEditModal {
       vin: [dto?.vin ?? null, [Validators.required, Validators.maxLength(17), Validators.pattern(/^[A-Za-z0-9]{17}$/)]],
       color: [dto?.color ?? null, [Validators.required, Validators.maxLength(64)]],
       modelId: [dto?.modelId ?? null, [Validators.required]],
-      modelYear: [dto?.modelYear, [Validators.required, Validators.min(1800)]],
+      modelYear: [dto?.modelYear, [Validators.required, Validators.min(1900), Validators.max(2147483647)]],
 
       // dueDate: [dto?.dueDate ? new Date(dto?.dueDate) : null],
       // deliverDate: [dto?.deliverDate ? new Date(dto?.deliverDate) : null],

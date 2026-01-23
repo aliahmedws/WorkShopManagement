@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.Application.Dtos;
@@ -9,7 +8,6 @@ using Volo.Abp.Domain.Repositories;
 using WorkShopManagement.Cars;
 using WorkShopManagement.EntityAttachments;
 using WorkShopManagement.Permissions;
-using static WorkShopManagement.Permissions.WorkShopManagementPermissions;
 
 namespace WorkShopManagement.LogisticsDetails
 {
@@ -107,8 +105,6 @@ namespace WorkShopManagement.LogisticsDetails
                 bookingNumber: input.BookingNumber
             );
              
-            logisticDetail = await _logisticsRepository.InsertAsync(logisticDetail, autoSave: true);
-
             var car = await _carRepository.GetAsync(logisticDetail.CarId);
 
             // --- CREATE EntityAttachment 
@@ -142,7 +138,6 @@ namespace WorkShopManagement.LogisticsDetails
 
             var car = await _carRepository.GetAsync(entity.CarId);
 
-            await _logisticsRepository.UpdateAsync(entity, autoSave: true);
             await _entityAttachmentService.UpdateAsync(car.Vin, new UpdateEntityAttachmentDto
             {
                 EntityId = entity.Id,
@@ -159,7 +154,6 @@ namespace WorkShopManagement.LogisticsDetails
         public async Task<LogisticsDetailDto> SubmitCreStatusAsync(Guid id)
         {
             var entity = await _logisticsDetailManager.SubmitCreStatus(id);
-            await _logisticsRepository.UpdateAsync(entity, autoSave: true);
             return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
         }
 
@@ -174,7 +168,6 @@ namespace WorkShopManagement.LogisticsDetails
                 transportDestination: input.TransportDestination
                 );
 
-            await _logisticsRepository.UpdateAsync(entity, autoSave: true);
             return ObjectMapper.Map<LogisticsDetail, LogisticsDetailDto>(entity);
         }
 
