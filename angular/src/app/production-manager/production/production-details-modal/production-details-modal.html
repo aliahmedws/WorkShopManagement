@@ -266,7 +266,7 @@
   <app-issue-modal [(visible)]="isIssueModalVisible" [carId]="carId"> </app-issue-modal>
   <app-checklist-items-modal #checkListItemsModal (saved)="onChecklistSaved()"></app-checklist-items-modal>
   <app-car-notes-modal (saved)="onNotesSaved($event)"></app-car-notes-modal>
-  <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" (submit)="loadSelectedCar()"></app-recalls>
+  <app-recalls [(visible)]="isRecallModalVisible" [carId]="carId" [vin]="details?.carVin" (submit)="loadSelectedCar()"></app-recalls>
   <app-critical-images-modal [(visible)]="criticalImagesVisible" [carBayId]="details?.id">
   </app-critical-images-modal>
   <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="getSelectedStageDto()"
