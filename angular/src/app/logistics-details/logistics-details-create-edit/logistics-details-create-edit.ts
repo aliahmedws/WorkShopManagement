@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreStatus, creStatusOptions, Port, portOptions } from 'src/app/proxy/cars';
@@ -10,17 +10,18 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { ArrivalEstimatesCreateEditModal } from '../arrival-estimates/arrival-estimates-create-edit-modal/arrival-estimates-create-edit-modal';
 import { ArrivalEstimateDto, ArrivalEstimateService } from 'src/app/proxy/logistics-details/arrival-estimates';
+import { ArrivalEstimates } from "../arrival-estimates/arrival-estimates";
 
 
 @Component({
   selector: 'app-logistics-details-create-edit',
   standalone: true,
-  imports: [...SHARED_IMPORTS, ArrivalEstimatesCreateEditModal],
+  imports: [...SHARED_IMPORTS, ArrivalEstimatesCreateEditModal, ArrivalEstimates],
   templateUrl: './logistics-details-create-edit.html',
   styleUrl: './logistics-details-create-edit.scss',
   providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }]
 })
-export class LogisticsDetailsCreateEdit implements OnInit {
+export class LogisticsDetailsCreateEdit {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -28,8 +29,14 @@ export class LogisticsDetailsCreateEdit implements OnInit {
   private readonly toaster = inject(ToasterHelperService);
   private readonly estimateService = inject(ArrivalEstimateService);
 
+  @Input() visible = false;
+  @Input() carId: string | null = null;
+  @Input() vin: string | null = null;
+
+  @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() submit = new EventEmitter<void>();
+
   form!: FormGroup;
-  carId: string | null = null;
   selectedId: string | null = null; // The LogisticsDetail ID
 
   // State
@@ -43,19 +50,23 @@ export class LogisticsDetailsCreateEdit implements OnInit {
   // Attachments
   tempFiles: FileAttachmentDto[] = [];
   existingFiles: EntityAttachmentDto[] = [];
-  vin: string | null = null;
 
   // Estimate State
   latestEstimate: ArrivalEstimateDto | null = null;
   isEstimateModalVisible = false;
+  isEstimateListVisible = false;
 
   logisticsDetail = {} as LogisticsDetailDto;
 
-  ngOnInit(): void {
-    this.carId = this.route.snapshot.queryParamMap.get('carId');
-    this.vin = this.route.snapshot.queryParamMap.get('vin');
+  modalOptions = {
+    size: 'xl',
+    backdrop: 'static',
+    keyboard: false
+  };
+
+  open(): void {
     if (!this.carId) {
-      this.router.navigate(['/cars']);
+      this.close();
       return;
     }
 
@@ -165,22 +176,17 @@ export class LogisticsDetailsCreateEdit implements OnInit {
     this.fetchLogistics(); // Refresh state
   };
 
-  goBack() {
-    const snapshot = this.route.snapshot.queryParams;
-    this.router.navigate(snapshot?.returnUrl ? [snapshot?.returnUrl] : ['/cars'], { queryParams: { 'tab': snapshot?.tab || 0 } });
-  }
 
   addFirstEstimate() {
     this.isEstimateModalVisible = true;
   }
 
   viewEstimateHistory() {
-    this.router.navigate(['/arrival-estimates'], {
-      queryParams: {
-        logisticsDetailId: this.selectedId,
-        carId: this.carId // Pass carId to allow "Back" functionality
-      },
-      queryParamsHandling: 'merge'
-    });
+    this.isEstimateListVisible = true;
+  }
+
+  close() {
+    this.visible = false;
+    this.visibleChange.emit(this.visible);
   }
 }

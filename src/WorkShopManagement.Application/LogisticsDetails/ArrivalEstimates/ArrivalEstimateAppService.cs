@@ -129,8 +129,8 @@ namespace WorkShopManagement.LogisticsDetails.ArrivalEstimates
         {
             var entity = await _estimateRepository.GetAsync(id);
 
-            var logisitcs = await _logisticsRepository.GetAsync(id);
-
+            // verify the logistics and car
+            var logisitcs = await _logisticsRepository.GetAsync(entity.LogisticsDetailId);
             var car = await _carRepository.GetAsync(logisitcs.CarId);
 
             entity.SetNotes(input.Notes);

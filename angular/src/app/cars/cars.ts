@@ -7,10 +7,11 @@ import { ConfirmationHelperService } from '../shared/services/confirmation-helpe
 import { IssueModal } from '../issues/issue-modal/issue-modal';
 import { Router } from '@angular/router';
 import { CarImagesModal } from "./car-images-modal/car-images-modal";
+import { LogisticsDetailsCreateEdit } from '../logistics-details/logistics-details-create-edit/logistics-details-create-edit';
 
 @Component({
   selector: 'app-cars',
-  imports: [...SHARED_IMPORTS, CarCreateEditModal, IssueModal, CarImagesModal],
+  imports: [...SHARED_IMPORTS, CarCreateEditModal, IssueModal, CarImagesModal, LogisticsDetailsCreateEdit],
   templateUrl: './cars.html',
   styleUrl: './cars.scss',
   providers: [ListService],
@@ -27,9 +28,11 @@ export class Cars implements OnInit {
 
   isModalVisible = false;
   selectedId?: string;
+  selectedVin?: string;
 
   isIssueModalVisible = false;
   isImageModalVisible = false;
+  isLogisticsModalVisible = false;
   ngOnInit(): void {
     const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
     this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
@@ -58,17 +61,23 @@ export class Cars implements OnInit {
     this.isIssueModalVisible = true;
   }
 
-  manageLogistics(carId: string, vin: string): void {
-    this.router.navigate(['/logistics-details'], { 
-      queryParams: { carId: carId, vin: vin },
-      // state: { vin: vin } // didnt work
-    });
-  }
+  // manageLogistics(carId: string, vin: string): void {
+  //   this.router.navigate(['/logistics-details'], { 
+  //     queryParams: { carId: carId, vin: vin },
+  //     // state: { vin: vin } // didnt work
+  //   });
+  // }
   
   // selectedCar: CarDto;
   showImages(car: CarDto): void {
 
     this.selectedId = car?.id;
     this.isImageModalVisible = true;
+  }
+
+  showLogistics(car: CarDto): void {
+    this.selectedId = car?.id;
+    this.selectedVin = car?.vin;
+    this.isLogisticsModalVisible = true;
   }
 }
