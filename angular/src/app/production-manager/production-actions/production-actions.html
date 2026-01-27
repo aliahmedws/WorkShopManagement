@@ -58,3 +58,5 @@
 <app-assign-bay [(visible)]="isAssignBayVisible" [selected]="stage" (submit)="onAssignBaySubmit()"></app-assign-bay>
 <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="stage?.carId" [carBayId]="stage?.bayId"
     [currentStage]="stage?.stage ?? currentStage" (stageMoved)="onStageMoved()"></app-change-stage-actions>
+<app-logistics-details-create-edit [(visible)]="isLogisticsModalVisible" [carId]="stage?.carId"
+        [vin]="stage?.vin" (submit)="emitChange()" (close)="isLogisticsModalVisible = false">

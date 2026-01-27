@@ -1,6 +1,5 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CreStatus, creStatusOptions, Port, portOptions } from 'src/app/proxy/cars';
 import { EntityAttachmentDto } from 'src/app/proxy/entity-attachments';
 import { FileAttachmentDto } from 'src/app/proxy/entity-attachments/file-attachments';
@@ -23,8 +22,6 @@ import { ArrivalEstimates } from "../arrival-estimates/arrival-estimates";
 })
 export class LogisticsDetailsCreateEdit {
   private readonly fb = inject(FormBuilder);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly service = inject(LogisticsDetailService);
   private readonly toaster = inject(ToasterHelperService);
   private readonly estimateService = inject(ArrivalEstimateService);
@@ -59,7 +56,7 @@ export class LogisticsDetailsCreateEdit {
   logisticsDetail = {} as LogisticsDetailDto;
 
   modalOptions = {
-    size: 'xl',
+    size: 'lg',
     backdrop: 'static',
     keyboard: false
   };
@@ -172,6 +169,9 @@ export class LogisticsDetailsCreateEdit {
   // Reusable Success Handler
   handleSuccess = () => {
     // Checks selectedId: if null => "Created", if exists => "Updated"
+
+    this.close();
+    this.submit.emit();
     this.toaster.createdOrUpdated(this.selectedId);
     this.fetchLogistics(); // Refresh state
   };

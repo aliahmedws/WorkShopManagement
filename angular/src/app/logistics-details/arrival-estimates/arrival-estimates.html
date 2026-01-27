@@ -1,22 +1,23 @@
-<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()" [options]="modalOptions">
+<abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()" (disappear)="disappear()"
+    [options]="modalOptions">
 
     <ng-template #abpHeader>
         <div class="d-flex align-items-center justify-content-between w-100">
             <h3 class="modal-title m-0">
                 {{ '::EstimatedArrivalHistory' | abpLocalization }}
             </h3>
-            <div class="me-4">
-                <ng-container *abpPermission="'WorkShopManagement.ArrivalEstimates.Create'">
-                    <button class="btn btn-sm btn-primary" (click)="create()">
-                        <i class="fas fa-plus me-1"></i>
-                        {{ '::AddNewEta' | abpLocalization }}
-                    </button>
-                </ng-container>
-            </div>
         </div>
     </ng-template>
 
     <ng-template #abpBody>
+        <div class="mb-3 text-end">
+            <ng-container *abpPermission="'WorkShopManagement.ArrivalEstimates.Create'">
+                <button class="btn btn-sm btn-primary" (click)="create()">
+                    <i class="fas fa-plus me-1"></i>
+                    {{ '::AddNewEta' | abpLocalization }}
+                </button>
+            </ng-container>
+        </div>
         <ngx-datatable [rows]="data.items" [count]="data.totalCount" [list]="list" default>
             <ngx-datatable-column [sortable]="false" [maxWidth]="50">
                 <ng-template let-row="row" ngx-datatable-cell-template>
@@ -67,9 +68,6 @@
     </ng-template>
 </abp-modal>
 
-<app-arrival-estimates-create-edit-modal 
-        [(visible)]="isCreateEditModalVisible"
-        [logisticsDetailId]="logisticsDetailId" 
-        [estimateId]="selectedId" 
-        (submit)="list.get()">
-    </app-arrival-estimates-create-edit-modal>
+<app-arrival-estimates-create-edit-modal [(visible)]="isCreateEditModalVisible" [logisticsDetailId]="logisticsDetailId"
+    [estimateId]="selectedId" (submit)="list.get()">
+</app-arrival-estimates-create-edit-modal>

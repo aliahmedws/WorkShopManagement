@@ -1,6 +1,6 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="text-dark m-0">{{ (carId? '::EditVehicle' : '::NewVehicle') | abpLocalization }}</h3>
+        <h3 class="m-0">{{ (carId? '::EditVehicle' : '::NewVehicle') | abpLocalization }}</h3>
     </ng-template>
     <ng-template #abpBody>
         @if (loading) {
@@ -44,7 +44,7 @@
             <!-- Car Information -->
             <div class="row g-2">
                 <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::BasicInformation' | abpLocalization }}</h5>
+                    <h5>{{ '::BasicInformation' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
@@ -112,7 +112,7 @@
             <!-- Owner Information -->
             <div class="row g-2">
                 <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::Owner' | abpLocalization }}</h5>
+                    <h5>{{ '::Owner' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
@@ -198,7 +198,7 @@
             <!-- Additional Information -->
             <div class="row g-2">
                 <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::AdditionalInformation' | abpLocalization }}</h5>
+                    <h5>{{ '::AdditionalInformation' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">
@@ -223,7 +223,7 @@
 
             <!-- <div class="row g-2">
                 <div class="col-12 col-lg-3">
-                    <h5 class="text-dark">{{ '::ProductionData' | abpLocalization }}</h5>
+                    <h5>{{ '::ProductionData' | abpLocalization }}</h5>
                 </div>
                 <div class="col-12 col-lg-9">
                     <div class="row g-2">

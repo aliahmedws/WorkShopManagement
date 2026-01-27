@@ -1,5 +1,4 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CarCreateEditModal } from 'src/app/cars/car-create-edit-modal/car-create-edit-modal';
 import { CarImagesModal } from 'src/app/cars/car-images-modal/car-images-modal';
 import { IssueModal } from 'src/app/issues/issue-modal/issue-modal';
@@ -9,6 +8,7 @@ import { AssignBay } from '../assign-bay/assign-bay';
 import { ProductionDetailsModal } from '../production/production-details-modal/production-details-modal';
 import { ChangeStageActions } from '../production/production-details-modal/change-stage-actions/change-stage-actions';
 import { Stage } from 'src/app/proxy/cars/stages';
+import { LogisticsDetailsCreateEdit } from 'src/app/logistics-details/logistics-details-create-edit/logistics-details-create-edit';
 
 @Component({
   selector: 'app-production-actions',
@@ -20,6 +20,7 @@ import { Stage } from 'src/app/proxy/cars/stages';
     AssignBay,
     ProductionDetailsModal,
     ChangeStageActions,
+    LogisticsDetailsCreateEdit
   ],
   templateUrl: './production-actions.html',
   styleUrl: './production-actions.scss',
@@ -39,10 +40,8 @@ export class ProductionActions {
   @Input() showBayDetails = false;
   @Input() showDispatched = false;
 
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-
   isCarEditModalVisible: boolean = false;
+  isLogisticsModalVisible: boolean = false;
   isImageModalVisible: boolean = false;
   isAssignBayVisible: boolean = false;
   isProductionDetailVisible: boolean = false;
@@ -59,20 +58,13 @@ export class ProductionActions {
     this.isCarEditModalVisible = true;
   }
 
+
   openImages() {
     this.isImageModalVisible = true;
   }
 
   manageLogistics() {
-    const tab = this.route.snapshot.queryParams?.tab;
-    this.router.navigate(['/logistics-details'], {
-      queryParams: {
-        carId: this.stage?.carId,
-        vin: this.stage?.vin,
-        returnUrl: window.location.pathname,
-        tab: tab,
-      },
-    });
+    this.isLogisticsModalVisible = true;
   }
 
   openIssues() {

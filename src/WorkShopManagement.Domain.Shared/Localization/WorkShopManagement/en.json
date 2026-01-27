@@ -299,7 +299,7 @@
     "AddEstimate": "Add Estimate",
     "AddEta": "Add ETA",
     "ViewHistory": "View History",
-    "NoEstimateAvailable": "No estimate time arrivals available. Please add estimated time arrivals for Port and SCD.",
+    "NoEstimateAvailable": "No estimate time arrivals available. Please add estimated time arrivals.",
     "LatestEtaPort": "Latest ETA Port",
     "LatestEtaScd": "Latest ETA SCD",
     "Attachments": "Attachments",

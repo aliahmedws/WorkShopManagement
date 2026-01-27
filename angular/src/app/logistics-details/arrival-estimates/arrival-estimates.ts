@@ -1,10 +1,10 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { ActivatedRoute} from '@angular/router';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ArrivalEstimateService, ArrivalEstimateDto } from 'src/app/proxy/logistics-details/arrival-estimates';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
 import { ArrivalEstimatesCreateEditModal } from './arrival-estimates-create-edit-modal/arrival-estimates-create-edit-modal';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-arrival-estimates',
@@ -16,10 +16,9 @@ import { ArrivalEstimatesCreateEditModal } from './arrival-estimates-create-edit
   styleUrl: './arrival-estimates.scss',
   providers: [ListService]
 })
-export class ArrivalEstimates {
+export class ArrivalEstimates implements OnDestroy {
   public readonly list = inject(ListService);
   private readonly service = inject(ArrivalEstimateService);
-  private readonly route = inject(ActivatedRoute);
   private readonly confirmation = inject(ConfirmationHelperService);
 
   data: PagedResultDto<ArrivalEstimateDto> = { items: [], totalCount: 0 };
@@ -31,6 +30,8 @@ export class ArrivalEstimates {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<void>();
+
+  private session$ = new Subject<void>();
   
   // Modal State
   isCreateEditModalVisible = false;
@@ -49,8 +50,12 @@ export class ArrivalEstimates {
       return;
     }
 
-    const streamCreator = (query: any) => this.service.getList(this.logisticsDetailId!, query);
-    this.list.hookToQuery(streamCreator).subscribe(res => this.data = res);
+    this.session$.next();
+
+    this.list
+      .hookToQuery(q => this.service.getList(this.logisticsDetailId, q))
+      .pipe(takeUntil(this.session$))
+      .subscribe(res => (this.data = res));
   }
 
   create() {
@@ -74,5 +79,13 @@ export class ArrivalEstimates {
   close() {
     this.visible = false;
     this.visibleChange.emit(this.visible);
+  }
+
+  disappear() {
+    this.session$.next();
+  }
+
+  ngOnDestroy() {
+    this.session$.complete();
   }
 }
