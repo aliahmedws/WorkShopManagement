@@ -54,48 +54,47 @@
 
                         <div class="row g-2 mb-2">
                             <div class="col-md-6">
-                                <label class="form-label small text-secondary  required">
+                                <label class="form-label required">
                                     {{ '::Title' | abpLocalization }}
                                 </label>
                                 <input class="form-control" formControlName="title"
                                     placeholder="Enter recall title..." />
                             </div>
 
-                            <div class="col-md-6 d-flex align-items-center border rounded px-3 mt-4  bg-white">
+                            <div class="col-md-6 d-flex align-items-end">
+                                <div class="d-flex justify-content-between align-items-center w-100 border rounded px-3" style="height: 44.5px">
+                                    <div class="d-flex align-items-center ">
+                                        <span class="form-label small m-0 me-3">{{ '::Status' | abpLocalization }}:</span>
 
+                                        <div class="form-check form-check-inline m-0 me-3">
+                                            <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
+                                                formControlName="status" id="st_p_{{$index}}" style="cursor: pointer;">
+                                            <label class="form-label form-check-label m-0" for="st_p_{{$index}}"
+                                                style="cursor: pointer;">
+                                                {{ '::Enum:RecallStatus.1' | abpLocalization }}
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline m-0">
+                                            <input class="form-check-input" type="radio"
+                                                [value]="RecallStatus.Completed" formControlName="status"
+                                                id="st_c_{{$index}}" style="cursor: pointer;">
+                                            <label class="form-label form-check-label m-0" for="st_c_{{$index}}"
+                                                style="cursor: pointer;">
+                                                {{ '::Enum:RecallStatus.2' | abpLocalization }}
+                                            </label>
+                                        </div>
+                                    </div>
 
-                                <div class="d-flex align-items-center ">
-                                    <span class="form-label small me-3">{{ '::Status' |
-                                        abpLocalization }}:</span>
+                                    <div class="h-100 border-start"></div>
 
-                                    <div class="form-check form-check-inline m-0 me-3">
-                                        <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
-                                            formControlName="status" id="st_p_{{$index}}" style="cursor: pointer;">
-                                        <label class="form-label form-check-label" for="st_p_{{$index}}"
+                                    <div class="form-check form-switch m-0 align-items-center">
+                                        <input class="form-check-input" type="checkbox" formControlName="isCsp"
+                                            id="csp_{{$index}}" style="cursor: pointer;">
+                                        <label class="form-label form-check-label m-0" for="csp_{{$index}}"
                                             style="cursor: pointer;">
-                                            {{ '::Enum:RecallStatus.1' | abpLocalization }}
+                                            {{ '::MarkAsCsp' | abpLocalization }}
                                         </label>
                                     </div>
-                                    <div class="form-check form-check-inline m-0">
-                                        <input class="form-check-input" type="radio"
-                                            [value]="RecallStatus.Completed" formControlName="status"
-                                            id="st_c_{{$index}}" style="cursor: pointer;">
-                                        <label class="form-label form-check-label" for="st_c_{{$index}}"
-                                            style="cursor: pointer;">
-                                            {{ '::Enum:RecallStatus.2' | abpLocalization }}
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="border-start mx-auto" style="height: 20px;"></div>
-
-                                <div class="ms-4 form-check form-switch m-0ncvcx">
-                                    <input class="form-check-input" type="checkbox" formControlName="isCsp"
-                                        id="csp_{{$index}}" style="cursor: pointer;">
-                                    <label class="form-label form-check-label" for="csp_{{$index}}"
-                                        style="cursor: pointer;">
-                                        {{ '::MarkAsCsp' | abpLocalization }}
-                                    </label>
                                 </div>
                             </div>
 
@@ -104,19 +103,19 @@
 
                         <div class="row g-2 mb-3">
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary">
+                                <label class="form-label">
                                     {{ '::RiskDescription' | abpLocalization }}
                                 </label>
-                                <textarea class="form-control" rows="4" formControlName="riskDescription"></textarea>
+                                <textarea class="form-control" rows="4" formControlName="riskDescription" style="resize: none;"></textarea>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary">
+                                <label class="form-label">
                                     {{ '::Notes' | abpLocalization }}
                                 </label>
-                                <textarea class="form-control" rows="4" formControlName="notes"></textarea>
+                                <textarea class="form-control" rows="4" formControlName="notes" style="resize: none;"></textarea>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small text-secondary">
+                                <label class="form-label">
                                     {{ '::Attachments' | abpLocalization }}
                                 </label>
                                 <app-file-upload [multiple]="true" size="small" [tempFiles]="fg.get('tempFiles').value"
@@ -140,11 +139,11 @@
         </button>
 
         @if(rows?.length){
-            <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid || saving" (click)="save()">
-                <i class="fas fa-save me-1"></i> 
-                {{ '::Save' | abpLocalization }}
-            </button>
+        <button type="submit" class="btn btn-primary px-3" [disabled]="!form?.valid || saving" (click)="save()">
+            <i class="fas fa-save me-1"></i>
+            {{ '::Save' | abpLocalization }}
+        </button>
         }
-        
+
     </ng-template>
 </abp-modal>

@@ -146,7 +146,8 @@ $accent-info-light: #eef6f6;
     --bs-warning-rgb: var(--accent-warning-rgb);
     --bs-danger-rgb: var(--accent-danger-rgb);
     --bs-info-rgb: var(--accent-info-rgb);
-
+    
+    --bs-light-rgb: 245, 245, 247;
     // darker emphasis
     // --bs-primary-text-emphasis: rgb(21.2, 37.2, 102);
     // --bs-secondary-text-emphasis: rgb(43.2, 37.2, 84.4);
@@ -169,6 +170,8 @@ $accent-info-light: #eef6f6;
     --bs-link-color-rgb: var(--brand-tertiary-dark-rgb);
     --bs-link-hover-color: #{color.scale($brand-tertiary-dark, $lightness: -20%)};
     --bs-link-hover-color-rgb: #{color-rgb(color.scale($brand-tertiary-dark, $lightness: -20%))};
+
+    --bs-border-radius: 0.2rem;
 
     /* Focus rings */
     --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.125);

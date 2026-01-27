@@ -19,9 +19,9 @@ export class EntityChangeHistoryModal implements OnInit {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   @Input() entityId: string;
-  @Input() entityName: 'Issue' | 'CarBay' | 'CarBayItem';
+  @Input() entityName: 'Car' | 'Issue' | 'CarBay' | 'CarBayItem';
 
-  @Input() buttonType: 'icon' | 'button' = 'icon';
+  @Input() buttonType: 'icon' | 'button' | 'dropdown' = 'icon';
 
   entityTypeFullName = '';
 

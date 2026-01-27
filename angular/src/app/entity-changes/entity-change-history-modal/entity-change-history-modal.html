@@ -7,6 +7,11 @@
 @if (buttonType === 'icon') {
 <i class="fas fa-history text-info link" (click)="showModal()"></i>
 }
+@if (buttonType === 'dropdown') {
+<button ngbDropdownItem (click)="showModal()">
+    {{ '::Logs' | abpLocalization }}
+</button>
+}
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (disappear)="disappear()"
     [options]="modalOptions">
     <ng-template #abpHeader>

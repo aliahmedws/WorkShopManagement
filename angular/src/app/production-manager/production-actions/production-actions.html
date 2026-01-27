@@ -46,6 +46,9 @@
             {{ '::Issues' | abpLocalization }}
         </button>
         }
+        @if (showLogs) {
+            <app-entity-change-history-modal [entityId]="stage.carId" entityName="Car" buttonType="dropdown"></app-entity-change-history-modal>
+        }
     </div>
 </div>
 

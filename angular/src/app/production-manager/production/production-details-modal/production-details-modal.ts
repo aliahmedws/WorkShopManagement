@@ -350,7 +350,6 @@ export class ProductionDetailsModal {
 
     this.modelReportService.download(this.carId).subscribe({
       next: (blob: Blob) => {
-        debugger;
         const vin = this.selectedCar?.vin;
         const fileName = `ModelReport_${vin}.pdf`;
 
