@@ -14,3 +14,12 @@
         border-right: 0 !important;
     }
 }
+
+tr.header td {
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+}
+
+td.spec-label {
+    background-color: rgb(var(--bs-tertiary-bg-rgb)) !important;
+}

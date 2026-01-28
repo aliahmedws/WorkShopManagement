@@ -113,7 +113,8 @@ namespace WorkShopManagement.External.CarsXe
             var normalizedVin = CarHelper.NormalizeAndValidateVin(vin);
             // e.g. GET /specs?key=...&vin=...
             var request = new RestRequest(options.SpecsUrl, Method.Get)
-                .AddQueryParameter("vin", normalizedVin);
+                .AddQueryParameter("vin", normalizedVin)
+                .AddQueryParameter("deepdata", 1);
             return request;
         }
 

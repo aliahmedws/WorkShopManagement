@@ -40,46 +40,44 @@
         }
 
         @if(!loading && specs?.success){
-        <div class="container-fluid p-0">
-            <div class="row g-0 border rounded overflow-hidden">
-
+        <table class="table table-bordered">
+            <tbody>
                 @for (item of displayItems; track $index) {
 
                 @if (item.isHeader) {
-                <div class="col-12 bg-secondary p-2 border-bottom border-top">
-                    <h6 class="m-0 fw-bold text-white text-uppercase small ls-1">
-                        {{ item.value }}
-                    </h6>
-                </div>
+                <tr class="bg-secondary header">
+                    <td colspan="4">
+                        <h6 class="m-0 fw-bold text-white text-uppercase small ls-1">
+                            {{ item.value }}
+                        </h6>
+                    </td>
+                </tr>
                 }
 
                 @else if (item.isValueOnly) {
                 <!-- Value-only row (for long values like exterior colors) -->
-                <div class="col-12 border-bottom">
-                    <div class="p-2 text-break" style="font-size: 0.9rem;">
+                <tr>
+                    <td colspan="4">
                         {{ item.value }}
-                    </div>
-                </div>
+                    </td>
+                </tr>
                 }
 
                 @else {
                 <!-- Regular key-value pair -->
-                <div class="col-12 border-bottom" [class.col-lg-6]="!item.isFullWidth"
-                    [class.border-end-lg]="!item.isFullWidth">
-                    <div class="d-flex h-100">
-                        <div class="bg-body-tertiary p-2 fw-semibold text-muted border-end"
-                            style="width: 40%; min-width: 140px; font-size: 0.9rem;">
-                            {{ item.key }}
-                        </div>
-                        <div class="p-2 text-break flex-grow-1" style="font-size: 0.9rem;">
-                            {{ item.value }}
-                        </div>
-                    </div>
-                </div>
+                <tr>
+                    <td class="spec-label text-muted" style="width: 25%;">{{ item.key }}</td>
+                    <td style="width: 25%;">{{ item.value }}</td>
+                    <!-- Empty cells to ensure equal column width -->
+                    @if (displayItems[$index + 1] && !displayItems[$index + 1].isHeader) {
+                        <td class="spec-label text-muted" style="width: 25%;">{{ displayItems[$index + 1].key }}</td>
+                        <td style="width: 25%;">{{ displayItems[$index + 1].value }}</td>
+                    }
+                </tr>
                 }
                 }
-            </div>
-        </div>
+            </tbody>
+        </table>
         }
     </ng-template>
 

@@ -27,7 +27,7 @@
         <ng-template #iconScd><i class="fas fa-warehouse"></i></ng-template>
 
         <ng-template #descCre>
-            <div class="small-date">
+            <div class="d-flex flex-column small-date">
                 @if (form.get('creSubmissionDate')?.value) {
                 <small>{{ form.get('creSubmissionDate')?.value | date:'mediumDate' }}</small>
                 } @else {
@@ -49,7 +49,7 @@
         </ng-template>
 
         <ng-template #descClearance>
-            <div class="small-date">
+            <div class="d-flex flex-column small-date">
                 @if (form.get('clearanceDate')?.value) {
                 <small>{{ form.get('clearanceDate')?.value | date:'mediumDate' }}</small>
                 } @else {
@@ -71,7 +71,7 @@
         </ng-template>
 
         <ng-template #pending>
-            <span class="text-muted fst-italic" style="font-size: 0.75rem;">{{ '::Pending' | abpLocalization }}</span>
+            <small class="text-muted fst-italic">{{ '::Pending' | abpLocalization }}</small>
         </ng-template>
 
         <form [formGroup]="form" (ngSubmit)="save()">
