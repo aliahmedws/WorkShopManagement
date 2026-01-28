@@ -53,7 +53,7 @@
                     <div>
 
                         <div class="row g-2 mb-2">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label required">
                                     {{ '::Title' | abpLocalization }}
                                 </label>
@@ -61,10 +61,12 @@
                                     placeholder="Enter recall title..." />
                             </div>
 
-                            <div class="col-md-6 d-flex align-items-end">
-                                <div class="d-flex justify-content-between align-items-center w-100 border rounded px-3" style="height: 44.5px">
+                            <div class="col-md-12 d-flex align-items-end">
+                                <div class="d-flex justify-content-between align-items-center w-100 border rounded px-3"
+                                    style="height: 44.5px">
                                     <div class="d-flex align-items-center ">
-                                        <span class="form-label small m-0 me-3">{{ '::Status' | abpLocalization }}:</span>
+                                        <span class="form-label small m-0 me-3">{{ '::Status' | abpLocalization
+                                            }}:</span>
 
                                         <div class="form-check form-check-inline m-0 me-3">
                                             <input class="form-check-input" type="radio" [value]="RecallStatus.Pending"
@@ -95,34 +97,43 @@
                                             {{ '::MarkAsCsp' | abpLocalization }}
                                         </label>
                                     </div>
+
+                                    <div class="h-100 border-start"></div>
+                                    
+                                    <div class="d-flex align-items-center ">
+                                        <span class="form-label small m-0 me-3">{{ '::Attachments' | abpLocalization
+                                            }}:
+                                        </span>
+                                        
+                                        <app-file-upload-modal
+                                        [title]="('::Attachments' | abpLocalization) + ' - ' + fg.get('title').value"
+                                        [tempFiles]="fg.get('tempFiles').value"
+                                        (tempFilesChange)="fg.get('tempFiles').setValue($event); fg.markAsDirty()"
+                                        [existingFiles]="fg.get('existingFiles').value"
+                                        (existingFilesChange)="fg.get('existingFiles').setValue($event); fg.markAsDirty()"
+                                        modalSize="lg">
+                                    </app-file-upload-modal>
+                                        </div>
+                                    
                                 </div>
                             </div>
-
                         </div>
 
 
                         <div class="row g-2 mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label">
                                     {{ '::RiskDescription' | abpLocalization }}
                                 </label>
-                                <textarea class="form-control" rows="4" formControlName="riskDescription" style="resize: none;"></textarea>
+                                <textarea class="form-control" rows="2" formControlName="riskDescription"
+                                    style="resize: none;"></textarea>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label">
                                     {{ '::Notes' | abpLocalization }}
                                 </label>
-                                <textarea class="form-control" rows="4" formControlName="notes" style="resize: none;"></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">
-                                    {{ '::Attachments' | abpLocalization }}
-                                </label>
-                                <app-file-upload [multiple]="true" size="small" [tempFiles]="fg.get('tempFiles').value"
-                                    (tempFilesChange)="fg.get('tempFiles').setValue($event); fg.markAsDirty()"
-                                    [existingFiles]="fg.get('existingFiles').value"
-                                    (existingFilesChange)="fg.get('existingFiles').setValue($event); fg.markAsDirty()">
-                                </app-file-upload>
+                                <textarea class="form-control" rows="2" formControlName="notes"
+                                    style="resize: none;"></textarea>
                             </div>
                         </div>
                     </div>

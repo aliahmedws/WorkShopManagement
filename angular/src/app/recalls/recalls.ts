@@ -3,14 +3,15 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 
 import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
-import { RecallService, RecallDto, CreateRecallDto, UpdateRecallDto } from '../proxy/recalls';
+import { RecallService, RecallDto } from '../proxy/recalls';
 import { RecallStatus } from '../proxy/recalls/recall-status.enum';
 import { RecallType } from '../proxy/recalls/recall-type.enum';
 import { ToasterHelperService } from '../shared/services/toaster-helper.service';
+import { FileUploadModal } from '../shared/components/file-upload-modal/file-upload-modal';
 
 @Component({
   selector: 'app-recalls',
-  imports: [...SHARED_IMPORTS],
+  imports: [...SHARED_IMPORTS,  FileUploadModal],
   templateUrl: './recalls.html',
   styleUrl: './recalls.scss',
 })
@@ -29,11 +30,6 @@ export class Recalls {
   loading = true;
   saving = false;
 
-  
-
-  // recalls: RecallDto[] = [];
-  // externalRecalls: ExternalRecallDetailDto[] = [];
-
   form = this.fb.group({
     rows: this.fb.array<FormGroup>([]),
   });
@@ -42,7 +38,7 @@ export class Recalls {
   readonly RecallType = RecallType;
 
   modalOptions = {
-    size: 'xl',
+    size: 'lg',
     backdrop: 'static',
     keyboard: false,
     animation: true,
@@ -78,7 +74,7 @@ export class Recalls {
       this.rows.push(
         this.fb.group({
           id: [r.id],
-          carId: [this.carId], // Ensure carId is passed back
+          carId: [this.carId],
           title: [r.title ?? null, [Validators.required, Validators.maxLength(256)]],
           make: [r.make ?? null],
           manufactureId: [r.manufactureId ?? null],
