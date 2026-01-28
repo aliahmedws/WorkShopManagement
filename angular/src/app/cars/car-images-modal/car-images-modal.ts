@@ -66,7 +66,7 @@ export class CarImagesModal {
     this.images = [];
     this.loading = true;
     this.carService.getExternalCarImages(this.carId!).subscribe((res) => {
-      this.images = res;
+      this.images = (res || []).filter(url => this.isImage(url));
       this.loading = false;
     });
   }
