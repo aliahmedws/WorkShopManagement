@@ -1,3 +1,4 @@
 import * as Account from './account';
+import * as Auditing from './auditing';
 import * as Identity from './identity';
-export { Account, Identity };
+export { Account, Auditing, Identity };

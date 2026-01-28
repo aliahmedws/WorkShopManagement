@@ -1,15 +1,28 @@
+import type { CreStatus } from '../cars/cre-status.enum';
+import type { EntityDto, FullAuditedEntityDto } from '@abp/ng.core';
 import type { Port } from '../cars/port.enum';
 import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
-import type { FullAuditedEntityDto } from '@abp/ng.core';
-import type { CreStatus } from '../cars/cre-status.enum';
 import type { ArrivalEstimateDto } from './arrival-estimates/models';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
+
+export interface AddOrUpdateCreDetailDto {
+  creStatus?: CreStatus;
+  creSubmissionDate?: string;
+  rvsaNumber?: string;
+}
 
 export interface AddOrUpdateDeliverDetailDto {
   confirmedDeliverDate?: string;
   deliverNotes?: string;
   deliverTo?: string;
   transportDestination?: string;
+}
+
+export interface CreDetailDto extends EntityDto<string> {
+  carId?: string;
+  creStatus?: CreStatus;
+  creSubmissionDate?: string;
+  rvsaNumber?: string;
 }
 
 export interface CreateLogisticsDetailDto {
@@ -25,7 +38,7 @@ export interface LogisticsDetailDto extends FullAuditedEntityDto<string> {
   bookingNumber?: string;
   creStatus?: CreStatus;
   creSubmissionDate?: string;
-  rsvaNumber?: string;
+  rvsaNumber?: string;
   clearingAgent?: string;
   clearanceRemarks?: string;
   clearanceDate?: string;
@@ -44,7 +57,7 @@ export interface UpdateLogisticsDetailDto {
   bookingNumber?: string;
   creStatus: CreStatus;
   creSubmissionDate?: string;
-  rsvaNumber?: string;
+  rvsaNumber?: string;
   clearingAgent?: string;
   clearanceRemarks?: string;
   clearanceDate?: string;

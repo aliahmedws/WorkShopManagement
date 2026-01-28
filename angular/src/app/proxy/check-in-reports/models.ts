@@ -1,7 +1,6 @@
 import type { EntityDto, FullAuditedEntityDto } from '@abp/ng.core';
 import type { ChoiceOptions } from '../utils/enums/choice-options.enum';
 import type { StorageLocation } from '../cars/storage-locations/storage-location.enum';
-import type { CarDto } from '../cars/models';
 
 export interface CheckInReportDto extends FullAuditedEntityDto<string> {
   buildYear?: number;
@@ -23,7 +22,6 @@ export interface CheckInReportDto extends FullAuditedEntityDto<string> {
   concurrencyStamp?: string;
   carId?: string;
   storageLocation?: StorageLocation;
-  car: CarDto;
 }
 
 export interface CheckInReportFiltersDto {

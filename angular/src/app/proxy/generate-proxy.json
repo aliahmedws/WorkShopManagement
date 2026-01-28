@@ -2920,9 +2920,9 @@
                     },
                     {
                       "name": "estimatedReleaseDate",
-                      "typeAsString": "System.DateTime, System.Private.CoreLib",
-                      "type": "System.DateTime",
-                      "typeSimple": "string",
+                      "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                      "type": "System.DateTime?",
+                      "typeSimple": "string?",
                       "isOptional": false,
                       "defaultValue": null
                     }
@@ -3496,9 +3496,9 @@
                 },
                 {
                   "name": "estimatedReleaseDate",
-                  "typeAsString": "System.DateTime, System.Private.CoreLib",
-                  "type": "System.DateTime",
-                  "typeSimple": "string",
+                  "typeAsString": "System.Nullable`1[[System.DateTime, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
                   "isOptional": false,
                   "defaultValue": null
                 }
@@ -3520,8 +3520,8 @@
                   "nameOnMethod": "estimatedReleaseDate",
                   "name": "estimatedReleaseDate",
                   "jsonName": null,
-                  "type": "System.DateTime",
-                  "typeSimple": "string",
+                  "type": "System.DateTime?",
+                  "typeSimple": "string?",
                   "isOptional": false,
                   "defaultValue": null,
                   "constraintTypes": null,
@@ -4476,6 +4476,106 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.CheckLists.ICheckListAppService"
+            }
+          }
+        },
+        "WorkShopManagement.Controllers.EntityChanges.EntityChangeController": {
+          "controllerName": "EntityChange",
+          "controllerGroupName": "EntityChange",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.EntityChanges.EntityChangeController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.EntityChanges.IEntityChangeAppService",
+              "name": "IEntityChangeAppService",
+              "methods": [
+                {
+                  "name": "GetChangeHistoryAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "entityId",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "entityTypeFullName",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.EntityChanges.EntityChangeWithUsernameDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.EntityChanges.EntityChangeWithUsernameDto>"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetChangeHistoryAsyncByEntityIdAndEntityTypeFullName": {
+              "uniqueName": "GetChangeHistoryAsyncByEntityIdAndEntityTypeFullName",
+              "name": "GetChangeHistoryAsync",
+              "httpMethod": "GET",
+              "url": "api/app/entity-changes/history/{entityId}/{entityTypeFullName}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "entityId",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "entityTypeFullName",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "entityId",
+                  "name": "entityId",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "entityTypeFullName",
+                  "name": "entityTypeFullName",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.EntityChanges.EntityChangeWithUsernameDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.EntityChanges.EntityChangeWithUsernameDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.EntityChanges.IEntityChangeAppService"
             }
           }
         },
@@ -5778,6 +5878,48 @@
                     "type": "System.Void",
                     "typeSimple": "System.Void"
                   }
+                },
+                {
+                  "name": "GetCreDetailByCarIdAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.CreDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.CreDetailDto"
+                  }
+                },
+                {
+                  "name": "AddOrUpdateCreDetailAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "input",
+                      "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto, WorkShopManagement.Application.Contracts",
+                      "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                      "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.LogisticsDetails.CreDetailDto",
+                    "typeSimple": "WorkShopManagement.LogisticsDetails.CreDetailDto"
+                  }
                 }
               ]
             }
@@ -6182,6 +6324,100 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "GetCreDetailByCarIdAsyncByCarId": {
+              "uniqueName": "GetCreDetailByCarIdAsyncByCarId",
+              "name": "GetCreDetailByCarIdAsync",
+              "httpMethod": "GET",
+              "url": "api/app/logistics-details/{carId}/get-cre-details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.CreDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.CreDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
+            },
+            "AddOrUpdateCreDetailAsyncByCarIdAndInput": {
+              "uniqueName": "AddOrUpdateCreDetailAsyncByCarIdAndInput",
+              "name": "AddOrUpdateCreDetailAsync",
+              "httpMethod": "POST",
+              "url": "api/app/logistics-details/{carId}/add-or-update-cre-details",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "input",
+                  "typeAsString": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto, WorkShopManagement.Application.Contracts",
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "input",
+                  "name": "input",
+                  "jsonName": null,
+                  "type": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                  "typeSimple": "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "WorkShopManagement.LogisticsDetails.CreDetailDto",
+                "typeSimple": "WorkShopManagement.LogisticsDetails.CreDetailDto"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.LogisticsDetails.ILogisticsDetailAppService"
             }
           }
         },
@@ -6477,6 +6713,54 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.ModelCategories.IModelCategoryAppService"
+            }
+          }
+        },
+        "WorkShopManagement.Controllers.ModelReports.ModelReportController": {
+          "controllerName": "ModelReport",
+          "controllerGroupName": "ModelReport",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.ModelReports.ModelReportController",
+          "interfaces": [],
+          "actions": {
+            "DownloadAsyncByCarId": {
+              "uniqueName": "DownloadAsyncByCarId",
+              "name": "DownloadAsync",
+              "httpMethod": "GET",
+              "url": "api/app/model-reports/{carId}/download",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Content.IRemoteStreamContent",
+                "typeSimple": "Volo.Abp.Content.IRemoteStreamContent"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Controllers.ModelReports.ModelReportController"
             }
           }
         },
@@ -7094,23 +7378,6 @@
               "name": "IRecallAppService",
               "methods": [
                 {
-                  "name": "GetAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "id",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "WorkShopManagement.Recalls.RecallDto",
-                    "typeSimple": "WorkShopManagement.Recalls.RecallDto"
-                  }
-                },
-                {
                   "name": "GetListByCarAsync",
                   "parametersOnMethod": [
                     {
@@ -7125,6 +7392,65 @@
                   "returnValue": {
                     "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
                     "typeSimple": "[WorkShopManagement.Recalls.RecallDto]"
+                  }
+                },
+                {
+                  "name": "AddOrUpdateRecallsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    },
+                    {
+                      "name": "inputs",
+                      "typeAsString": "System.Collections.Generic.List`1[[WorkShopManagement.Recalls.RecallDto, WorkShopManagement.Application.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib",
+                      "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                      "typeSimple": "[WorkShopManagement.Recalls.RecallDto]",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                    "typeSimple": "[WorkShopManagement.Recalls.RecallDto]"
+                  }
+                },
+                {
+                  "name": "GetExternalRecallsAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "carId",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                    "typeSimple": "[WorkShopManagement.Recalls.RecallDto]"
+                  }
+                },
+                {
+                  "name": "GetAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "id",
+                      "typeAsString": "System.Guid, System.Private.CoreLib",
+                      "type": "System.Guid",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "WorkShopManagement.Recalls.RecallDto",
+                    "typeSimple": "WorkShopManagement.Recalls.RecallDto"
                   }
                 },
                 {
@@ -7184,23 +7510,6 @@
                   "returnValue": {
                     "type": "System.Void",
                     "typeSimple": "System.Void"
-                  }
-                },
-                {
-                  "name": "GetRecallsFromExternalServiceAsync",
-                  "parametersOnMethod": [
-                    {
-                      "name": "carId",
-                      "typeAsString": "System.Guid, System.Private.CoreLib",
-                      "type": "System.Guid",
-                      "typeSimple": "string",
-                      "isOptional": false,
-                      "defaultValue": null
-                    }
-                  ],
-                  "returnValue": {
-                    "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.ExternalRecallDetailDto>",
-                    "typeSimple": "[WorkShopManagement.Recalls.ExternalRecallDetailDto]"
                   }
                 }
               ]
@@ -7412,9 +7721,9 @@
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.Recalls.IRecallAppService"
             },
-            "GetRecallsFromExternalServiceAsyncByCarId": {
-              "uniqueName": "GetRecallsFromExternalServiceAsyncByCarId",
-              "name": "GetRecallsFromExternalServiceAsync",
+            "GetExternalRecallsAsyncByCarId": {
+              "uniqueName": "GetExternalRecallsAsyncByCarId",
+              "name": "GetExternalRecallsAsync",
               "httpMethod": "GET",
               "url": "api/app/recalls/external/{carId}",
               "supportedVersions": [],
@@ -7443,8 +7752,65 @@
                 }
               ],
               "returnValue": {
-                "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.ExternalRecallDetailDto>",
-                "typeSimple": "[WorkShopManagement.Recalls.ExternalRecallDetailDto]"
+                "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                "typeSimple": "[WorkShopManagement.Recalls.RecallDto]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Recalls.IRecallAppService"
+            },
+            "AddOrUpdateRecallsAsyncByCarIdAndInputs": {
+              "uniqueName": "AddOrUpdateRecallsAsyncByCarIdAndInputs",
+              "name": "AddOrUpdateRecallsAsync",
+              "httpMethod": "POST",
+              "url": "api/app/recalls/{carId}/add-or-update-recalls",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "carId",
+                  "typeAsString": "System.Guid, System.Private.CoreLib",
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                },
+                {
+                  "name": "inputs",
+                  "typeAsString": "System.Collections.Generic.List`1[[WorkShopManagement.Recalls.RecallDto, WorkShopManagement.Application.Contracts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                  "typeSimple": "[WorkShopManagement.Recalls.RecallDto]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "carId",
+                  "name": "carId",
+                  "jsonName": null,
+                  "type": "System.Guid",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                },
+                {
+                  "nameOnMethod": "inputs",
+                  "name": "inputs",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                  "typeSimple": "[WorkShopManagement.Recalls.RecallDto]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<WorkShopManagement.Recalls.RecallDto>",
+                "typeSimple": "[WorkShopManagement.Recalls.RecallDto]"
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.Recalls.IRecallAppService"
@@ -7463,6 +7829,48 @@
               "type": "WorkShopManagement.Stages.IStageAppService",
               "name": "IStageAppService",
               "methods": [
+                {
+                  "name": "SetUseProductionClassicViewAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "useClassicView",
+                      "typeAsString": "System.Boolean, System.Private.CoreLib",
+                      "type": "System.Boolean",
+                      "typeSimple": "boolean",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.Void",
+                    "typeSimple": "System.Void"
+                  }
+                },
+                {
+                  "name": "GetUseProductionClassicViewAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "System.Boolean",
+                    "typeSimple": "boolean"
+                  }
+                },
+                {
+                  "name": "GetAllAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "filter",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": true,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Stages.StageDto>",
+                    "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Stages.StageDto>"
+                  }
+                },
                 {
                   "name": "GetStageAsync",
                   "parametersOnMethod": [
@@ -7487,11 +7895,56 @@
                     "type": "System.Collections.Generic.List<WorkShopManagement.Stages.StageBayDto>",
                     "typeSimple": "[WorkShopManagement.Stages.StageBayDto]"
                   }
+                },
+                {
+                  "name": "GetListAsExcelAsync",
+                  "parametersOnMethod": [],
+                  "returnValue": {
+                    "type": "Volo.Abp.Content.IRemoteStreamContent",
+                    "typeSimple": "Volo.Abp.Content.IRemoteStreamContent"
+                  }
                 }
               ]
             }
           ],
           "actions": {
+            "GetAllAsyncByFilter": {
+              "uniqueName": "GetAllAsyncByFilter",
+              "name": "GetAllAsync",
+              "httpMethod": "GET",
+              "url": "api/app/stages/all-stages",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "filter",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": true,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "filter",
+                  "name": "filter",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Stages.StageDto>",
+                "typeSimple": "Volo.Abp.Application.Dtos.ListResultDto<WorkShopManagement.Stages.StageDto>"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Stages.IStageAppService"
+            },
             "GetStageAsyncByInput": {
               "uniqueName": "GetStageAsyncByInput",
               "name": "GetStageAsync",
@@ -7591,6 +8044,145 @@
               },
               "allowAnonymous": null,
               "implementFrom": "WorkShopManagement.Stages.IStageAppService"
+            },
+            "SetUseProductionClassicViewAsyncByUseClassicView": {
+              "uniqueName": "SetUseProductionClassicViewAsyncByUseClassicView",
+              "name": "SetUseProductionClassicViewAsync",
+              "httpMethod": "POST",
+              "url": "api/app/stages/production-classic-view/{useClassicView}",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "useClassicView",
+                  "typeAsString": "System.Boolean, System.Private.CoreLib",
+                  "type": "System.Boolean",
+                  "typeSimple": "boolean",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "useClassicView",
+                  "name": "useClassicView",
+                  "jsonName": null,
+                  "type": "System.Boolean",
+                  "typeSimple": "boolean",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": [],
+                  "bindingSourceId": "Path",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Stages.IStageAppService"
+            },
+            "GetUseProductionClassicViewAsync": {
+              "uniqueName": "GetUseProductionClassicViewAsync",
+              "name": "GetUseProductionClassicViewAsync",
+              "httpMethod": "GET",
+              "url": "api/app/stages/production-classic-view",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Boolean",
+                "typeSimple": "boolean"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Stages.IStageAppService"
+            },
+            "GetListAsExcelAsync": {
+              "uniqueName": "GetListAsExcelAsync",
+              "name": "GetListAsExcelAsync",
+              "httpMethod": "POST",
+              "url": "api/app/stages/excel",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "Volo.Abp.Content.IRemoteStreamContent",
+                "typeSimple": "Volo.Abp.Content.IRemoteStreamContent"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Stages.IStageAppService"
+            }
+          }
+        },
+        "WorkShopManagement.Controllers.Storage.SignedUrlController": {
+          "controllerName": "SignedUrl",
+          "controllerGroupName": "SignedUrl",
+          "isRemoteService": true,
+          "isIntegrationService": false,
+          "apiVersion": null,
+          "type": "WorkShopManagement.Controllers.Storage.SignedUrlController",
+          "interfaces": [
+            {
+              "type": "WorkShopManagement.Storage.ISignedUrlAppService",
+              "name": "ISignedUrlAppService",
+              "methods": [
+                {
+                  "name": "GetSignedReadUrlAsync",
+                  "parametersOnMethod": [
+                    {
+                      "name": "gcsUriOrObjectName",
+                      "typeAsString": "System.String, System.Private.CoreLib",
+                      "type": "System.String",
+                      "typeSimple": "string",
+                      "isOptional": false,
+                      "defaultValue": null
+                    }
+                  ],
+                  "returnValue": {
+                    "type": "System.String",
+                    "typeSimple": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "actions": {
+            "GetSignedReadUrlAsyncByGcsUriOrObjectName": {
+              "uniqueName": "GetSignedReadUrlAsyncByGcsUriOrObjectName",
+              "name": "GetSignedReadUrlAsync",
+              "httpMethod": "GET",
+              "url": "signed-url/sign",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "gcsUriOrObjectName",
+                  "typeAsString": "System.String, System.Private.CoreLib",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "gcsUriOrObjectName",
+                  "name": "gcsUriOrObjectName",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.String",
+                "typeSimple": "string"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "WorkShopManagement.Storage.ISignedUrlAppService"
             }
           }
         },
@@ -14287,6 +14879,67 @@
         }
       ]
     },
+    "Volo.Abp.Auditing.EntityChangeType": {
+      "baseType": "System.Enum",
+      "isEnum": true,
+      "enumNames": [
+        "Created",
+        "Updated",
+        "Deleted"
+      ],
+      "enumValues": [
+        0,
+        1,
+        2
+      ],
+      "genericArguments": null,
+      "properties": null
+    },
+    "Volo.Abp.Content.IRemoteStreamContent": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "FileName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ContentType",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ContentLength",
+          "jsonName": null,
+          "type": "System.Int64?",
+          "typeSimple": "number?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "Volo.Abp.FeatureManagement.FeatureDto": {
       "baseType": null,
       "isEnum": false,
@@ -19659,8 +20312,8 @@
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
-          "minimum": "1886",
-          "maximum": "2100",
+          "minimum": "1900",
+          "maximum": "2147483647",
           "regex": null
         },
         {
@@ -19762,9 +20415,9 @@
         {
           "name": "Port",
           "jsonName": null,
-          "type": "WorkShopManagement.Cars.Port?",
-          "typeSimple": "enum?",
-          "isRequired": true,
+          "type": "WorkShopManagement.Cars.Port",
+          "typeSimple": "enum",
+          "isRequired": false,
           "minLength": null,
           "maxLength": null,
           "minimum": null,
@@ -20079,11 +20732,11 @@
       "isEnum": true,
       "enumNames": [
         "K2",
+        "TerrenceRoad",
         "MoviesLoan",
         "ThirdPartyLoan",
         "OtherLoan",
-        "EW",
-        "TerrenceRd"
+        "EW"
       ],
       "enumValues": [
         1,
@@ -20192,8 +20845,8 @@
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
-          "minimum": "1886",
-          "maximum": "2100",
+          "minimum": null,
+          "maximum": null,
           "regex": null
         },
         {
@@ -20606,18 +21259,6 @@
           "jsonName": null,
           "type": "WorkShopManagement.Cars.StorageLocations.StorageLocation?",
           "typeSimple": "enum?",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "Car",
-          "jsonName": null,
-          "type": "WorkShopManagement.Cars.CarDto",
-          "typeSimple": "WorkShopManagement.Cars.CarDto",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -21828,6 +22469,225 @@
         },
         {
           "name": "Path",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.EntityChanges.EntityChangeDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "AuditLogId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "TenantId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ChangeTime",
+          "jsonName": null,
+          "type": "System.DateTime",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "ChangeType",
+          "jsonName": null,
+          "type": "Volo.Abp.Auditing.EntityChangeType",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityTenantId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityId",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityTypeFullName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PropertyChanges",
+          "jsonName": null,
+          "type": "[WorkShopManagement.EntityChanges.EntityPropertyChangeDto]",
+          "typeSimple": "[WorkShopManagement.EntityChanges.EntityPropertyChangeDto]",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.EntityChanges.EntityChangeWithUsernameDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "EntityChange",
+          "jsonName": null,
+          "type": "WorkShopManagement.EntityChanges.EntityChangeDto",
+          "typeSimple": "WorkShopManagement.EntityChanges.EntityChangeDto",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "UserName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
+    "WorkShopManagement.EntityChanges.EntityPropertyChangeDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "TenantId",
+          "jsonName": null,
+          "type": "System.Guid?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "EntityChangeId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "NewValue",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "OriginalValue",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PropertyName",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "PropertyTypeFullName",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -25940,6 +26800,51 @@
         }
       ]
     },
+    "WorkShopManagement.LogisticsDetails.AddOrUpdateCreDetailDto": {
+      "baseType": null,
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "CreStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.CreStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreSubmissionDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RvsaNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "WorkShopManagement.LogisticsDetails.AddOrUpdateDeliverDetailDto": {
       "baseType": null,
       "isEnum": false,
@@ -26237,6 +27142,63 @@
         }
       ]
     },
+    "WorkShopManagement.LogisticsDetails.CreDetailDto": {
+      "baseType": "Volo.Abp.Application.Dtos.EntityDto<System.Guid>",
+      "isEnum": false,
+      "enumNames": null,
+      "enumValues": null,
+      "genericArguments": null,
+      "properties": [
+        {
+          "name": "CarId",
+          "jsonName": null,
+          "type": "System.Guid",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreStatus",
+          "jsonName": null,
+          "type": "WorkShopManagement.Cars.CreStatus",
+          "typeSimple": "enum",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "CreSubmissionDate",
+          "jsonName": null,
+          "type": "System.DateTime?",
+          "typeSimple": "string?",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
+          "name": "RvsaNumber",
+          "jsonName": null,
+          "type": "System.String",
+          "typeSimple": "string",
+          "isRequired": false,
+          "minLength": 0,
+          "maxLength": 64,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        }
+      ]
+    },
     "WorkShopManagement.LogisticsDetails.LogisticsDetailDto": {
       "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
       "isEnum": false,
@@ -26305,7 +27267,7 @@
           "regex": null
         },
         {
-          "name": "RsvaNumber",
+          "name": "RvsaNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -26506,7 +27468,7 @@
           "regex": null
         },
         {
-          "name": "RsvaNumber",
+          "name": "RvsaNumber",
           "jsonName": null,
           "type": "System.String",
           "typeSimple": "string",
@@ -27181,7 +28143,7 @@
         }
       ]
     },
-    "WorkShopManagement.Recalls.ExternalRecallDetailDto": {
+    "WorkShopManagement.Recalls.RecallDto": {
       "baseType": null,
       "isEnum": false,
       "enumNames": null,
@@ -27189,9 +28151,9 @@
       "genericArguments": null,
       "properties": [
         {
-          "name": "Title",
+          "name": "Id",
           "jsonName": null,
-          "type": "System.String",
+          "type": "System.Guid",
           "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
@@ -27200,51 +28162,6 @@
           "maximum": null,
           "regex": null
         },
-        {
-          "name": "Make",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "ManufacturerId",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        },
-        {
-          "name": "RiskDescription",
-          "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
-          "isRequired": false,
-          "minLength": null,
-          "maxLength": null,
-          "minimum": null,
-          "maximum": null,
-          "regex": null
-        }
-      ]
-    },
-    "WorkShopManagement.Recalls.RecallDto": {
-      "baseType": "Volo.Abp.Application.Dtos.FullAuditedEntityDto<System.Guid>",
-      "isEnum": false,
-      "enumNames": null,
-      "enumValues": null,
-      "genericArguments": null,
-      "properties": [
         {
           "name": "Title",
           "jsonName": null,
@@ -27330,6 +28247,18 @@
           "regex": null
         },
         {
+          "name": "IsExternal",
+          "jsonName": null,
+          "type": "System.Boolean",
+          "typeSimple": "boolean",
+          "isRequired": false,
+          "minLength": null,
+          "maxLength": null,
+          "minimum": null,
+          "maximum": null,
+          "regex": null
+        },
+        {
           "name": "CarId",
           "jsonName": null,
           "type": "System.Guid",
@@ -27342,10 +28271,10 @@
           "regex": null
         },
         {
-          "name": "Vin",
+          "name": "TempFiles",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
+          "typeSimple": "[WorkShopManagement.EntityAttachments.FileAttachments.FileAttachmentDto]",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -27742,10 +28671,10 @@
           "regex": null
         },
         {
-          "name": "Vin",
+          "name": "Stage",
           "jsonName": null,
-          "type": "System.String",
-          "typeSimple": "string",
+          "type": "WorkShopManagement.Cars.Stages.Stage",
+          "typeSimple": "enum",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
@@ -27754,10 +28683,10 @@
           "regex": null
         },
         {
-          "name": "Stage",
+          "name": "Vin",
           "jsonName": null,
-          "type": "WorkShopManagement.Cars.Stages.Stage",
-          "typeSimple": "enum",
+          "type": "System.String",
+          "typeSimple": "string",
           "isRequired": false,
           "minLength": null,
           "maxLength": null,
