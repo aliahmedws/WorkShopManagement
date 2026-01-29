@@ -135,9 +135,9 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
 
 
         AddSection(report, "Model Report Vehicle Details",
-            ("Make", make), // from externla api
+            ("Make", make),
             ("Model", model),
-            ("Trim", trim), // from externla api
+            ("Trim", trim),
             ("Vehicle Category", vehicleCategory),
             ("VIN", car.Vin),
             ("Build Date", specs?.Attributes?.Year), //need to confirm
@@ -148,7 +148,7 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
 
         AddSection(report, "Model Report Author Information",
             ("Name", car.Owner?.Name),
-            ("Addres", "N/A"),
+            ("Address", "N/A"),
             ("Email", car.Owner?.Email),
             ("Contact", car.Owner?.ContactId)
         );

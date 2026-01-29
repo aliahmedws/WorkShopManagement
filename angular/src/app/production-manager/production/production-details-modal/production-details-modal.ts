@@ -340,29 +340,20 @@ export class ProductionDetailsModal {
         const fileName = `ModelReport_${vin}.pdf`;
 
         const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
 
-        const newWindow = window.open(url, '_blank');
-
-        if (newWindow) {
-          const a = newWindow.document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          a.click();
-        } else {
-          console.error('Failed to open the new window');
-        }
-
+        // cleanup
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
-      error: (err) => {
-         console.error("Download failed", err);
-         this.downloadingModelReport = false;
+      error: () => {
+         this.downloadingModelReport = false; 
       },
       complete: () => {
         this.downloadingModelReport = false;
       },
     });
-}
-
-
+  }
 }
