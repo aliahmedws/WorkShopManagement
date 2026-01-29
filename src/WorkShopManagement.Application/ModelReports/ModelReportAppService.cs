@@ -59,84 +59,129 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
         );
     }
 
+    private static string NA(string? v) => string.IsNullOrWhiteSpace(v) ? "N/A" : v.Trim();
+    private static string NADate(DateTime? v) => v.HasValue ? v.Value.ToString("yyyy-MM-dd") : "N/A";
+    private static string NAList(IEnumerable<string>? v) => v == null ? "N/A" : NA(string.Join(", ", v.Where(x => !string.IsNullOrWhiteSpace(x))));
+
+    private static void AddSection(ModelReportDto report, string title, params (string Parameter, string? Value)[] rows)
+    {
+        var section = new ModelReportSectionDto { Title = title };
+        foreach (var (parameter, value) in rows)
+        {
+            section.Rows.Add(new ModelReportRowDto { Parameter = parameter, Value = NA(value) });
+        }
+        report.Sections.Add(section);
+    }
+
+    private static string AppendShortCodeToModel(string shortCode, string modelName)
+    {
+        if (string.IsNullOrWhiteSpace(modelName))
+            return "N/A";
+        return $"{shortCode}_{modelName}".ToUpper();
+    }
+
+    //private static double ConvertKgToPounds(double kg)
+    //{
+    //    return kg * 2.205;
+    //}
+
+    //private static double ConvertInchesToMm(double inches)
+    //{
+    //    return inches * 25.4;
+    //}
+
+    //private static double ParseToDouble(string? value)
+    //{
+    //    if (string.IsNullOrWhiteSpace(value))
+    //        return 0;
+
+    //    var cleanValue = new string(value.Where(c => char.IsDigit(c) || c == '.')).ToArray();
+
+    //    return double.TryParse(value, out double result) ? result : 0;
+    //}
+
     private static ModelReportDto BuildReport(Car car, SpecsResponseDto? specs, DateTime now)
     {
-        static string NA(string? v) => string.IsNullOrWhiteSpace(v) ? "N/A" : v.Trim();
-        static string NADate(DateTime? v) => v.HasValue ? v.Value.ToString("yyyy-MM-dd") : "N/A";
-        static string NAList(IEnumerable<string>? v)
-            => v == null ? "N/A" : NA(string.Join(", ", v.Where(x => !string.IsNullOrWhiteSpace(x))));
-
         var report = new ModelReportDto
         {
             Title = "Model Report",
             GeneratedAt = now
         };
 
-        void AddSection(string title, params (string P, string? V)[] rows)
-        {
-            var section = new ModelReportSectionDto { Title = title };
+        // Common properties that will be used multiple times
+        var make = specs?.Attributes?.Make;
+        var model = specs?.Attributes?.Model;
+        var trim = specs?.Attributes?.Trim;
+        var vehicleCategory = specs?.Attributes?.Category;
+        var year = specs?.Attributes?.Year;
+        var style = specs?.Attributes?.Style;
+        var fuelType = specs?.Attributes?.FuelType;
+        var engine = specs?.Attributes?.Engine;
+        var engineCylinders = specs?.Attributes?.EngineCylinders;
+        var drivetrain = specs?.Attributes?.Drivetrain;
+        var widthExcludingMirrors = specs?.Attributes?.OverallWidth;
+        var overAllHeight = specs?.Attributes?.OverallHeight;
+        var wheelbase = specs?.Attributes?.WheelbaseLength;
+        var groundClearance = specs?.Attributes?.GroundClearance;
+        //var otherBatteryInfo = specs?.Attributes?.
+        //var driveType = specs?.Attributes?.
+        string grossVehicleMassStr = specs?.Attributes?.GrossVehicleWeightRating ?? "N/A";
+        //double grossVehicleMassKg = ParseToDouble(grossVehicleMassStr);
+        //double grossVehicleMassPounds = ConvertKgToPounds(grossVehicleMassKg);
 
-            foreach (var (p, v) in rows)
-                section.Rows.Add(new ModelReportRowDto { Parameter = p, Value = NA(v) });
-
-            report.Sections.Add(section);
-        }
+        string lengthStr = specs?.Attributes?.OverallLength ?? "N/A";
+        //double lengthInches = ParseToDouble(lengthStr);
+        //double lengthMm = ConvertInchesToMm(lengthInches);
 
 
-        AddSection("Model Report Vehicle Details",
-            ("Make", "N/A"), // from externla api
-            ("Model", car.Model?.Name),
-            ("Trim", "N/A"), // from externla api
-            ("Vehicle Category", "N/A"),
+        AddSection(report, "Model Report Vehicle Details",
+            ("Make", make), // from externla api
+            ("Model", model),
+            ("Trim", trim), // from externla api
+            ("Vehicle Category", vehicleCategory),
             ("VIN", car.Vin),
-            ("Build Date", NADate(car.StartDate)), //need to confirm
-            ("Model Report Version","N/A"), //need to confirm
-            ("SEVS Entry Number","N/A"), //need to confirm
-            //("Color", car.Color),
-            ("Model Report Variant", car.Model?.ModelCategory?.Name)
+            ("Build Date", specs?.Attributes?.Year), //need to confirm
+            ("Model Report Version", "N/A"), //need to confirm
+            ("SEVS Entry Number", "N/A"), //need to confirm
+            ("Model Report Variant", "N/A")
         );
 
-        AddSection("Model Report Author Information",
+        AddSection(report, "Model Report Author Information",
             ("Name", car.Owner?.Name),
             ("Addres", "N/A"),
             ("Email", car.Owner?.Email),
             ("Contact", car.Owner?.ContactId)
         );
 
-        AddSection("Model Report Documentation",
-           ("Model Report Vehicle Scope", "N/A"),
-           ("Model Report Work Instructions", "N/A"),
-           ("Model Report Verification Checklist", "N/A"),
-           ("Applicable To", "N/A")
-       );
+        AddDocumentationSection(report, specs);
 
-        AddSection("Model Report Pre-Modification Scope",
+        AddSection(report, "Model Report Pre-Modification Scope",
        ("Date Performed", "N/A"),
-       ("Make", "N/A"),  //from external api
-       ("Model", car.Model?.Name),
-       ("Trim", "N/A"), // from externla api
+       ("Make", make),  //from external api
+       ("Model", model),
+       ("Trim", trim), // from externla api
 
-       ("Vehicle Category", car.Model?.ModelCategory?.Name),
+       ("Vehicle Category", vehicleCategory),
        ("Body Shape", "N/A"),
        ("Build Date Range", "N/A"),
-       ("Gross Vehicle Mass", "N/A"),
+       ("Gross Vehicle Mass", grossVehicleMassStr),
        ("Unladen Mass", "N/A"),
        ("Steering Location", "N/A"),
-       ("Work Instruction Unique Document", "N/A"),
-       ("Report Type", "N/A"),
+       ("Work Instruction Unique Document", $"WI_{model?.ToUpper()}"),
+       ("Report Type", "SEVS"),
        ("SEVS Entry Number", "N/A"),
        ("SEVS Steering Location", "N/A"),
        ("# Front Seats", "N/A"),
        ("# Rear Seats", "N/A"),
        ("# Side Doors", "N/A"),
        ("# Rear Doors", "N/A"),
-       ("Length", "N/A"),
-       ("Width (excluding mirrors)", "N/A"),
-       ("Width (including mirrors)", "N/A"),
-       ("Height", "N/A"),
-       ("Wheelbase", "N/A"),
+       ("Length", lengthStr),
+       ("Width (excluding mirrors)", widthExcludingMirrors),
+       ("Width (including mirrors)", widthExcludingMirrors),
+       ("Height", overAllHeight),
+       ("Wheelbase", wheelbase),
        ("Rear Overhang", "N/A"),
-       ("Running Clearance", "N/A"),
+       ("Running Clearance", groundClearance),
        ("Motive Power", "N/A"),
        ("Motor Configuration", "N/A"),
        ("Battery Range", "N/A"),
@@ -156,18 +201,18 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
    );
 
 
-        AddSection("Model Report Recall & Rectification Check",
+        AddSection(report, "Model Report Recall & Rectification Check",
           ("Identifying Outstanding Recalls", "N/A"),
           ("Sourcing Replacement Parts", "N/A"),
           ("Recall Rectification", "N/A")
       );
 
-        AddSection("Model Report Damage & Corrosion Check",
+        AddSection(report, "Model Report Damage & Corrosion Check",
           ("Levels Preventing Verification", "N/A"),
           ("Acceptable Levels of Damage", "N/A"),
           ("Body Alignment Check", "N/A")
       );
-        AddSection("Model Report Deterioration Check & Rectification",
+        AddSection(report, "Model Report Deterioration Check & Rectification",
           ("Headlamp", "N/A"),
           ("Taillamp", "N/A"),
           ("CHMSL", "N/A"),
@@ -192,19 +237,19 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
           ("Brake Rotors", "N/A")
       );
 
-        AddSection("Model Report Odometer Check",
+        AddSection(report, "Model Report Odometer Check",
         ("Signs of Odometer Tampering", "N/A"),
         ("Odometer Reading", "N/A")
         );
 
-        AddSection("Model Report Documentation",
+        AddSection(report, "Model Report Documentation",
            ("Model Report Vehicle Scope", "N/A"),
            ("Model Report Work Instructions", "N/A"),
            ("Model Report Verification Checklist", "N/A"),
            ("Applicable To", "N/A")
        );
 
-        AddSection("Model Report Component Check",
+        AddSection(report, "Model Report Component Check",
            ("Headlamp (Left)", "N/A"),
            ("Headlamp (Right)", "N/A"),
            ("Taillamp (Left)", "N/A"),
@@ -245,7 +290,7 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
        );
 
 
-        AddSection("Model Report Manufacturing Steps",
+        AddSection(report, "Model Report Manufacturing Steps",
            ("ADR 01/00", "N/A"),
            ("ADR 04/06", "N/A"),
            ("ADR 06/00", "N/A"),
@@ -256,7 +301,7 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
            ("ADR 90/00", "N/A")
        );
 
-        AddSection("Model Report Manufacturing Checks",
+        AddSection(report, "Model Report Manufacturing Checks",
             ("ADR 01/00", "N/A"),
             ("ADR 04/06", "N/A"),
             ("ADR 06/00", "N/A"),
@@ -290,31 +335,23 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
             report.Sections.Add(section);
         }
 
-        //AddSection("External Specs (CarsXE) - Meta",
-        //    ("Success", specs.Success.ToString()),
-        //    ("Message", specs.Message),
-        //    ("Timestamp", specs.Timestamp)
-        //);
-
-        //if (specs.Input != null)
-        //{
-        //    AddSection("External Specs (CarsXE) - Input",
-        //        ("Input (JSON)", JsonSerializer.Serialize(specs.Input))
-        //    );
-        //}
-
         var a = specs.Attributes;
         if (a != null)
         {
-            AddSection("Model Report Pre-Modification Scope",
+            string grossVehicleMassStr = a.GrossVehicleWeightRating!;
+            string vehicleCategory = a.Category;
+            //double grossVehicleMassKg = ParseToDouble(grossVehicleMassStr); // Parse and safely convert the value
+            //double grossVehicleMassPounds = ConvertKgToPounds(grossVehicleMassKg);
+
+            AddSection("Model Report Post-Modification Scope",
                 ("Date Performed", "N/A"),
                 ("Make", a.Make),
                 ("Model", a.Model),
                 ("Trim", a.Trim),
-                ("Vehicle Category", "N/A"),
+                ("Vehicle Category", vehicleCategory),
                 ("Body Shape", "N/A"),
                 ("Build Date Range", "N/A"),
-                ("Gross Vehicle Mass", "N/A"),
+                ("Gross Vehicle Mass", grossVehicleMassStr),
                 ("Unladen Mass", "N/A"),
                 ("Steering Location", "N/A"),
                 ("Work Instruction Unique Document", "N/A"),
@@ -432,6 +469,19 @@ public class ModelReportAppService : ApplicationService, IModelReportAppService
                 ("Size", a.Size),
                 ("Category", a.Category)
             );
-        }          
+        }
+    }
+
+    private static void AddDocumentationSection(ModelReportDto report, SpecsResponseDto? specs)
+    {
+        // Safely get the model name from specs
+        string model = specs?.Attributes?.Model ?? "N/A"; // Default to "N/A" if model is null
+
+        AddSection(report, "Model Report Documentation",
+            ("Model Report Vehicle Scope", AppendShortCodeToModel("VS", model)),
+            ("Model Report Work Instructions", AppendShortCodeToModel("WI", model)),
+            ("Model Report Verification Checklist", AppendShortCodeToModel("VC", model)),
+            ("Applicable To", "N/A")
+        );
     }
 }

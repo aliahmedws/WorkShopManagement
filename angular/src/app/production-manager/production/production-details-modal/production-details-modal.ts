@@ -103,7 +103,7 @@ export class ProductionDetailsModal {
 
   form?: FormGroup;
 
-  open(): void {
+  open() {
     this.details = undefined;
     this.loadSelectedCar();
     this.loadDetails();
@@ -127,8 +127,6 @@ export class ProductionDetailsModal {
   close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
-    // this.form = undefined;
-    // this.carId = undefined;
 
     this.allowMovetoPostProduction = true;
     this.allowMovetoAwaitingTransport = true;
@@ -142,19 +140,8 @@ export class ProductionDetailsModal {
     this.carBayService.get(this.carId).subscribe((res: CarBayDto) => {
       this.details = res;
       this.buildForm();
-
-      //  this.loadCurrentStage();
     });
   }
-
-  //  private loadCurrentStage(): void {
-  //   if (!this.carId) return;
-    
-  //   this.carService.get(this.carId).subscribe(car => {
-  //     this.selectedCar = car;
-  //     this.currentStage = car.stage; // Assuming CarDto has stage property
-  //   });
-  // }
 
   openListItem(cl: any): void {
     if (!this.carId) return;
@@ -342,7 +329,6 @@ export class ProductionDetailsModal {
     this.stageChanged.emit(this.carId!);
   }
 
-
   downloadModelReport(): void {
     if (!this.carId) return;
 
@@ -354,21 +340,29 @@ export class ProductionDetailsModal {
         const fileName = `ModelReport_${vin}.pdf`;
 
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
 
-        // cleanup
+        const newWindow = window.open(url, '_blank');
+
+        if (newWindow) {
+          const a = newWindow.document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          a.click();
+        } else {
+          console.error('Failed to open the new window');
+        }
+
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
-      error: () => {
-         this.downloadingModelReport = false; 
+      error: (err) => {
+         console.error("Download failed", err);
+         this.downloadingModelReport = false;
       },
       complete: () => {
         this.downloadingModelReport = false;
       },
     });
-  }
+}
+
 
 }
