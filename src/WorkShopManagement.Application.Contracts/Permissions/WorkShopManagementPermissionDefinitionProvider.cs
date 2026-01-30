@@ -17,8 +17,10 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         carPermissions.AddChild(WorkShopManagementPermissions.Cars.Create, L("Permission:Create"));
         carPermissions.AddChild(WorkShopManagementPermissions.Cars.Edit, L("Permission:Edit"));
         carPermissions.AddChild(WorkShopManagementPermissions.Cars.Delete, L("Permission:Delete"));
+        carPermissions.AddChild(WorkShopManagementPermissions.Cars.Images, L("Permission:Images"));
 
         var carModelsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarModels.Default, L("Permission:CarModels"));
+        var variantsPermission = myGroup.AddPermission(WorkShopManagementPermissions.Variants.Default, L("Permission:Variants"));
 
         var checkListsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CheckLists.Default, L("Permission:CheckLists"));
         checkListsPermission.AddChild(WorkShopManagementPermissions.CheckLists.Create, L("Permission:CheckLists.Create"));
@@ -80,6 +82,18 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         //arrivalEstimatesPermission.AddChild(WorkShopManagementPermissions.ArrivalEstimates.Delete, L("Permission:ArrivalEstimates.Delete"));
 
         myGroup.AddPermission(WorkShopManagementPermissions.AuditLogs.Default, L("Permission:AuditLogs"));
+        myGroup.AddPermission(WorkShopManagementPermissions.ExportExcel.Default, L("Permission:ExportExcel"));
+
+
+
+        var stagesPermission = myGroup.AddPermission(WorkShopManagementPermissions.Stages.Default, L("Permission:Stages"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.Incoming, L("Permission:Stages.Incoming"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.External, L("Permission:Stages.External"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.SCDWarehouse, L("Permission:Stages.SCDWarehouse"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.Production, L("Permission:Stages.Production"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.PostProduction, L("Permission:Stages.PostProduction"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.AwaitingTransport, L("Permission:Stages.AwaitingTransport"));
+        stagesPermission.AddChild(WorkShopManagementPermissions.Stages.Dispatched, L("Permission:Stages.Dispatched"));
     }
 
     private static LocalizableString L(string name)

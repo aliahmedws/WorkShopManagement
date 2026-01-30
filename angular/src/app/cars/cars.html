@@ -24,7 +24,7 @@
                                         (click)="edit(row.id)">
                                         {{ '::Edit' | abpLocalization }}
                                     </button>
-                                    <button ngbDropdownItem (click)="showImages(row)">
+                                    <button *abpPermission="'WorkShopManagement.Cars.Images'" ngbDropdownItem (click)="showImages(row)">
                                         {{ '::Images' | abpLocalization }}
                                     </button>
 

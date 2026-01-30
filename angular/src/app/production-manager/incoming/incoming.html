@@ -72,7 +72,7 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Notes' | abpLocalization" [canAutoResize]="false" [width]="65"
+            <ngx-datatable-column *abpPermission="'WorkShopManagement.Cars.Edit'" [name]="'::Notes' | abpLocalization" [canAutoResize]="false" [width]="65"
                 [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center text-{{getNoteColor(row)}}">
@@ -81,7 +81,7 @@
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false"
+            <ngx-datatable-column *abpPermission="'WorkShopManagement.Cars.Edit'" [name]="'::Est. Release' | abpLocalization" prop="estimatedRelease" [sortable]="false"
                 [canAutoResize]="false" [width]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
 
@@ -90,7 +90,7 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::QualityGates' | abpLocalization" [sortable]="false" [canAutoResize]="false"
+            <ngx-datatable-column *abpPermission="'WorkShopManagement.QualityGates.Edit'" [name]="'::QualityGates' | abpLocalization" [sortable]="false" [canAutoResize]="false"
                 [width]="100">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <ng-container *ngIf="row?.carBayId; else noBay">
@@ -107,7 +107,7 @@
                     </ng-template>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false"
+            <ngx-datatable-column *abpPermission="'WorkShopManagement.Issues'" [name]="'::Issues' | abpLocalization" prop="issueStatus" [sortable]="false"
                 [canAutoResize]="false" [width]="70">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="text-center text-{{mapIssueStatusColor(row)}}">
@@ -115,7 +115,7 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
+            <ngx-datatable-column *abpPermission="'WorkShopManagement.LogisticsDetails'" [name]="'::CRE' | abpLocalization" prop="creStatus" [sortable]="false">
                 <ng-template let-row="row" ngx-datatable-cell-template>
                     <div class="badge bg-{{getCreStatusColor(row)}} link" (click)="openCreDetailModal(row)">
                         {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : 'CRE' }}

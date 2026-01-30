@@ -1,4 +1,4 @@
-<button class="btn btn-sm btn-outline-success me-2" (click)="export()">
+<button *abpPermission="'WorkShopManagement.ExportExcel'"  class="btn btn-sm btn-outline-success me-2" (click)="export()">
     <i class="fas fa-cloud-download me-1"></i>
     {{ '::Export Excel' | abpLocalization }}
 </button>

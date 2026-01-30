@@ -19,6 +19,7 @@
     "Permission:Create": "Create",
     "Permission:Edit": "Edit",
     "Permission:Delete": "Delete",
+    "Permission:Images": "Images",
     "Permission:QualityGates": "Quality Gate Management",
     "Permission:QualityGates.Create": "Create",
     "Permission:QualityGates.Edit": "Edit",
@@ -29,6 +30,7 @@
     "Permission:CheckInReports.Delete": "Delete",
 
     "Permission:CarModels": "Vehicle Models",
+    "Permission:Variants": "Variants",
     "Permission:CheckLists": "Check Lists",
     "Permission:CheckLists.Create": "Create",
     "Permission:CheckLists.Edit": "Edit",
@@ -59,6 +61,14 @@
     "Permission:ArrivalEstimates.Create": "Create",
     "Permission:ArrivalEstimates.Edit": "Edit",
     "Permission:ProductionManager": "Production Manager",
+    "Permission:Stages": "Stages",
+    "Permission:Stages.Incoming": "Incoming",
+    "Permission:Stages.External": "External",
+    "Permission:Stages.SCDWarehouse": "SCD Warehouse",
+    "Permission:Stages.Production": "Production",
+    "Permission:Stages.PostProduction": "Post Production",
+    "Permission:Stages.AwaitingTransport": "Awaiting Transport",
+    "Permission:Stages.Dispatched": "Dispatched",
 
     "Enum:Stage.1": "Incoming Vehicle",
     "Enum:Stage.2": "Dealer Warehouse (External)",
@@ -511,6 +521,7 @@
     "Enum:Stage.7.HelpMessage": "The vehicle has been dispatched",
     "QualityGates": "Quality Gates",
     "Permission:AuditLogs": "Audit Logs",
+    "Permission:ExportExcel": "Export Excel",
     "CreDetailsUpdated": "CRE Details Updated!",
     "QualityGates.HelpMessageHtml": "<div class=\"text-start\"><p class=\"mb-3\"><span class=\"fw-bold text-success\">Green:</span> No open findings. All items within specification. Vehicle is cleared to proceed.</p><p class=\"mb-3\"><span class=\"fw-bold text-danger\">Red:</span> No Blue findings, but one or more Red findings present. Vehicle may progress only if the internal customer accepts the issue. Status remains Not OK for external customer and must be resolved prior to delivery.</p><p class=\"mb-3\"><span class=\"fw-bold text-warning\">Yellow:</span> No Blue or Red findings, but one or more Yellow findings present. Vehicle may proceed to the next internal process. Issue must still be documented and closed before PDI.</p><p class=\"mb-0\"><span class=\"fw-bold text-primary\">Blue:</span> One or more Blue findings present. Vehicle is not permitted to proceed.</p></div>"
   }

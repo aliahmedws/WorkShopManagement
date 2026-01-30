@@ -27,7 +27,7 @@
                     (click)="delete(row.id)">
                     {{ '::Delete' | abpLocalization }}
                   </button>
-                  <button *abpPermission="'WorkShopManagement.CheckLists.Delete'" ngbDropdownItem
+                  <button *abpPermission="'WorkShopManagement.ListItems'" ngbDropdownItem
                     (click)="addListItem(row.id)">
                     {{ '::ListItems' | abpLocalization }}
                   </button>

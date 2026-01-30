@@ -16,7 +16,6 @@ import {
 } from 'src/app/shared/utils/stage-colors.utils';
 import { ProductionActions } from '../production-actions/production-actions';
 import { Recalls } from 'src/app/recalls/recalls';
-import { CheckInReport } from 'src/app/check-in-reports/check-in-report';
 import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-modal/check-in-report-modal';
 import { Production } from '../production/production';
 import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal';

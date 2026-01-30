@@ -1,5 +1,5 @@
 @if (useClassicView !== undefined) {
-<abp-page>
+<abp-page *abpPermission="'WorkShopManagement.Stages'">
     @if(!useClassicView){
     <app-topbar-layout titleKey="Menu:ProductionManager" [(filters)]="filters" [list]="list">
         <div topbarActions>
@@ -9,31 +9,30 @@
             (nzSelectedIndexChange)="onTabChange($event)" nzSize="large" style="margin-top: -15px;"
             [nzTabBarExtraContent]="extraTemplate">
 
-            <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization">
+            <nz-tab [nzTitle]="'::Enum:Stage.1' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.Incoming'">
                 <app-incoming [stages]="stages" [(filters)]="filters" [list]="list"></app-incoming>
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.2' | abpLocalization">
+            <nz-tab [nzTitle]="'::Enum:Stage.2' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.External'">
                 <app-external-warehouse [stages]="stages" [(filters)]="filters" [list]="list"></app-external-warehouse>
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.3' | abpLocalization">
+            <nz-tab [nzTitle]="'::Enum:Stage.3' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.SCDWarehouse'">
                 <app-scd-warehouse [stages]="stages" [(filters)]="filters" [list]="list"></app-scd-warehouse>
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization">
-
+            <nz-tab [nzTitle]="'::Enum:Stage.4' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.Production'">
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization">
-                <app-post-production [stages]="stages" [filters]="filters" [list]="list"></app-post-production>
+            <nz-tab [nzTitle]="'::Enum:Stage.5' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.PostProduction'">
+                <app-post-production [stages]="stages" [filters]="filters" [list]="list"></app-post-production >
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.6' | abpLocalization">
+            <nz-tab [nzTitle]="'::Enum:Stage.6' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.AwaitingTransport'">
                 <app-awaiting-transport [stages]="stages" [(filters)]="filters" [list]="list"></app-awaiting-transport>
             </nz-tab>
 
-            <nz-tab [nzTitle]="'::Enum:Stage.7' | abpLocalization">
+            <nz-tab [nzTitle]="'::Enum:Stage.7' | abpLocalization" *abpPermission="'WorkShopManagement.Stages.Dispatched'">
                 <app-dispatched [stages]="stages" [(filters)]="filters" [list]="list"></app-dispatched>
             </nz-tab>
 

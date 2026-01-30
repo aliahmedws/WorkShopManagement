@@ -16,6 +16,7 @@ public static class WorkShopManagementPermissions
         public const string Create = Default + ".Create";
         public const string Edit = Default + ".Edit";
         public const string Delete = Default + ".Delete";
+        public const string Images = Default + ".Images";
     }
 
     public static class CarModels
@@ -23,6 +24,10 @@ public static class WorkShopManagementPermissions
         public const string Default = GroupName + ".CarModels";
     }
 
+    public static class Variants
+    {
+        public const string Default = GroupName + ".Variants";
+    }
     public static class CheckLists
     {
         public const string Default = GroupName + ".CheckLists";
@@ -109,5 +114,22 @@ public static class WorkShopManagementPermissions
     public static class AuditLogs
     {
         public const string Default = GroupName + ".AuditLogs";
+    }
+
+    public static class ExportExcel
+    {
+        public const string Default = GroupName + ".ExportExcel";
+    }
+
+    public static class Stages
+    {
+        public const string Default = GroupName + ".Stages";
+        public const string Incoming = Default + ".Incoming";
+        public const string External = Default + ".External";
+        public const string SCDWarehouse = Default + ".SCDWarehouse";
+        public const string Production = Default + ".Production";
+        public const string PostProduction = Default + ".PostProduction";
+        public const string AwaitingTransport = Default + ".AwaitingTransport";
+        public const string Dispatched = Default + ".Dispatched";
     }
 }
