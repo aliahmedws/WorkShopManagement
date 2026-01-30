@@ -46,8 +46,10 @@
                                 @if(fg.get('make')?.value && fg.get('manufactureId')?.value) { &bull; }
                                 {{ fg.get('manufactureId')?.value }}
                             </small>
+
                             }
                         </div>
+                        <app-entity-change-history-modal [entityId]="fg.get('id')?.value" entityName="Recall"></app-entity-change-history-modal>
                     </div>
 
                     <div>

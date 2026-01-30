@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 
-import { SHARED_IMPORTS } from '../shared/shared-imports.constants';
+import { EntityChangeHistoryModal, SHARED_IMPORTS } from '../shared/shared-imports.constants';
 import { RecallService, RecallDto } from '../proxy/recalls';
 import { RecallStatus } from '../proxy/recalls/recall-status.enum';
 import { RecallType } from '../proxy/recalls/recall-type.enum';
@@ -11,7 +11,7 @@ import { FileUploadModal } from '../shared/components/file-upload-modal/file-upl
 
 @Component({
   selector: 'app-recalls',
-  imports: [...SHARED_IMPORTS,  FileUploadModal],
+  imports: [...SHARED_IMPORTS,  FileUploadModal, EntityChangeHistoryModal],
   templateUrl: './recalls.html',
   styleUrl: './recalls.scss',
 })
