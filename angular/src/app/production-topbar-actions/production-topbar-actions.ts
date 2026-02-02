@@ -1,4 +1,4 @@
-import { LocalizationPipe } from '@abp/ng.core';
+import { LocalizationPipe, PermissionDirective } from '@abp/ng.core';
 import { Component, inject, OnInit } from '@angular/core';
 import { StageService } from '../proxy/stages';
 import { ToasterService } from '@abp/ng.theme.shared';
@@ -7,7 +7,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-production-topbar-actions',
-  imports: [LocalizationPipe, CommonModule],
+  imports: [LocalizationPipe, CommonModule, PermissionDirective],
   templateUrl: './production-topbar-actions.html',
   styleUrl: './production-topbar-actions.scss'
 })

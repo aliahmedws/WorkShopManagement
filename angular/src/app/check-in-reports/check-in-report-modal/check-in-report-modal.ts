@@ -1,4 +1,4 @@
-import { Component, inject, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Confirmation, ToasterService } from '@abp/ng.theme.shared';
 import { ThemeSharedModule } from '@abp/ng.theme.shared';
@@ -11,6 +11,7 @@ import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
 import { LookupService } from 'src/app/proxy/lookups';
 import { SpecAttributesDto, SpecsResponseDto } from 'src/app/proxy/external/cars-xe';
+import { PermissionService } from '@abp/ng.core';
 
 @Component({
   selector: 'app-check-in-report-modal',
@@ -20,13 +21,14 @@ import { SpecAttributesDto, SpecsResponseDto } from 'src/app/proxy/external/cars
   styleUrl: './check-in-report-modal.scss'
 })
 export class CheckInReportModal {
-
   private fb = inject(FormBuilder);
-  private service = inject(CheckInReportService); 
+  private service = inject(CheckInReportService);
   private toaster = inject(ToasterHelperService);
+  private permission = inject(PermissionService);
 
   private readonly lookupService = inject(LookupService);
 
+  hasPermission = false;
 
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -51,14 +53,19 @@ export class CheckInReportModal {
     animation: true,
   };
 
-
   constructor() {
     this.buildForm();
+    this.hasPermission =
+      this.permission.getGrantedPolicy(
+        'WorkShopManagement.CheckInReports'
+      );
   }
 
   public get() {
+    if (!this.hasPermission || !this.carId) return;
+
     this.specAttributes = {} as SpecAttributesDto;
-    
+
     this.service.getByCarId(this.carId)
       .subscribe((res: CheckInReportDto) => {
         this.existingReport = res
@@ -68,6 +75,8 @@ export class CheckInReportModal {
   }
 
   fetchSpecs() {
+    if (!this.hasPermission || !this.carVin) return;
+
     this.lookupService.getExternalSpecsResponse(this.carVin).subscribe((res: SpecsResponseDto) => {
       if (res && res.success) {
         this.specAttributes = res.attributes;
