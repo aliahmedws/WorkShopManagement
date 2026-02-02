@@ -5,10 +5,10 @@
         <div class="d-flex align-items-center justify-content-between w-100">
             <div class="d-flex flex-column">
                 <div class="modal-title-line">
-                    <span class="fw-bold">{{ selectedCar?.vin ?? '-' }}</span>
-                    <span class="text-muted ms-2">{{ '::Images' | abpLocalization }}</span>
+                    <span class="h2">{{ selectedCar?.vin ?? '-' }}</span>
+                    <span class="small ms-2">{{ '::Images' | abpLocalization }}</span>
                 </div>
-                <div class="text-muted small">
+                <div class=" small">
                     {{ selectedCar?.modelName ? '' + ' • ' : '' }} {{ selectedCar?.modelYear ? selectedCar?.modelYear +
                     ' • ' : '' }} {{ selectedCar?.color ?? '' }}
                 </div>

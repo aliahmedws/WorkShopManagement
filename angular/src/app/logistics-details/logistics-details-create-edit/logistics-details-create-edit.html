@@ -2,11 +2,11 @@
     [options]="modalOptions">
     <ng-template #abpHeader>
         <div class="d-flex align-items-center">
-            <h3 class="modal-title m-0">
+            <h2 class="modal-title m-0">
                 {{ '::Logistics' | abpLocalization }}
-            </h3>
+            </h2>
             @if(vin) {
-            <span class="text-muted ms-3 fs-6">| {{ vin }}</span>
+            <span class="h2 ms-1 fs-6 mt-2">| {{ vin }}</span>
             }
         </div>
     </ng-template>

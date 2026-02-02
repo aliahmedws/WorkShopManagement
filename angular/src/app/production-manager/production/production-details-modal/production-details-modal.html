@@ -5,10 +5,10 @@
     <div class="d-flex align-items-center justify-content-between w-100">
       <div class="d-flex flex-column">
         <div class="modal-title-line">
-          <span class="fw-bold">{{ details?.carVin ?? '-' }}</span>
-          <span class="text-muted ms-2">{{ '::ProductionDetails' | abpLocalization }}</span>
+          <span class="h2">{{ details?.carVin ?? '-' }}</span>
+          <span class="ms-2">{{ '::ProductionDetails' | abpLocalization }}</span>
         </div>
-        <div class="text-muted small">
+        <div class="small">
           {{ details?.ownerName ?? '-' | uppercase }} • {{ details?.modelName ?? '-' }}
         </div>
       </div>

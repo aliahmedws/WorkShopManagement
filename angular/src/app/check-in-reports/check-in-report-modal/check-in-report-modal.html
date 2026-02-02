@@ -1,8 +1,8 @@
 <abp-modal [visible]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3> {{ '::CheckInReport' | abpLocalization }} 
+        <h2> {{ '::CheckInReport' | abpLocalization }} 
             <span>{{ " - " + carVin }} </span>
-        </h3>
+        </h2>
     </ng-template>
 
     <ng-template #abpBody>
