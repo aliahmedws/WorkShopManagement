@@ -28,7 +28,7 @@
                 <div ngbAccordion class="bg-transparent" [closeOthers]="false">
 
                     @for (option of stageOptions; track option.value) {
-
+                    @if (canViewStage(option.value)) {
                     <div ngbAccordionItem class="mb-3 rounded shadow-sm py-2" [destroyOnHide]="false"
                         [collapsed]="false">
                         <!-- Header -->
@@ -69,6 +69,8 @@
                         </div>
 
                     </div>
+                    }
+
 
                     }
 
@@ -97,15 +99,20 @@
                     <th>{{ '::EtaScd' | abpLocalization }}</th>
                     <th>{{ '::Port' | abpLocalization }}</th>
                     <th class="text-center">{{ '::Recalls' | abpLocalization }}</th>
-                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::Notes' | abpLocalization }}</th>
-                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::Est. Release' | abpLocalization }}</th>
+                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::Notes' |
+                        abpLocalization }}</th>
+                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::Est. Release' |
+                        abpLocalization }}</th>
 
 
 
-                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::AVV' | abpLocalization }}</th>
+                    <th class="text-center" *abpPermission="'WorkShopManagement.Cars.Edit'">{{ '::AVV' | abpLocalization
+                        }}</th>
 
-                    <th class="text-center" *abpPermission="'WorkShopManagement.Issues'">{{ '::Issues' | abpLocalization }}</th>
-                    <th class="text-center" *abpPermission="'WorkShopManagement.QualityGates.Edit'">{{ '::QualityGates' | abpLocalization }}</th>
+                    <th class="text-center" *abpPermission="'WorkShopManagement.Issues'">{{ '::Issues' | abpLocalization
+                        }}</th>
+                    <th class="text-center" *abpPermission="'WorkShopManagement.QualityGates.Edit'">{{ '::QualityGates'
+                        | abpLocalization }}</th>
                     <th *abpPermission="'WorkShopManagement.LogisticsDetails'">{{ '::CRE' | abpLocalization }}</th>
                     <th>{{ '::BookingNumber' | abpLocalization }}</th>
                     <th>{{ '::ClearingAgent' | abpLocalization }}</th>
@@ -125,12 +132,12 @@
                     <!-- VIN -->
                     <td>
                         <div class="d-flex align-items-center">
-                            <a type="button" class="text-primary clickable"
-                                (click)="openCheckInModal(row)">
+                            <a type="button" class="text-primary clickable" (click)="openCheckInModal(row)">
                                 <strong>{{ row.vin | slice:-6 }}</strong>
                             </a>
                             <small>
-                                <a class="ms-1" [href]="'https://tracking.ausev.com.au/stock?q=' + row.vin" target="_blank">
+                                <a class="ms-1" [href]="'https://tracking.ausev.com.au/stock?q=' + row.vin"
+                                    target="_blank">
                                     <i class="fas fa-external-link link"></i>
                                 </a>
                             </small>
@@ -150,7 +157,8 @@
                     </td>
 
                     <td>
-                        {{ row?.storageLocation ? (("::Enum:StorageLocation." + row.storageLocation) | abpLocalization) : '-' }}
+                        {{ row?.storageLocation ? (("::Enum:StorageLocation." + row.storageLocation) | abpLocalization)
+                        : '-' }}
                     </td>
 
                     <!-- ETA SCD -->
@@ -215,7 +223,8 @@
 
                     <!-- CRE STATUS -->
                     <td *abpPermission="'WorkShopManagement.LogisticsDetails'">
-                        <span class="badge link" [class]="'bg-' + getCreStatusColor(row)" (click)="openCreDetailModal(row)">
+                        <span class="badge link" [class]="'bg-' + getCreStatusColor(row)"
+                            (click)="openCreDetailModal(row)">
                             {{ row?.creStatus ? ('::Enum:CreStatus.' + row.creStatus | abpLocalization) : 'CRE' }}
                         </span>
                     </td>
@@ -241,7 +250,8 @@
 </ng-template>
 
 <app-recalls [(visible)]="isRecallModalVisible" [vin]="selected?.vin" [carId]="selected?.carId" (submit)="refresh()" />
-<app-cre-detail-modal [(visible)]="isCreDetailModalVisible" [carId]="selected.carId" [vin]="selected.vin" (submit)="refresh()" />
+<app-cre-detail-modal [(visible)]="isCreDetailModalVisible" [carId]="selected.carId" [vin]="selected.vin"
+    (submit)="refresh()" />
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
     (submit)="refresh()"></app-check-in-report-modal>
 <app-est-release-modal #estReleaseModal (saved)="refresh()"></app-est-release-modal>

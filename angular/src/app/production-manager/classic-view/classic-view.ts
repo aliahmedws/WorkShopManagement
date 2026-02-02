@@ -1,4 +1,4 @@
-import { ListResultDto, ListService, PagedResultDto } from '@abp/ng.core';
+import { ListResultDto, ListService, PagedResultDto, PermissionService } from '@abp/ng.core';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CarNotesModal } from 'src/app/cars/car-notes-modal/car-notes-modal';
 import { EstReleaseModal } from 'src/app/cars/est-release-modal/est-release-modal';
@@ -22,7 +22,7 @@ import { AvvStatusModal } from '../mini-modals/avv-status-modal/avv-status-modal
 import { ProductionTopbarActions } from 'src/app/production-topbar-actions/production-topbar-actions';
 import { ConfirmationHelperService } from 'src/app/shared/services/confirmation-helper.service';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
-import { QualityGatesModal } from "../production/production-details-modal/quality-gates-modal/quality-gates-modal";
+import { QualityGatesModal } from '../production/production-details-modal/quality-gates-modal/quality-gates-modal';
 import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal';
 
 @Component({
@@ -39,14 +39,15 @@ import { CreDetailModal } from '../mini-modals/cre-detail-modal/cre-detail-modal
     ProductionTopbarActions,
     NgbAccordionModule,
     QualityGatesModal,
-    CreDetailModal
-],
+    CreDetailModal,
+  ],
   templateUrl: './classic-view.html',
   styleUrl: './classic-view.scss',
 })
 export class ClassicView implements OnInit {
   private readonly confirmation = inject(ConfirmationHelperService);
   private readonly stageService = inject(StageService);
+  private readonly permissionService = inject(PermissionService);
   @ViewChild('production') production: Production;
 
   stages: ListResultDto<StageDto> = { items: [] };
@@ -221,5 +222,26 @@ export class ClassicView implements OnInit {
   onQualityGatesVisibleChange(v: boolean): void {
     this.isQualityGatesModalVisible = v;
     if (!v) this.selectedQualityGatesCarId = undefined;
+  }
+
+  private readonly stagePermissionMap: Partial<Record<Stage, string>> = {
+    [Stage.Incoming]: 'WorkShopManagement.Stages.Incoming',
+    [Stage.ExternalWarehouse]: 'WorkShopManagement.Stages.External',
+    [Stage.ScdWarehouse]: 'WorkShopManagement.Stages.SCDWarehouse',
+    [Stage.Production]: 'WorkShopManagement.Stages.Production',
+    [Stage.PostProduction]: 'WorkShopManagement.Stages.PostProduction',
+    [Stage.AwaitingTransport]: 'WorkShopManagement.Stages.AwaitingTransport',
+    [Stage.Dispatched]: 'WorkShopManagement.Stages.Dispatched',
+  };
+
+  canViewStagesModule(): boolean {
+    return this.permissionService.getGrantedPolicy('WorkShopManagement.Stages');
+  }
+
+  canViewStage(stage: Stage): boolean {
+    if (!this.canViewStagesModule()) return false;
+
+    const perm = this.stagePermissionMap[stage];
+    return !!perm && this.permissionService.getGrantedPolicy(perm);
   }
 }
