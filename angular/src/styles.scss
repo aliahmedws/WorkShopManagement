@@ -53,3 +53,21 @@
     text-decoration: underline;
   }
 }
+
+/* styles.scss (GLOBAL) */
+
+/* Target only this modal using modalClass */
+.quality-gates-modal {
+  /* ABP/Bootstrap modal body often uses overflow-y:auto + max-height */
+  .modal-body {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  /* Ensure content can overflow for dropdown */
+  .modal-content {
+    overflow: visible !important;
+  }
+}
+
+
