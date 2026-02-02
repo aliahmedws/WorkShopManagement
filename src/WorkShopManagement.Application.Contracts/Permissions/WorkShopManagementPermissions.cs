@@ -116,6 +116,23 @@ public static class WorkShopManagementPermissions
         public const string Default = GroupName + ".AuditLogs";
     }
 
+    public static class Recalls
+    {
+        public const string Default = GroupName + ".Recalls";
+    }
+
+    public static class ViewModelReportSummary
+    {
+        public const string Default = GroupName + ".ViewModelReportSummary";
+    }
+
+    public static class Stickers
+    {
+        public const string Default = GroupName + ".Stickers";
+        public const string PrintProductionSticker = Default + ".PrintProductionStickers";
+        public const string PrintReceivingSticker = Default + ".PrintReceivingStickers";
+    }
+
     public static class ExportExcel
     {
         public const string Default = GroupName + ".ExportExcel";

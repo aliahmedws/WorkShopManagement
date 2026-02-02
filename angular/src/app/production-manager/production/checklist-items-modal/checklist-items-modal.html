@@ -27,7 +27,7 @@
               <th>Check Items</th>
               <th style="width: 320px">Marks</th>
               <th style="width: 260px">Comments</th>
-              <th style="width: 120px">Attachments</th>
+              <th style="width: 120px" *abpPermission="'WorkShopManagement.CarBayItems.Edit'">Attachments</th>
               <th style="width: 30px">Logs</th>
             </tr>
           </thead>
@@ -74,16 +74,16 @@
                     type="text" [(ngModel)]="comments[li.id!]" />
                 </td>
 
-                <td class="text-center">
-                  <app-file-upload-modal [title]="'Attachments'" [modalSize]="'lg'"
-                    [disabled]="!canAttach(li)" [context]="{ listItemId: li.id!, carBayId: carBayId }"
-                    [tempFiles]="tempFilesByListItemId[li.id!]"
+                <td class="text-center" *abpPermission="'WorkShopManagement.CarBayItems.Edit'">
+                  <app-file-upload-modal [title]="'Attachments'" [modalSize]="'lg'" [disabled]="!canAttach(li)"
+                    [context]="{ listItemId: li.id!, carBayId: carBayId }" [tempFiles]="tempFilesByListItemId[li.id!]"
                     (tempFilesChange)="tempFilesByListItemId[li.id!] = $event"
                     [existingFiles]="attachmentsByListItemId[li.id!]"
                     (existingFilesChange)="attachmentsByListItemId[li.id!] = $event"></app-file-upload-modal>
                 </td>
                 <td>
-                  <app-entity-change-history-modal [entityId]="findBayItemId(li.id)" entityName="CarBayItem"></app-entity-change-history-modal>
+                  <app-entity-change-history-modal [entityId]="findBayItemId(li.id)"
+                    entityName="CarBayItem"></app-entity-change-history-modal>
                 </td>
               </tr>
             </ng-container>
@@ -108,7 +108,8 @@
         {{ '::Close' | abpLocalization }}
       </button>
 
-      <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving || loading || !carBayId">
+      <button *abpPermission="'WorkShopManagement.CarBayItems.Create'" type="button" class="btn btn-primary"
+        (click)="save()" [disabled]="saving || loading || !carBayId">
         <span *ngIf="saving" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
         <span *ngIf="!saving"><i class="fas fa-save me-1"></i></span>
         {{ '::Save' | abpLocalization }}

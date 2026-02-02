@@ -52,13 +52,13 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Create, L("Permission:CarBays.Create"));
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Edit, L("Permission:CarBays.Edit"));
         carBaysPermission.AddChild(WorkShopManagementPermissions.CarBays.Delete, L("Permission:CarBays.Delete"));
-        
+
         var carBayItemsPermission = myGroup.AddPermission(WorkShopManagementPermissions.CarBayItems.Default, L("Permission:CarBayItems"));
         carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Create, L("Permission:CarBayItems.Create"));
         carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Edit, L("Permission:CarBayItems.Edit"));
         carBayItemsPermission.AddChild(WorkShopManagementPermissions.CarBayItems.Delete, L("Permission:CarBayItems.Delete"));
 
-    
+
         var productionManagerPermissions = myGroup.AddPermission(WorkShopManagementPermissions.ProductionManager.Default, L("Permission:ProductionManager"));
 
         var issuePermission = myGroup.AddPermission(WorkShopManagementPermissions.Issues.Default, L("Permission:Issues"));
@@ -83,8 +83,8 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
 
         myGroup.AddPermission(WorkShopManagementPermissions.AuditLogs.Default, L("Permission:AuditLogs"));
         myGroup.AddPermission(WorkShopManagementPermissions.ExportExcel.Default, L("Permission:ExportExcel"));
-
-
+        myGroup.AddPermission(WorkShopManagementPermissions.Recalls.Default, L("Permission:Recalls"));
+        myGroup.AddPermission(WorkShopManagementPermissions.ViewModelReportSummary.Default, L("Permission:ViewModelReportSummary"));
 
         var stagesPermission = myGroup.AddPermission(WorkShopManagementPermissions.Stages.Default, L("Permission:Stages"));
         stagesPermission.AddChild(WorkShopManagementPermissions.Stages.Incoming, L("Permission:Stages.Incoming"));
@@ -94,6 +94,12 @@ public class WorkShopManagementPermissionDefinitionProvider : PermissionDefiniti
         stagesPermission.AddChild(WorkShopManagementPermissions.Stages.PostProduction, L("Permission:Stages.PostProduction"));
         stagesPermission.AddChild(WorkShopManagementPermissions.Stages.AwaitingTransport, L("Permission:Stages.AwaitingTransport"));
         stagesPermission.AddChild(WorkShopManagementPermissions.Stages.Dispatched, L("Permission:Stages.Dispatched"));
+
+        var stickersPermission = myGroup.AddPermission(WorkShopManagementPermissions.Stickers.Default, L("Permission:Stickers"));
+
+        stickersPermission.AddChild( WorkShopManagementPermissions.Stickers.PrintProductionSticker, L("Permission:Stickers.PrintProductionStickers"));
+        stickersPermission.AddChild(WorkShopManagementPermissions.Stickers.PrintReceivingSticker, L("Permission:Stickers.PrintReceivingStickers"));
+
     }
 
     private static LocalizableString L(string name)
