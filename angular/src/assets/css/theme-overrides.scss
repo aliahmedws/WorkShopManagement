@@ -1502,3 +1502,18 @@ ngb-datepicker {
 .ant-select-dropdown {
     padding: 5px 0;
 }
+
+.ant-tabs-tab:hover,
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--brand-primary-light);
+}
+
+.ant-tabs-tab:active,
+.ant-tabs-tab:focus,
+.ant-tabs-tab-btn:active, .ant-tabs-tab-btn:focus {
+    color: var(--brand-primary);
+}
+
+.ant-tabs-ink-bar {
+    background: var(--brand-primary-light);
+}
