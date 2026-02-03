@@ -1,8 +1,13 @@
 <abp-modal [visible]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="get()" [options]="modalOptions">
     <ng-template #abpHeader>
-        <h2> {{ '::CheckInReport' | abpLocalization }}
-            <span>{{ " - " + carVin }} </span>
-        </h2>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <span class="h2">{{ carVin ?? '-' }}</span>
+                    <span class="ms-2">{{ '::CheckInReport' | abpLocalization }}</span>
+                </div>
+            </div>
+        </div>
     </ng-template>
 
     <ng-template #abpBody>

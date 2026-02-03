@@ -6,11 +6,14 @@
             <div class="d-flex flex-column">
                 <div class="modal-title-line">
                     <span class="h2">{{ selectedCar?.vin ?? '-' }}</span>
-                    <span class="small ms-2">{{ '::Images' | abpLocalization }}</span>
+                    <span class="ms-2">{{ '::Images' | abpLocalization }}</span>
                 </div>
                 <div class=" small">
-                    {{ selectedCar?.modelName ? '' + ' • ' : '' }} {{ selectedCar?.modelYear ? selectedCar?.modelYear +
-                    ' • ' : '' }} {{ selectedCar?.color ?? '' }}
+                    {{ selectedCar?.modelName ?? '' }}
+                    {{ selectedCar?.modelName && selectedCar?.modelYear ? ' • ' : ''}}
+                    {{ selectedCar?.modelYear ??'' }} 
+                    {{ selectedCar?.color && selectedCar?.modelYear ? ' • ' : ''}}
+                    {{ selectedCar?.color ?? '' }}
                 </div>
             </div>
         </div>

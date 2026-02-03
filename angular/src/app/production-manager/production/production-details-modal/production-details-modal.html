@@ -9,7 +9,9 @@
           <span class="ms-2">{{ '::ProductionDetails' | abpLocalization }}</span>
         </div>
         <div class="small">
-          {{ details?.ownerName ?? '-' | uppercase }} • {{ details?.modelName ?? '-' }}
+          {{ details?.ownerName ?? '' | uppercase }} 
+          {{ details?.ownerName && details?.modelName ? ' • ' : ''}}
+          {{ details?.modelName ?? '' }}
         </div>
       </div>
     </div>
@@ -212,7 +214,7 @@
               </div> -->
 
               <div class="col-6" *abpPermission="'WorkShopManagement.LogisticsDetails'">
-                <button type="button" class="btn btn-sm btn-primary w-100" (click)="goToLogistics()"
+                <button type="button" class="btn btn-sm btn-primary w-100" (click)="openLogistics()"
                   [disabled]="!carId">{{'::Logistics' | abpLocalization }}</button>
               </div>
               <div class="col-6" *abpPermission="'WorkShopManagement.Recalls'">
@@ -285,3 +287,5 @@
   <app-change-stage-actions [(visible)]="isChangeStageModalVisible" [carId]="details?.carId" [carBayId]="details?.id"
     [currentStage]="currentStage" (stageMoved)="onStageMoved()">
   </app-change-stage-actions>
+  <app-logistics-details-create-edit [(visible)]="isLogisticsModalVisible" [carId]="details?.carId"
+        [vin]="details?.carVin" (close)="isLogisticsModalVisible = false">

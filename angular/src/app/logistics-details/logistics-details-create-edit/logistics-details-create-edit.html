@@ -1,13 +1,13 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()"
     [options]="modalOptions">
     <ng-template #abpHeader>
-        <div class="d-flex align-items-center">
-            <h2 class="modal-title m-0">
-                {{ '::Logistics' | abpLocalization }}
-            </h2>
-            @if(vin) {
-            <span class="h2 ms-1 fs-6 mt-2">| {{ vin }}</span>
-            }
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <span class="h2">{{ vin ?? '-' }}</span>
+                    <span class="ms-2">{{ '::Logistics' | abpLocalization }}</span>
+                </div>
+            </div>
         </div>
     </ng-template>
 

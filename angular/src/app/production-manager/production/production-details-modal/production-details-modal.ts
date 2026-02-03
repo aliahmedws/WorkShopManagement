@@ -29,6 +29,7 @@ import { CheckInReportModal } from 'src/app/check-in-reports/check-in-report-mod
 import { ChangeStageActions } from './change-stage-actions/change-stage-actions';
 import { QualityGates } from './quality-gates/quality-gates';
 import { ModelReportService } from 'src/app/proxy/model-reports';
+import { LogisticsDetailsCreateEdit } from 'src/app/logistics-details/logistics-details-create-edit/logistics-details-create-edit';
 
 @Component({
   selector: 'app-production-details-modal',
@@ -43,7 +44,8 @@ import { ModelReportService } from 'src/app/proxy/model-reports';
     AssignBay,
     CheckInReportModal,
     ChangeStageActions,
-    QualityGates
+    QualityGates,
+    LogisticsDetailsCreateEdit
   ],
   templateUrl: './production-details-modal.html',
   styleUrls: ['./production-details-modal.scss'],
@@ -68,6 +70,7 @@ export class ProductionDetailsModal {
   clockSaving = false;
   movingStage = false;
   isIssueModalVisible = false;
+  isLogisticsModalVisible = false;
   isAssignBayVisible: boolean = false;
   isCheckInModalVisible = false;
   isChangeStageModalVisible = false;
@@ -104,6 +107,7 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open() {
+    debugger;
     this.details = undefined;
     this.loadSelectedCar();
     this.loadDetails();
@@ -165,16 +169,9 @@ export class ProductionDetailsModal {
     this.isIssueModalVisible = true; // ✅ THIS IS CORRECT
   }
 
-  goToLogistics() {
-    const carId = this.carId;
-    const vin = this.details?.carVin ?? null;
-
-    if (!this.carId) return;
-
-    this.router.navigate(['/logistics-details'], {
-      queryParams: { carId, vin },
-    });
-    // this.close();
+  openLogistics() {
+    if(!this.carId) return;
+    this.isLogisticsModalVisible = true;
   }
 
   private buildForm(): void {
@@ -306,6 +303,7 @@ export class ProductionDetailsModal {
     this.loadDetails();
     this.isAssignBayVisible = false;
     this.close();
+    this.stageChanged.emit();
   }
 
   openCheckInModal(): void {

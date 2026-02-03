@@ -26,7 +26,8 @@ export class CarExternalResponseModal {
   private readonly lookupService = inject(LookupService);
 
   specs: SpecsResponseDto | null = null;
-  displayItems: DisplayItem[] = []; // Normalized data for UI
+  // displayItems: DisplayItem[] = []; // Normalized data for UI
+  displayItems: DisplayItem[][] = [];
   vinNo: string = '';
   loading = false;
 
@@ -60,25 +61,26 @@ export class CarExternalResponseModal {
   }
 
   private normalizeData(data: SpecsResponseDto) {
-    const items: DisplayItem[] = [];
+    // 1. First, build a flat list using your original logic
+    const flatItems: DisplayItem[] = [];
 
     const formatKey = (str: string) => {
       if (!str) return '';
       return str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     };
 
-    // Helper to push items with auto-width detection
     const pushItem = (key: string, val: any, isHeader = false, forceFullWidth = false) => {
       if (isHeader) {
-        items.push({ isHeader: true, value: key });
+        flatItems.push({ isHeader: true, value: key });
       } else {
         const valStr = String(val);
         const isFullWidth = forceFullWidth || valStr.length > 60;
-        items.push({
+        flatItems.push({
           isHeader: false,
           key: formatKey(key),
           value: valStr,
-          isFullWidth: isFullWidth
+          isFullWidth: isFullWidth,
+          isValueOnly: false
         });
       }
     };
@@ -94,6 +96,8 @@ export class CarExternalResponseModal {
       }
     };
 
+    // --- YOUR ORIGINAL PARSING LOGIC STARTS HERE ---
+
     // 1. Attributes
     let exteriorColorValue: string | null = null;
 
@@ -103,14 +107,14 @@ export class CarExternalResponseModal {
       Object.entries(data.attributes).forEach(([key, val]) => {
         if (val === null || val === undefined || val === '') return;
 
-        // Special handling for exterior_color - save it for later
+        // Special handling for exterior_color
         if (key.toLowerCase().includes('exterior') && key.toLowerCase().includes('color')) {
           if (Array.isArray(val) && val.length > 0) {
             exteriorColorValue = val.join(', ');
           } else if (typeof val === 'string') {
             exteriorColorValue = val;
           }
-          return; // Skip adding it now
+          return; 
         }
 
         if (typeof val !== 'object') {
@@ -121,10 +125,9 @@ export class CarExternalResponseModal {
         }
       });
 
-      // Add exterior color at the end of Vehicle Attributes section
       if (exteriorColorValue) {
-        items.push({ isHeader: true, value: 'Exterior Color' }); // Header
-        items.push({ isHeader: false, isValueOnly: true, value: exteriorColorValue, isFullWidth: true }); // Value row
+        flatItems.push({ isHeader: true, value: 'Exterior Color' });
+        flatItems.push({ isHeader: false, isValueOnly: true, value: exteriorColorValue, isFullWidth: true });
       }
     }
 
@@ -154,11 +157,45 @@ export class CarExternalResponseModal {
 
     // 5. Deep Data
     if (data.deepdata && Object.keys(data.deepdata).length > 0) {
-      pushItem('Deep Data', null, true, false); // Header
+      pushItem('Deep Data', null, true, false);
       Object.entries(data.deepdata).forEach(([key, val]) => {
-        pushItem(key, val, false, false); // Populate deep data values
+        pushItem(key, val, false, false);
       });
     }
-    this.displayItems = items;
+
+    // --- GROUPING LOGIC (The Fix) ---
+    
+    const groupedRows: DisplayItem[][] = [];
+    let buffer: DisplayItem[] = [];
+
+    for (const item of flatItems) {
+      // If item is a Header, Full Width, or Value Only, it demands its own row
+      if (item.isHeader || item.isFullWidth || item.isValueOnly) {
+        // If we have a dangling left-side item in the buffer, force it to be its own row first
+        if (buffer.length > 0) {
+          groupedRows.push([...buffer]); // Push copy of buffer
+          buffer = [];
+        }
+        // Push the special item as a single-item row
+        groupedRows.push([item]);
+      } 
+      else {
+        // Standard item: Add to buffer
+        buffer.push(item);
+        
+        // If buffer has 2 items (Left + Right), flush it as a complete row
+        if (buffer.length === 2) {
+          groupedRows.push([...buffer]);
+          buffer = [];
+        }
+      }
+    }
+
+    // Flush any remaining item
+    if (buffer.length > 0) {
+      groupedRows.push(buffer);
+    }
+
+    this.displayItems = groupedRows;
   }
 }
