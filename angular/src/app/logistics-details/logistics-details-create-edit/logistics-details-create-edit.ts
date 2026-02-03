@@ -135,8 +135,8 @@ export class LogisticsDetailsCreateEdit {
   };
 
   save() {
-    if (this.form.invalid || !this.carId) {
-      this.form.markAllAsTouched();
+    if (!this.form?.valid || !this.carId) {
+      this.form?.markAllAsTouched();
       return;
     }
 
