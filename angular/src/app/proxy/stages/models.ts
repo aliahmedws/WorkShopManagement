@@ -34,8 +34,8 @@ export interface StageBayDto {
 
 export interface StageDto {
   carId?: string;
-  vin?: string;
   stage?: Stage;
+  vin?: string;
   color?: string;
   storageLocation?: StorageLocation;
   modelId?: string;

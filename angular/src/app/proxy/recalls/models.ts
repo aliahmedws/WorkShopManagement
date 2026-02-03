@@ -1,8 +1,8 @@
 import type { RecallType } from './recall-type.enum';
 import type { RecallStatus } from './recall-status.enum';
 import type { FileAttachmentDto } from '../entity-attachments/file-attachments/models';
-import type { EntityDto, FullAuditedEntityDto } from '@abp/ng.core';
 import type { EntityAttachmentDto } from '../entity-attachments/models';
+import type { EntityDto } from '@abp/ng.core';
 
 export interface CreateRecallDto {
   carId: string;
@@ -16,14 +16,8 @@ export interface CreateRecallDto {
   tempFiles: FileAttachmentDto[];
 }
 
-export interface ExternalRecallDetailDto {
-  title?: string;
-  make?: string;
-  manufacturerId?: string;
-  riskDescription?: string;
-}
-
-export interface RecallDto extends FullAuditedEntityDto<string> {
+export interface RecallDto {
+  id?: string;
   title?: string;
   make?: string;
   manufactureId?: string;
@@ -31,8 +25,9 @@ export interface RecallDto extends FullAuditedEntityDto<string> {
   type?: RecallType;
   status?: RecallStatus;
   notes?: string;
+  isExternal: boolean;
   carId?: string;
-  vin?: string;
+  tempFiles: FileAttachmentDto[];
   entityAttachments: EntityAttachmentDto[];
   concurrencyStamp?: string;
 }
