@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CarService } from 'src/app/proxy/cars';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
@@ -11,7 +11,7 @@ import { SHARED_IMPORTS } from 'src/app/shared/shared-imports.constants';
   styleUrl: './car-notes-modal.scss'
 })
 export class CarNotesModal {
- private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
   private readonly carService = inject(CarService);
   private readonly toaster = inject(ToasterHelperService);
 
@@ -19,16 +19,19 @@ export class CarNotesModal {
   saving = false;
 
   carId?: string;
+  vin? : string;
 
   form?: FormGroup;
 
+  // @Input() vin : string | null;
   /** emitted after successful save (so parent can refresh list/details) */
   @Output() saved = new EventEmitter<string>();
 
   /** for two-way binding if you want it */
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  open(carId: string, existingNotes?: string | null): void {
+  open(carId: string, existingNotes?: string | null, vin?: string | null): void {
+    this.vin = vin;
     this.carId = carId;
 
     this.form = this.fb.group({

@@ -75,7 +75,6 @@ export class ClassicView implements OnInit {
 
   // Quality Gates
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
 
   @ViewChild('estReleaseModal') estReleaseModal!: EstReleaseModal;
   @ViewChild('notesModal') notesModal!: CarNotesModal;
@@ -158,12 +157,12 @@ export class ClassicView implements OnInit {
 
   openNotesModal(row: StageDto) {
     if (!row?.carId) return;
-    this.notesModal.open(row.carId, row.notes);
+    this.notesModal.open(row.carId, row.notes, row.vin);
   }
 
   openEstReleaseModal(row: StageDto) {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   openIssueModal(row: StageDto) {
@@ -171,10 +170,6 @@ export class ClassicView implements OnInit {
     // passed to the actions component, but if clicked directly from table icon:
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
-  }
-
-  onNotesSaved(e: { carId: string; notes: string }) {
-    this.refresh();
   }
 
   openAvvModal(stage: StageDto): void {
@@ -215,14 +210,10 @@ export class ClassicView implements OnInit {
   //Quality Gates
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
   }
 
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-    if (!v) this.selectedQualityGatesCarId = undefined;
-  }
 
   private readonly stagePermissionMap: Partial<Record<Stage, string>> = {
     [Stage.Incoming]: 'WorkShopManagement.Stages.Incoming',

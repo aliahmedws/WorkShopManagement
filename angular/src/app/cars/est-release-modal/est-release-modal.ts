@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CarService } from 'src/app/proxy/cars';
 import { ToasterHelperService } from 'src/app/shared/services/toaster-helper.service';
@@ -24,11 +24,13 @@ export class EstReleaseModal {
   carId?: string;
   form?: FormGroup;
 
+  vin?: string;
   @Output() saved = new EventEmitter<{ carId: string; date: Date | null }>();
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  open(carId: string, existingDate?: Date | string | null): void {
+  open(carId: string, existingDate?: Date | string | null, vin?: string | null,): void {
     this.carId = carId;
+    this.vin = vin;
 
     const date =
       existingDate == null
@@ -38,7 +40,7 @@ export class EstReleaseModal {
           : new Date(existingDate);
 
     this.form = this.fb.group({
-      estimatedReleaseDate: [date],
+      estimatedReleaseDate: [existingDate ? new Date(existingDate) : null],
     });
 
     this.visible = true;
@@ -55,26 +57,27 @@ export class EstReleaseModal {
   }
 
   save(): void {
-  if (!this.carId || !this.form || this.saving) return;
+    if (!this.carId || !this.form || this.saving) return;
 
-  // const dateObj = (this.form.value?.estimatedReleaseDate ?? null) as Date | null;
+    const dateObj = (this.form.value?.estimatedReleaseDate ?? null) as Date | null;
 
-  // ABP proxy expects string (ISO). Send null if empty.
-  const dateStr: string | null = this.form.value?.estimatedReleaseDate;
+    const dateStr: string | null = dateObj
+      ? `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`
+      : null;
 
-  this.saving = true;
+    this.saving = true;
 
-  this.carService.updateEstimatedRelease(this.carId, dateStr).subscribe({
-    next: () => {
-      this.saving = false;
-      this.toaster.success('::EstimatedReleaseUpdatedSuccessfully', '::Success');
-      this.saved.emit({ carId: this.carId!, date: new Date(dateStr) });
-      this.close();
-    },
-    error: () => {
-      this.saving = false;
-    },
-  });
-}
+    this.carService.updateEstimatedRelease(this.carId, dateStr).subscribe({
+        next: () => {
+          this.saving = false;
+          this.toaster.success('::EstimatedReleaseUpdatedSuccessfully', '::Success');
+          this.saved.emit({ carId: this.carId!, date: dateObj });
+          this.close();
+        },
+        error: () => {
+          this.saving = false;
+        },
+      });
+  }
 
 }

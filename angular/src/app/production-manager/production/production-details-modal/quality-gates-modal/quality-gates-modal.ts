@@ -17,6 +17,7 @@ export class QualityGatesModal {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   @Input() carId?: string;
+  @Input() vin?: string;
   resolvedCarBayId?: string;
 
   @Output() saved = new EventEmitter<void>();

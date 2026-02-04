@@ -1,6 +1,13 @@
 <abp-modal [(visible)]="visible" [options]="{ size: 'md' }" (visibleChange)="close()">
     <ng-template #abpHeader>
-        {{ '::UpdateAvvStatus' | abpLocalization }}
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <span class="h2">{{ vin ?? '-' }}</span>
+                    <span class="ms-2">{{ '::UpdateAvvStatus' | abpLocalization }}</span>
+                </div>
+            </div>
+        </div>
     </ng-template>
 
     <ng-template #abpBody>

@@ -255,9 +255,8 @@
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
     (submit)="refresh()"></app-check-in-report-modal>
 <app-est-release-modal #estReleaseModal (saved)="refresh()"></app-est-release-modal>
-<app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
-<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
+<app-car-notes-modal #notesModal (saved)="refresh()"></app-car-notes-modal>
+<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [vin]="selected?.vin" [currentStatus]="selected?.avvStatus"
     (statusUpdated)="refresh()"></app-avv-status-modal>
-<app-quality-gates-modal [carId]="selectedQualityGatesCarId" [(visible)]="isQualityGatesModalVisible"
-    (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="refresh()">
+<app-quality-gates-modal [carId]="selected?.carId" [vin]="selected?.vin" [(visible)]="isQualityGatesModalVisible" (saved)="refresh()">
 </app-quality-gates-modal>

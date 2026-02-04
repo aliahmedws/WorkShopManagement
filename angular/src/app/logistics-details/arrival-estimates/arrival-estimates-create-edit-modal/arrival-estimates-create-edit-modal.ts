@@ -23,6 +23,7 @@ export class ArrivalEstimatesCreateEditModal {
   @Input() logisticsDetailId!: string;
   @Input() estimateId?: string; // If present, Edit Mode
   @Input() visible = false;
+  @Input() vin: string | null = null;
   
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<void>();

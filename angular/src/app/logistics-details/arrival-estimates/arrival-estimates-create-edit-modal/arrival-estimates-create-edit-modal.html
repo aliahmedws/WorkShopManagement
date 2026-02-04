@@ -1,7 +1,14 @@
 <abp-modal [(visible)]="visible" (visibleChange)="visibleChange.emit($event)" (appear)="open()"
     [options]="modalOptions">
     <ng-template #abpHeader>
-        <h3 class="modal-title">{{ (isEdit ? '::EditEstimate' : '::NewEstimate') | abpLocalization }}</h3>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <span class="h2">{{ vin ?? '-' }}</span>
+                    <span class="ms-2">{{ (isEdit ? '::EditEstimate' : '::NewEstimate') | abpLocalization }}</span>
+                </div>
+            </div>
+        </div>
     </ng-template>
 
     <ng-template #abpBody>

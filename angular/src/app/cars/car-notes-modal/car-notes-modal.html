@@ -1,6 +1,13 @@
-<abp-modal [(visible)]="visible" [options]="{ size: 'xl' }">
+<abp-modal [(visible)]="visible" [options]="{ size: 'lg' }">
   <ng-template #abpHeader>
-    {{ '::Notes' | abpLocalization }}
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <div class="d-flex flex-column">
+        <div class="modal-title-line">
+          <span class="h2">{{ vin ?? '-' }}</span>
+          <span class="ms-2">{{ '::Notes' | abpLocalization }}</span>
+        </div>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template #abpBody>

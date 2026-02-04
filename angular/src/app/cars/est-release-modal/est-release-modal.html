@@ -1,12 +1,19 @@
 <abp-modal [(visible)]="visible" [options]="{ size: 'md' }">
   <ng-template #abpHeader>
-    {{ '::EstimatedRelease' | abpLocalization }}
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <div class="d-flex flex-column">
+        <div class="modal-title-line">
+          <span class="h2">{{ vin ?? '-' }}</span>
+          <span class="ms-2">{{ '::EstimatedRelease' | abpLocalization }}</span>
+        </div>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template #abpBody>
     <form *ngIf="form" [formGroup]="form" class="row g-3">
       <div class="col-12">
-
+        <label class="form-label">{{ '::EstimatedReleaseDate' | abpLocalization }}</label>
         <input
           #estPicker="ngbDatepicker"
           class="form-control"

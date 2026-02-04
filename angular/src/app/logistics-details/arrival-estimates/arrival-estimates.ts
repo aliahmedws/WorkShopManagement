@@ -26,7 +26,7 @@ export class ArrivalEstimates implements OnDestroy {
   carId: string | null = null; // To go back
 
   @Input() logisticsDetailId: string | null = null;
-
+  @Input() vin: string | null = null;
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() submit = new EventEmitter<void>();

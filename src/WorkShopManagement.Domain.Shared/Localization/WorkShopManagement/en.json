@@ -529,6 +529,7 @@
     "Permission:ViewModelReportSummary": "View Model Report Summary",
     "CreDetailsUpdated": "CRE Details Updated!",
     "QualityGates.HelpMessageHtml": "<div class=\"text-start\"><p class=\"mb-3\"><span class=\"fw-bold text-success\">Green:</span> No open findings. All items within specification. Vehicle is cleared to proceed.</p><p class=\"mb-3\"><span class=\"fw-bold text-danger\">Red:</span> No Blue findings, but one or more Red findings present. Vehicle may progress only if the internal customer accepts the issue. Status remains Not OK for external customer and must be resolved prior to delivery.</p><p class=\"mb-3\"><span class=\"fw-bold text-warning\">Yellow:</span> No Blue or Red findings, but one or more Yellow findings present. Vehicle may proceed to the next internal process. Issue must still be documented and closed before PDI.</p><p class=\"mb-0\"><span class=\"fw-bold text-primary\">Blue:</span> One or more Blue findings present. Vehicle is not permitted to proceed.</p></div>",
-    "YouAreNotAuthorized": "You are not authorized!"
+    "YouAreNotAuthorized": "You are not authorized!",
+    "EstimatedReleaseDate": "Estimated Release Date"
   }
 }

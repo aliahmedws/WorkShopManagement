@@ -1,39 +1,48 @@
-<!-- quality-gates.html -->
-<div [class.quality-gates-wrap]="layout !== 'modal'">
+@if (!loading) {
+  <div [class.quality-gates-wrap]="layout !== 'modal'">
   @if (layout !== 'modal') {
   <div class="d-flex align-items-center gap-2 mb-2">
     <div class="fw-semibold">Quality Gates</div>
     <i class="far fa-question-circle text-primary" role="button" tabindex="0"
-      (click)="openHelp()"
-      aria-label="Quality Gates Help">
+       (click)="openHelp()" aria-label="Quality Gates Help">
     </i>
   </div>
   }
 
   <div class="row g-2">
     <div *ngFor="let g of GateName" [class]="layout === 'modal' ? 'col-12' : 'col-12 col-sm-3'">
-
-      <div class="position-relative w-100" (click)="$event.stopPropagation()">
-        <button class="btn w-100 d-flex align-items-center justify-content-between gate-btn"
-          [class.btn-sm]="layout !== 'modal'" type="button" [ngClass]="gateBtnClass(g.value)"
-          (click)="toggleGate(g.value)" [disabled]="loading">
+      
+      <div ngbDropdown container="body" class="d-block w-100">
+        
+        <button ngbDropdownToggle 
+                class="btn w-100 d-flex align-items-center justify-content-between gate-btn no-caret"
+                [class.btn-sm]="layout !== 'modal'" 
+                type="button" 
+                [ngClass]="gateBtnClass(g.value)"
+                [disabled]="loading">
 
           <span>{{ ('::Enum:GateName.' + g.value) | abpLocalization }}</span>
           <i class="fa fa-caret-down ms-2"></i>
         </button>
 
         <div *abpPermission="'WorkShopManagement.QualityGates.Create'">
-          <div class="gate-menu" *ngIf="openGateValue === g.value">
-            <button type="button" class="gate-item d-flex align-items-center gap-2 w-100"
-              *ngFor="let s of QualityGateStatus" (click)="setStatus(g.value, s.value)"
-              [class.active]="isSelected(g.value, s.value)" [disabled]="savingGate[g.value] === true">
+          <div ngbDropdownMenu class="gate-menu shadow-lg">
+            
+            <button ngbDropdownItem 
+                    type="button" 
+                    class="gate-item d-flex align-items-center gap-2 w-100"
+                    *ngFor="let s of QualityGateStatus" 
+                    (click)="setStatus(g.value, s.value)"
+                    [class.active]="isSelected(g.value, s.value)" 
+                    [disabled]="savingGate[g.value] === true">
 
               <span class="status-dot" [ngClass]="dotClass(s.value)"></span>
-              <span class="gate-text">
+              <span class="gate-text text-secondary">
                 {{ ('::Enum:QualityGateStatus.' + s.value) | abpLocalization }}
               </span>
               <span *ngIf="savingGate[g.value]" class="spinner-border spinner-border-sm ms-auto"></span>
             </button>
+
           </div>
         </div>
 
@@ -41,3 +50,4 @@
     </div>
   </div>
 </div>
+}

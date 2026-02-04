@@ -105,11 +105,10 @@
 
 <!-- MODALS -->
 
-<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [currentStatus]="selected?.avvStatus"
+<app-avv-status-modal [(visible)]="isAvvModalVisible" [carId]="selected?.carId" [vin]="selected?.vin" [currentStatus]="selected?.avvStatus"
     (statusUpdated)="list.get()"></app-avv-status-modal>
 <app-est-release-modal #estReleaseModal (saved)="list.get()"></app-est-release-modal>
 <app-recalls [(visible)]="isRecallModalVisible" [vin]="selected?.vin" [carId]="selected?.carId" (submit)="list?.get()" />
 <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
     (submit)="list?.get()"></app-check-in-report-modal>
-<app-quality-gates-modal [(visible)]="isQualityGatesModalVisible" [carId]="selectedQualityGatesCarId"
-    (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="onQualityGatesSaved()"></app-quality-gates-modal>
+<app-quality-gates-modal [(visible)]="isQualityGatesModalVisible" [carId]="selected.carId" [vin]="selected.vin" (saved)="list?.get()"></app-quality-gates-modal>

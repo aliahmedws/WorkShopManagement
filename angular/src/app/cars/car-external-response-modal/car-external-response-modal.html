@@ -3,12 +3,8 @@
         <div class="d-flex align-items-center justify-content-between w-100">
             <div class="d-flex flex-column">
                 <div class="modal-title-line">
-                    <h1 class="fw-bold">
-                        {{ vinNo || '-' }}
-                        <span class="text-muted ms-2">
-                            {{ '::ExternalApiResponse' | abpLocalization }}
-                        </span>
-                    </h1>
+                    <span class="h2">{{ vinNo ?? '-' }}</span>
+                    <span class="ms-2">{{ '::ExternalApiResponse' | abpLocalization }}</span>
                 </div>
             </div>
         </div>

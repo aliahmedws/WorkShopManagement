@@ -149,9 +149,8 @@
     <app-check-in-report-modal [(visible)]="isCheckInModalVisible" [carId]="selected.carId" [carVin]="selected.vin"
         (submit)="list?.get()"></app-check-in-report-modal>
     <app-est-release-modal #estReleaseModal (saved)="list?.get()"></app-est-release-modal>
-    <app-car-notes-modal #notesModal (saved)="onNotesSaved($event)"></app-car-notes-modal>
-    <app-quality-gates-modal [carId]="selectedQualityGatesCarId" [(visible)]="isQualityGatesModalVisible"
-        (visibleChange)="onQualityGatesVisibleChange($event)" (saved)="list?.get()">
+    <app-car-notes-modal #notesModal (saved)="list?.get()"></app-car-notes-modal>
+    <app-quality-gates-modal [carId]="selected.carId" [(visible)]="isQualityGatesModalVisible" [vin]="selected.vin" (saved)="list?.get()" >
     </app-quality-gates-modal>
     <!-- MODALS END  -->
 

@@ -120,7 +120,7 @@
                         <div class="col-12 form-group">
                             <label class="form-label required">{{ '::Owner' | abpLocalization }}</label>
                             <nz-select nzShowSearch nzAllowClear nzSize="large" formControlName="ownerId">
-                                @for (option of carOwnerOptions; track option) {
+                                @for (option of carOwnerOptions; track option.id) {
                                 <nz-option [nzLabel]="option.displayName" [nzValue]="option.id"></nz-option>
                                 }
                                 <nz-option [nzLabel]="`::${NOT_FOUND}` | abpLocalization"

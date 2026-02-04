@@ -64,7 +64,6 @@ export class ScdWarehouse {
 
   //QUALITY GATE MODAL
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
 
   @Input() filters: any = {};
   @Output() filtersChange = new EventEmitter<any>();
@@ -95,22 +94,10 @@ export class ScdWarehouse {
   //QUALITY GATE START
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
-
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
   }
 
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-
-    if (!v) {
-      this.selectedQualityGatesCarId = undefined;
-    }
-  }
-
-  onQualityGatesSaved(): void {
-    this.list?.get();
-  }
   //QUALITY GATE END
 
   openCreDetailModal(car: StageDto): void {
@@ -130,18 +117,12 @@ export class ScdWarehouse {
 
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   openNotesModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.notesModal.open(row.carId, row.notes);
-  }
-
-  onNotesSaved(e: { carId: string; notes: string }): void {
-    const row = this.stages.items?.find(x => x.carId === e.carId);
-    if (row) row.notes = e.notes;
-    this.list.get();
+    this.notesModal.open(row.carId, row.notes, row.vin);
   }
 
   // =======COLOR MAPPING

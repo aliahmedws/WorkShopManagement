@@ -74,7 +74,6 @@ export class AwaitingTransport {
 
   // Quality Gates
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
 
   openIssueModal(row: any): void {
     if (!row?.carId) return;
@@ -163,7 +162,7 @@ export class AwaitingTransport {
 
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   getRecallColor(row: StageDto): string {
@@ -185,16 +184,10 @@ export class AwaitingTransport {
   //QUALITY GATE START
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
-
     if (!row?.carBayId) return;
 
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
-  }
-
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-    if (!v) this.selectedQualityGatesCarId = undefined;
   }
 
   //QUALITY GATE END

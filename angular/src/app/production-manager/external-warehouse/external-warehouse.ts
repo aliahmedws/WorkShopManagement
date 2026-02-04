@@ -69,7 +69,6 @@ export class ExternalWarehouse {
 
   //QualityGate Modal
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
 
   isCreDetailModalVisible = false;
 
@@ -81,17 +80,8 @@ export class ExternalWarehouse {
   //Quality Gate Start
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
-  }
-
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-    if (!v) this.selectedQualityGatesCarId = undefined;
-  }
-
-  onQualityGatesSaved(): void {
-    this.list?.get();
   }
 
   //Quality Gate End
@@ -114,25 +104,6 @@ export class ExternalWarehouse {
   isCheckInModalVisible = false;
   isNotesModalVisible = false;
 
-  // StorageLocation = StorageLocation;
-
-  // @Input() cars: PagedResultDto<CarDto> = { items: [], totalCount: 0 };
-
-  // @Input() filters: any = {};
-  // @Output() filtersChange = new EventEmitter<any>();
-  // @Input() list: ListService;
-
-  // selectedCar = {} as CarDto;
-  // selectedId?: string; // REMOVE THIS. Instead send the whole CarDto object
-  // isRecallModalVisible = false;
-  // isCheckInModalVisible = false;
-
-  // @ViewChild('estReleaseModal', { static: true })
-  // estReleaseModal!: EstReleaseModal;
-  // // ngOnInit(): void {
-  // //   const carStreamCreator = (query: any) => this.carService.getList({ ...query, ...this.filters });
-  // //   this.list.hookToQuery(carStreamCreator).subscribe((res) => (this.cars = res));
-  // // }
 
   // =============== ASSIGN BAY MODAL v
 
@@ -217,18 +188,12 @@ export class ExternalWarehouse {
 
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   openNotesModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.notesModal.open(row.carId, row.notes);
-  }
-
-  onNotesSaved(e: { carId: string; notes: string }): void {
-    const row = this.stages.items?.find(x => x.carId === e.carId);
-    if (row) row.notes = e.notes;
-    this.list.get();
+    this.notesModal.open(row.carId, row.notes, row.vin);
   }
 
   // =======COLOR MAPPING

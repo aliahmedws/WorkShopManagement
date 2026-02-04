@@ -1,19 +1,31 @@
 <!-- quality-gates-modal.html -->
 <abp-modal [(visible)]="visible" (visibleChange)="onVisibleChange($event)" (appear)="onAppear()"
-    [options]="{ size: 'md', modalClass: 'quality-gates-modal' }">
+    [options]="{ size: 'md', modalClass: 'quality-gates-modal', backdrop: 'static', keyboard: false, animation: true  }">
 
     <ng-template #abpHeader>
-        <div class="fw-bold">{{ '::QualityGates' | abpLocalization }}</div>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                <span class="h2">{{ vin ?? '-' }}</span>
+                <span class="ms-2">{{ '::QualityGates' | abpLocalization }}</span>
+                </div>
+            </div>
+        </div>
     </ng-template>
 
     <ng-template #abpBody>
-        <ng-container *ngIf="loading" class="p-3 text-muted">
-            {{ '::Loading...' | abpLocalization }}
-        </ng-container>
-
+        @if (loading) {
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        }
+        
         <ng-container *ngIf="!loading && resolvedCarBayId">
             <!-- IMPORTANT: layout="modal" -->
-            <div style="min-height: 420px;">
+            <!-- <div style="min-height: 400px;"> -->
+            <div>
                 <app-quality-gates [carBayId]="resolvedCarBayId" layout="modal" (saved)="onSaved()"></app-quality-gates>
             </div>
         </ng-container>

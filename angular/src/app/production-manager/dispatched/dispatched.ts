@@ -80,9 +80,7 @@ export class Dispatched {
 
   // ===== Quality Gates =====
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
-
-  openIssueModal(row: any): void {
+    openIssueModal(row: any): void {
     if (!row?.carId) return;
     this.issueModalVisible[row.carId] = true;
   }
@@ -169,7 +167,7 @@ export class Dispatched {
 
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   getRecallColor(row: StageDto): string {
@@ -190,15 +188,9 @@ export class Dispatched {
 
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
-
     if (!row?.carBayId) return;
 
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
-  }
-
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-    if (!v) this.selectedQualityGatesCarId = undefined;
   }
 }

@@ -74,27 +74,13 @@ export class PostProduction {
 
   // Quality Gates
   isQualityGatesModalVisible = false;
-  selectedQualityGatesCarId?: string;
 
   //QUALITY GATE START
   openQualityGates(row: StageDto): void {
     if (!row?.carId) return;
 
-    this.selectedQualityGatesCarId = row.carId;
+    this.selected = row;
     this.isQualityGatesModalVisible = true;
-  }
-
-  onQualityGatesVisibleChange(v: boolean): void {
-    this.isQualityGatesModalVisible = v;
-
-    if (!v) {
-      this.selectedQualityGatesCarId = undefined;
-    }
-  }
-
-  onQualityGatesSaved(): void {
-    // Refresh list so the grid icon color updates as well
-    this.list?.get();
   }
 
   openIssueModal(row: any): void {
@@ -184,7 +170,7 @@ export class PostProduction {
 
   openEstReleaseModal(row: StageDto): void {
     if (!row?.carId) return;
-    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null);
+    this.estReleaseModal.open(row.carId, row.estimatedRelease ?? null, row.vin);
   }
 
   getRecallColor(row: StageDto): string {

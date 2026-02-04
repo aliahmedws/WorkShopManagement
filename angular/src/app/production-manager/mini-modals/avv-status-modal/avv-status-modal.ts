@@ -22,6 +22,7 @@ export class AvvStatusModal implements OnChanges {
 
   // Inputs for data
   @Input() carId?: string;
+  @Input() vin?: string;
   @Input() currentStatus?: AvvStatus;
 
   // Output to refresh parent list

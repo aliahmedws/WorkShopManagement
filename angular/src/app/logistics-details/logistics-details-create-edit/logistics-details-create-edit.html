@@ -29,7 +29,7 @@
         <ng-template #descCre>
             <div class="d-flex flex-column small-date">
                 @if (form.get('creSubmissionDate')?.value) {
-                <small>{{ form.get('creSubmissionDate')?.value | date:'mediumDate' }}</small>
+                <small>{{ form.get('creSubmissionDate')?.value | date:'dd/MM/yy' }}</small>
                 } @else {
                 <ng-container *ngTemplateOutlet="pending"></ng-container>
                 }
@@ -51,7 +51,7 @@
         <ng-template #descClearance>
             <div class="d-flex flex-column small-date">
                 @if (form.get('clearanceDate')?.value) {
-                <small>{{ form.get('clearanceDate')?.value | date:'mediumDate' }}</small>
+                <small>{{ form.get('clearanceDate')?.value | date:'dd/MM/yy' }}</small>
                 } @else {
                 <ng-container *ngTemplateOutlet="pending"></ng-container>
                 }
@@ -306,8 +306,8 @@
 
 
 
-<app-arrival-estimates-create-edit-modal [(visible)]="isEstimateModalVisible" [logisticsDetailId]="selectedId!"
+<app-arrival-estimates-create-edit-modal [(visible)]="isEstimateModalVisible" [logisticsDetailId]="selectedId!" [vin]="vin"
     (submit)="fetchLatestEstimate(selectedId!)">
 </app-arrival-estimates-create-edit-modal>
 
-<app-arrival-estimates [(visible)]="isEstimateListVisible" [logisticsDetailId]="selectedId!"></app-arrival-estimates>
+<app-arrival-estimates [(visible)]="isEstimateListVisible" [logisticsDetailId]="selectedId!" [vin]="vin"></app-arrival-estimates>

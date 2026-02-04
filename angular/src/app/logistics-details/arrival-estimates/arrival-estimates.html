@@ -3,9 +3,12 @@
 
     <ng-template #abpHeader>
         <div class="d-flex align-items-center justify-content-between w-100">
-            <h3 class="modal-title m-0">
-                {{ '::EstimatedArrivalHistory' | abpLocalization }}
-            </h3>
+            <div class="d-flex flex-column">
+                <div class="modal-title-line">
+                    <span class="h2">{{ vin ?? '-' }}</span>
+                    <span class="ms-2">{{ '::EstimatedArrivalHistory' | abpLocalization }}</span>
+                </div>
+            </div>
         </div>
     </ng-template>
 
@@ -68,6 +71,6 @@
     </ng-template>
 </abp-modal>
 
-<app-arrival-estimates-create-edit-modal [(visible)]="isCreateEditModalVisible" [logisticsDetailId]="logisticsDetailId"
+<app-arrival-estimates-create-edit-modal [(visible)]="isCreateEditModalVisible" [logisticsDetailId]="logisticsDetailId" [vin]="vin"
     [estimateId]="selectedId" (submit)="list.get()">
 </app-arrival-estimates-create-edit-modal>

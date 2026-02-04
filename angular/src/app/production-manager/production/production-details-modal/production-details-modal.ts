@@ -96,7 +96,6 @@ export class ProductionDetailsModal {
   @Input() carId?: string;
   @Input() carBayId?: string;
   details?: CarBayDto;
-  carNotes = '';
 
   Priority = Priority;
   ClockInStatus = ClockInStatus;
@@ -107,7 +106,6 @@ export class ProductionDetailsModal {
   form?: FormGroup;
 
   open() {
-    debugger;
     this.details = undefined;
     this.loadSelectedCar();
     this.loadDetails();
@@ -156,11 +154,7 @@ export class ProductionDetailsModal {
 
   openNotes(): void {
     if (!this.carId) return;
-    this.carNotesModal.open(this.carId, this.carNotes);
-  }
-
-  onNotesSaved(_: string) {
-    this.carNotes = this.carNotesModal.form?.value?.notes ?? '';
+    this.carNotesModal.open(this.carId, this.selectedCar?.notes, this.selectedCar?.vin);
   }
 
   openIssues(): void {
