@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp;
@@ -9,6 +10,7 @@ using WorkShopManagement.Cars.Stages;
 using WorkShopManagement.Cars.StorageLocations;
 using WorkShopManagement.Extensions;
 using WorkShopManagement.LogisticsDetails;
+using WorkShopManagement.QualityGates;
 
 namespace WorkShopManagement.Cars
 {
@@ -17,19 +19,22 @@ namespace WorkShopManagement.Cars
         private readonly ICarRepository _carRepository;
         private readonly ILogisticsDetailRepository _logisticsDetailRepository;
         private readonly ICarBayRepository _carBayRepository;
+        private readonly IRepository<QualityGate, Guid> _qualityGateRepository;
         private readonly CarBayManager _carBayManager;
 
         public CarManager(
             ICarRepository carRepository,
             ILogisticsDetailRepository logisticsDetailRepository,
             ICarBayRepository carBayRepository,
-            CarBayManager carBayManager
+            CarBayManager carBayManager,
+            IRepository<QualityGate, Guid> qualityGateRepo
             )
         {
             _carRepository = carRepository;
             _logisticsDetailRepository = logisticsDetailRepository;
             _carBayRepository = carBayRepository;
             _carBayManager = carBayManager;
+            _qualityGateRepository = qualityGateRepo;
         }
 
 
@@ -195,7 +200,7 @@ namespace WorkShopManagement.Cars
                 );
             }
 
-            ValidateStageChange(car, targetStage, logisticsDetail);
+            await ValidateStageChange(car, targetStage, logisticsDetail);
 
             var oldStage = car.Stage;
 
@@ -229,7 +234,7 @@ namespace WorkShopManagement.Cars
         /// </summary>
 
 
-        private static void ValidateStageChange(Car car, Stage targetStage, LogisticsDetail? logisticsDetail)
+        private async Task ValidateStageChange(Car car, Stage targetStage, LogisticsDetail? logisticsDetail)
         {
             if (targetStage != Stage.Incoming)
             {
@@ -261,6 +266,32 @@ namespace WorkShopManagement.Cars
 
                     throw new UserFriendlyException($"Cannot move car to \"{targetStage}\". Car has missing fields: {missing} ");
                 }
+            }
+
+            if (targetStage == Stage.AwaitingTransport || targetStage == Stage.PostProduction || targetStage == Stage.Dispatched)
+            {
+
+                // Quality Gate Check Conditions
+                var carBay = await _carBayRepository.FirstOrDefaultAsync(x => x.CarId == car.Id);
+                if (carBay == null)
+                {
+                    throw new UserFriendlyException($"Car must be in a Car Bay to move to {targetStage}");
+                }
+
+                //var qualityGate = await _qualityGateRepository.GetQueryableAsync();
+                var hasOtherQualityGate = await _qualityGateRepository.AnyAsync(q =>
+                    q.CarBayId == carBay.Id &&
+                    q.Status != QualityGateStatus.PASSED
+                );
+                
+                if(hasOtherQualityGate)
+                {
+                    throw new UserFriendlyException($"Car must have passed Quality Gate to move to {targetStage}");
+                }
+
+                // Add Check List Check Conditions Here
+
+
             }
 
             if (targetStage == Stage.AwaitingTransport || targetStage == Stage.Dispatched)
