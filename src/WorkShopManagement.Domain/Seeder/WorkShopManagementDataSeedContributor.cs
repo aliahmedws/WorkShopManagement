@@ -441,9 +441,24 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
                 if (!listItemByCheckListAndPos.TryGetValue(liKey, out var listItemId))
                     continue;
 
-                foreach (var opt in seed.Options.Select(x => (x ?? string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)))
+                var options = seed.Options
+                    .Select(x => (x ?? string.Empty).Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .ToList();
+
+                if (options.Count == 0)
+                    continue;
+
+                foreach (var opt in options)
                 {
-                    toInsert.Add(new RadioOption(_guid.Create(), listItemId, opt));
+                    var isAcceptable = IsAcceptableOption(opt, options);
+
+                    toInsert.Add(new RadioOption(
+                        _guid.Create(),
+                        listItemId,
+                        opt,
+                        isAcceptable
+                    ));
                 }
             }
         }
@@ -707,7 +722,67 @@ public partial class WorkShopManagementDataSeedContributor : IDataSeedContributo
         }
     }
 
+    private static string Norm(string s)
+    => (s ?? string.Empty).Trim().ToUpperInvariant();
 
+    private static bool IsNa(string s)
+    {
+        var n = Norm(s);
+        return n is "N/A" or "NA" or "N.A." or "N-A" or "N A";
+    }
+
+    private static bool IsOther(string s)
+    {
+        var n = Norm(s);
+        // covers: "Other", "Other (Write In Comments)", etc.
+        return n.StartsWith("OTHER", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAcceptableOption(string option, IReadOnlyList<string> allOptions)
+    {
+        var opt = Norm(option);
+
+        // 1) Single-option seed => acceptable
+        if (allOptions.Count == 1)
+            return true;
+
+        // 2) "Other..." is always acceptable (even in multi-option sets)
+        if (IsOther(opt))
+            return true;
+
+        var set = allOptions.Select(Norm).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        // YES / NO
+        if (set.SetEquals(new[] { "YES", "NO" }))
+            return opt == "YES";
+
+        // YES / NO / N-A
+        if (set.Contains("YES") && set.Contains("NO") && set.Any(IsNa))
+            return opt == "YES" || IsNa(opt);
+
+        // PASS / FAIL
+        if (set.SetEquals(new[] { "PASS", "FAIL" }))
+            return opt == "PASS";
+
+        // PASS / FAIL / N-A
+        if (set.Contains("PASS") && set.Contains("FAIL") && set.Any(IsNa))
+            return opt == "PASS" || IsNa(opt);
+
+        // PRESENT / MISSING
+        if (set.SetEquals(new[] { "PRESENT", "MISSING" }))
+            return opt == "PRESENT";
+
+        // COMPLETED / DEFERRED
+        if (set.SetEquals(new[] { "COMPLETED", "DEFERRED" }))
+            return opt == "COMPLETED";
+
+        // DONE / NOT DONE
+        if (set.SetEquals(new[] { "DONE", "NOT DONE" }))
+            return opt == "DONE";
+
+        // 3) Fallback: multi-option with no clear "right" answer => all acceptable
+        return true;
+    }
 
     private sealed record CheckListSeed(int Position, string Name, bool IsEnabled);
 

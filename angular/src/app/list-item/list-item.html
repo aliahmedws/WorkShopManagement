@@ -11,7 +11,8 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [columnMode]="'force'" [list]="list" default>
+                <ngx-datatable [rows]="listItems.items" [count]="listItems.totalCount" [columnMode]="'force'"
+                    [list]="list" default>
                     <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [width]="50">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <div ngbDropdown container="body" class="d-inline-block">
@@ -33,11 +34,12 @@
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position" [canAutoResize]="false" [width]="100"
-                        [maxWidth]="120"></ngx-datatable-column>
+                    <ngx-datatable-column [name]="'::Position' | abpLocalization" prop="position"
+                        [canAutoResize]="false" [width]="100" [maxWidth]="120"></ngx-datatable-column>
                     <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name"></ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::CommentType' | abpLocalization" [canAutoResize]="false" [width]="150">
+                    <ngx-datatable-column [name]="'::CommentType' | abpLocalization" [canAutoResize]="false"
+                        [width]="150">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <ng-container *ngIf="row?.commentType != null; else noValue">
                                 {{ ('::Enum:CommentType.' + row.commentType) | abpLocalization }}
@@ -52,7 +54,8 @@
                         </ng-template>
                     </ngx-datatable-column>
 
-                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [canAutoResize]="false" [width]="120">
+                    <ngx-datatable-column [name]="'::IsSeparator' | abpLocalization" [canAutoResize]="false"
+                        [width]="120">
                         <ng-template let-row="row" ngx-datatable-cell-template>
                             <div class="text-center">
                                 <span [class.text-success]="row.isSeparator" [class.text-danger]="!row.isSeparator">
@@ -95,7 +98,7 @@
     </ng-template>
 
     <ng-template #abpBody>
-        <form [formGroup]="form" (ngSubmit)="save()">
+        <form [formGroup]="form" (submit)="save()">
             <div class="row g-3">
                 <div class="col-12 col-md-8">
                     <label class="form-label">
@@ -158,7 +161,6 @@
             </div>
 
             <!-- Radio Options only when list-item exists -->
-            <!-- Radio Options only when list-item exists -->
             <div class="row g-2" *ngIf="selected?.id">
                 <div class="col-12">
                     <hr class="my-3" />
@@ -169,36 +171,51 @@
                     </div>
                 </div>
 
-                <div class="col-12 form-control">
-                    <!-- Existing (DB) tags -->
-                    <ng-container *ngFor="let o of radioOptions">
-                        <nz-tag nzMode="closeable" [nzClosable]="!isRadioBusy" (nzOnClose)="removeDbTag(o)">
-                            {{ o.name }}
-                        </nz-tag>
-                    </ng-container>
+                <div class="col-12">
+                    <input type="text" [(ngModel)]="tagInputValue" class="form-control"
+                        [ngModelOptions]="{ standalone: true }" [disabled]="isRadioBusy" (blur)="confirmTagInput()"
+                        (keydown.enter)="$event.stopPropagation(); confirmTagInput()" />
+                    @if (pendingRadioNames?.length || radioOptions?.length) {
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <th>{{ '::Radio Name' | abpLocalization }}</th>
+                                <th width="20%">{{ '::Acceptable' | abpLocalization }}</th>
+                                <th width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let n of pendingRadioOptions">
+                                <td>{{ n.name }} <span class="ms-1 badge bg-warning text-dark">Pending</span></td>
+                                <td class="text-center">
+                                    <div class="form-check-inline">
+                                        <input type="checkbox" name="" id="" class="form-check-input"
+                                            [(ngModel)]="n.isAcceptable" [ngModelOptions]="{ standalone: true }"
+                                            [disabled]="isRadioBusy">
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="fas fa-trash text-danger pointer" (click)="removePendingTag(n.name)"></i>
+                                </td>
+                            </tr>
+                            <tr *ngFor="let n of radioOptions">
+                                <td>{{ n.name }}</td>
+                                <td class="text-center">
+                                    <div class="form-check-inline">
+                                        <input type="checkbox" name="" id="" class="form-check-input"
+                                            [(ngModel)]="n.isAcceptable" [ngModelOptions]="{ standalone: true }"
+                                            [disabled]="isRadioBusy">
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="fas fa-trash text-danger pointer" (click)="removeDbTag(n)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    }
 
-                    <!-- Pending tags -->
-                    <ng-container *ngFor="let n of pendingRadioNames">
-                        <nz-tag nzMode="closeable" [nzClosable]="!isRadioBusy" (nzOnClose)="removePendingTag(n)">
-                            {{ n }} <span class="ms-1 badge bg-warning text-dark">Pending</span>
-                        </nz-tag>
-                    </ng-container>
-
-                    <!-- Add new tag -->
-                    <ng-container *ngIf="!tagInputVisible; else tagInputTpl">
-                        <nz-tag class="editable-tag" (click)="showTagInput()">
-                            <nz-icon nzType="plus"></nz-icon>
-                            {{ '::Add' | abpLocalization }}
-                        </nz-tag>
-                    </ng-container>
-
-                    <ng-template #tagInputTpl>
-                        <input #tagInputEl nz-input nzSize="small" type="text" [(ngModel)]="tagInputValue"
-                            [ngModelOptions]="{ standalone: true }" style="width: 140px;" [disabled]="isRadioBusy"
-                            (blur)="confirmTagInput()" (keydown.enter)="confirmTagInput()" />
-                    </ng-template>
-
-                    <small class="text-muted d-block mt-2" *ngIf="pendingRadioNames?.length">
+                    <small class="text-muted d-block mt-2" *ngIf="pendingRadioOptions?.length">
                         Pending options will be saved only when you click Save/Update.
                     </small>
                 </div>

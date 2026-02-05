@@ -92,6 +92,9 @@ export function mapCheckListProgressStatusColor(progressStatus: CheckListProgres
         case CheckListProgressStatus.InProgress:
             return 'warning';
 
+        case CheckListProgressStatus.NonAcceptable:
+            return 'danger';
+
         case CheckListProgressStatus.Completed:
             return 'success';
 

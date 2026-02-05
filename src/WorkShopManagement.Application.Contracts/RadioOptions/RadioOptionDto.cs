@@ -7,4 +7,5 @@ public class RadioOptionDto : EntityDto<Guid>
 {
     public Guid ListItemId { get; set; }
     public string Name { get; set; } = default!;
+    public bool IsAcceptable { get; set; }
 }

@@ -4,5 +4,6 @@ public enum CheckListProgressStatus
 {
     Pending = 0,
     InProgress = 1,
-    Completed = 2
+    NonAcceptable = 2,
+    Completed = 3
 }

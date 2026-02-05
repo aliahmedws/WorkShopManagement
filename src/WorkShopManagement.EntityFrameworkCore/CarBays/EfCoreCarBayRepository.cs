@@ -122,6 +122,7 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
 
                 var total = 0;
                 var filled = 0;
+                var nonAccepted = 0;
 
                 foreach (var li in actionableItems)
                 {
@@ -133,12 +134,16 @@ public class EfCoreCarBayRepository : EfCoreRepository<WorkShopManagementDbConte
                     if (!option.IsNullOrWhiteSpace())
                     {
                         filled++;
+
+                        var isAcceptable = li.RadioOptions?.Where(r => r.Name == option).FirstOrDefault()?.IsAcceptable ?? false;
+                        if (!isAcceptable) nonAccepted++;
                     }
                 }
 
                 var status =
                     filled == 0 ? CheckListProgressStatus.Pending :
                     filled < total ? CheckListProgressStatus.InProgress :
+                    nonAccepted > 0 ? CheckListProgressStatus.NonAcceptable :
                     CheckListProgressStatus.Completed;
 
                 progressMap[cl.Id] = status;

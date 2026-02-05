@@ -418,7 +418,8 @@
     "Enum:IssueStatus.5": "Resolved",
     "Enum:CheckListProgressStatus.0": "Pending",
     "Enum:CheckListProgressStatus.1": "InProgress",
-    "Enum:CheckListProgressStatus.2": "Completed",
+    "Enum:CheckListProgressStatus.2": "Non Acceptable",
+    "Enum:CheckListProgressStatus.3": "Completed",
 
     "Enum:IssueType.1": "Scratch / Dent",
     "Enum:IssueType.2": "Upholstery / Trim",

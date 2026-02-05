@@ -27,12 +27,16 @@ public class RadioOptionController : AbpController, IRadioOptionAppService
         => _appService.GetListAsync(input);
 
     [HttpPost]
-    public Task<List<RadioOptionDto>> CreateAsync(CreateRadioOptionDto input)
-        => _appService.CreateAsync(input);
+    public Task<List<RadioOptionDto>> UpsertAsync(UpsertRadioOptionsDto input)
+        => _appService.UpsertAsync(input);
 
-    [HttpPut("{id}")]
-    public Task<RadioOptionDto> UpdateAsync(Guid id, UpdateRadioOptionDto input)
-        => _appService.UpdateAsync(id, input);
+    //[HttpPost]
+    //public Task<List<RadioOptionDto>> CreateAsync(CreateRadioOptionDto input)
+    //    => _appService.CreateAsync(input);
+
+    //[HttpPut("{id}")]
+    //public Task<RadioOptionDto> UpdateAsync(Guid id, UpdateRadioOptionDto input)
+    //    => _appService.UpdateAsync(id, input);
 
     [HttpDelete("{id}")]
     public Task DeleteAsync(Guid id)

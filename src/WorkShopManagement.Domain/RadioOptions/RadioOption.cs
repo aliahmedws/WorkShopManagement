@@ -13,14 +13,16 @@ public class RadioOption : FullAuditedAggregateRoot<Guid>
     public virtual ListItem ListItems { get; private set; } = default!;
 
     public string Name { get; private set; } = default!;
+    public bool IsAcceptable { get; set; }
 
     private RadioOption() { }
 
-    public RadioOption(Guid id, Guid listItemId, string name)
+    public RadioOption(Guid id, Guid listItemId, string name, bool isAcceptable)
         : base(id)
     {
         ListItemId = listItemId;
         SetName(name);
+        IsAcceptable = isAcceptable;
     }
 
     public void ChangeName(string name) => SetName(name);
@@ -29,4 +31,6 @@ public class RadioOption : FullAuditedAggregateRoot<Guid>
     {
         Name = Check.NotNullOrWhiteSpace(name, nameof(name), maxLength: RadioOptionConsts.MaxNameLength).Trim();
     }
+
+    public void SetIsAcceptable(bool isAcceptable) => IsAcceptable = isAcceptable;
 }

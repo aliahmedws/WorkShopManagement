@@ -57,7 +57,7 @@ export class ListItem implements OnInit {
   commentTypes = commentTypeOptions;
 
   radioOptions: RadioOptionDto[] = [];
-  pendingRadioNames: string[] = [];
+  pendingRadioOptions: { name: string; isAcceptable: boolean }[] = [];
   isRadioBusy = false;
 
   tempFiles: FileAttachmentDto[] = []; // for file attachments
@@ -69,7 +69,7 @@ export class ListItem implements OnInit {
   private readonly confirmation = inject(ConfirmationHelperService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly  customToaster = inject(ToasterHelperService);
+  private readonly customToaster = inject(ToasterHelperService);
   private readonly checkListService = inject(CheckListService);
   private readonly radioOptionService = inject(RadioOptionService);
   private readonly toaster = inject(ToasterService)
@@ -131,7 +131,7 @@ export class ListItem implements OnInit {
 
       this.isModalOpen = true;
 
-      this.pendingRadioNames = [];
+      this.pendingRadioOptions = [];
       this.loadRadioOptions();
     });
   }
@@ -174,7 +174,7 @@ export class ListItem implements OnInit {
         this.selected = updated ?? this.selected;
 
         this.resetAttachment();
-        this.savePendingRadioOptions(this.selected.id);
+        this.saveAllRadioOptions(this.selected.id);
         this.isModalOpen = false;
         this.list.get();
         this.loadRadioOptions();
@@ -199,7 +199,7 @@ export class ListItem implements OnInit {
       this.selected = created;
 
       this.resetAttachment();
-      this.savePendingRadioOptions(created.id);
+      this.saveAllRadioOptions(created.id);
 
       this.list.get();
       this.loadRadioOptions();
@@ -232,31 +232,51 @@ export class ListItem implements OnInit {
     });
   }
 
-  private savePendingRadioOptions(listItemId: string): void {
-    const names = (this.pendingRadioNames || []).map(x => x.trim()).filter(Boolean);
-    if (!names.length) return;
+  saveAllRadioOptions(listItemId: string): void {
+    const existingItems = (this.radioOptions ?? [])
+      .map(x => ({
+        name: this.normalizeName(x.name || '')!,
+        isAcceptable: !!x.isAcceptable
+      }))
+      .filter(x => !!x.name);
+
+    const pendingItems = (this.pendingRadioOptions ?? [])
+      .map(x => ({
+        name: this.normalizeName(x.name)!,
+        isAcceptable: !!x.isAcceptable
+      }))
+      .filter(x => !!x.name);
+
+    // Merge by normalized key (pending wins if same name somehow)
+    const map = new Map<string, { name: string; isAcceptable: boolean }>();
+
+    for (const e of existingItems) map.set(this.normalizeKey(e.name), e);
+    for (const p of pendingItems) map.set(this.normalizeKey(p.name), p);
+
+    const items = Array.from(map.values());
+    if (!items.length) return;
 
     this.isRadioBusy = true;
 
-    const dto = { listItemId, names } as any;
+    const dto = { listItemId, items } as any; // UpsertRadioOptionsDto
 
-    this.radioOptionService.create(dto).subscribe({
+    this.radioOptionService.upsert(dto).subscribe({
       next: (res: any) => {
-        const created: RadioOptionDto[] = Array.isArray(res) ? res : res ? [res] : [];
+        const affected = Array.isArray(res) ? res : res ? [res] : [];
+        // After upsert, best practice: refresh list from server if you have a getList endpoint.
+        // If not, merge returned items:
+        const byId = new Map<string, RadioOptionDto>(this.radioOptions.map(x => [x.id, x]));
+        for (const r of affected) if (r?.id) byId.set(r.id, r);
+        this.radioOptions = Array.from(byId.values());
 
-        const existingById = new Map<string, RadioOptionDto>(this.radioOptions.map(x => [x.id, x]));
-        for (const c of created) {
-          if (c?.id) existingById.set(c.id, c);
-        }
-        this.radioOptions = Array.from(existingById.values());
-
-        this.pendingRadioNames = [];
-        this.customToaster.created();
+        this.pendingRadioOptions = [];
+        this.customToaster.updated?.();
       },
       error: () => (this.isRadioBusy = false),
       complete: () => (this.isRadioBusy = false),
     });
   }
+
 
   private buildForm(): void {
     this.form = this.fb.group({
@@ -336,7 +356,7 @@ export class ListItem implements OnInit {
 
   private clearRadioUi(): void {
     this.radioOptions = [];
-    this.pendingRadioNames = [];
+    this.pendingRadioOptions = [];
     this.isRadioBusy = false;
   }
 
@@ -383,12 +403,12 @@ export class ListItem implements OnInit {
     const key = this.normalizeKey(name);
 
     const existsInDb = (this.radioOptions ?? []).some(x => this.normalizeKey(x.name || '') === key);
-    const existsPending = (this.pendingRadioNames ?? []).some(x => this.normalizeKey(x) === key);
+    const existsPending = (this.pendingRadioOptions ?? []).some(x => this.normalizeKey(x.name) === key);
 
     if (existsInDb || existsPending) {
       this.toaster.warn('::AlreadyExists');
     } else {
-      this.pendingRadioNames = [...this.pendingRadioNames, name];
+      this.pendingRadioOptions = [...this.pendingRadioOptions, { name, isAcceptable: false }];
     }
 
     this.tagInputValue = '';
@@ -397,15 +417,15 @@ export class ListItem implements OnInit {
 
   removePendingTag(name: string): void {
     const key = this.normalizeKey(name);
-    this.pendingRadioNames = (this.pendingRadioNames ?? []).filter(
-      x => this.normalizeKey(x) !== key
+    this.pendingRadioOptions = (this.pendingRadioOptions ?? []).filter(
+      x => this.normalizeKey(x.name) !== key
     );
   }
 
   removeDbTag(option: RadioOptionDto): void {
     if (!option?.id) return;
 
-     this.confirmation.confirmDelete().subscribe(status => {
+    this.confirmation.confirmDelete().subscribe(status => {
       if (status !== 'confirm') return;
 
       this.isRadioBusy = true;

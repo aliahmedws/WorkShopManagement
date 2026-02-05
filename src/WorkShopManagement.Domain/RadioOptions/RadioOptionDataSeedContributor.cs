@@ -170,10 +170,10 @@ public class RadioOptionDataSeedContributor : ITransientDependency
                     continue;
                 }
 
-                await _radioOptionRepository.InsertAsync(
-                    new RadioOption(_guidGenerator.Create(), listItem.Id, opt),
-                    autoSave: false
-                );
+                //await _radioOptionRepository.InsertAsync(
+                //    new RadioOption(_guidGenerator.Create(), listItem.Id, opt),
+                //    autoSave: false
+                //);
 
                 existingNames.Add(opt);
                 inserted++;
